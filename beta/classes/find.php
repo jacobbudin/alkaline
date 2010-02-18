@@ -20,8 +20,20 @@ class Find extends Alkaline{
 		parent::__destruct();
 	}
 	
-	public function findByDateUploaded($start=null, $finish=null){
-		if(empty($start) and empty($finish)){ return false; }
+	public function findByUploaded($begin=null, $end=null){
+		if(empty($begin) and empty($end)){ return false; }
+		if(!empty($begin)){
+			$begin = strval($begin);
+			if(strlen($begin) == 4){ $begin .= '-01-01'; }
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = 'photos.photo_uploaded >= "' . $begin . '"';
+		}
+		if(!empty($end)){
+			$end = strval($end);
+			if(strlen($end) == 4){ $end .= '-01-01'; }
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = 'photos.photo_uploaded <= "' . $end . '"';
+		}
 	}
 	
 	public function findByViews($min=null, $max=null){

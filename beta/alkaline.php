@@ -26,8 +26,13 @@ $limit = 20;
 // Current theme
 $theme = 'basic';
 
+// Time zone
+$time_zone = 'America/New_York';
+
 
 // DO NOT MODIFY BELOW THIS LINE
+
+date_default_timezone_set($time_zone);
 
 $path = $_SERVER['DOCUMENT_ROOT'] . '/';
 define('PATH', $path);

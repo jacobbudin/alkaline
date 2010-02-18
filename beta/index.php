@@ -11,6 +11,7 @@ $header->setVar('TITLE', 'Jacob Budin');
 $header->output();
 
 $photo_ids = new Find();
+$photo_ids->findByUploaded('2010', '2011');
 // $photo_ids->findByViews();
 // $photo_ids->page(1,1);
 $photo_ids->exec();
