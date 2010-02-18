@@ -2,6 +2,7 @@
 
 class Alkaline{
 	protected $db;
+	protected $photos_cols;
 	
 	public function __construct(){
 		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
@@ -41,6 +42,20 @@ class Alkaline{
 			return $photos;
 		}
 		else{ return false; }
+	}
+	
+	// Find and store column fields into variables
+	private function seekCols(){
+		$query = $this->db->prepare('SELECT * FROM photos LIMIT 0,1;');
+		$query->execute();
+		$this->photos = $query->fetchAll();
+		
+		$this->photos_cols = array();
+		foreach($this->photos as $photo){
+			foreach($photo as $key => $value){
+				$this->photos_cols[] = $key;
+			}
+		}
 	}
 }
 

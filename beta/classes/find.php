@@ -23,13 +23,13 @@ class Find extends Alkaline{
 	public function findByUploaded($begin=null, $end=null){
 		if(empty($begin) and empty($end)){ return false; }
 		if(!empty($begin)){
-			$begin = strval($begin);
+			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
 			$this->sql_conds[] = 'photos.photo_uploaded >= "' . $begin . '"';
 		}
 		if(!empty($end)){
-			$end = strval($end);
+			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
 			$this->sql_conds[] = 'photos.photo_uploaded <= "' . $end . '"';
@@ -48,6 +48,11 @@ class Find extends Alkaline{
 	
 	public function search($query=null){
 		if(empty($query)){ return false; }
+		$sql = '(';
+		$sql .= 'LOWER(photos.photo_title) LIKE "%' . strtolower($query) . '%" OR ';
+		$sql .= 'LOWER(photos.photo_description) LIKE "%' . strtolower($query) . '%"';
+		$sql .= ')';
+		$this->sql_conds[] = $sql;
 	}
 	
 	public function page($page, $limit=LIMIT){
