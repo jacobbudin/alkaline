@@ -43,8 +43,9 @@ class Render extends Alkaline{
 	}
 	
 	public function output(){
-		// Remove unused conditionals
-		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/', '', $this->template);
+		// Remove unused conditionals, replace with ELSEIF as available
+		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ELSEIF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '$2', $this->template);
+		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '', $this->template);
 		
 		// Evaluate and echo
 		echo @eval('?>' . $this->template);

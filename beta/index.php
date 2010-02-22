@@ -8,7 +8,7 @@ require_once(PATH . CLASSES . 'user.php');
 require_once(PATH . CLASSES . 'render.php');
 
 $header = new Render('header');
-$header->setVar('TITLE', 'Jacob Budin');
+// $header->setVar('TITLE', 'Jacob Budin');
 $header->output();
 
 $photo_ids = new Find();
