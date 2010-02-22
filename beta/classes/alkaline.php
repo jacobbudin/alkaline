@@ -5,6 +5,11 @@ class Alkaline{
 	protected $photos_cols;
 	
 	public function __construct(){
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+
+		session_start();
+		
 		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
 	}
 	
