@@ -4,6 +4,7 @@ require_once('./alkaline.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 require_once(PATH . CLASSES . 'find.php');
 require_once(PATH . CLASSES . 'photo.php');
+require_once(PATH . CLASSES . 'user.php');
 require_once(PATH . CLASSES . 'render.php');
 
 $header = new Render('header');
