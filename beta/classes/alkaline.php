@@ -10,7 +10,7 @@ class Alkaline{
 
 		if(session_id()){ session_start(); }
 		
-		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
 	}
 	
 	public function __destruct(){
