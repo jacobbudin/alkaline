@@ -29,7 +29,7 @@ class Render extends Alkaline{
 		$this->arrays->$array = $value;
 		$this->template = preg_replace('(\<!-- IF\(' . $array . '\) --\>)', '', $this->template);
 		$this->template = preg_replace('(\<!-- ENDIF\(' . $array . '\) --\>)', '', $this->template);
-		preg_match('/\<!-- START\(' . $array . '\) --\>(.*)\<!-- END\(' . $array . '\) --\>/s', $this->template, $matches);
+		preg_match('/\<!-- LOOP\(' . $array . '\) --\>(.*)\<!-- ENDLOOP\(' . $array . '\) --\>/s', $this->template, $matches);
 		$loop_template = $matches[1];
 		$template = '';
 		foreach($this->arrays->$array as $units){
@@ -39,7 +39,7 @@ class Render extends Alkaline{
 			}
 			$template .= $loop;
 		}
-		$this->template = preg_replace('/\<!-- START\(' . $array . '\) --\>(.*)\<!-- END\(' . $array . '\) --\>/s', $template, $this->template);
+		$this->template = preg_replace('/\<!-- LOOP\(' . $array . '\) --\>(.*)\<!-- ENDLOOP\(' . $array . '\) --\>/s', $template, $this->template);
 	}
 	
 	public function output(){
