@@ -3,7 +3,7 @@
 class Photo extends Alkaline{
 	public $photos;
 	public $photo_ids;
-	public $count;
+	public $photo_count;
 	protected $sql;
 	
 	public function __construct($photos){
@@ -25,7 +25,7 @@ class Photo extends Alkaline{
 			$this->photo_ids[] = $photo['photo_id'];
 		}
 		
-		$this->count = count($this->photos);
+		$this->photo_count = count($this->photos);
 	}
 	
 	public function __destruct(){
@@ -34,7 +34,7 @@ class Photo extends Alkaline{
 	
 	// Increase photos.photo_views by 1
 	public function updateViews(){
-		for($i = 0; $i < $this->count; ++$i){
+		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_views']++;
 			$this->db->exec('UPDATE photos SET photo_views = ' . $this->photos[$i]['photo_views'] . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
@@ -55,7 +55,7 @@ class Photo extends Alkaline{
 		}
 		
 		// Attach photo_src_ to photos array
-		for($i = 0; $i < $this->count; ++$i){
+		for($i = 0; $i < $this->photo_count; ++$i){
 		    $this->photos[$i][$photo_src] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
 		}
 	}
