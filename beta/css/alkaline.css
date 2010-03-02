@@ -5,7 +5,7 @@ body {
 input[type=text], input[type=password], input.text, input.title, textarea, select {
 	font-size: 1.1em;
 	margin: 3px;
-	padding: 2px;
+	padding: 2px 3px;
 }
 
 h3 { margin: 0; padding: 0 0 .25em 0; }
