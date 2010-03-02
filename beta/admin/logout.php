@@ -5,12 +5,9 @@ require_once(PATH . CLASSES . 'alkaline.php');
 require_once(PATH . CLASSES . 'user.php');
 
 $user = new User;
+$user->deauth();
 
-if($user->perm()){
-	header('Location: http://' . DOMAIN . 'admin/dashboard/');
-}
-else{
-	header('Location: http://' . DOMAIN . 'admin/login/');
-}
+header('Location: http://' . DOMAIN . 'admin/login/');
+exit();
 
 ?>

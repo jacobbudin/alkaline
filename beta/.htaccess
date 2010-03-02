@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+	
+	Options +FollowSymLinks
+	
+	RewriteEngine on
+	
+	ErrorDocument 404 /
+	
+	RewriteRule ^admin/([a-z0-9\-]+)(/)?$ /admin/$1.php [NC]
+	
+</IfModule>

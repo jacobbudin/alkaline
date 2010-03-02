@@ -14,8 +14,11 @@ $db_pass = 'm902j2JK91kaO';
 // Image extensions, separate by |
 $img_ext = 'gif|GIF|jpg|JPG|jpeg|JPEG|png|PNG';
 
-// Image resize quality, integer from 1 to 100 (80-90 recommended)
+// Image resize quality, integer from 1 to 100 (80-95 recommended)
 $img_qual = 85;
+
+// Length, in seconds, to remember a user's previous login
+$user_remember = 1209600;
 
 // Template extension
 $temp_ext = '.html';
@@ -34,17 +37,16 @@ $time_zone = 'America/New_York';
 
 date_default_timezone_set($time_zone);
 
-$path = $_SERVER['DOCUMENT_ROOT'] . '/';
-define('PATH', $path);
-
-// $base = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/') + 1);
+define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 define('BASE', '/');
+define('DOMAIN', $_SERVER['HTTP_HOST'] . BASE);
 
 define('DB_DSN', $db_dsn);
 define('DB_USER', $db_user);
 define('DB_PASS', $db_pass);
 define('IMG_EXT', $img_ext);
 define('IMG_QUAL', $img_qual);
+define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
 define('LIMIT', $limit);
 define('THEME', $theme);
