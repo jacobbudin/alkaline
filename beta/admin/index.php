@@ -8,9 +8,11 @@ $user = new User;
 
 if($user->perm()){
 	header('Location: http://' . DOMAIN . 'admin/dashboard/');
+	exit();
 }
 else{
 	header('Location: http://' . DOMAIN . 'admin/login/');
+	exit();
 }
 
 ?>

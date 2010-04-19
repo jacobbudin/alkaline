@@ -2,6 +2,7 @@
 
 require_once('./../alkaline.php');
 require_once(PATH . CLASSES . 'alkaline.php');
+require_once(PATH . CLASSES . 'notify.php');
 require_once(PATH . CLASSES . 'user.php');
 
 @$username = strip_tags($_POST['login_user']);
@@ -11,6 +12,7 @@ require_once(PATH . CLASSES . 'user.php');
 if($remember == 1){ $remember = true; }
 
 $user = new User;
+$notifications = new Notify;
 
 if($user->perm()){
 	header('Location: http://' . DOMAIN . 'admin/dashboard/');

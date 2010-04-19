@@ -15,7 +15,7 @@ $photo_ids = new Find();
 // $photo_ids->search('abacus');
 // $photo_ids->findByUploaded('2010', '2011');
 // $photo_ids->findByViews(1,2);
-$photo_ids->page(2,2);
+$photo_ids->page(1,2);
 $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
