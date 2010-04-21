@@ -1,18 +1,17 @@
 <?php
 
-require_once('./../alkaline.php');
+require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'notify.php');
 require_once(PATH . CLASSES . 'user.php');
+
+$alkaline = new Alkaline;
+$user = new User;
 
 @$username = strip_tags($_POST['login_user']);
 @$password = strip_tags($_POST['login_pass']);
 @$remember = strip_tags($_POST['login_remember']);
 
 if($remember == 1){ $remember = true; }
-
-$user = new User;
-$notifications = new Notify;
 
 if($user->perm()){
 	header('Location: http://' . DOMAIN . 'admin/dashboard/');
@@ -25,7 +24,7 @@ if(!empty($username) or !empty($password)){
 		exit();
 	}
 	else{
-		$notifications->add('error', 'Your username or password is invalid. Please try again.');
+		$alkaline->addNotification('Your username or password is invalid. Please try again.', 'error');
 	}
 }
 
@@ -41,7 +40,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
 	<h2>Login</h2>
 	
-	<?php $notifications->view(); ?>
+	<?php $alkaline->viewNotification(); ?>
 	
 	<form input="" method="post">
 	<table>

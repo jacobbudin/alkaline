@@ -1,16 +1,16 @@
 <?php
 
-require_once('./../alkaline.php');
+require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'notify.php');
 require_once(PATH . CLASSES . 'user.php');
+
+$user = new User;
+
+$user->perm(true);
 
 define('TITLE', 'Alkaline Dashboard');
 define('COLUMNS', '19');
 define('WIDTH', '750');
-
-$user = new User;
-$user->perm(true);
 
 require_once(PATH . ADMIN . 'includes/header.php');
 

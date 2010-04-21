@@ -2,33 +2,66 @@
 
 class Alkaline{
 	protected $db;
+	protected $notifications;
 	protected $photos_cols;
 	
 	public function __construct(){
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
-
+		
+		// Begin a session, if one does not yet exist
 		if(session_id() == ''){ session_start(); }
 		
+		// Load notifications variable from session
+		if(!empty($_SESSION['notifications'])){ $this->notifications = $_SESSION['notifications']; }
+		else{ $this->notifications = array(); }
+		
+		// Initiate database connection
 		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
 	}
 	
 	public function __destruct(){
+		// Save notifications variable to session
+		$_SESSION['notifications'] = $this->notifications;
+		
+		// Close database connection
 		$this->db = null;
 	}
 	
-	// Seek EXIF data for images
-	public function seekExif(){
-		$query = $this->db->prepare('SELECT * FROM exifs' . $this->sql . ';');
-		$query->execute();
-		$exifs = $query->fetchAll();
-		
-		foreach($exifs as $exif){
-			$photo_id = intval($exif['photo_id']);
-			$key = array_search($photo_id, $this->photo_ids);
-			if($photo_id = $this->photo_ids[$key]){
-				$this->photos[$key]['exif'][$exif['exif_key']][$exif['exif_name']] = unserialize($exif['exif_value']);
+	public function addNotification($message, $type=null){
+		$this->notifications[] = array('type' => $type, 'message' => $message);
+	}
+	
+	public function viewNotification($type=null){
+		$count = count($this->notifications);
+		if($count > 0){
+			// Determine unique types
+			$types = array();
+			foreach($this->notifications as $notifications){
+				$types[] = $notifications['type'];
 			}
+			$types = array_unique($types);
+
+			// Produce HTML for display
+			foreach($types as $type){
+				echo '<p class="' . $type . '">';
+				$messages = '';
+				foreach($this->notifications as $notification){
+					if($notifications['type'] == $type){
+						$messages = $messages . ' ' . $notification['message'];
+					}
+				}
+				$messages = ltrim($messages);
+				echo $messages . '</p>';
+			}
+
+			// Dispose of messages
+			unset($_SESSION['notifications']);
+			unset($this->notifications);
+			$this->notifications = array();
+		}
+		else{
+			return false;
 		}
 	}
 	
