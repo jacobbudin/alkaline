@@ -80,13 +80,14 @@ class User extends Alkaline{
 		return true;
 	}
 	
-	// Logout users, destroy "remember me" data
+	// Logout user, destroy "remember me" data
 	public function deauth(){
 		unset($this->user);
 		session_destroy();
 		setcookie('id', '', time()-3600, '/');
 		setcookie('key', '', time()-3600, '/');
 		session_start();
+		return true;
 	}
 	
 	// Verify user has permission to access module

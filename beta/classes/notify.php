@@ -19,37 +19,36 @@ class Notify extends Alkaline{
 	}
 	
 	public function add($type, $message){
-		$notifications[] = array('type' => $type, 'message' => $message);
+		$this->notifications[] = array('type' => $type, 'message' => $message);
 	}
 	
 	public function view(){
-		$count = count($notifications);
+		$count = count($this->notifications);
 		if($count > 0){
-			
 			// Determine unique types
 			$types = array();
-			foreach($_SESSION['messages'] as $message){
-				$types[] = $message['type'];
+			foreach($this->notifications as $notifications){
+				$types[] = $notifications['type'];
 			}
 			$types = array_unique($types);
 
 			// Produce HTML for display
 			foreach($types as $type){
-				echo '<div class="' . $type . '">';
+				echo '<p class="' . $type . '">';
 				$messages = '';
-				foreach($_SESSION['messages'] as $message){
-					if($message['type'] == $type){
-						$messages = $messages . ' ' . $message['message'];
+				foreach($this->notifications as $notification){
+					if($notifications['type'] == $type){
+						$messages = $messages . ' ' . $notification['message'];
 					}
 				}
 				$messages = ltrim($messages);
-				echo $messages . '</div>';
+				echo $messages . '</p>';
 			}
 
 			// Dispose of messages
+			unset($_SESSION['notifications']);
+			unset($this->notifications);
 			$this->notifications = array();
-			
-			return $count;
 		}
 		else{
 			return false;

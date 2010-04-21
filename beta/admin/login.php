@@ -19,10 +19,16 @@ if($user->perm()){
 	exit();
 }
 
-if($user->auth($username, $password, $remember)){
-	header('Location: http://' . DOMAIN . 'admin/dashboard/');
-	exit();
+if(!empty($username) or !empty($password)){
+	if($user->auth($username, $password, $remember)){
+		header('Location: http://' . DOMAIN . 'admin/dashboard/');
+		exit();
+	}
+	else{
+		$notifications->add('error', 'Your username or password is invalid. Please try again.');
+	}
 }
+
 
 define('TITLE', 'Alkaline Login');
 define('COLUMNS', '14');
@@ -34,6 +40,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
 	<h2>Login</h2>
+	
+	<?php $notifications->view(); ?>
+	
 	<form input="" method="post">
 	<table>
 		<tr>
