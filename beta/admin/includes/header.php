@@ -30,6 +30,7 @@
 			for(photo_id in photo_ids){
 				$.post("<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php", { photo_id: photo_ids[photo_id] }, function(data){ updateProgress(); } );
 			}
+			$.post("<?php echo BASE . ADMIN; ?>tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" } );
 		}
 		
 		function updateProgress(){
@@ -42,10 +43,10 @@
 		}
 		
 		$(document).ready(function(){
+			$("#progress").hide(0);
 			$("a.task").click(function(event){
-				$("#progress").hide();
 				$("#tasks").slideUp(500);
-				$("#progress").show().fadeIn();
+				$("#progress").delay(500).slideDown(500);
 				$("#progress").progressbar({ value: 0 });
 				$.ajax({
 					url: "<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php",
