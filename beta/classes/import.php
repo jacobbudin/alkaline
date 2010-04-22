@@ -40,7 +40,14 @@ class Import extends Alkaline{
 		
 		// Copy photo to archive
 		copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
-
+		
+		sizePhoto($file);
+		exifPhoto($file);
+	}
+	
+	private function sizePhoto($file){
+		require_once(PATH . FUNCTIONS . 'image.php');
+		
 		// Generate photo thumbnails based on sizes in database
 		$query = $this->db->prepare('SELECT * FROM sizes');
 		$query->execute();
@@ -61,7 +68,9 @@ class Import extends Alkaline{
 					break;
 			}
 		}
-
+	}
+	
+	private function exifPhoto($file){
 		// Read EXIF data
 		$file = PATH . PHOTOS . $photo_id . '.' . $photo_ext;
 		$exif = @exif_read_data($file, 0, true, false);

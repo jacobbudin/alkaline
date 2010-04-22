@@ -4,6 +4,7 @@ require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 require_once(PATH . CLASSES . 'user.php');
 
+$alkaline = new Alkaline;
 $user = new User;
 
 $user->perm(true);
@@ -18,6 +19,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
 	<h2>Dashboard</h2>
+	
+	<?php $alkaline->viewNotification(); ?>
 	
 	<div class="span-<?php echo COLUMNS - 2; ?> last">
 		<div class="block">
@@ -121,6 +124,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<div class="span-7 last">
 			<h3><a href="<?php echo BASE . ADMIN ?>extensions/">Extensions</a></h3>
 			<p class="quiet">Add, remove, and manage extensions.</p>
+		</div>
+		
+		<div class="span-1">
+			<img src="/images/icons/maintenance.png" alt="" />
+		</div>
+		<div class="span-7 last">
+			<h3><a href="<?php echo BASE . ADMIN ?>maintenance/">Maintenance</a></h3>
+			<p class="quiet">Repair and correct your library.</p>
 		</div>
 	</div>
 </div>

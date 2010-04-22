@@ -9,13 +9,54 @@
 	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/print.css" type="text/css" media="print" />	
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
 	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>alkaline.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>smoothness/jquery-ui-1.8.custom.css" type="text/css" media="screen, projection" />
 	<style type="text/css">
 		.container { width: <?php if(defined('WIDTH')){ echo WIDTH; } else{ echo '750'; } ?>px; }	
 		#content { background-image: url(<?php echo BASE . 'images/block-'; if(defined('WIDTH')){ echo WIDTH; } else{ echo '750'; } ?>.png); }
 	</style>
-	<script type="text/javascript" src="<?php echo BASE . JS; ?>jquery/jquery-1.4.1.min.js"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
+		var photo_ids;
+		var photo_count;
+		var progress;
+		var progress_step;
 		
+		function photoArray(data){
+			photo_ids = data;
+			photo_count = photo_ids.length;
+			progress = 0;
+			progress_step = 100 / photo_ids.length;
+			for(photo_id in photo_ids){
+				$.post("<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php", { photo_id: photo_ids[photo_id] }, function(data){ updateProgress(); } );
+			}
+		}
+		
+		function updateProgress(){
+			progress += progress_step;
+			progress_int = parseInt(progress);
+			$("#progress").progressbar({ value: progress_int });
+			if(progress == 100){
+				window.location = "<?php echo BASE . ADMIN; ?>";
+			}
+		}
+		
+		$(document).ready(function(){
+			$("a.task").click(function(event){
+				$("#progress").hide();
+				$("#tasks").slideUp(500);
+				$("#progress").show().fadeIn();
+				$("#progress").progressbar({ value: 0 });
+				$.ajax({
+					url: "<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php",
+					cache: false,
+					error: function(data){ alert(data); },
+					dataType: "json",
+					success: function(data){ photoArray(data); }
+				});
+				event.preventDefault();
+			});
+		});
 	</script>
 </head>
 <body>
