@@ -72,7 +72,7 @@ class Alkaline{
 			$photos = array();
 			while($filename = readdir($handle)){
 				// Find files with proper extensions
-				if(preg_match('([a-zA-Z0-9]+\.(' . IMG_EXT . '){1,1})', $filename)){
+				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
 					$photos[] = $dir . $filename;
 				}
 		    }

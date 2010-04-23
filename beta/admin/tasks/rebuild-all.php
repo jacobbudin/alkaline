@@ -17,9 +17,11 @@ if(empty($_POST['photo_id'])){
 	echo json_encode($photo_ids->photo_ids);
 }
 else{
-	$photo_id = intval($_POST['photo_id']);
-	sleep(2);
-	echo ' ';
+	$photo = new Photo($_POST['photo_id']);
+	$photo->deSizePhoto();
+	$file = PATH . PHOTOS . $photo['photo_id'] . '.' . $photo['photo_ext'];
+	$import = new Import();
+	$import->sizePhoto($file);
 }
 
 ?>

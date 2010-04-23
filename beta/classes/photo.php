@@ -26,10 +26,61 @@ class Photo extends Alkaline{
 		}
 		
 		$this->photo_count = count($this->photos);
+		
+		for($i = 0; $i < $this->photo_count; ++$i){
+			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
+		}
 	}
 	
 	public function __destruct(){
 		parent::__destruct();
+	}
+	
+	// Generate photo thumbnails based on sizes in database
+	public function sizePhoto(){
+		require_once(PATH . FUNCTIONS . 'image.php');
+		
+		// Look up sizes in database
+		$query = $this->db->prepare('SELECT * FROM sizes');
+		$query->execute();
+		$sizes = $query->fetchAll();
+		
+		// Generate thumbnails
+		for($i = 0; $i < $this->photo_count; ++$i){
+			foreach($sizes as $size){
+				$size_height = $size['size_height'];
+				$size_width = $size['size_width'];
+				$size_type = $size['size_type'];
+				$size_prepend = $size['size_prepend'];
+				$size_append = $size['size_append'];
+				switch($size_type){
+					case 'fill':
+						imageScaleFill($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photo_id . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
+						break;
+					case 'max':
+						imageScaleMax($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photo_id . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
+						break;
+				}
+			}
+		}
+	}
+	
+	public function exifPhoto(){
+		for($i = 0; $i < $this->photo_count; ++$i){
+			// Read EXIF data
+			$exif = @exif_read_data($this->photos[$i]['photo_file'], 0, true, false);
+
+			// If EXIF data exists, add each key (group), name, value to database
+			if(count($exif) > 0){
+				$inserts = array();
+				foreach($exif as $key => $section){
+				    foreach($section as $name => $value){
+						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $this->photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '")';
+						$this->db->exec($query);
+				    }
+				}
+			}
+		}
 	}
 	
 	// Increase photos.photo_views by 1
@@ -73,6 +124,31 @@ class Photo extends Alkaline{
 				@$this->photos[$key]['photo_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
 			}
 		}
+	}
+	
+	// Delete photo thumbnails
+	public function deSizePhoto(){
+		// Open photo directory
+		$dir = PATH . PHOTOS;
+		$handle = opendir($dir);
+		$photos = array();
+		
+		while($filename = readdir($handle)){
+			for($i = 0; $i < $this->photo_count; ++$i){
+				// Find photo thumnails
+				if(preg_match('^((.*[\D]+' . $this->photos[$i]['photo_id'] . '|' . $this->photos[$i]['photo_id'] . '[\D]+.*|.*[\D]+' . $this->photos[$i]['photo_id'] . '[\D]+.*)\..+)$', $filename)){
+					$photos[] = $dir . $filename;
+				}
+			}
+	    }
+		
+		closedir($handle);
+		
+		// Delete photo thumbnails
+		foreach($photos as $photo){
+			unlink($photo);
+		}
+		return true;
 	}
 	
 }
