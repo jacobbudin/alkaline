@@ -55,10 +55,10 @@ class Photo extends Alkaline{
 				$size_append = $size['size_append'];
 				switch($size_type){
 					case 'fill':
-						imageScaleFill($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photo_id . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
+						imageScaleFill($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
 						break;
 					case 'max':
-						imageScaleMax($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photo_id . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
+						imageScaleMax($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, IMG_QUAL, $this->photos[$i]['photo_ext']);
 						break;
 				}
 			}
@@ -136,7 +136,7 @@ class Photo extends Alkaline{
 		while($filename = readdir($handle)){
 			for($i = 0; $i < $this->photo_count; ++$i){
 				// Find photo thumnails
-				if(preg_match('^((.*[\D]+' . $this->photos[$i]['photo_id'] . '|' . $this->photos[$i]['photo_id'] . '[\D]+.*|.*[\D]+' . $this->photos[$i]['photo_id'] . '[\D]+.*)\..+)$', $filename)){
+				if(preg_match('/^((.*[\D]+' . $this->photos[$i]['photo_id'] . '|' . $this->photos[$i]['photo_id'] . '[\D]+.*|.*[\D]+' . $this->photos[$i]['photo_id'] . '[\D]+.*)\..+)$/', $filename)){
 					$photos[] = $dir . $filename;
 				}
 			}

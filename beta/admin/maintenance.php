@@ -29,17 +29,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	
 	<div id="tasks">
-		<h4>Thumbnails</h4>
-		<ul>
-			<li><a class="task" href="#">Rebuild all photo thumbnails</a></li>
-			<li><a class="task" href="#">Rebuild only absent photo thumbnails</a></li>
-		</ul><br />
-	
-		<h4>Statistics</h4>
-		<ul>
-			<li><a class="task" href="#">Recalulate library tallies</a></li>
-			<li><a class="task" href="#">Reset library statistics</a></li>
-		</ul>
+		<h3><a class="task" href="#">Rebuild photo thumbnails</a></h3>
 	</div>
 	
 </div>
