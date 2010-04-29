@@ -9,10 +9,16 @@ input[type=text], input[type=password], input.text, input.title, textarea, selec
 }
 
 h3 { margin: 0; padding: 0 0 .25em 0; }
+h3 a { color: #111; }
 
 p { margin-bottom: 1em; }
 
-h3 a { color: #111;  } 
+form table { padding: .7em 0; }
+
+.center { text-align: center; }
+
+.input { text-align: right; vertical-align: top; width: 0; padding-top: 2px; }
+.description { width: 100%; }
 
 .block {
 	margin-bottom: 2em;

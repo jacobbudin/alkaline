@@ -134,6 +134,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<p class="quiet">Repair and correct your library.</p>
 		</div>
 	</div>
+	
+	<p><strong>Having problems with Alkaline?</strong> <a href="<?php echo BASE . ADMIN ?>diagnostics/">Send us a diagnostic report.</a></p>
+	
 </div>
 
 <?php
