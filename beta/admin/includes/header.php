@@ -16,52 +16,7 @@
 	</style>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		var photo_ids;
-		var photo_count;
-		var progress;
-		var progress_step;
-		
-		function photoArray(data){
-			photo_ids = data;
-			photo_count = photo_ids.length;
-			progress = 0;
-			progress_step = 100 / photo_ids.length;
-			for(photo_id in photo_ids){
-				$.post("<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php", { photo_id: photo_ids[photo_id] }, function(data){ updateProgress(); } );
-			}
-		}
-		
-		function updateProgress(){
-			progress += progress_step;
-			progress_int = parseInt(progress);
-			$("#progress").progressbar({ value: progress_int });
-			if(progress == 100){
-				$.post("<?php echo BASE . ADMIN; ?>tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ redirect(); } );
-			}
-		}
-		
-		function redirect(){
-			window.location = "<?php echo BASE . ADMIN; ?>";
-		}
-		
-		$(document).ready(function(){
-			$("#progress").hide(0);
-			$("a.task").click(function(event){
-				$("#tasks").slideUp(500);
-				$("#progress").delay(500).slideDown(500);
-				$("#progress").progressbar({ value: 0 });
-				$.ajax({
-					url: "<?php echo BASE . ADMIN; ?>tasks/rebuild-all.php",
-					cache: false,
-					error: function(data){ alert(data); },
-					dataType: "json",
-					success: function(data){ photoArray(data); }
-				});
-				event.preventDefault();
-			});
-		});
-	</script>
+	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 </head>
 <body>
 	<div class="container">
