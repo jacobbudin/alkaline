@@ -24,6 +24,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<form>
 		
+		<h3>Dashboard</h3>
+		
+		<table>
+			<tr>
+				<td class="input"><input type="checkbox" name="shoe_geo" checked="checked" /></td>
+				<td class="description">
+					<strong>Show the overview panel</strong><br />
+					Display the <select name="shoe_geo_prov" style="font-size: .9em;"><option value="comments">Comments</option><option value="photos">Photos</option><option value="statistics">Statistics</option></select> panel
+				</td>
+			</tr>
+		</table>
+		
 		<h3>Shoebox</h3>
 		
 		<table>
@@ -109,7 +121,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td class="input"><input type="checkbox" name="maint_debug" /></td>
 				<td class="description">
 					<strong>Enable debug mode</strong><br />
-					Adds relevant technical data to the footer of every page
+					Incorporates technical data to the footer of every page
 				</td>
 			</tr>
 			<tr>
