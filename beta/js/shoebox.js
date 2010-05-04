@@ -1,17 +1,22 @@
-var photo_ids;
+var photo_files;
 var photo_count;
 var progress;
 var progress_step;
-var task;
+var task = "add-photos";
 
 function photoArray(data){
-	photo_ids = data;
-	photo_count = photo_ids.length;
+	photo_files = data;
+	photo_count = photo_files.length;
 	progress = 0;
-	progress_step = 100 / photo_ids.length;
-	for(photo_id in photo_ids){
-		$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_id: photo_ids[photo_id] }, function(data){ updateProgress(); } );
+	progress_step = 100 / photo_files.length;
+	for(photo_file in photo_files){
+		$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: photo_files[photo_file] }, function(data){ updatePage(data); updateProgress(); } );
 	}
+}
+
+function updatePage(id){
+	$("#photos").append('<p id="photo-' + id + '">THIS APPEARS EACH PHOTO#' + id + '</p>');
+	$("#photo-" + id).hide();
 }
 
 function updateProgress(){
@@ -19,14 +24,11 @@ function updateProgress(){
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress == 100){
-		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ } );
+		$("#progress").slideUp(500);
 	}
 }
 
 $(document).ready(function(){
-	task = $(this).attr("id");
-	$("#tasks").slideUp(500);
-	$("#progress").delay(500).slideDown(500);
 	$("#progress").progressbar({ value: 0 });
 	$.ajax({
 		url: BASE + ADMIN + "tasks/" + task + ".php",

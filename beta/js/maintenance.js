@@ -8,7 +8,7 @@ function photoArray(data){
 	photo_ids = data;
 	photo_count = photo_ids.length;
 	progress = 0;
-	progress_step = 100 / photo_ids.length;
+	progress_step = 100 / photo_count;
 	for(photo_id in photo_ids){
 		$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_id: photo_ids[photo_id] }, function(data){ updateProgress(); } );
 	}

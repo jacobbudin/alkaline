@@ -17,13 +17,15 @@ if($photo_count == 1){ $photo_count_read = 'There is 1 photo in your shoebox. Pl
 elseif($photo_count > 1){ $photo_count_read = 'There are ' . $photo_count . ' photos in your shoebox. Please wait while they are processed&#8230;'; }
 else{
 	$alkaline->addNotification('There are currently no photos in your shoebox.', 'notice');
-	header('Location: ' . BASE . ADMIN . 'dashboard/');
-	exit();
+	// header('Location: ' . BASE . ADMIN . 'dashboard/');
+	// exit();
 }
 
 define('TITLE', 'Alkaline Shoebox');
 define('COLUMNS', '19');
 define('WIDTH', '750');
+
+$alkaline->injectJS('shoebox');
 
 require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -33,25 +35,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<?php $alkaline->viewNotification(); ?>
 	
-	<p><?php echo $photo_count_read; ?></p>
+	<p><?php echo @$photo_count_read; ?></p>
 	
 	<div id="photos">
-		
-		<?php
-
-		if($photo_count > 0){
-			foreach($photos as $photo){
-				// new Import($photo);
-			}
-		}
-
-		?>
 		
 	</div>
 	
 	<div id="progress">
 		
-	</div>
+	</div><br />
 	
 	<p class="center"><input id="add" type="submit" value="Add photos" /></p>
 	

@@ -5,16 +5,19 @@ class Import extends Photo{
 	public $photo_count;
 	
 	public function __construct($files){
+		var_dump($files);
 		require_once(PATH . FUNCTIONS . 'image.php');
 		require_once(PATH . FUNCTIONS . 'text.php');
 		
 		// Prepare input
 		convertToArray($files);
+		var_dump($files);
 		
 		$this->photo_ids = array();
 		
 		// Add photos
 		foreach($files as $file){
+			var_dump($file);
 			// Add photo to database
 			$photo_ext = imageExt($file);
 			$filename = substr(strrchr($file, '/'), 1);
