@@ -2,8 +2,6 @@
 
 require_once('./../../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'find.php');
-require_once(PATH . CLASSES . 'import.php');
 require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
