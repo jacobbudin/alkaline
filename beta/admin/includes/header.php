@@ -17,6 +17,7 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
+	<?php $alkaline->dejectJS(); ?>
 </head>
 <body>
 	<div class="container">

@@ -13,6 +13,8 @@ define('TITLE', 'Alkaline Maintenance');
 define('COLUMNS', '19');
 define('WIDTH', '750');
 
+$alkaline->injectJS('maintenance');
+
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
@@ -29,7 +31,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	
 	<div id="tasks">
-		<h4><a class="task" href="#">Rebuild photo thumbnails</a></h4>
+		<h4><a id="rebuild-all" class="task" href="#">Rebuild photo thumbnails</a></h4>
 	</div>
 	
 </div>

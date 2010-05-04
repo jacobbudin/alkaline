@@ -1,6 +1,7 @@
 <?php
 
 class Alkaline{
+	public $js;
 	protected $db;
 	protected $notifications;
 	protected $photos_cols;
@@ -16,6 +17,9 @@ class Alkaline{
 		if(!empty($_SESSION['notifications'])){ $this->notifications = $_SESSION['notifications']; }
 		else{ $this->notifications = array(); }
 		
+		// Begin new JS injection
+		$this->js = array();
+		
 		// Initiate database connection
 		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
 	}
@@ -26,6 +30,16 @@ class Alkaline{
 		
 		// Close database connection
 		$this->db = null;
+	}
+	
+	public function injectJS($name){
+		$this->js[] = $name;
+	}
+	
+	public function dejectJS(){
+		foreach($this->js as $js){
+			echo '<script src="' . BASE . JS . $js . '.js" type="text/javascript"></script>';
+		}
 	}
 	
 	public function addNotification($message, $type=null){

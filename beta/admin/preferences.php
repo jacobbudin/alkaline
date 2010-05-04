@@ -132,7 +132,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 		</table>
 		
-		<div class="center"><input type="submit" value="Save changes" /></div>
+		<p class="center"><input type="submit" value="Save changes" /></p>
 		
 	</form>
 	
