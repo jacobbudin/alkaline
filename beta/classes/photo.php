@@ -12,7 +12,7 @@ class Photo extends Alkaline{
 		require_once(PATH . FUNCTIONS . 'text.php');
 				
 		// Prepare input
-		convertToArray($photos);
+		convertToIntegerArray($photos);
 		
 		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photos);
 		
