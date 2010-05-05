@@ -26,7 +26,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<p>Maintenance tasks repair or correct your library. You do not need to execute any of these tasks if you are not experiencing problems. Please let the task complete before closing your browser window. You will be redirected to your dashboard when the task is complete.</p>
 	
-	<div id="progress">
+	<div id="progress" class="span-17 last">
 		
 	</div>
 	

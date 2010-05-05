@@ -17,7 +17,8 @@ if(empty($_POST['photo_file'])){
 }
 else{
 	$photo = new Import($_POST['photo_file']);
-	echo json_encode($photo->photo_ids[0]);
+	$photo = array('id' => $photo->photo_ids[0], 'ext' => $photo->photos[0]['photo_ext']);
+	echo json_encode($photo);
 }
 
 ?>

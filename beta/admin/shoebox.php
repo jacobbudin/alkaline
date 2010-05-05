@@ -37,15 +37,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<p><?php echo @$photo_count_read; ?></p>
 	
-	<div id="photos">
+	<form id="photos">
 		
-	</div>
+	</form>
 	
-	<div id="progress">
+	<div id="progress" class="span-17 last">
 		
 	</div><br />
 	
-	<p class="center"><input id="add" type="submit" value="Add photos" /></p>
+	<p class="center"><input id="add" type="submit" value="Add photos" disabled="disabled" /></p>
 	
 </div>
 <?php
