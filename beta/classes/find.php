@@ -96,8 +96,6 @@ class Find extends Alkaline{
 		if(empty($page)){ return false; }
 		if($page == 0){ return false; }
 		
-		// 
-		
 		// Set SQL limit
 		$begin = ($page * $limit) - $limit;
 		$this->sql_limit = ' LIMIT ' . $begin . ', ' . $limit;
@@ -142,7 +140,7 @@ class Find extends Alkaline{
 		
 		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil($this->photo_count / $this->page);
+			$this->page_count = ceil($this->photo_count / ($this->page * $this->page_limit));
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}

@@ -15,7 +15,7 @@ $photo_ids = new Find();
 // $photo_ids->search('abacus');
 // $photo_ids->findByUploaded('2010', '2011');
 // $photo_ids->findByViews(1,2);
-$photo_ids->page(1,2);
+$photo_ids->page(1,5);
 $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
@@ -27,6 +27,7 @@ $photos->addExif();
 $index = new Render('index');
 $index->setVar('PAGE_NEXT', $photo_ids->page_next);
 $index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
+$index->setVar('PAGE_CURRENT', $photo_ids->page);
 $index->setArray('THUMBNAILS', 'PHOTO', $photos->photos);
 $index->setArray('PHOTOS', 'PHOTO', $photos->photos);
 $index->output();
