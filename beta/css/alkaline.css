@@ -60,7 +60,8 @@ a.button_red:hover, a.button_red:active {
 
 #photos input { width: 98%; }
 #photos textarea { width: 98%; height: 100px; }
-#photos .admin_thumb { border: 1px solid #eee; padding: 9px; }
+#photos .admin_thumb { border: 1px solid #eee; padding: 9px; margin: 0; }
+#photos a { padding: -5px; margin: -5px; }
 
 #footer {
 	margin-top: 2em;
