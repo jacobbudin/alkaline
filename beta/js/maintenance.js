@@ -18,7 +18,7 @@ function updateProgress(){
 	progress += progress_step;
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
-	if(progress == 100){
+	if(progress > 99.9999999){
 		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ window.location = BASE + ADMIN + data; } );
 	}
 }

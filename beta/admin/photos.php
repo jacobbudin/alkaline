@@ -29,7 +29,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
+	<form id="search" method="get" style="float: right; text-align: right; margin-top: 5px;">
+		<input type="text" name="find_text" style="width: 200px; font-size: .9em;" /> <input type="submit" value="Search" /><br />
+		<a href="" style="line-height: 2.5em;">Advanced search</a>
+	</form>
+	
 	<h2>Photos</h2>
+	
+	<h3>Library</h3>
 	
 	<?php $alkaline->viewNotification(); ?>
 	
@@ -39,7 +46,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<?php
 		for($i = 0; $i < $photos->photo_count; ++$i){
 			echo '<div class="span-2"><a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
-			echo '<div style="left: -115px; position: relative; height: 100px; width: 300px; background-color: #ddd; z-index: 2; margin: 0;"></div>';
+			echo '<div style="position: relative; background-image: url(/images/pointer.png); background-position: -965px 0; background-repeat: repeat-x; height: 100px; width: 300px; background-color: #ddd; z-index: 2; margin: 0;"></div>';
 			echo '</div>';
 		}
 		?>

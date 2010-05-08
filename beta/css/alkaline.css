@@ -8,8 +8,8 @@ input[type=text], input[type=password], input.text, input.title, textarea, selec
 	padding: 2px 3px;
 }
 
-h3 { margin: 0; padding: 0 0 .25em 0; }
-h3 a { color: #111; }
+.span-7.last h3 { margin: 0; padding: 0 0 .25em 0; }
+.span-7.last h3 a { color: #111; }
 
 p { margin-bottom: 1em; }
 
@@ -61,7 +61,6 @@ a.button_red:hover, a.button_red:active {
 #photos input { width: 98%; }
 #photos textarea { width: 98%; height: 100px; }
 #photos .admin_thumb { border: 1px solid #eee; padding: 9px; margin: 0; }
-#photos a { padding: -5px; margin: -5px; }
 
 #footer {
 	margin-top: 2em;
