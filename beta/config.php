@@ -5,10 +5,10 @@
 // Database data source name (DSN)
 $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 
-// Database username
+// Database user username
 $db_user = 'alkaline';
 
-// Database password
+// Database user password
 $db_pass = 'm902j2JK91kaO';
 
 // Image extensions, separate by |
@@ -32,6 +32,10 @@ $theme = 'basic';
 // Time zone
 $time_zone = 'America/New_York';
 
+// Default user ID for shoebox uploads
+$default_user_id = 1;
+
+
 
 // DO NOT MODIFY BELOW THIS LINE
 
@@ -50,6 +54,8 @@ define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
 define('LIMIT', $limit);
 define('THEME', $theme);
+define('TIME_ZONE', $time_zone);
+define('DEFAULT_USER_ID', $default_user_id);
 
 define('ADMIN', 'admin/');
 define('CLASSES', 'classes/');

@@ -4,11 +4,14 @@ class Photo extends Alkaline{
 	public $photos;
 	public $photo_ids;
 	public $photo_count;
+	public $user;
 	protected $sql;
 	
 	public function __construct($photos){
 		parent::__construct();
 		parent::convertToArray($photos);
+		
+		$this->user['user_id'] = DEFAULT_USER_ID;
 		
 		$photo_ids = array();
 		
@@ -24,8 +27,8 @@ class Photo extends Alkaline{
 					// Add photo to database
 					$photo_ext = $this->imageExt($file);
 					$filename = substr(strrchr($file, '/'), 1);
-
-					$query = 'INSERT INTO photos (photo_ext, photo_name, photo_uploaded) VALUES ("' . $photo_ext . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
+					
+					$query = 'INSERT INTO photos (user_id, photo_ext, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
 					$this->db->exec($query);
 					$photo_id = $this->db->lastInsertId();
 					$photo_ids[] = $photo_id;
@@ -68,6 +71,10 @@ class Photo extends Alkaline{
 	
 	public function __destruct(){
 		parent::__destruct();
+	}
+	
+	public function attachUser($user){
+		$this->user = $user->user;
 	}
 	
 	// Generate photo thumbnails based on sizes in database
