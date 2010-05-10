@@ -8,11 +8,7 @@ class Photo extends Alkaline{
 	
 	public function __construct($photos){
 		parent::__construct();
-		
-		require_once(PATH . FUNCTIONS . 'text.php');
-		
-		// Prepare input
-		convertToArray($photos);
+		parent::convertToArray($photos);
 		
 		$photo_ids = array();
 		
@@ -45,8 +41,7 @@ class Photo extends Alkaline{
 			}
 		}
 		
-		// Prepare input
-		convertToIntegerArray($photo_ids);
+		parent::convertToIntegerArray($photo_ids);
 		
 		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photo_ids);
 		
