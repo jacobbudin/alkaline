@@ -111,7 +111,9 @@ class Alkaline{
 	}
 	
 	// Trim (that is, remove whitespace) from values of an array
-	function trimValue(&$value){ $value = trim($value); }
+	function trimValue(&$value){
+		$value = trim($value);
+	}
 
 	// Convert a possible string or integer into an array
 	function convertToArray(&$input){
