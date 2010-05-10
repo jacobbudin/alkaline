@@ -17,8 +17,8 @@ if($photo_count == 1){ $photo_count_read = 'There is 1 photo in your shoebox. Pl
 elseif($photo_count > 1){ $photo_count_read = 'There are ' . $photo_count . ' photos in your shoebox. Please wait while they are processed&#8230;'; }
 else{
 	$alkaline->addNotification('There are currently no photos in your shoebox.', 'notice');
-	// header('Location: ' . BASE . ADMIN . 'dashboard/');
-	// exit();
+	header('Location: ' . BASE . ADMIN . 'dashboard/');
+	exit();
 }
 
 define('TITLE', 'Alkaline Shoebox');

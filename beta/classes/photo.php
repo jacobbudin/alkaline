@@ -10,11 +10,45 @@ class Photo extends Alkaline{
 		parent::__construct();
 		
 		require_once(PATH . FUNCTIONS . 'text.php');
-				
-		// Prepare input
-		convertToIntegerArray($photos);
 		
-		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photos);
+		// Prepare input
+		convertToArray($photos);
+		
+		$photo_ids = array();
+		
+		foreach($photos as $key => $value){
+			if(preg_match('/^\//', $value)){
+				require_once(PATH . FUNCTIONS . 'image.php');
+				
+				$import = true;
+				$file = $value;
+				
+				// Verify file exists
+				if(file_exists($file)){
+					// Add photo to database
+					$photo_ext = imageExt($file);
+					$filename = substr(strrchr($file, '/'), 1);
+
+					$query = 'INSERT INTO photos (photo_ext, photo_name, photo_uploaded) VALUES ("' . $photo_ext . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
+					$this->db->exec($query);
+					$photo_id = $this->db->lastInsertId();
+					$photo_ids[] = $photo_id;
+
+					// Copy photo to archive, delete original from shoebox
+					copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
+					unlink($file);
+				}
+			}
+			else{
+				$import = false;
+				$photo_ids[] = $value;
+			}
+		}
+		
+		// Prepare input
+		convertToIntegerArray($photo_ids);
+		
+		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photo_ids);
 		
 		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
 		$query->execute();
@@ -29,6 +63,11 @@ class Photo extends Alkaline{
 		
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
+		}
+		
+		if($import){
+			$this->sizePhoto();
+			$this->exifPhoto();
 		}
 	}
 	
