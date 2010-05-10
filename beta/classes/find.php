@@ -86,6 +86,16 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY PUBLISHED
+	public function published($published=true){
+		if($published == true){
+			$this->sql_conds[] = 'photos.photo_published < NOW()';
+		}
+		if($published == false){
+			$this->sql_conds[] = '(photos.photo_published > NOW() OR photo_published = null)';
+		}
+	}
+	
 	// PAGINATE RESULTS
 	public function page($page, $limit=LIMIT){
 		// Store data to object
