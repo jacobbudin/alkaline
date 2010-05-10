@@ -45,7 +45,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 	</div><br />
 	
-	<p class="center"><input id="add" type="submit" value="Add photos" disabled="disabled" /></p>
+	<p class="center">
+		<input id="photo_ids" type="hidden" value="" />
+		<input id="add" type="submit" value="Add photos" disabled="disabled" />
+	</p>
 	
 </div>
 <?php

@@ -1,5 +1,6 @@
 var photo_files;
 var photo_count;
+var photo_ids;
 var progress;
 var progress_step;
 var task = "add-photos";
@@ -17,6 +18,9 @@ function photoArray(data){
 function appendPhoto(photo){
 	var photo = jQuery.parseJSON(photo);
 	$("#photos").append('<p id="photo-' + photo.id + '"><div class="span-2 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-15 last"><p><strong>Title:</strong><br /><input type="text" name="photo-' + photo.id + '-title" /></p><p><strong>Description:</strong><br /><textarea name="photo-' + photo.id + '-description"></textarea></p><p><strong>Tags:</strong><br /><input type="text" name="photo-' + photo.id + '-tags" /></p></div></p>');
+	photo_ids = $("#photo_ids").attr("value");
+	photo_ids += photo.id + ',';
+	$("#photo_ids").attr("value", photo_ids);
 	$("#photo-" + photo.id).hide(0).slideDown(1000);
 }
 
