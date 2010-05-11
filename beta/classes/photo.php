@@ -108,8 +108,19 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	private function imageExt($photo){
-		$type = exif_imagetype($photo);
+	public function updateFields($array){
+		for($i = 0; $i < $this->photo_count; ++$i){
+			$fields = array();
+			foreach($array as $key => $value){
+				$fields[] = $key . ' = "' . $value . '"';
+			}
+			$sql = implode(', ', $fields);
+			$this->db->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+		}
+	}
+	
+	private function imageExt($file){
+		$type = exif_imagetype($file);
 		switch($type){
 			case 1:
 				return 'gif'; break;

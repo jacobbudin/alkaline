@@ -2,12 +2,28 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
+require_once(PATH . CLASSES . 'photo.php');
 require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
 
 $user->perm(true);
+
+if(!empty($_POST['photo_ids'])){
+	$photo_ids = explode(',', $_POST['photo_ids']);
+	array_pop($photo_ids);
+	$alkaline->convertToIntegerArray($photo_ids);
+	foreach($photo_ids as $photo_id){
+		$photo = new Photo($photo_id);
+		$fields = array('photo_title' => $_POST['photo-' . $photo_id . '-title'],
+			'photo_description' => $_POST['photo-' . $photo_id . '-description']);
+		$photo->updateFields($fields);
+	}
+	$alkaline->addNotification('Your shoebox has been successfully processed.', 'success');
+	header('Location: ' . BASE . ADMIN . 'dashboard/');
+	exit();
+}
 
 $photos = $alkaline->seekPhotos(PATH . SHOEBOX);
 
@@ -37,18 +53,20 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<p><?php echo @$photo_count_read; ?></p>
 	
-	<form id="photos">
+	<form action="" method="post">
+		<div id="photos">
+			
+		</div>
+	
+		<div id="progress" class="span-17 last">
 		
+		</div><br />
+	
+		<p class="center">
+			<input id="photo_ids" type="hidden" name="photo_ids" value="" />
+			<input id="add" type="submit" value="Add photos" disabled="disabled" />
+		</p>
 	</form>
-	
-	<div id="progress" class="span-17 last">
-		
-	</div><br />
-	
-	<p class="center">
-		<input id="photo_ids" type="hidden" value="" />
-		<input id="add" type="submit" value="Add photos" disabled="disabled" />
-	</p>
 	
 </div>
 <?php
