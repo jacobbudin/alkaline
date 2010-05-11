@@ -143,7 +143,7 @@ class Photo extends Alkaline{
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefromjpeg($src);
 					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * $ratio_orig, $width_orig, $height_orig);
+					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
 					imagejpeg($image_p, $dest, $quality);
 				}
 
@@ -168,7 +168,7 @@ class Photo extends Alkaline{
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefrompng($src);
 					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * $ratio_orig, $width_orig, $height_orig);
+					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
 					imagepng($image_p, $dest, $quality);
 				}
 
@@ -193,7 +193,7 @@ class Photo extends Alkaline{
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefromgif($src);
 					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * $ratio_orig, $width_orig, $height_orig);
+					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
 					imagegif($image_p, $dest, $quality);
 				}
 
