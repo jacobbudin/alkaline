@@ -1,6 +1,6 @@
 <?php
 
-class Render extends Alkaline{
+class Canvas extends Alkaline{
 	public $arrays;
 	public $template;
 	public $variables;

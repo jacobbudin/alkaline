@@ -2,12 +2,12 @@
 
 require_once('./config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
+require_once(PATH . CLASSES . 'canvas.php');
 require_once(PATH . CLASSES . 'find.php');
 require_once(PATH . CLASSES . 'photo.php');
 require_once(PATH . CLASSES . 'user.php');
-require_once(PATH . CLASSES . 'render.php');
 
-$header = new Render('header');
+$header = new Canvas('header');
 $header->setVar('TITLE', 'Home Page - Jacob Budin');
 $header->output();
 
@@ -25,7 +25,7 @@ $photos->addImgUrl('square');
 $photos->addImgUrl('medium');
 $photos->addExif();
 
-$index = new Render('index');
+$index = new Canvas('index');
 $index->setVar('PAGE_NEXT', $photo_ids->page_next);
 $index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
 $index->setVar('PAGE_CURRENT', $photo_ids->page);
@@ -33,7 +33,7 @@ $index->setArray('THUMBNAILS', 'PHOTO', $photos->photos);
 $index->setArray('PHOTOS', 'PHOTO', $photos->photos);
 $index->output();
 
-$footer = new Render('footer');
+$footer = new Canvas('footer');
 $footer->output();
 
 ?>
