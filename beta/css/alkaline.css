@@ -57,19 +57,20 @@ a.button_red:hover, a.button_red:active {
 	background-position: top center;
 	min-height: 125px;
 }
-
+#photos { position: relative; }
 #photos input { width: 98%; }
 #photos textarea { width: 98%; height: 100px; }
-#photos .admin_thumb { border: 1px solid #eee; padding: 9px; margin: 0; }
+#photos .admin_thumb { border: 1px solid #eee; padding: 9px; margin: 0 11px 0 0; }
 #photos .selected { background-color: #eee; }
 #photos .blurb {
-	position: relative;
-	z-index: 10;
+	position: absolute;
+	top: 0;
+	left: 0;
 	background-image: url(/images/pointer.png);
 	background-position: -965px 0;
 	background-repeat: repeat-x;
 	height: 100px;
-	width: 300px;
+	width: 670px;
 	background-color: #ddd;
 	margin: 0;
 	display: none;

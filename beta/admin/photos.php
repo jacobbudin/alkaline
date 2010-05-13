@@ -45,9 +45,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div id="photos" class="span-17 last">
 		<?php
 		for($i = 0; $i < $photos->photo_count; ++$i){
-			echo '<div class="span-2"><a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
+			echo '<a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
 			echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"></div>';
-			echo '</div>' . "\n\n";
+			echo "\n\n";
 		}
 		?>
 	</div>
