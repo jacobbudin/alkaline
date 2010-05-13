@@ -61,6 +61,19 @@ a.button_red:hover, a.button_red:active {
 #photos input { width: 98%; }
 #photos textarea { width: 98%; height: 100px; }
 #photos .admin_thumb { border: 1px solid #eee; padding: 9px; margin: 0; }
+#photos .selected { background-color: #eee; }
+#photos .blurb {
+	position: relative;
+	z-index: 10;
+	background-image: url(/images/pointer.png);
+	background-position: -965px 0;
+	background-repeat: repeat-x;
+	height: 100px;
+	width: 300px;
+	background-color: #ddd;
+	margin: 0;
+	display: none;
+}
 
 #footer {
 	margin-top: 2em;
