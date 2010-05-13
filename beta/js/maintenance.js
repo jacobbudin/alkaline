@@ -25,7 +25,7 @@ function updateProgress(){
 
 $(document).ready(function(){
 	$("#progress").hide(0);
-	$("a.task").click(function(event){
+	$("a.task").click(function(){
 		task = $(this).attr("id");
 		$("#tasks").slideUp(500);
 		$("#progress").delay(500).slideDown(500);
