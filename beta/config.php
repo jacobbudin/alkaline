@@ -35,6 +35,8 @@ $time_zone = 'America/New_York';
 // Default user ID for shoebox uploads
 $default_user_id = 1;
 
+// Default view type (grid or list)
+$default_view_type = 'grid';
 
 
 // DO NOT MODIFY BELOW THIS LINE
@@ -56,6 +58,7 @@ define('LIMIT', $limit);
 define('THEME', $theme);
 define('TIME_ZONE', $time_zone);
 define('DEFAULT_USER_ID', $default_user_id);
+define('DEFAULT_VIEW_TYPE', $default_view_type);
 
 define('ADMIN', 'admin/');
 define('CLASSES', 'classes/');

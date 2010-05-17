@@ -62,29 +62,19 @@ a.button_red:hover, a.button_red:active {
 	float: right;
 	text-align: right;
 	text-align: right;
-	margin: .5em 0;
+	margin: .25em 0;
 }
 
 #view a {
-	background-color: #ddd;
+	background-color: #fff;
 	padding: 4px 5px;
-	font-weight: bold;
-	text-decoration: none;
-	text-transform: uppercase;
-	color: #aaa;
-	margin-left: 10px;
+	color: #999;
 	-moz-border-radius-topleft: 3px; -webkit-border-top-left-radius: 3px; -moz-border-radius-topright: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-bottom-right-radius: 3px;
 }
 
-#view a.selected {
-	color: #555;
-}
-
-#view a img {
-	position: relative;
-	top: 1px;
-	margin-right: 2px;
-}
+#view a:hover, #view a:active, #view a.selected { background-color: #ddd; color: #666; }
+#view a:hover, #view a:active { color: #333; }
+#view a img { position: relative; top: 1px; }
 
 #photos { position: relative; }
 #photos input { width: 98%; }

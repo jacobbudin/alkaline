@@ -30,10 +30,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
 	
-	<div id="view">
-		<a href="" class="selected"><img src="<?php echo BASE . IMAGES; ?>icons/grid.png" alt="" /> Grid view</a> <a href=""><img src="<?php echo BASE . IMAGES; ?>icons/list.png" alt="" /> List view</a>
-	</div>
-	
 	<h2>Photos</h2>
 	
 	<?php $alkaline->viewNotification(); ?>
@@ -44,6 +40,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<input type="text" name="find_text" style="width: 50%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" /><br />
 		<a href="" style="line-height: 2.5em;">Advanced search</a>
 	</form><br />
+	
+	<div id="view">
+		<a href="#" class="<?php if($user->view_type == 'grid'){ echo 'selected'; } ?>" id="grid"><img src="<?php echo BASE . IMAGES; ?>icons/grid.png" alt="" title="Grid view" /></a> <a href="#" class="<?php if($user->view_type == 'list'){ echo 'selected'; } ?>" id="list"><img src="<?php echo BASE . IMAGES; ?>icons/list.png" alt="" title="List view" /></a>
+	</div>
 	
 	<h3>Library <span class="small quiet">(<?php echo $photo_ids->photo_count_result; ?>)</span></h3>
 	
