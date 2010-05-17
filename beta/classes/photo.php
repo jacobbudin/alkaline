@@ -17,8 +17,6 @@ class Photo extends Alkaline{
 		
 		foreach($photos as $key => $value){
 			if(preg_match('/^\//', $value)){
-				require_once(PATH . FUNCTIONS . 'image.php');
-				
 				$import = true;
 				$file = $value;
 				
@@ -79,8 +77,6 @@ class Photo extends Alkaline{
 	
 	// Generate photo thumbnails based on sizes in database
 	public function sizePhoto(){
-		require_once(PATH . FUNCTIONS . 'image.php');
-		
 		// Look up sizes in database
 		$query = $this->db->prepare('SELECT * FROM sizes');
 		$query->execute();
