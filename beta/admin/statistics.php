@@ -22,13 +22,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<?php $alkaline->viewNotification(); ?>
 	
-	<h4>Today</h4>
+	<h3>Weekly</h3>
 	
-	<h4>This Week</h4>
+	<h3>Quarterly</h3>
 	
-	<h4>This Month</h4>
-	
-	<h4>This Year</h4>
+	<h3>Historical</h3>
 	
 </div>
 
