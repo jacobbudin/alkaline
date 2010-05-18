@@ -11,6 +11,20 @@ $user = new User;
 
 $user->perm(true);
 
+if(!empty($_POST['photo_ids'])){
+	$photo_ids = explode(',', $_POST['photo_ids']);
+	$alkaline->convertToIntegerArray($photo_ids);
+	foreach($photo_ids as $photo_id){
+		$photo = new Photo($photo_id);
+		$fields = array('photo_title' => $_POST['photo-' . $photo_id . '-title'],
+			'photo_description' => $_POST['photo-' . $photo_id . '-description']);
+		$photo->updateFields($fields);
+	}
+	$alkaline->addNotification('Your changes have been successfully saved.', 'success');
+	header('Location: ' . BASE . ADMIN . 'photos/');
+	exit();
+}
+
 $photo_ids = new Find();
 $photo_ids->page(1,100);
 $photo_ids->exec();
@@ -50,14 +64,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div id="photos" class="span-17 last">
 		<?php
 		switch($user->view_type){
-			case 'grid': 
+			case 'grid':
 				for($i = 0; $i < $photos->photo_count; ++$i){
 					echo '<a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
-					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"><p class="wide-form"><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" value="' . $photos->photos[$i]['photo_title'] . '" /></p><p class="wide-form"><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description">' . $photos->photos[$i]['photo_description'] . '</textarea></p><p class="wide-form"><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p><p class="center"><input id="photo_ids" type="hidden" name="photo_ids" value="' . $photos->photos[$i]['photo_id'] . '" /><input id="save" type="submit" value="Save changes" /></p></div>';
+					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"><form action="" method="post"><p class="wide-form"><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" value="' . $photos->photos[$i]['photo_title'] . '" /></p><p class="wide-form"><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description">' . $photos->photos[$i]['photo_description'] . '</textarea></p><p class="wide-form"><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p><p class="center"><input id="photo_ids" type="hidden" name="photo_ids" value="' . $photos->photos[$i]['photo_id'] . '" /><input id="save" type="submit" value="Save changes" /></p></form></div>';
 					echo "\n\n";
 				}
 				break;
-			case 'list': 
+			case 'list':
+				?>
+				<form action="" method="post">
+				<?php
 				for($i = 0; $i < $photos->photo_count; ++$i){
 					echo '<p id="photo-' . $photos->photos[$i]['photo_id'] . '"><div class="span-3 center"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" value="' . $photos->photos[$i]['photo_title'] . '" /></p><p><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description">' . $photos->photos[$i]['photo_description'] . '</textarea></p><p><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p></div></p>';
 					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"></div>';
@@ -65,9 +82,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				}
 				?>
 				<p class="center">
-					<input id="photo_ids" type="hidden" name="photo_ids" value="" />
+					<input id="photo_ids" type="hidden" name="photo_ids" value="<?php echo implode(',', $photos->photo_ids); ?>" />
 					<input id="save" type="submit" value="Save changes" />
 				</p>
+				</form>
 				<?php
 				break;
 		}
