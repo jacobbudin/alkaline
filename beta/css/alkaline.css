@@ -77,7 +77,7 @@ a.button_red:hover, a.button_red:active {
 #view a img { position: relative; top: 1px; }
 
 #photos { position: relative; }
-#photos input { width: 98%; }
+#photos .span-14 input, #photos p.wide-form input { width: 98%; }
 #photos textarea { width: 98%; height: 100px; }
 #photos .admin_thumb { border: none; padding: 2px; margin: 0px; }
 #photos .selected { background-color: #eee; }
@@ -86,10 +86,10 @@ a.button_red:hover, a.button_red:active {
 	top: 0;
 	left: 0;
 	background-image: url(/images/pointer.png);
-	background-position: -965px 0;
+	background-position: -960px 0;
 	background-repeat: repeat-x;
-	height: 100px;
-	width: 670px;
+	width: 630px;
+	padding: 30px 20px 0 20px;
 	background-color: #ddd;
 	margin: 0;
 	display: none;

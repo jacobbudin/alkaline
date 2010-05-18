@@ -49,14 +49,30 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<div id="photos" class="span-17 last">
 		<?php
-		for($i = 0; $i < $photos->photo_count; ++$i){
-			echo '<a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
-			echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"></div>';
-			echo "\n\n";
+		switch($user->view_type){
+			case 'grid': 
+				for($i = 0; $i < $photos->photo_count; ++$i){
+					echo '<a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
+					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"><p class="wide-form"><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" /></p><p class="wide-form"><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description"></textarea></p><p class="wide-form"><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p><p class="center"><input id="photo_ids" type="hidden" name="photo_ids" value="' . $photos->photos[$i]['photo_id'] . '" /><input id="save" type="submit" value="Save changes" /></p></div>';
+					echo "\n\n";
+				}
+				break;
+			case 'list': 
+				for($i = 0; $i < $photos->photo_count; ++$i){
+					echo '<p id="photo-' . $photos->photos[$i]['photo_id'] . '"><div class="span-3 center"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" /></p><p><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description"></textarea></p><p><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p></div></p>';
+					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"></div>';
+					echo "\n\n";
+				}
+				?>
+				<p class="center">
+					<input id="photo_ids" type="hidden" name="photo_ids" value="" />
+					<input id="save" type="submit" value="Save changes" />
+				</p>
+				<?php
+				break;
 		}
 		?>
 	</div>
-	
 </div>
 
 <?php
