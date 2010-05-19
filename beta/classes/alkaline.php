@@ -68,6 +68,8 @@ class Alkaline{
 				$messages = ltrim($messages);
 				echo $messages . '</p>';
 			}
+			
+			echo '<br />';
 
 			// Dispose of messages
 			unset($_SESSION['notifications']);

@@ -39,4 +39,12 @@ $(document).ready(function(){
 			event.preventDefault();
 		}
 	});
+	save = $(".save").click(function(){
+		$(this).attr("disabled", "disabled");
+		photo_id = $(this).siblings(".photo_ids").val();
+		photo_title = $("#photo-" + photo_id + "-title").val();
+		photo_description = $("#photo-" + photo_id + "-description").val();
+		$.post(BASE + ADMIN + "tasks/save-changes.php", { photo_id: photo_id, photo_title: photo_title, photo_description: photo_description }, function(data){ save.removeAttr("disabled"); photoSelect(0); } );
+		event.preventDefault();
+	});
 });

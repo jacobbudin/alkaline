@@ -66,9 +66,31 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		switch($user->view_type){
 			case 'grid':
 				for($i = 0; $i < $photos->photo_count; ++$i){
-					echo '<a href="#" id="photo-' . $photos->photos[$i]['photo_id'] . '" class="photo"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></a>';
-					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"><form action="" method="post"><p class="wide-form"><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" value="' . $photos->photos[$i]['photo_title'] . '" /></p><p class="wide-form"><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description">' . $photos->photos[$i]['photo_description'] . '</textarea></p><p class="wide-form"><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p><p class="center"><input id="photo_ids" type="hidden" name="photo_ids" value="' . $photos->photos[$i]['photo_id'] . '" /><input id="save" type="submit" value="Save changes" /></p></form></div>';
-					echo "\n\n";
+					?>
+						<a href="#" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="photo">
+							<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
+						</a>
+						<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-blurb" class="blurb">
+							<div class="wide">
+								<p>
+									<strong>Title:</strong><br />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
+								</p>
+								<p>
+									<strong>Description:</strong><br />
+									<textarea id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-description"><?php echo $photos->photos[$i]['photo_description']; ?></textarea>
+								</p>
+								<p>
+									<strong>Tags:</strong><br />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								</p>
+							</div>
+							<p class="center">
+								<input class="photo_ids" type="hidden" value="<?php echo $photos->photos[$i]['photo_id']; ?>" />
+								<input class="save" type="submit" value="Save changes" />
+							</p>
+						</div>
+					<?php
 				}
 				break;
 			case 'list':
@@ -76,13 +98,32 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<form action="" method="post">
 				<?php
 				for($i = 0; $i < $photos->photo_count; ++$i){
-					echo '<p id="photo-' . $photos->photos[$i]['photo_id'] . '"><div class="span-3 center"><img src="' . $photos->photos[$i]['photo_src_square'] . '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p><strong>Title:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-title" value="' . $photos->photos[$i]['photo_title'] . '" /></p><p><strong>Description:</strong><br /><textarea name="photo-' . $photos->photos[$i]['photo_id'] . '-description">' . $photos->photos[$i]['photo_description'] . '</textarea></p><p><strong>Tags:</strong><br /><input type="text" name="photo-' . $photos->photos[$i]['photo_id'] . '-tags" /></p></div></p>';
-					echo '<div id="photo-' . $photos->photos[$i]['photo_id'] . '-blurb" class="blurb"></div>';
-					echo "\n\n";
+					?>
+						<p id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>">
+							<div class="span-3 center">
+								<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
+							</div>
+							<div class="span-14 last wide">
+								<p>
+									<strong>Title:</strong><br />
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
+								</p>
+								<p>
+									<strong>Description:</strong><br />
+									<textarea name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-description"><?php echo $photos->photos[$i]['photo_description']; ?></textarea>
+								</p>
+								<p>
+									<strong>Tags:</strong><br />
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								</p>
+							</div>
+						</p>
+						<hr />
+					<?php
 				}
 				?>
 				<p class="center">
-					<input id="photo_ids" type="hidden" name="photo_ids" value="<?php echo implode(',', $photos->photo_ids); ?>" />
+					<input type="hidden" name="photo_ids" value="<?php echo implode(',', $photos->photo_ids); ?>" />
 					<input id="save" type="submit" value="Save changes" />
 				</p>
 				</form>
