@@ -25,7 +25,7 @@ function photoSelect(photo){
 }
 
 function scroll(){	
-	$(document).scrollTop(position_top+400);
+	$(document).scrollTop(position_top+600);
 }
 
 $(document).ready(function(){
@@ -33,18 +33,31 @@ $(document).ready(function(){
 		photoSelect($(this));
 		event.preventDefault();
 	});
+	
 	$(document).keydown(function(event){
 		if(event.keyCode == '27'){
 			photoSelect(0);
 			event.preventDefault();
 		}
 	});
-	save = $(".save").click(function(){
+	
+	var save = $(".save").click(function(){
 		$(this).attr("disabled", "disabled");
 		photo_id = $(this).siblings(".photo_ids").val();
 		photo_title = $("#photo-" + photo_id + "-title").val();
 		photo_description = $("#photo-" + photo_id + "-description").val();
-		$.post(BASE + ADMIN + "tasks/save-changes.php", { photo_id: photo_id, photo_title: photo_title, photo_description: photo_description }, function(data){ save.removeAttr("disabled"); photoSelect(0); } );
+		$.post(BASE + ADMIN + "tasks/save-changes.php", { photo_id: photo_id, photo_title: photo_title, photo_description: photo_description }, function(){ save.removeAttr("disabled"); photoSelect(0); } );
+		event.preventDefault();
+	});
+	
+	$("a.delete").click(function(){
+		if(window.confirm('Are you sure you want to delete this photo? This action cannot be undone.')){
+			var photo = $(this).closest('div.id');
+			var photo_id = $(this).closest('div.id').attr('id');
+			photo_id = /[0-9]+/.exec(photo_id);
+			photo_id = photo_id[0];
+			$.post(BASE + ADMIN + "tasks/delete-photo.php", { photo_id: photo_id }, function(){ photo.slideUp(); } );
+		}
 		event.preventDefault();
 	});
 });

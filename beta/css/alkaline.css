@@ -15,11 +15,20 @@ p { margin-bottom: 1em; }
 
 form table { padding: .7em 0; }
 
-.center { text-align: center; }
-.wide input { width: 98%; }
+div.id { display: inline; }
 
-.input { text-align: right; vertical-align: top; width: 0; padding-top: 2px; }
-.description { width: 100%; }
+p.clear { clear: both; }
+p.center { clear: both; text-align: center; }
+
+p.title input { width: 99%; font-size: 1.2em; border-top: 0; border-left: 0; border-right: 0; padding-left: 0; background-color: transparent; }
+p.description textarea { width: 100%; font-size: .9em; padding: .5em .3em; }
+p.tags input { width: 95%; font-size: .9em; }
+p.geo, p.publish { float: left; width: 20em; margin-right: 1em;}
+p.geo input, p.publish input { width: 88%; font-size: .9em; }
+p.delete { float: right; position: relative; top: 5px; right: 2px; }
+
+td.input { text-align: right; vertical-align: top; width: 0; padding-top: 2px; }
+td.description { width: 100%; }
 
 .block {
 	margin-bottom: 2em;
@@ -99,7 +108,9 @@ a.button_red:hover, a.button_red:active {
 	margin-top: 2em;
 	color: #999;
 	font-size: .9em;
-	text-align: right;
 }
 
-#footer a { color: #999; text-decoration: none; }
+#footer a { color: #999; }
+
+#footer_l { float: left; }
+#footer_r { float: right; padding-top: .5em; }

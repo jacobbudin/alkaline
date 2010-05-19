@@ -1,6 +1,8 @@
 <?php
 
 class Alkaline{
+	public $build = '1';
+	public $version = 'Alpha (May 19)';
 	public $js;
 	protected $db;
 	protected $notifications;
@@ -38,7 +40,7 @@ class Alkaline{
 	
 	public function dejectJS(){
 		foreach($this->js as $js){
-			echo '<script src="' . BASE . JS . $js . '.js" type="text/javascript"></script>';
+			echo '<script src="' . BASE . JS . $js . '.js?3" type="text/javascript"></script>';
 		}
 	}
 	

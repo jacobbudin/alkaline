@@ -60,9 +60,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 		<div id="progress" class="span-17 last">
 		
-		</div><br />
+		</div>
 	
 		<p class="center">
+			<br />
 			<input id="photo_ids" type="hidden" name="photo_ids" value="" />
 			<input id="add" type="submit" value="Add photos" />
 		</p>

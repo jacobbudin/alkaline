@@ -17,7 +17,7 @@ function photoArray(data){
 
 function appendPhoto(photo){
 	var photo = jQuery.parseJSON(photo);
-	$("#photos").append('<p id="photo-' + photo.id + '"><div class="span-3 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p><strong>Title:</strong><br /><input type="text" name="photo-' + photo.id + '-title" /></p><p><strong>Description:</strong><br /><textarea name="photo-' + photo.id + '-description"></textarea></p><p><strong>Tags:</strong><br /><input type="text" name="photo-' + photo.id + '-tags" /></p></div></p>');
+	$("#photos").append('<div id="photo-' + photo.id + '" class="id"><hr /><div class="span-3 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p class="title"><input type="text" name="photo-' + photo.id + '-title" /></p><p class="description"><textarea name="photo-' + photo.id + '-description"></textarea></p><p class="tags"><img src="' + BASE + IMAGES + 'icons/tag.png" alt="" title="Tags" /><input type="text" id="photo-' + photo.id + '-tags" /></p><p class="publish"><img src="' + BASE + IMAGES + 'icons/publish.png" alt="" title="Publish date" /><input type="text" id="photo-' + photo.id + '-tags" /></p><p class="geo"><img src="' + BASE + IMAGES + 'icons/geo.png" alt="" title="Geolocation" /><input type="text" id="photo-' + photo.id + '-publish" /></p><p class="delete"><a href="#" class="delete"><img src="' + BASE + IMAGES + 'icons/delete.png" alt="" title="Delete photo" /></a></p></div></div>');
 	photo_ids = $("#photo_ids").val();
 	photo_ids += photo.id + ',';
 	$("#photo_ids").attr("value", photo_ids);
@@ -32,19 +32,28 @@ function updateProgress(){
 		$("#progress").slideUp(1000);
 		$("#add").delay(1000).removeAttr("disabled");
 	}
-	else{
-		$("#photos").append('<hr />');
-	}
 }
 
+$("#add").attr("disabled", "disabled");
+$("#progress").progressbar({ value: 0 });
+
+$.ajax({
+	url: BASE + ADMIN + "tasks/" + task + ".php",
+	cache: false,
+	error: function(data){ alert(data); },
+	dataType: "json",
+	success: function(data){ photoArray(data); }
+});
+
 $(document).ready(function(){
-	$("#add").attr("disabled", "disabled");
-	$("#progress").progressbar({ value: 0 });
-	$.ajax({
-		url: BASE + ADMIN + "tasks/" + task + ".php",
-		cache: false,
-		error: function(data){ alert(data); },
-		dataType: "json",
-		success: function(data){ photoArray(data); }
+	$("a.delete").click(function(){
+		if(window.confirm('Are you sure you want to delete this photo? This action cannot be undone.')){
+			var photo = $(this).closest('div.id');
+			var photo_id = $(this).closest('div.id').attr('id');
+			photo_id = /[0-9]+/.exec(photo_id);
+			photo_id = photo_id[0];
+			$.post(BASE + ADMIN + "tasks/delete-photo.php", { photo_id: photo_id }, function(){ photo.slideUp(); } );
+		}
+		event.preventDefault();
 	});
 });

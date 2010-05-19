@@ -67,28 +67,39 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			case 'grid':
 				for($i = 0; $i < $photos->photo_count; ++$i){
 					?>
-						<a href="#" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="photo">
-							<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
-						</a>
-						<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-blurb" class="blurb">
-							<div class="wide">
-								<p>
-									<strong>Title:</strong><br />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
+						<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="id">
+							<a href="#" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="photo">
+								<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
+							</a>
+							<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-blurb" class="blurb">
+								<p class="title">
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
 								</p>
-								<p>
-									<strong>Description:</strong><br />
-									<textarea id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-description"><?php echo $photos->photos[$i]['photo_description']; ?></textarea>
+								<p class="description">
+									<textarea name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-description"><?php echo $photos->photos[$i]['photo_description']; ?></textarea>
 								</p>
-								<p>
-									<strong>Tags:</strong><br />
+								<p class="tags">
+									<img src="<?php echo BASE . IMAGES; ?>icons/tag.png" alt="" title="Tags" />
 									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
 								</p>
+								<p class="publish">
+									<img src="<?php echo BASE . IMAGES; ?>icons/publish.png" alt="" title="Publish date" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								</p>
+								<p class="geo">
+									<img src="<?php echo BASE . IMAGES; ?>icons/geo.png" alt="" title="Geolocation" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-publish" />
+								</p>
+								<p class="delete">
+									<a href="#" class="delete">
+										<img src="<?php echo BASE . IMAGES; ?>icons/delete.png" alt="" title="Delete photo" />
+									</a>
+								</p>
+								<p class="center">
+									<input class="photo_ids" type="hidden" value="<?php echo $photos->photos[$i]['photo_id']; ?>" />
+									<input class="save" type="submit" value="Save changes" />
+								</p>
 							</div>
-							<p class="center">
-								<input class="photo_ids" type="hidden" value="<?php echo $photos->photos[$i]['photo_id']; ?>" />
-								<input class="save" type="submit" value="Save changes" />
-							</p>
 						</div>
 					<?php
 				}
@@ -99,30 +110,42 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				for($i = 0; $i < $photos->photo_count; ++$i){
 					?>
-						<p id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>">
+						<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="id">
+							<hr />
 							<div class="span-3 center">
 								<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
 							</div>
-							<div class="span-14 last wide">
-								<p>
-									<strong>Title:</strong><br />
+							<div class="span-14 last">
+								<p class="title">
 									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
 								</p>
-								<p>
-									<strong>Description:</strong><br />
+								<p class="description">
 									<textarea name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-description"><?php echo $photos->photos[$i]['photo_description']; ?></textarea>
 								</p>
-								<p>
-									<strong>Tags:</strong><br />
-									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								<p class="tags">
+									<img src="<?php echo BASE . IMAGES; ?>icons/tag.png" alt="" title="Tags" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								</p>
+								<p class="publish">
+									<img src="<?php echo BASE . IMAGES; ?>icons/publish.png" alt="" title="Publish date" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+								</p>
+								<p class="geo">
+									<img src="<?php echo BASE . IMAGES; ?>icons/geo.png" alt="" title="Geolocation" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-publish" />
+								</p>
+								<p class="delete">
+									<a href="#" class="delete">
+										<img src="<?php echo BASE . IMAGES; ?>icons/delete.png" alt="" title="Delete photo" />
+									</a>
 								</p>
 							</div>
-						</p>
-						<hr />
+						</div>
 					<?php
 				}
 				?>
 				<p class="center">
+					<br />
 					<input type="hidden" name="photo_ids" value="<?php echo implode(',', $photos->photo_ids); ?>" />
 					<input id="save" type="submit" value="Save changes" />
 				</p>

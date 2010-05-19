@@ -61,7 +61,7 @@ class Photo extends Alkaline{
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
 		}
 		
-		if($import){
+		if(@$import){
 			$this->sizePhoto();
 			$this->exifPhoto();
 		}
@@ -301,6 +301,16 @@ class Photo extends Alkaline{
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_views']++;
 			$this->db->exec('UPDATE photos SET photo_views = ' . $this->photos[$i]['photo_views'] . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+		}
+	}
+	
+	// Delete photos
+	public function delete(){
+		$this->deSizePhoto();
+		for($i = 0; $i < $this->photo_count; ++$i){
+			@$this->db->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->db->exec('DELETE FROM exif WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->db->exec('DELETE FROM links WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
 	
