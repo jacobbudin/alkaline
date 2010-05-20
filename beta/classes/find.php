@@ -88,11 +88,12 @@ class Find extends Alkaline{
 	
 	// FIND BY PUBLISHED
 	public function published($published=true){
+		$now = date('Y-m-d H:i:s');
 		if($published == true){
-			$this->sql_conds[] = 'photos.photo_published < NOW()';
+			$this->sql_conds[] = 'photos.photo_published < "' . $now . '"';
 		}
 		if($published == false){
-			$this->sql_conds[] = '(photos.photo_published > NOW() OR photo_published = null)';
+			$this->sql_conds[] = '(photos.photo_published > "' . $now . '" OR photo_published = null)';
 		}
 	}
 	
