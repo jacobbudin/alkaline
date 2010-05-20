@@ -59,6 +59,11 @@ class Photo extends Alkaline{
 		
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
+			if(!empty($this->photos[$i]['photo_published'])){
+				$ampm = array(' am', ' pm');
+				$ampm_correct = array(' a.m.', ' p.m.');
+				$this->photos[$i]['photo_published'] = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, strtotime($this->photos[$i]['photo_published'])));
+			}
 		}
 		
 		if(@$import){
@@ -108,7 +113,23 @@ class Photo extends Alkaline{
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$fields = array();
 			foreach($array as $key => $value){
-				$fields[] = $key . ' = "' . $value . '"';
+				if($key == 'photo_published'){
+					if(empty($value)){
+						$fields[] = $key . ' = NULL';
+					}
+					elseif(strtolower($value) == 'now'){
+						$value = date('Y-m-d H:i:s');
+						$fields[] = $key . ' = "' . $value . '"';
+					}
+					else{
+						$value = str_ireplace(' at ', ', ', $value);
+						$value = date('Y-m-d H:i:s', strtotime($value));
+						$fields[] = $key . ' = "' . $value . '"';
+					}
+				}
+				else{
+					$fields[] = $key . ' = "' . $value . '"';
+				}
 			}
 			$sql = implode(', ', $fields);
 			$this->db->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');

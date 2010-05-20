@@ -17,7 +17,9 @@ if(!empty($_POST['photo_ids'])){
 	foreach($photo_ids as $photo_id){
 		$photo = new Photo($photo_id);
 		$fields = array('photo_title' => $_POST['photo-' . $photo_id . '-title'],
-			'photo_description' => $_POST['photo-' . $photo_id . '-description']);
+			'photo_description' => $_POST['photo-' . $photo_id . '-description'],
+			'photo_published' => $_POST['photo-' . $photo_id . '-published'],
+			'photo_geo' => $_POST['photo-' . $photo_id . '-geo']);
 		$photo->updateFields($fields);
 	}
 	$alkaline->addNotification('Your changes have been successfully saved.', 'success');
@@ -87,11 +89,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								</p>
 								<p class="publish">
 									<img src="<?php echo BASE . IMAGES; ?>icons/publish.png" alt="" title="Publish date" />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-published" value="<?php echo $photos->photos[$i]['photo_published']; ?>" />
 								</p>
 								<p class="geo">
 									<img src="<?php echo BASE . IMAGES; ?>icons/geo.png" alt="" title="Geolocation" />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-publish" />
+									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-geo" value="<?php echo $photos->photos[$i]['photo_geo']; ?>" />
 								</p>
 								<p class="delete">
 									<a href="#" class="delete">
@@ -128,15 +130,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								</p>
 								<p class="tags">
 									<img src="<?php echo BASE . IMAGES; ?>icons/tag.png" alt="" title="Tags" />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
 								</p>
 								<p class="publish">
 									<img src="<?php echo BASE . IMAGES; ?>icons/publish.png" alt="" title="Publish date" />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-tags" />
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-published" value="<?php echo $photos->photos[$i]['photo_published']; ?>" />
 								</p>
 								<p class="geo">
 									<img src="<?php echo BASE . IMAGES; ?>icons/geo.png" alt="" title="Geolocation" />
-									<input type="text" id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-publish" />
+									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-geo" value="<?php echo $photos->photos[$i]['photo_geo']; ?>" />
 								</p>
 								<p class="delete">
 									<a href="#" class="delete">
