@@ -40,7 +40,7 @@ class Alkaline{
 	
 	public function dejectJS(){
 		foreach($this->js as $js){
-			echo '<script src="' . BASE . JS . $js . '.js?3" type="text/javascript"></script>';
+			echo '<script src="' . BASE . JS . $js . '.js?6" type="text/javascript"></script>';
 		}
 	}
 	

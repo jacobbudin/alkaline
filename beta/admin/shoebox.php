@@ -51,7 +51,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<?php $alkaline->viewNotification(); ?>
 	
-	<p><?php echo @$photo_count_read; ?></p>
+	<p><?php echo @$photo_count_read; ?></p><br />
+	
+	<h3>Imported <span class="small quiet">(<span id="count"><?php echo $photo_count; ?></span>)</span></h3>
 	
 	<form action="" method="post">
 		<div id="photos">

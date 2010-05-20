@@ -1,3 +1,5 @@
+var count;
+var photo;
 var photo_id;
 
 function photoSelect(photo){
@@ -28,7 +30,16 @@ function scroll(){
 	$(document).scrollTop(position_top+600);
 }
 
+function checkCount(){
+	if(count == 0){
+		$('#save').attr('disabled', 'disabled');
+	}
+}
+
 $(document).ready(function(){
+	count = $('#count').text();
+	checkCount();
+	
 	$("a.photo").click(function(){
 		photoSelect($(this));
 		event.preventDefault();
@@ -52,11 +63,14 @@ $(document).ready(function(){
 	
 	$("a.delete").click(function(){
 		if(window.confirm('Are you sure you want to delete this photo? This action cannot be undone.')){
-			var photo = $(this).closest('div.id');
-			var photo_id = $(this).closest('div.id').attr('id');
+			photo_id = $(this).closest('div.id').attr('id');
 			photo_id = /[0-9]+/.exec(photo_id);
 			photo_id = photo_id[0];
-			$.post(BASE + ADMIN + "tasks/delete-photo.php", { photo_id: photo_id }, function(){ photo.slideUp(); } );
+			$.post(BASE + ADMIN + "tasks/delete-photo.php", { photo_id: photo_id }, function(){
+				$('#photo-' + photo_id + '.id').hide();
+				$('#count').text(--count);
+				checkCount();
+			} );
 		}
 		event.preventDefault();
 	});

@@ -59,12 +59,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<a href="#" class="<?php if($user->view_type == 'grid'){ echo 'selected'; } ?>" id="grid"><img src="<?php echo BASE . IMAGES; ?>icons/grid.png" alt="" title="Grid view" /></a> <a href="#" class="<?php if($user->view_type == 'list'){ echo 'selected'; } ?>" id="list"><img src="<?php echo BASE . IMAGES; ?>icons/list.png" alt="" title="List view" /></a>
 	</div>
 	
-	<h3>Library <span class="small quiet">(<?php echo $photo_ids->photo_count_result; ?>)</span></h3>
+	<h3>Library <span class="small quiet">(<span id="count"><?php echo $photo_ids->photo_count_result; ?></span>)</span></h3>
 	
 	<div id="photos" class="span-17 last">
 		<?php
 		switch($user->view_type){
 			case 'grid':
+				?>
+				<hr />
+				<?php
 				for($i = 0; $i < $photos->photo_count; ++$i){
 					?>
 						<div id="photo-<?php echo $photos->photos[$i]['photo_id']; ?>" class="id">
@@ -116,6 +119,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" class="admin_thumb" />
 							</div>
 							<div class="span-14 last">
+								
 								<p class="title">
 									<input type="text" name="photo-<?php echo $photos->photos[$i]['photo_id']; ?>-title" value="<?php echo $photos->photos[$i]['photo_title']; ?>" />
 								</p>
