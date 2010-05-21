@@ -17,8 +17,11 @@ form table { padding: .7em 0; }
 
 div.id { display: inline; }
 
-p.clear { clear: both; }
-p.center { clear: both; text-align: center; }
+.clear { clear: both; }
+.center { clear: both; text-align: center; }
+
+td.radio { vertical-align: top; text-align: right; }
+td.actions { vertical-align: top; text-align: center; }
 
 p.title input { width: 99%; font-size: 1.2em; border-top: 0; border-left: 0; border-right: 0; padding-left: 0; background-color: transparent; }
 p.description textarea { width: 100%; font-size: .9em; padding: .5em .3em; }

@@ -49,7 +49,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<img src="/images/icons/rights.png" alt="" />
 		</div>
 		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>photos/">Rights</a></h3>
+			<h3><a href="<?php echo BASE . ADMIN ?>rights/">Rights</a></h3>
 			<p class="quiet">Assign rights to your photos for sale or print.</p>
 		</div>
 
