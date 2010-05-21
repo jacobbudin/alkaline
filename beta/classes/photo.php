@@ -46,7 +46,7 @@ class Photo extends Alkaline{
 		
 		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photo_ids);
 		
-		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
+		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ' ORDER BY photos.photo_published DESC;');
 		$query->execute();
 		$this->photos = $query->fetchAll();
 		
