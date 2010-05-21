@@ -10,8 +10,10 @@ class Find extends Alkaline{
 	public $page_next;
 	public $page_previous;
 	protected $sql;
-	private $sql_conds;
+	protected $sql_conds;
 	protected $sql_limit;
+	protected $sql_sort;
+	protected $sql_order_by;
 	protected $sql_where;
 	
 	public function __construct(){
@@ -22,6 +24,8 @@ class Find extends Alkaline{
 		$this->sql = 'SELECT photo_id FROM photos';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
+		$this->sql_sort = array();
+		$this->sql_order_by = '';
 		$this->sql_where = '';
 	}
 	
@@ -114,11 +118,18 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	public function sort($column, $sort='ASC'){
+		$this->sql_sort[] = $column . ' ' . $sort;
+	}
+	
 	// EXECUTE QUERY
 	public function exec(){
 		// Prepare SQL conditions
 		if(count($this->sql_conds) > 0){
 			$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
+		}
+		if(count($this->sql_sort) > 0){
+			$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sort);
 		}
 		
 		// Prepare query without limit
@@ -132,10 +143,10 @@ class Find extends Alkaline{
 		// Determine number of photos
 		$this->photo_count = count($photos);
 		
-		// Add limit
-		$this->sql .= ' ORDER BY photos.photo_published DESC' . $this->sql_limit;
+		// Add order, limit
+		$this->sql .= $this->sql_order_by . $this->sql_limit;
 		
-		// Execute query with limit
+		// Execute query with order, limit
 		$query = $this->db->prepare($this->sql);
 		$query->execute();
 		$photos = $query->fetchAll();
