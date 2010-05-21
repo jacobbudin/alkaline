@@ -6,7 +6,6 @@ class Alkaline{
 	public $js;
 	protected $db;
 	protected $notifications;
-	protected $photos_cols;
 	
 	public function __construct(){
 		header('Cache-Control: no-cache, must-revalidate');
@@ -34,10 +33,12 @@ class Alkaline{
 		$this->db = null;
 	}
 	
+	// TEMPORARY
 	public function injectJS($name){
 		$this->js[] = $name;
 	}
 	
+	// TEMPORARY
 	public function dejectJS(){
 		foreach($this->js as $js){
 			echo '<script src="' . BASE . JS . $js . '.js?6" type="text/javascript"></script>';
@@ -100,21 +101,7 @@ class Alkaline{
 		else{ return false; }
 	}
 	
-	// Find and store column fields into variables
-	private function seekCols(){
-		$query = $this->db->prepare('SELECT * FROM photos LIMIT 0,1;');
-		$query->execute();
-		$this->photos = $query->fetchAll();
-		
-		$this->photos_cols = array();
-		foreach($this->photos as $photo){
-			foreach($photo as $key => $value){
-				$this->photos_cols[] = $key;
-			}
-		}
-	}
-	
-	// Trim (that is, remove whitespace) from values of an array
+	// Trim (remove whitespace) from values of an array
 	function trimValue(&$value){
 		$value = trim($value);
 	}
@@ -147,6 +134,15 @@ class Alkaline{
 				$input = explode(',', $input);
 				array_walk($input, 'trimValue');
 			}
+		}
+	}
+	
+	// Make time more human-readable
+	function cleanTime(&$time){
+		if(!empty($time)){
+			$ampm = array(' am', ' pm');
+			$ampm_correct = array(' a.m.', ' p.m.');
+			$time = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, @strtotime($time)));
 		}
 	}
 }

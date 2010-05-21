@@ -2,8 +2,9 @@
 
 class Photo extends Alkaline{
 	public $photos;
-	public $photo_ids;
+	public $photo_columns;
 	public $photo_count;
+	public $photo_ids;
 	public $user;
 	protected $sql;
 	
@@ -44,26 +45,34 @@ class Photo extends Alkaline{
 		
 		parent::convertToIntegerArray($photo_ids);
 		
+		$this->photo_ids = $photo_ids;
+		
 		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photo_ids);
 		
-		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ' ORDER BY photos.photo_published DESC;');
+		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
 		$query->execute();
-		$this->photos = $query->fetchAll();
+		$photos = $query->fetchAll();
 		
-		$this->photo_ids = array();
-		foreach($this->photos as $photo){
-			$this->photo_ids[] = $photo['photo_id'];
+		$this->photos = array();
+		
+		
+		foreach($photo_ids as $photo_id){
+			foreach($photos as $photo){
+				if($photo_id == $photo['photo_id']){
+					$this->photos[] = $photo;
+				}
+			}
 		}
 		
+		
+		// Store photo count as integer
 		$this->photo_count = count($this->photos);
 		
+		// Store photo_file, clean times
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
-			if(!empty($this->photos[$i]['photo_published'])){
-				$ampm = array(' am', ' pm');
-				$ampm_correct = array(' a.m.', ' p.m.');
-				$this->photos[$i]['photo_published'] = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, strtotime($this->photos[$i]['photo_published'])));
-			}
+			parent::cleanTime($this->photos[$i]['photo_published']);
+			parent::cleanTime($this->photos[$i]['photo_uploaded']);
 		}
 		
 		if(@$import){

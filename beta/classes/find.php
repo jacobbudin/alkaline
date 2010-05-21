@@ -133,7 +133,7 @@ class Find extends Alkaline{
 		$this->photo_count = count($photos);
 		
 		// Add limit
-		$this->sql .= $this->sql_limit;
+		$this->sql .= ' ORDER BY photos.photo_published DESC' . $this->sql_limit;
 		
 		// Execute query with limit
 		$query = $this->db->prepare($this->sql);
