@@ -2,6 +2,12 @@
 
 // MODIFY THE DEFINITIONS BELOW
 
+// Web site name
+$site = 'Jacob Budin\'s Photos';
+
+// Owner's name
+$owner = 'Jacob Budin';
+
 // Database data source name (DSN)
 $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 
@@ -50,6 +56,8 @@ define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 define('BASE', '/');
 define('DOMAIN', $_SERVER['HTTP_HOST'] . BASE);
 
+define('SITE', $site);
+define('OWNER', $owner);
 define('DB_DSN', $db_dsn);
 define('DB_USER', $db_user);
 define('DB_PASS', $db_pass);

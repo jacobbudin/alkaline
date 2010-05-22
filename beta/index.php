@@ -9,7 +9,7 @@ require_once(PATH . CLASSES . 'user.php');
 
 $header = new Canvas();
 $header->load('header');
-$header->setVar('TITLE', 'Home Page - Jacob Budin');
+$header->setVar('TITLE', 'Home Page - ' . SITE);
 $header->output();
 
 $photo_ids = new Find();
@@ -23,6 +23,7 @@ $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
 // $photos->updateViews();
+$photos->formatTime();
 $photos->addImgUrl('square');
 $photos->addImgUrl('medium');
 $photos->addExif();
