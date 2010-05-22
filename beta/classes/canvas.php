@@ -8,7 +8,7 @@ class Canvas extends Alkaline{
 	public function __construct($template=null){
 		parent::__construct();
 		
-		$this->template = '';
+		$this->template = (empty($template)) ? '' : $template . "\n";
 	}
 	
 	public function __destruct(){
@@ -16,11 +16,11 @@ class Canvas extends Alkaline{
 	}
 	
 	public function append($template){
-		 $this->template .= $template;
+		 $this->template .= $template . "\n";
 	}
 	
 	public function load($file){
-		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT);
+		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT) . "\n";
 	}
 	
 	public function setVar($var, $value){
