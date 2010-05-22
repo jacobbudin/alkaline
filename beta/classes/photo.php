@@ -68,11 +68,9 @@ class Photo extends Alkaline{
 		// Store photo count as integer
 		$this->photo_count = count($this->photos);
 		
-		// Store photo_file, clean times
+		// Store photo_file
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
-			parent::cleanTime($this->photos[$i]['photo_published']);
-			parent::cleanTime($this->photos[$i]['photo_uploaded']);
 		}
 		
 		if(@$import){
@@ -404,6 +402,12 @@ class Photo extends Alkaline{
 		return true;
 	}
 	
+	public function formatTime($format=null){
+		for($i = 0; $i < $this->photo_count; ++$i){
+			parent::formatTime($this->photos[$i]['photo_published'], $format);
+			parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
+		}
+	}
 }
 
 ?>

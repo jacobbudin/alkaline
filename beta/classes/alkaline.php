@@ -138,11 +138,16 @@ class Alkaline{
 	}
 	
 	// Make time more human-readable
-	function cleanTime(&$time){
+	function formatTime(&$time, $format){
 		if(!empty($time)){
-			$ampm = array(' am', ' pm');
-			$ampm_correct = array(' a.m.', ' p.m.');
-			$time = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, @strtotime($time)));
+			if(empty($format)){
+				$ampm = array(' am', ' pm');
+				$ampm_correct = array(' a.m.', ' p.m.');
+				$time = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, @strtotime($time)));
+			}
+			else{
+				$time = date($format, @strtotime($time));
+			}
 		}
 	}
 }
