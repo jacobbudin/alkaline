@@ -5,15 +5,22 @@ class Canvas extends Alkaline{
 	public $template;
 	public $variables;
 	
-	public function __construct($template){
+	public function __construct($template=null){
 		parent::__construct();
 		
-		// Retrieve template
-		$this->template = file_get_contents(PATH . THEMES . THEME . '/' . $template . TEMP_EXT);
+		$this->template = '';
 	}
 	
 	public function __destruct(){
 		parent::__destruct();
+	}
+	
+	public function append($template){
+		 $this->template .= $template;
+	}
+	
+	public function load($file){
+		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT);
 	}
 	
 	public function setVar($var, $value){
@@ -30,7 +37,7 @@ class Canvas extends Alkaline{
 		$this->template = preg_replace('(\<!-- IF\(' . $array . '\) --\>)', '', $this->template);
 		$this->template = preg_replace('(\<!-- ENDIF\(' . $array . '\) --\>)', '', $this->template);
 		preg_match('/\<!-- LOOP\(' . $array . '\) --\>(.*)\<!-- ENDLOOP\(' . $array . '\) --\>/s', $this->template, $matches);
-		$loop_template = $matches[1];
+		@$loop_template = $matches[1];
 		$template = '';
 		foreach($this->arrays->$array as $units){
 			$loop = $loop_template;

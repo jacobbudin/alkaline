@@ -14,16 +14,16 @@ $db_pass = 'm902j2JK91kaO';
 // Image extensions, separate by |
 $img_ext = 'gif|GIF|jpg|JPG|jpeg|JPEG|png|PNG';
 
-// Image resize quality, integer from 1 to 100 (80-95 recommended)
+// Image resize quality, integer from 1 to 100, higher is better (80-95 recommended)
 $img_qual = 85;
 
-// Length, in seconds, to remember a user's previous login
+// Length, an integer in seconds, to remember a user's previous login
 $user_remember = 1209600;
 
 // Template extension
 $temp_ext = '.html';
 
-// Default limit (determines maximum number of photos per page, can be overwritten)
+// Default query limit (can be overwritten)
 $limit = 20;
 
 // Current theme

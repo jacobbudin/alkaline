@@ -7,7 +7,8 @@ require_once(PATH . CLASSES . 'find.php');
 require_once(PATH . CLASSES . 'photo.php');
 require_once(PATH . CLASSES . 'user.php');
 
-$header = new Canvas('header');
+$header = new Canvas();
+$header->load('header');
 $header->setVar('TITLE', 'Home Page - Jacob Budin');
 $header->output();
 
@@ -26,7 +27,8 @@ $photos->addImgUrl('square');
 $photos->addImgUrl('medium');
 $photos->addExif();
 
-$index = new Canvas('index');
+$index = new Canvas();
+$index->load('index');
 $index->setVar('PAGE_NEXT', $photo_ids->page_next);
 $index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
 $index->setVar('PAGE_CURRENT', $photo_ids->page);
@@ -34,7 +36,8 @@ $index->setArray('THUMBNAILS', 'PHOTO', $photos->photos);
 $index->setArray('PHOTOS', 'PHOTO', $photos->photos);
 $index->output();
 
-$footer = new Canvas('footer');
+$footer = new Canvas();
+$footer->load('footer');
 $footer->output();
 
 ?>
