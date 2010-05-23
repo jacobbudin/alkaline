@@ -9,7 +9,7 @@ $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Preferences');
+define('TITLE', 'Alkaline Rights');
 define('COLUMNS', '19');
 define('WIDTH', '750');
 
@@ -18,43 +18,34 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
-	<h2>Rights <span class="small quiet">(<span id="count"><?php echo @$right_count; ?></span>)</span></h2>
+	<h2>Rights</h2>
 	
 	<?php $alkaline->viewNotification(); ?>
 	
-	<form action="" method="post">
-		<table>
-			<tr>
-				<th></th>
-				<th>Rights</th>
-				<th class="center">Actions</th>
-			</tr>
-			<tr>
-				<td class="radio">
-					<input type="radio" name="right_default" value="1" checked="checked" />
-				</td>
-				<td>
-					<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong> (<a href="">103</a>)<br />
-					Creative Commons - Attribution 3.0 Unported<br />
-				</td>
-				<td class="actions"><a href="">Edit</a> &middot; <strike>Delete</strike></td>
-			</tr>
-			<tr>
-				<td class="radio">
-					<input type="radio" name="right_default" value="1" />
-				</td>
-				<td>
-					<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong> (<a href="">25</a>)<br />
-					Creative Commons - Attribution 3.0 Unported<br />
-				</td>
-				<td class="actions"><a href="">Edit</a> &middot; <a href="">Delete</a></td>
-			</tr>
-		</table>
-		<p class="center">
-			<input id="right_ids" type="hidden" name="right_ids" value="" />
-			<input id="save" type="submit" value="Save changes" />
-		</p>
-	</form>
+	<table>
+		<tr>
+			<th></th>
+			<th>Title</th>
+			<th class="center">Photos</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong><br />
+				Creative Commons - Attribution 3.0 Unported
+			</td>
+			<td class="photos"><a href="">103</a></td>
+		</tr>
+		<tr class="alt">
+			<td></td>
+			<td>
+				<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong><br />
+				Creative Commons - Attribution 3.0 Unported
+			</td>
+			<td class="photos"><a href="">25</a></td>
+		</tr>
+	</table>
+
 </div>
 
 <?php

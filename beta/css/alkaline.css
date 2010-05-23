@@ -21,7 +21,11 @@ div.id { display: inline; }
 .center { clear: both; text-align: center; }
 
 td.radio { vertical-align: top; text-align: right; }
-td.actions { vertical-align: top; text-align: center; }
+td.photos { vertical-align: top; text-align: center; }
+
+th { border-bottom: 1px #ccc solid; }
+
+tr.alt { background-color: #eee; }
 
 p.title input { width: 99%; font-size: 1.2em; border-top: 0; border-left: 0; border-right: 0; padding-left: 0; background-color: transparent; }
 p.description textarea { width: 100%; font-size: .9em; padding: .5em .3em; }

@@ -53,7 +53,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Search</h3>
 
 	<form id="search" method="get">
-		<input type="text" name="find_text" style="width: 50%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" /><br />
+		<input type="text" name="search" style="width: 50%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" /><br />
 		<a href="" style="line-height: 2.5em;">Advanced search</a>
 	</form><br />
 	
