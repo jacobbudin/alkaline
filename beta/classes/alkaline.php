@@ -171,13 +171,22 @@ class Alkaline{
 		
 		$tag_counts = array_count_values($tag_names);
 		
+		$tag_count_values = array_values($tag_counts);
+		$tag_count_high = 0;
+		
+		foreach($tag_count_values as $value){
+			if($value > $tag_count_high){
+				$tag_count_high = $value;
+			}
+		}
+		
 		$tag_uniques = array_unique($tag_names);
 		$this->tag_count = count($tag_uniques);
 		
 		$tags = array();
 		
 		foreach($tag_uniques as $tag){
-			$tags[] = $tag . ' <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
+			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;">' . $tag . '</span> <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
 		}
 		
 		return implode(', ', $tags);
