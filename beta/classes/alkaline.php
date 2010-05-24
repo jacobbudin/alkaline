@@ -4,8 +4,11 @@ class Alkaline{
 	public $build = '1';
 	public $version = 'Alpha (May 19)';
 	public $js;
+	
 	protected $db;
 	protected $notifications;
+	
+	public $tag_count;
 	
 	public function __construct(){
 		header('Cache-Control: no-cache, must-revalidate');
@@ -150,6 +153,25 @@ class Alkaline{
 				$time = date($format, @strtotime($time));
 			}
 		}
+	}
+	
+	// Retrieve all tags
+	function allTags($cloud=false, $admin=false){
+		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query->execute();
+		$tags = $query->fetchAll();
+		
+		$tag_names = array();
+		$tag_uniques = array();
+		
+		foreach($tags as $tag){
+			$tag_names[] = $tag['tag_name'];
+		}
+		
+		$tag_uniques = array_unique($tag_names);
+		$this->tag_count = count($tag_uniques);
+		
+		return implode(', ', $tag_uniques);
 	}
 }
 

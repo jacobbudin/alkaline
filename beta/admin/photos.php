@@ -32,7 +32,7 @@ $photo_ids->page(1,100);
 $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
-$photos->addImgUrl('square');
+$photos->getImgUrl('square');
 
 define('TITLE', 'Alkaline Photos');
 define('COLUMNS', '19');

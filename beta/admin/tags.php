@@ -9,6 +9,8 @@ $user = new User;
 
 $user->perm(true);
 
+$tags = $alkaline->allTags(true);
+
 define('TITLE', 'Alkaline Tags');
 define('COLUMNS', '19');
 define('WIDTH', '750');
@@ -28,12 +30,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<input type="text" name="search" style="width: 30%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" />
 	</form><br />
 	
-	<h3>Cloud <span class="small quiet">(<span id="count"><?php echo @$tags_count; ?></span>)</span></h3>
+	<h3>Cloud <span class="small quiet">(<span id="count"><?php echo @$alkaline->tag_count; ?></span>)</span></h3>
 	
 	<hr />
 	
 	<p class="center">
+		<?php
 		
+		echo $tags;
+		
+		?>
 	</p>
 	
 </div>

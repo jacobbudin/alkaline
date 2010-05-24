@@ -24,10 +24,10 @@ $photo_ids->exec();
 $photos = new Photo($photo_ids->photo_ids);
 // $photos->updateViews();
 $photos->formatTime();
-$photos->addImgUrl('square');
-$photos->addImgUrl('medium');
-$photos->addExif();
-$photos->addTags();
+$photos->getImgUrl('square');
+$photos->getImgUrl('medium');
+$photos->getExif();
+$photos->getTags();
 
 $index = new Canvas();
 $index->load('index');

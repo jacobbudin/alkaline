@@ -343,7 +343,7 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate image URLs for images
-	public function addImgUrl($size){
+	public function getImgUrl($size){
 		$photo_src = 'photo_src_' . $size;
 		
 		// Find size's prefix and suffix
@@ -363,7 +363,7 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate EXIF for images
-	public function addExif(){
+	public function getExif(){
 		$query = $this->db->prepare('SELECT * FROM exifs' . $this->sql . ';');
 		$query->execute();
 		$exifs = $query->fetchAll();
@@ -378,7 +378,7 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate tags for images
-	public function addTags(){
+	public function getTags(){
 		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
