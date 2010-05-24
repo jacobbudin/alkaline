@@ -21,7 +21,7 @@ class Find extends Alkaline{
 		
 		// Store data to object
 		$this->photo_ids = array();
-		$this->sql = 'SELECT photo_id FROM photos';
+		$this->sql = 'SELECT photos.photo_id FROM photos, tags, links';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
 		$this->sql_sort = array();
@@ -75,15 +75,30 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY SEARCH
-	public function search($query=null){
+	// FIND BY TAGS
+	public function tags($tags=null){
 		// Error checking
-		if(empty($query)){ return false; }
+		if(empty($tags)){ return false; }
+		
+		parent::convertToArray($tags);
+		
+		// Set fields to search
+		foreach($tags as $tag){
+			$this->sql_conds[] = '(photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND tags.tag_name = "' . $tag . '")';
+		}
+		
+		return true;
+	}
+	
+	// FIND BY SEARCH
+	public function search($search=null){
+		// Error checking
+		if(empty($search)){ return false; }
 		
 		// Set fields to search
 		$sql = '(';
-		$sql .= 'LOWER(photos.photo_title) LIKE "%' . strtolower($query) . '%" OR ';
-		$sql .= 'LOWER(photos.photo_description) LIKE "%' . strtolower($query) . '%"';
+		$sql .= 'LOWER(photos.photo_title) LIKE "%' . strtolower($search) . '%" OR ';
+		$sql .= 'LOWER(photos.photo_description) LIKE "%' . strtolower($search) . '%"';
 		$sql .= ')';
 		$this->sql_conds[] = $sql;
 		
