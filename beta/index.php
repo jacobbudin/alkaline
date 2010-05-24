@@ -27,6 +27,7 @@ $photos->formatTime();
 $photos->addImgUrl('square');
 $photos->addImgUrl('medium');
 $photos->addExif();
+$photos->addTags();
 
 $index = new Canvas();
 $index->load('index');

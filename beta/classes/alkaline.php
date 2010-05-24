@@ -140,6 +140,7 @@ class Alkaline{
 	// Make time more human-readable
 	function formatTime(&$time, $format){
 		if(!empty($time)){
+			$time = str_replace('tonight', 'today', $time);
 			if(empty($format)){
 				$ampm = array(' am', ' pm');
 				$ampm_correct = array(' a.m.', ' p.m.');

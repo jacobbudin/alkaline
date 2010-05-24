@@ -47,7 +47,7 @@ class Photo extends Alkaline{
 		
 		$this->photo_ids = $photo_ids;
 		
-		$this->sql = ' WHERE photo_id = ' . implode(' OR photo_id = ', $photo_ids);
+		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $photo_ids) . ')';
 		
 		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
 		$query->execute();
@@ -373,6 +373,26 @@ class Photo extends Alkaline{
 			$key = array_search($photo_id, $this->photo_ids);
 			if($photo_id = $this->photo_ids[$key]){
 				@$this->photos[$key]['photo_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
+			}
+		}
+	}
+	
+	// Generate tags for images
+	public function addTags(){
+		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query->execute();
+		$tags = $query->fetchAll();
+		
+		foreach($tags as $tag){
+			$photo_id = intval($tag['photo_id']);
+			$key = array_search($photo_id, $this->photo_ids);
+			if($photo_id = $this->photo_ids[$key]){
+				if(empty($this->photos[$key]['photo_tags'])){
+					@$this->photos[$key]['photo_tags'] = $tag['tag_name'];
+				}
+				else{
+					$this->photos[$key]['photo_tags'] .= ', ' . $tag['tag_name']; 
+				}
 			}
 		}
 	}
