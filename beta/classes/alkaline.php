@@ -162,16 +162,25 @@ class Alkaline{
 		$tags = $query->fetchAll();
 		
 		$tag_names = array();
+		$tag_counts = array();
 		$tag_uniques = array();
 		
 		foreach($tags as $tag){
 			$tag_names[] = $tag['tag_name'];
 		}
 		
+		$tag_counts = array_count_values($tag_names);
+		
 		$tag_uniques = array_unique($tag_names);
 		$this->tag_count = count($tag_uniques);
 		
-		return implode(', ', $tag_uniques);
+		$tags = array();
+		
+		foreach($tag_uniques as $tag){
+			$tags[] = $tag . ' <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
+		}
+		
+		return implode(', ', $tags);
 	}
 }
 
