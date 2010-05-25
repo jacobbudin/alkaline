@@ -21,10 +21,12 @@ class Find extends Alkaline{
 		
 		// Store data to object
 		$this->photo_ids = array();
-		$this->sql = 'SELECT photos.photo_id FROM photos, tags, links';
+		$this->sql = 'SELECT photos.photo_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
 		$this->sql_sort = array();
+		$this->sql_from = '';
+		$this->sql_tables = array('photos');
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 	}
@@ -81,6 +83,10 @@ class Find extends Alkaline{
 		if(empty($tags)){ return false; }
 		
 		parent::convertToArray($tags);
+		
+		// Add tables to query
+		$this->sql_tables[] = 'links';
+		$this->sql_tables[] = 'tags';
 		
 		// Set fields to search
 		foreach($tags as $tag){
@@ -140,6 +146,8 @@ class Find extends Alkaline{
 	// EXECUTE QUERY
 	public function exec(){
 		// Prepare SQL conditions
+		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
+		
 		if(count($this->sql_conds) > 0){
 			$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
 		}
@@ -148,7 +156,7 @@ class Find extends Alkaline{
 		}
 		
 		// Prepare query without limit
-		$this->sql = $this->sql . $this->sql_where;
+		$this->sql = $this->sql . $this->sql_from . $this->sql_where;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);
