@@ -100,7 +100,7 @@ class User extends Alkaline{
 	public function perm($required=false, $permission=null){
 		if(empty($this->user)){
 			if($required === true){
-				header('Location: http://' . DOMAIN . 'admin/login/');
+				header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
 				exit();
 			}
 			elseif($required === false){

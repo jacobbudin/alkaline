@@ -14,13 +14,13 @@ $user = new User;
 if($remember == 1){ $remember = true; }
 
 if($user->perm()){
-	header('Location: http://' . DOMAIN . 'admin/dashboard/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 	exit();
 }
 
 if(!empty($username) or !empty($password)){
 	if($user->auth($username, $password, $remember)){
-		header('Location: http://' . DOMAIN . 'admin/dashboard/');
+		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 		exit();
 	}
 	else{

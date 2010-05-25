@@ -11,7 +11,7 @@ if($user->deauth()){
 	$alkaline->addNotification('You have successfully logged out.', 'success');
 }
 
-header('Location: http://' . DOMAIN . 'admin/login/');
+header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
 exit();
 
 ?>

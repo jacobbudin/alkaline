@@ -8,11 +8,11 @@ $alkaline = new Alkaline;
 $user = new User;
 
 if($user->perm()){
-	header('Location: http://' . DOMAIN . 'admin/dashboard/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 	exit();
 }
 else{
-	header('Location: http://' . DOMAIN . 'admin/login/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
 	exit();
 }
 
