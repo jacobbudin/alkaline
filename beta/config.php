@@ -54,7 +54,8 @@ date_default_timezone_set($time_zone);
 
 define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 define('BASE', '/');
-define('DOMAIN', $_SERVER['HTTP_HOST'] . BASE);
+define('SERVER', $_SERVER['SERVER_NAME']);
+define('DOMAIN', 'http://' . SERVER);
 
 define('SITE', $site);
 define('OWNER', $owner);

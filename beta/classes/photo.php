@@ -25,9 +25,10 @@ class Photo extends Alkaline{
 				if(file_exists($file)){
 					// Add photo to database
 					$photo_ext = $this->imageExt($file);
+					$photo_mime = $this->imageMime($file);
 					$filename = substr(strrchr($file, '/'), 1);
 					
-					$query = 'INSERT INTO photos (user_id, photo_ext, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
+					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
 					$this->db->exec($query);
 					$photo_id = $this->db->lastInsertId();
 					$photo_ids[] = $photo_id;
@@ -152,6 +153,20 @@ class Photo extends Alkaline{
 				return 'jpg'; break;
 			case 3:
 				return 'png'; break;
+			default:
+				return false; break;
+		}
+	}
+	
+	private function imageMime($ext){
+		$type = exif_imagetype($file);
+		switch($type){
+			case 1:
+				return 'image/gif'; break;
+			case 2:
+				return 'image/jpeg'; break;
+			case 3:
+				return 'image/png'; break;
 			default:
 				return false; break;
 		}
@@ -424,8 +439,9 @@ class Photo extends Alkaline{
 	
 	public function formatTime($format=null){
 		for($i = 0; $i < $this->photo_count; ++$i){
-			parent::formatTime($this->photos[$i]['photo_published'], $format);
 			parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
+			parent::formatTime($this->photos[$i]['photo_published'], $format);
+			parent::formatTime($this->photos[$i]['photo_updated'], $format);
 		}
 	}
 }

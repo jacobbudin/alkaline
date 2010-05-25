@@ -16,22 +16,31 @@ $photo_ids->published();
 $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
-$photos->addImgUrl('medium');
+$photos->getImgUrl('medium');
 $photos->formatTime('c');
 
 $entries = new Canvas('
 <!-- LOOP(PHOTOS) -->
-<entry>
-	<title><!-- PHOTO_TITLE --></title>
-	<link href="" />
-	<id><!-- PHOTO_ID --></id>
-	<updated><!-- PHOTO_PUBLISHED --></updated>
-	<summary><!-- PHOTO_DESCRIPTION --></summary>
-</entry>
+	<entry>
+		<title type="text"><!-- PHOTO_TITLE --></title>
+		<link href="" />
+		<id><!-- DOMAIN --><!-- BASE --><!-- PHOTO_ID --></id>
+		<updated><!-- PHOTO_UPDATED --></updated>
+		<published><!-- PHOTO_PUBLISHED --></published>
+		<!-- IF(PHOTO_DESCRIPTION) -->
+			<summary type="text"><!-- PHOTO_DESCRIPTION --></summary>
+		<!-- ENDIF(PHOTO_DESCRIPTION) -->
+		<content type="xhtml">
+			<div xmlns="http://www.w3.org/1999/xhtml">
+				<a href=""><img src="<!-- DOMAIN --><!-- PHOTO_SRC_MEDIUM -->" title="<!-- PHOTO_TITLE -->" /></a>
+			</div>
+		</content>
+		<link rel="enclosure" type="<!-- PHOTO_MIME -->" href="<!-- DOMAIN --><!-- PHOTO_SRC_MEDIUM -->" />
+	</entry>
 <!-- ENDLOOP(PHOTOS) -->');
+$entries->setVar('BASE', BASE);
+$entries->setVar('DOMAIN', DOMAIN);
 $entries->setArray('PHOTOS', 'PHOTO', $photos->photos);
-
-ob_start();
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
 
@@ -40,8 +49,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 <feed xmlns="http://www.w3.org/2005/Atom">
 	
 	<title><?php echo SITE; ?></title>
+	<updated><?php echo date('c'); ?></updated>
 	<link href="<?php echo BASE; ?>"/>
-	<updated><?php date('c'); ?></updated>
+	<link rel="self" type="application/atom+xml" href="<?php echo DOMAIN . BASE; ?>atom.php" />
+	<id>tag:<?php echo SERVER; ?>,2010:/</id>
 	<author>
 		<name><?php echo OWNER; ?></name>
 	</author>
@@ -49,9 +60,3 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<?php $entries->output(); ?>
 
 </feed>
-
-<?php
-
-ob_end_flush();
-
-?>
