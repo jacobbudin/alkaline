@@ -139,6 +139,7 @@ class Photo extends Alkaline{
 					$fields[] = $key . ' = "' . $value . '"';
 				}
 			}
+			$fields[] = 'photo_updated = "' . date('Y-m-d H:i:s') . '"';
 			$sql = implode(', ', $fields);
 			$this->db->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
