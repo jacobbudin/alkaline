@@ -11,7 +11,7 @@ class Geo extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
-	public function __construct($geo){
+	public function __construct($geo, $radius=1){
 		parent::__construct();
 		
 		// Store data to object
@@ -32,24 +32,29 @@ class Geo extends Alkaline{
 		
 		// Lookup integer in cities table, city_id field
 		if(is_int($geo)){
+			$type = 'id';
 			$this->sql_conds[] = '(cities.city_id = ' . $geo . ')';
 		}
 		
 		// Are these coordinates?
 		elseif(preg_match('/^[^A-Z]+$/i', $geo)){
-			$geo = explode(',', $geo);
-			$lat = trim($geo[0]);
-			$long = trim($geo[1]);
+			$type = 'coord';
+			$coord = explode(',', $geo);
+			$lat = trim($coord[0]);
+			$long = trim($coord[1]);
+			
+			// Haversine formula
 			$this->sql .= ', (3959 * acos(cos(radians(' . $lat . ')) * cos(radians(city_lat)) * cos(radians(city_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(city_lat)))) AS distance';
-			$this->sql_conds[] = '(city_lat < ' . ($lat + 5) . ')';
-			$this->sql_conds[] = '(city_lat > ' . ($lat - 5) . ')';
-			$this->sql_conds[] = '(city_long < ' . ($long + 5) . ')';
-			$this->sql_conds[] = '(city_long > ' . ($long - 5) . ')';
+			$this->sql_conds[] = '(city_lat < ' . ($lat + $radius) . ')';
+			$this->sql_conds[] = '(city_lat > ' . ($lat - $radius) . ')';
+			$this->sql_conds[] = '(city_long < ' . ($long + $radius) . ')';
+			$this->sql_conds[] = '(city_long > ' . ($long - $radius) . ')';
 			$this->sql_sort[] = 'distance';
 		}
 		
 		// Lookup city in cities table
 		elseif(is_string($geo)){
+			$type = 'name';
 			$geo_lower = strtolower($geo);
 
 			// Set fields to search
@@ -82,15 +87,20 @@ class Geo extends Alkaline{
 		// Prepare query
 		$this->sql .= $this->sql_from . $this->sql_where . $this->sql_order_by . $this->sql_limit;
 		
-		echo $this->sql . '<br />';
-		
 		// Execute query
 		$query = $this->db->prepare($this->sql);
 		$query->execute();
 		$cities = $query->fetchAll();
 		
-		// If nothing found...
+		// If no results
 		if(empty($cities[0])){
+			
+			// If coordinate searching, expand radius
+			if($type == 'coord'){
+				self::__construct($geo, $radius*5);
+			}
+			
+			// Otherwise, give up
 			return false;
 		}
 		
