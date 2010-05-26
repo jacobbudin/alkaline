@@ -35,6 +35,19 @@ class Geo extends Alkaline{
 			$this->sql_conds[] = '(cities.city_id = ' . $geo . ')';
 		}
 		
+		// Are these coordinates?
+		elseif(preg_match('/^[^A-Z]+$/i', $geo)){
+			$geo = explode(',', $geo);
+			$lat = trim($geo[0]);
+			$long = trim($geo[1]);
+			$this->sql .= ', (3959 * acos(cos(radians(' . $lat . ')) * cos(radians(city_lat)) * cos(radians(city_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(city_lat)))) AS distance';
+			$this->sql_conds[] = '(city_lat < ' . ($lat + 5) . ')';
+			$this->sql_conds[] = '(city_lat > ' . ($lat - 5) . ')';
+			$this->sql_conds[] = '(city_long < ' . ($long + 5) . ')';
+			$this->sql_conds[] = '(city_long > ' . ($long - 5) . ')';
+			$this->sql_sort[] = 'distance';
+		}
+		
 		// Lookup city in cities table
 		elseif(is_string($geo)){
 			$geo_lower = strtolower($geo);
@@ -69,6 +82,8 @@ class Geo extends Alkaline{
 		// Prepare query
 		$this->sql .= $this->sql_from . $this->sql_where . $this->sql_order_by . $this->sql_limit;
 		
+		echo $this->sql . '<br />';
+		
 		// Execute query
 		$query = $this->db->prepare($this->sql);
 		$query->execute();
@@ -83,6 +98,7 @@ class Geo extends Alkaline{
 		
 		return true;
 	}
+	
 }
 
 ?>
