@@ -13,6 +13,8 @@ class Find extends Alkaline{
 	protected $sql_conds;
 	protected $sql_limit;
 	protected $sql_sort;
+	protected $sql_from;
+	protected $sql_tables;
 	protected $sql_order_by;
 	protected $sql_where;
 	
@@ -101,10 +103,12 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($search)){ return false; }
 		
+		$search_lower = strtolower($search);
+		
 		// Set fields to search
 		$sql = '(';
-		$sql .= 'LOWER(photos.photo_title) LIKE "%' . strtolower($search) . '%" OR ';
-		$sql .= 'LOWER(photos.photo_description) LIKE "%' . strtolower($search) . '%"';
+		$sql .= 'LOWER(photos.photo_title) LIKE "%' . $search_lower . '%" OR ';
+		$sql .= 'LOWER(photos.photo_description) LIKE "%' . $search_lower . '%"';
 		$sql .= ')';
 		$this->sql_conds[] = $sql;
 		
@@ -156,7 +160,7 @@ class Find extends Alkaline{
 		}
 		
 		// Prepare query without limit
-		$this->sql = $this->sql . $this->sql_from . $this->sql_where;
+		$this->sql .= $this->sql_from . $this->sql_where;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);
