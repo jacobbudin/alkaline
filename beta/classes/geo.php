@@ -2,7 +2,7 @@
 
 class Geo extends Alkaline{
 	public $city;
-	protected $sql;
+	public $sql;
 	protected $sql_conds;
 	protected $sql_limit;
 	protected $sql_sort;
@@ -55,10 +55,46 @@ class Geo extends Alkaline{
 		// Lookup city in cities table
 		elseif(is_string($geo)){
 			$type = 'name';
-			$geo_lower = strtolower($geo);
+			
+			if(strpos($geo, ',') === false){
+				$geo_city = trim($geo);
+			}
+			elseif(preg_match('/([^\,]+)\,([^\,]+)/', $geo, $matches)){
+				$geo_city = trim($matches[1]);
+				$geo_unknown = self::convertAbbrev(trim($matches[2]));
+				
+				$states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY');
+				
+				if(in_array(strtoupper($geo_unknown), $states)){
+					$geo_state = $geo_unknown;
+				}
+				else{
+					$geo_country = $geo_unknown;
+				}
+				
+			}
+			elseif(preg_match('/([^\,]+)\,([^\,]+)\,([^\,]*)/', $geo, $matches)){
+				$geo_city = trim($matches[1]);
+				$geo_state = self::convertAbbrev(trim($matches[2]));
+				$geo_county = self::convertAbbrev(trim($matches[3]));
+			}
+			else{
+				return false;
+			}
 
 			// Set fields to search
-			$this->sql_conds[] = '(LOWER(cities.city_name) LIKE "%' . $geo_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $geo_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $geo_lower . '%")';
+			if(!empty($geo_city)){
+				$geo_city_lower = strtolower($geo_city);
+				$this->sql_conds[] = '(LOWER(cities.city_name) LIKE "%' . $geo_city_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $geo_city_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $geo_city_lower . '%")';
+			}
+			if(!empty($geo_state)){
+				$geo_state_lower = strtolower($geo_state);
+				$this->sql_conds[] = '(LOWER(cities.city_state) LIKE "%' . $geo_state_lower . '%")';
+			}
+			if(!empty($geo_country)){
+				$geo_country_lower = strtolower($geo_country);
+				$this->sql_conds[] = '(LOWER(countries.country_name) LIKE "%' . $geo_country_lower . '%")';
+			}
 		}
 		
 		else{
@@ -107,6 +143,13 @@ class Geo extends Alkaline{
 		$this->city = $cities[0];
 		
 		return true;
+	}
+	
+	protected function convertAbbrev($var){
+		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland');
+		$countries = array('United States', 'United States', 'United States', 'United Kingdom', 'United Arab Emirates', 'Netherlands');
+		$var = str_ireplace($countries_abbrev, $countries, $var);
+		return $var;
 	}
 	
 }
