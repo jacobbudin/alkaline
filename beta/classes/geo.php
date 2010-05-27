@@ -45,10 +45,10 @@ class Geo extends Alkaline{
 			
 			// Haversine formula
 			$this->sql .= ', (3959 * acos(cos(radians(' . $lat . ')) * cos(radians(city_lat)) * cos(radians(city_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(city_lat)))) AS distance';
-			$this->sql_conds[] = '(city_lat < ' . ($lat + $radius) . ')';
-			$this->sql_conds[] = '(city_lat > ' . ($lat - $radius) . ')';
-			$this->sql_conds[] = '(city_long < ' . ($long + $radius) . ')';
-			$this->sql_conds[] = '(city_long > ' . ($long - $radius) . ')';
+			$this->sql_conds[] = '(city_lat < ' . round($lat + $radius) . ')';
+			$this->sql_conds[] = '(city_lat > ' . round($lat - $radius) . ')';
+			$this->sql_conds[] = '(city_long < ' . round($long + $radius) . ')';
+			$this->sql_conds[] = '(city_long > ' . round($long - $radius) . ')';
 			$this->sql_sort[] = 'distance';
 		}
 		
