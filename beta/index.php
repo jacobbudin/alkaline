@@ -7,6 +7,9 @@ require_once(PATH . CLASSES . 'find.php');
 require_once(PATH . CLASSES . 'photo.php');
 require_once(PATH . CLASSES . 'user.php');
 
+$alkaline = new Alkaline();
+$alkaline->recordStat('home');
+
 $header = new Canvas();
 $header->load('header');
 $header->setVar('TITLE', 'Home Page - ' . SITE);

@@ -44,7 +44,7 @@ class Alkaline{
 	// TEMPORARY
 	public function dejectJS(){
 		foreach($this->js as $js){
-			echo '<script src="' . BASE . JS . $js . '.js?6" type="text/javascript"></script>';
+			echo '<script src="' . BASE . JS . $js . '.js" type="text/javascript"></script>';
 		}
 	}
 	
@@ -191,6 +191,27 @@ class Alkaline{
 		
 		return implode(', ', $tags);
 	}
+	
+	public function recordStat($page_type=null){
+		
+		$_SESSION['duration_recent'] = time();
+		
+		if(empty($_SESSION['duration_start']) or ((time() - $_SESSION['duration_recent']) > 7200)){
+			$duration = 0;
+			$_SESSION['duration_start'] = time();
+		}
+		else{
+			$duration = time() - $_SESSION['duration_start'];
+		}
+		
+		$referrer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
+		$page = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+		$local = (stripos($referrer, LOCATION)) ? 1 : 0;
+		
+		$query = 'INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES ("' . session_id() . '", "' . date('Y-m-d H:i:s') . '", "' . $duration . '", "' . $referrer . '", "' . $page . '", "' . $page_type . '", ' . $local . ');';
+		$this->db->exec($query);
+	}
+	
 }
 
 ?>
