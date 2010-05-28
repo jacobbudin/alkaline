@@ -205,13 +205,13 @@ class Find extends Alkaline{
 	
 	// PAGINATE RESULTS
 	public function page($page, $limit=LIMIT){
-		// Store data to object
-		$this->page = intval($page);
-		$this->page_limit = intval($limit);
-		
 		// Error checking
 		if(empty($page)){ return false; }
 		if($page == 0){ return false; }
+		
+		// Store data to object
+		$this->page = intval($page);
+		$this->page_limit = intval($limit);
 		
 		// Set SQL limit
 		$begin = ($page * $limit) - $limit;
@@ -221,7 +221,18 @@ class Find extends Alkaline{
 	}
 	
 	public function sort($column, $sort='ASC'){
-		$this->sql_sorts[] = $column . ' ' . $sort;
+		// Error checking
+		if(empty($column)){ return false; }
+		
+		$column = strtolower($column);
+		$sort = strtoupper($sort);
+		if(($sort == 'ASC') or ($sort == 'DESC')){
+			$this->sql_sorts[] = $column . ' ' . $sort;
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	// EXECUTE QUERY
