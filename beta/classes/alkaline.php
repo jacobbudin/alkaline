@@ -105,12 +105,12 @@ class Alkaline{
 	}
 	
 	// Trim (remove whitespace) from values of an array
-	function trimValue(&$value){
+	public function trimValue(&$value){
 		$value = trim($value);
 	}
 
 	// Convert a possible string or integer into an array
-	function convertToArray(&$input){
+	public function convertToArray(&$input){
 		if(is_string($input)){
 			$find = strpos($input, ',');
 			if($find === false){
@@ -118,13 +118,13 @@ class Alkaline{
 			}
 			else{
 				$input = explode(',', $input);
-				array_walk($input, 'trimValue');
+				$input = array_map('trim', $input);
 			}
 		}
 	}
 
 	// Convert a possible string or integer into an array of integers
-	function convertToIntegerArray(&$input){
+	public function convertToIntegerArray(&$input){
 		if(is_int($input)){
 			$input = array($input);
 		}
@@ -135,7 +135,7 @@ class Alkaline{
 			}
 			else{
 				$input = explode(',', $input);
-				array_walk($input, 'trimValue');
+				$input = array_map('trim', $input);
 			}
 		}
 	}
