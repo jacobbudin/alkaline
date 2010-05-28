@@ -16,6 +16,8 @@
 	</style>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.min.js" type="text/javascript"></script>
+	<!--[if IE]><script src="<?php echo BASE . JS; ?>jquery/excanvas.min.js" type="text/javascript"></script><![endif]-->
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 	<?php $alkaline->dejectJS(); ?>
 </head>

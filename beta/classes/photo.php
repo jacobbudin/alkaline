@@ -363,7 +363,7 @@ class Photo extends Alkaline{
 		$photo_src = 'photo_src_' . $size;
 		
 		// Find size's prefix and suffix
-		$query = $this->db->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_name = "' . $size . '"');
+		$query = $this->db->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = "' . $size . '"');
 		$query->execute();
 		$sizes = $query->fetchAll();
 				

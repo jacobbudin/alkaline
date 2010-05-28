@@ -15,13 +15,13 @@ class User extends Alkaline{
 		elseif(!empty($_COOKIE['id']) and !empty($_COOKIE['key'])){
 			$user_id = strip_tags($_COOKIE['id']);
 			$user_key = strip_tags($_COOKIE['key']);
-			USER::authByCookie($user_id, $user_key);
+			self::authByCookie($user_id, $user_key);
 		}
 	}
 	
 	// Store user to session data
 	public function __destruct(){
-		if(USER::perm() == true){
+		if(self::perm() == true){
 			$_SESSION['user'] = $this->user;
 			$_SESSION['user_view_type'] = $this->view_type;
 		}
@@ -34,7 +34,7 @@ class User extends Alkaline{
 		$query = $this->db->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
-		if(USER::prep($remember)){
+		if(self::prep($remember)){
 			return true;
 		}
 	}
@@ -44,7 +44,7 @@ class User extends Alkaline{
 		$query = $this->db->prepare('SELECT * FROM users WHERE user_id = "' . $user_id . '" AND user_key = "' . $user_key . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
-		if(USER::prep($remember)){
+		if(self::prep($remember)){
 			return true;
 		}
 		else {
