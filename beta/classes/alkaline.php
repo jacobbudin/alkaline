@@ -193,16 +193,15 @@ class Alkaline{
 	}
 	
 	public function recordStat($page_type=null){
-		
-		$_SESSION['duration_recent'] = time();
-		
-		if(empty($_SESSION['duration_start']) or ((time() - $_SESSION['duration_recent']) > 7200)){
+		if(empty($_SESSION['duration_start']) or ((time() - @$_SESSION['duration_recent']) > 3600)){
 			$duration = 0;
 			$_SESSION['duration_start'] = time();
 		}
 		else{
 			$duration = time() - $_SESSION['duration_start'];
 		}
+		
+		$_SESSION['duration_recent'] = time();
 		
 		$referrer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
 		$page = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
