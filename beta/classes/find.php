@@ -127,6 +127,31 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	public function excludeTags($tags=null){
+		// Error checking
+		if(empty($tags)){ return false; }
+		
+		parent::convertToArray($tags);
+		
+		// Find requested tags that exist
+		$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+		$query->execute();
+		$this->photos = $query->fetchAll();
+		
+		// Compile photo IDs
+		$exclude_photo_ids = array();	
+		foreach($this->photos as $photo){
+			$exclude_photo_ids[] = $photo['photo_id'];
+		}
+		
+		// Set fields to search
+		foreach($exclude_photo_ids as $exclude_photo_id){
+			$this->sql_conds[] = 'photos.photo_id != ' . $exclude_photo_id;
+		}
+		
+		return true;
+	}
+	
 	// FIND BY PILE
 	public function piles($piles=null){
 		// Error checking
