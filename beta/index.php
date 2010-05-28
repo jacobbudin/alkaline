@@ -21,7 +21,7 @@ $photo_ids = new Find();
 // $photo_ids->findByViews(1,2);
 $photo_ids->sort('photos.photo_published', 'DESC');
 $photo_ids->page(1,5);
-$photo_ids->tags('summer');
+$photo_ids->tags('summer, beach, donkey', 'any');
 $photo_ids->published();
 $photo_ids->exec();
 
