@@ -26,9 +26,10 @@ class Photo extends Alkaline{
 					// Add photo to database
 					$photo_ext = $this->imageExt($file);
 					$photo_mime = $this->imageMime($file);
+					$photo_color = $this->imageColor($file);
 					$filename = substr(strrchr($file, '/'), 1);
 					
-					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
+					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_colors, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . addslashes(serialize($photo_color)) . '", "' . date('Y-m-d H:i:s') . '");';
 					$this->db->exec($query);
 					$photo_id = $this->db->lastInsertId();
 					$photo_ids[] = $photo_id;
@@ -145,6 +146,7 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// Detemine image extension
 	private function imageExt($file){
 		$type = exif_imagetype($file);
 		switch($type){
@@ -159,7 +161,8 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	private function imageMime($ext){
+	// Detemine image MIME type
+	private function imageMime($file){
 		$type = exif_imagetype($file);
 		switch($type){
 			case 1:
@@ -173,9 +176,10 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// Fill image
 	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = IMG_QUAL; }
-		if(empty($ext)){ $ext = $this->imageExt($src); }
+		if(empty($ext)){ $ext = self::imageExt($src); }
 		switch($ext){
 			case 'jpg':
 				list($width_orig, $height_orig) = getimagesize($src);
@@ -258,9 +262,11 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// Scale image
 	private function imageScale($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = IMG_QUAL; }
-		if(empty($ext)){ $ext = $this->imageExt($src); }
+		if(empty($ext)){ $ext = self::imageExt($src); }
+		
 		switch($ext){
 			case 'jpg':
 				list($width_orig, $height_orig) = getimagesize($src);
@@ -275,7 +281,7 @@ class Photo extends Alkaline{
 				$image = imagecreatefromjpeg($src);
 				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
 				imagejpeg($image_p, $dest, $quality);
-
+				
 				imagedestroy($image);
 				imagedestroy($image_p);
 				return true;
@@ -322,11 +328,73 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// Create Colorstrip data
+	private function imageColor($src, $ext=null){
+		if(empty($ext)){ $ext = $this->imageExt($src); }
+		
+		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
+		
+		self::imageScale($src, $dest, 100, 100, 100, $ext);
+		
+		switch($ext){
+			case 'jpg':
+				$image = imagecreatefromjpeg($dest);
+				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
+				imagetruecolortopalette($image, false, 16);
+				break;
+			case 'png':
+				$image = imagecreatefrompng($dest);
+				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
+				imagetruecolortopalette($image, false, 16);
+				break;
+			case 'gif':
+				$image = imagecreatefromgif($dest);
+				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
+				imagetruecolortopalette($image, false, 16);
+				break;
+			default:
+				return false;
+				break;
+		}
+		
+		$colors = array();
+		
+		$colors = self::findColor($image, $colors, 255, 0, 0);
+		$colors = self::findColor($image, $colors, 0, 255, 0);
+		$colors = self::findColor($image, $colors, 0, 0, 255);
+		$colors = self::findColor($image, $colors, 255, 255, 0);
+		$colors = self::findColor($image, $colors, 255, 0, 255);
+		$colors = self::findColor($image, $colors, 0, 255, 255);
+		$colors = self::findColor($image, $colors, 85, 85, 170);
+		$colors = self::findColor($image, $colors, 85, 170, 85);
+		$colors = self::findColor($image, $colors, 170, 85, 85);
+		$colors = self::findColor($image, $colors, 170, 170, 85);
+		$colors = self::findColor($image, $colors, 170, 85, 170);
+		$colors = self::findColor($image, $colors, 85, 170, 170);
+		
+		imagedestroy($image);
+		unlink($dest);
+		
+		return $colors;
+	}
+	
+	private function findColor($image, $colors, $r, $g, $b){
+		$color = imagecolorsforindex($image, imagecolorclosest($image, $r, $g, $b));
+		$color = $color['red'] . ',' . $color['green'] . ',' . $color['blue'];
+		if(array_key_exists($color, $colors)){
+			$colors[$color]++;
+		}
+		else{
+			$colors[$color] = 1;
+		}
+		return $colors;
+	}
+	
 	public function exifPhoto(){
 		for($i = 0; $i < $this->photo_count; ++$i){
 			// Read EXIF data
 			$exif = @exif_read_data($this->photos[$i]['photo_file'], 0, true, false);
-
+			
 			// If EXIF data exists, add each key (group), name, value to database
 			if(count($exif) > 0){
 				$inserts = array();
