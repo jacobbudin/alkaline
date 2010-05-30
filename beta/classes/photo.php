@@ -334,7 +334,7 @@ class Photo extends Alkaline{
 		
 		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
 		
-		self::imageScale($src, $dest, 4, 4, 100, $ext);
+		self::imageScale($src, $dest, 10, 10, 100, $ext);
 		
 		switch($ext){
 			case 'jpg':
@@ -351,7 +351,7 @@ class Photo extends Alkaline{
 				break;
 		}
 		
-		$colors_build = array();
+		$colors = array();
 		
 		for($x = 0; $x < imagesx($image); ++$x){
 			for($y = 0; $y < imagesy($image); ++$y){
@@ -359,25 +359,57 @@ class Photo extends Alkaline{
 				$r = ($rgb >> 16) & 0xFF;
 				$g = ($rgb >> 8) & 0xFF;
 				$b = $rgb & 0xFF;
-				$values =  $r . ',' . $g . ',' . $b;
-				$colors_build[$values] = abs($r - $g) + abs($r - $b) + abs($g - $b);
+				$diff = abs($r - $g) + abs($r - $b) + abs($g - $b);
+				
+				if($r < 85){ $r_approx = 0; }
+				elseif($r < 170){ $r_approx = 1; }
+				else{ $r_approx = 2; }
+				
+				if($g < 85){ $g_approx = 0; }
+				elseif($g < 170){ $g_approx = 1; }
+				else{ $g_approx = 2; }
+				
+				if($b < 85){ $b_approx = 0; }
+				elseif($b < 170){ $b_approx = 1; }
+				else{ $b_approx = 2; }
+				
+				$color_present = false;
+				
+				for($i = 0; $i < count($colors); ++$i){
+					if(($colors[$i]['r_approx'] == $r_approx) and ($colors[$i]['g_approx'] == $g_approx) and ($colors[$i]['b_approx'] == $b_approx)){
+						$colors[$i]['count']++;
+						$color_present = true;
+						break;
+					}
+				}
+				
+				if($color_present === false){
+					$colors[] = array('r' => $r, 'g' => $g, 'b' => $b, 'diff' => $diff, 'r_approx' => $r_approx, 'g_approx' => $g_approx, 'b_approx' => $b_approx, 'count' => 1);
+				}
 			}
 		}
 		
-		arsort($colors_build);
+		$diffs = array();
 		
-		$colors_build = array_slice($colors_build, 0, 5);
+		foreach($colors as $key => $row){
+		    $diffs[$key] = $row['diff'];
+		}
 		
-		$colors = array();
+		array_multisort($diffs, SORT_DESC, $colors);
 		
-		foreach($colors_build as $key => $value){
-			$colors[] = $key;
+		$colors = array_slice($colors, 0, 6);
+		
+		$rgbs = array();
+		
+		foreach($colors as $color){
+			$rgb = $color['r'] . ',' . $color['g'] . ',' . $color['b'];
+			$rgbs[$rgb] = $color['count'];
 		}
 		
 		imagedestroy($image);
 		unlink($dest);
 		
-		return $colors;
+		return $rgbs;
 	}
 	
 	public function exifPhoto(){
