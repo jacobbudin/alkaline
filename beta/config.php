@@ -47,6 +47,8 @@ $default_view_type = 'grid';
 // Date formatting
 $date_format = 'M j, Y \a\t g:i a';
 
+// Color tolerance (higher numbers varies colors more)
+$color_tolerance = 60;
 
 // DO NOT MODIFY BELOW THIS LINE
 
@@ -72,6 +74,7 @@ define('TIME_ZONE', $time_zone);
 define('DEFAULT_USER_ID', $default_user_id);
 define('DEFAULT_VIEW_TYPE', $default_view_type);
 define('DATE_FORMAT', $date_format);
+define('COLOR_TOLERANCE', $color_tolerance);
 
 define('ADMIN', 'admin/');
 define('CLASSES', 'classes/');

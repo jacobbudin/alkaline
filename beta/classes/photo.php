@@ -334,7 +334,7 @@ class Photo extends Alkaline{
 		
 		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
 		
-		self::imageScale($src, $dest, 10, 10, 100, $ext);
+		self::imageScale($src, $dest, 50, 50, 100, $ext);
 		
 		switch($ext){
 			case 'jpg':
@@ -353,31 +353,22 @@ class Photo extends Alkaline{
 		
 		$colors = array();
 		
-		for($x = 0; $x < imagesx($image); ++$x){
-			for($y = 0; $y < imagesy($image); ++$y){
+		$width = imagesx($image);
+		$height = imagesy($image);
+		
+		for($x = 0; $x < $width; ++$x){
+			for($y = 0; $y < $height; ++$y){
 				$rgb = imagecolorat($image, $x, $y);
 				$r = ($rgb >> 16) & 0xFF;
 				$g = ($rgb >> 8) & 0xFF;
 				$b = $rgb & 0xFF;
 				$diff = abs($r - $g) + abs($r - $b) + abs($g - $b);
 				
-				if($r < 85){ $r_approx = 0; }
-				elseif($r < 170){ $r_approx = 1; }
-				else{ $r_approx = 2; }
-				
-				if($g < 85){ $g_approx = 0; }
-				elseif($g < 170){ $g_approx = 1; }
-				else{ $g_approx = 2; }
-				
-				if($b < 85){ $b_approx = 0; }
-				elseif($b < 170){ $b_approx = 1; }
-				else{ $b_approx = 2; }
-				
 				$color_present = false;
 				
 				// See if it's in the same color class
 				for($i = 0; $i < count($colors); ++$i){
-					if(($colors[$i]['r_approx'] == $r_approx) and ($colors[$i]['g_approx'] == $g_approx) and ($colors[$i]['b_approx'] == $b_approx)){
+					if((abs($colors[$i]['r'] - $r) < COLOR_TOLERANCE) and (abs($colors[$i]['g'] - $g) < COLOR_TOLERANCE) and (abs($colors[$i]['b'] - $b) < COLOR_TOLERANCE)){
 						//If a more saturated color comes along in same color class, replace color
 						if($diff > $colors[$i]['diff']){
 							$colors[$i]['r'] = $r;
@@ -385,7 +376,7 @@ class Photo extends Alkaline{
 							$colors[$i]['b'] = $b;
 						}
 						
-						// Add count either way
+						// Add one to count
 						$colors[$i]['count']++;
 						$color_present = true;
 						break;
@@ -393,7 +384,7 @@ class Photo extends Alkaline{
 				}
 				
 				if($color_present === false){
-					$colors[] = array('r' => $r, 'g' => $g, 'b' => $b, 'diff' => $diff, 'r_approx' => $r_approx, 'g_approx' => $g_approx, 'b_approx' => $b_approx, 'count' => 1);
+					$colors[] = array('r' => $r, 'g' => $g, 'b' => $b, 'diff' => $diff, 'count' => 1);
 				}
 			}
 		}
@@ -406,13 +397,20 @@ class Photo extends Alkaline{
 		
 		array_multisort($diffs, SORT_DESC, $colors);
 		
-		$colors = array_slice($colors, 0, 6);
+		$colors = array_slice($colors, 0, 8);
+		
+		$counts = 0;
+		
+		for($i = 0; $i < count($colors); ++$i){
+			$colors[$i]['count'] = intval(pow($colors[$i]['count'], .35));
+			$counts += $colors[$i]['count'];
+		}
 		
 		$rgbs = array();
 		
 		foreach($colors as $color){
 			$rgb = $color['r'] . ',' . $color['g'] . ',' . $color['b'];
-			$rgbs[$rgb] = $color['count'];
+			$rgbs[$rgb] = strval(round((($color['count'] / $counts) * 100), 1));
 		}
 		
 		imagedestroy($image);
