@@ -334,59 +334,49 @@ class Photo extends Alkaline{
 		
 		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
 		
-		self::imageScale($src, $dest, 100, 100, 100, $ext);
+		self::imageScale($src, $dest, 4, 4, 100, $ext);
 		
 		switch($ext){
 			case 'jpg':
 				$image = imagecreatefromjpeg($dest);
-				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
-				imagetruecolortopalette($image, false, 16);
 				break;
 			case 'png':
 				$image = imagecreatefrompng($dest);
-				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
-				imagetruecolortopalette($image, false, 16);
 				break;
 			case 'gif':
 				$image = imagecreatefromgif($dest);
-				@imagefilter($image, IMG_FILTER_PIXELATE, 25, true);
-				imagetruecolortopalette($image, false, 16);
 				break;
 			default:
 				return false;
 				break;
 		}
 		
+		$colors_build = array();
+		
+		for($x = 0; $x < imagesx($image); ++$x){
+			for($y = 0; $y < imagesy($image); ++$y){
+				$rgb = imagecolorat($image, $x, $y);
+				$r = ($rgb >> 16) & 0xFF;
+				$g = ($rgb >> 8) & 0xFF;
+				$b = $rgb & 0xFF;
+				$values =  $r . ',' . $g . ',' . $b;
+				$colors_build[$values] = abs($r - $g) + abs($r - $b) + abs($g - $b);
+			}
+		}
+		
+		arsort($colors_build);
+		
+		$colors_build = array_slice($colors_build, 0, 5);
+		
 		$colors = array();
 		
-		$colors = self::findColor($image, $colors, 255, 0, 0);
-		$colors = self::findColor($image, $colors, 0, 255, 0);
-		$colors = self::findColor($image, $colors, 0, 0, 255);
-		$colors = self::findColor($image, $colors, 255, 255, 0);
-		$colors = self::findColor($image, $colors, 255, 0, 255);
-		$colors = self::findColor($image, $colors, 0, 255, 255);
-		$colors = self::findColor($image, $colors, 85, 85, 170);
-		$colors = self::findColor($image, $colors, 85, 170, 85);
-		$colors = self::findColor($image, $colors, 170, 85, 85);
-		$colors = self::findColor($image, $colors, 170, 170, 85);
-		$colors = self::findColor($image, $colors, 170, 85, 170);
-		$colors = self::findColor($image, $colors, 85, 170, 170);
+		foreach($colors_build as $key => $value){
+			$colors[] = $key;
+		}
 		
 		imagedestroy($image);
 		unlink($dest);
 		
-		return $colors;
-	}
-	
-	private function findColor($image, $colors, $r, $g, $b){
-		$color = imagecolorsforindex($image, imagecolorclosest($image, $r, $g, $b));
-		$color = $color['red'] . ',' . $color['green'] . ',' . $color['blue'];
-		if(array_key_exists($color, $colors)){
-			$colors[$color]++;
-		}
-		else{
-			$colors[$color] = 1;
-		}
 		return $colors;
 	}
 	
