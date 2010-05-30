@@ -375,8 +375,17 @@ class Photo extends Alkaline{
 				
 				$color_present = false;
 				
+				// See if it's in the same color class
 				for($i = 0; $i < count($colors); ++$i){
 					if(($colors[$i]['r_approx'] == $r_approx) and ($colors[$i]['g_approx'] == $g_approx) and ($colors[$i]['b_approx'] == $b_approx)){
+						//If a more saturated color comes along in same color class, replace color
+						if($diff > $colors[$i]['diff']){
+							$colors[$i]['r'] = $r;
+							$colors[$i]['g'] = $g;
+							$colors[$i]['b'] = $b;
+						}
+						
+						// Add count either way
 						$colors[$i]['count']++;
 						$color_present = true;
 						break;
