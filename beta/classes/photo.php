@@ -397,7 +397,7 @@ class Photo extends Alkaline{
 		
 		array_multisort($diffs, SORT_DESC, $colors);
 		
-		$colors = array_slice($colors, 0, 8);
+		$colors = array_slice($colors, 0, PALETTE_SIZE);
 		
 		$counts = 0;
 		
@@ -408,9 +408,20 @@ class Photo extends Alkaline{
 		
 		$rgbs = array();
 		
+		$total = 0;
+		$rgb_last = '';
+		
 		foreach($colors as $color){
 			$rgb = $color['r'] . ',' . $color['g'] . ',' . $color['b'];
-			$rgbs[$rgb] = strval(round((($color['count'] / $counts) * 100), 1));
+			$percent = strval(round((($color['count'] / $counts) * 100), 1));
+			$total += $percent;
+			$rgbs[$rgb] = $percent;
+			$rgb_last = $rgb;
+		}
+		
+		if($total != 100){
+			$remaining = 100 - $total;
+			$rgbs[$rgb_last] += strval($remaining);
 		}
 		
 		imagedestroy($image);
