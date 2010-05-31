@@ -59,6 +59,14 @@ class Geo extends Alkaline{
 			if(strpos($geo, ',') === false){
 				$geo_city = trim($geo);
 			}
+			elseif(preg_match('/([^\,]+)\,([^\,]+)\,([^\,]*)/', $geo, $matches)){
+				$geo_city = trim($matches[1]);
+				$geo_state = self::convertAbbrev(trim($matches[2]));
+				$geo_country = self::convertAbbrev(trim($matches[3]));
+				if($geo_country != 'United States'){
+					unset($geo_state);
+				}
+			}
 			elseif(preg_match('/([^\,]+)\,([^\,]+)/', $geo, $matches)){
 				$geo_city = trim($matches[1]);
 				$geo_unknown = self::convertAbbrev(trim($matches[2]));
@@ -72,11 +80,6 @@ class Geo extends Alkaline{
 					$geo_country = $geo_unknown;
 				}
 				
-			}
-			elseif(preg_match('/([^\,]+)\,([^\,]+)\,([^\,]*)/', $geo, $matches)){
-				$geo_city = trim($matches[1]);
-				$geo_state = self::convertAbbrev(trim($matches[2]));
-				$geo_county = self::convertAbbrev(trim($matches[3]));
 			}
 			else{
 				return false;
