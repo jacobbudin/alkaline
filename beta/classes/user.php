@@ -78,6 +78,10 @@ class User extends Alkaline{
 		unset($this->user['user_pass']);
 		unset($this->user['user_key']);
 		
+		// Create arrays
+		unserialize($this->user['user_permissions']);
+		unserialize($this->user['user_preferences']);
+		
 		// Set default view type
 		$this->view_type = DEFAULT_VIEW_TYPE;
 		
@@ -117,6 +121,13 @@ class User extends Alkaline{
 			else{
 				return false;
 			}
+		}
+	}
+	
+	// Read preference key and return value
+	public function readPref($preference){
+		if(!empty($this->user['user_preferences'][$preference])){
+			return $this->user['user_preferences'][$preference];
 		}
 	}
 }
