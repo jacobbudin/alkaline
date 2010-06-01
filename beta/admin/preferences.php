@@ -55,7 +55,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td class="input"><input type="checkbox" name="shoe_geo" checked="checked" /></td>
 				<td class="description">
 					<strong>Import geolocation data</strong> (when available)<br />
-					Use <select name="shoe_geo_prov" style="font-size: .9em;"><option value="bing">Bing</option><option value="google">Google</option><option value="yahoo">Yahoo</option></select> to map the location
+					Use <select name="shoe_geo_prov" style="font-size: .9em;"><option value="bing">Bing</option><option value="google">Google</option><option value="yahoo">Yahoo</option></select> to map locations
 				</td>
 			</tr>
 			<tr>
