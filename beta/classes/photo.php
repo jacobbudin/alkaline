@@ -78,6 +78,7 @@ class Photo extends Alkaline{
 		if(@$import){
 			$this->sizePhoto();
 			$this->exifPhoto();
+			$this->readIPTC();
 		}
 	}
 	
@@ -118,9 +119,27 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	public function updateFields($array){
+	// UPDATE PHOTO TABLE
+	public function updateFields($array, $overwrite=true){
 		for($i = 0; $i < $this->photo_count; ++$i){
+			// Verify each key has changed; if not, unset the key
+			foreach($array as $key => $value){
+				if($array[$key] == $this->photos[$i][$key]){
+					unset($array[$key]);
+				}
+				if(!empty($this->photos[$i][$key]) and ($overwrite === false)){
+					unset($array[$key]);
+				}
+			}
+			
+			// If no keys have changed, break
+			if(count($array) == 0){
+				continue;
+			}
+			
 			$fields = array();
+			
+			// Prepare input
 			foreach($array as $key => $value){
 				if($key == 'photo_published'){
 					if(empty($value)){
@@ -140,8 +159,12 @@ class Photo extends Alkaline{
 					$fields[] = $key . ' = "' . $value . '"';
 				}
 			}
+			
+			// Set photo_updated field to now
 			$fields[] = 'photo_updated = "' . date('Y-m-d H:i:s') . '"';
 			$sql = implode(', ', $fields);
+			
+			// Update table
 			$this->db->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
@@ -446,6 +469,99 @@ class Photo extends Alkaline{
 				}
 			}
 		}
+	}
+	
+	public function readIPTC(){
+		for($i = 0; $i < $this->photo_count; ++$i){
+			// Read IPTC data
+			$size = getimagesize($this->photos[$i]['photo_file'], $info);
+			
+			if(isset($info['APP13']))
+			{
+				// Parse IPTC data
+			    $iptc = iptcparse($info['APP13']);
+				
+				$title = (!empty($iptc["2#105"][0])) ? $iptc["2#105"][0] : '';
+				$description = (!empty($iptc["2#120"][0])) ? $iptc["2#120"][0] : '';
+				$tags = (!empty($iptc["2#025"][0])) ? $iptc['2#025'] : array();
+				$city = (!empty($iptc["2#090"][0])) ? $iptc["2#090"][0] : '';
+				$state = (!empty($iptc["2#095"][0])) ? $iptc["2#095"][0] : '';
+				$country = (!empty($iptc["2#101"][0])) ? $iptc["2#101"][0] : '';
+			}
+			
+			// Clean input
+			$title = trim($title);
+			$description = trim($description);
+			$tags = array_unique(array_map('trim', $tags));
+			
+			// If there are tags, add them (IPTC keywords)
+			if(count($tags) > 0){
+				
+				// Find tags that already exist, add links
+				$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE "' . implode('" OR LOWER(tags.tag_name) LIKE "', $tags) . '";');
+				$query->execute();
+				$tags_db = $query->fetchAll();
+				
+				foreach($tags_db as $tag){
+					// Remove from tags input
+					$tag_key = array_search($tag['tag_name'], $tags);
+					unset($tags[$tag_key]);
+					
+					// Add link
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag['tag_id'] . ');';
+					$this->db->exec($query);
+				}
+				
+				// For tags that don't exist, add tags and links
+				foreach($tags as $tag){
+					// Add tag
+					$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
+					$this->db->exec($query);
+					$tag_id = $this->db->lastInsertId();
+					
+					// Add link
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+					$this->db->exec($query);
+				}
+			}
+			
+			if(!empty($city)){
+				// Require geography class
+				require_once('geo.php');
+				
+				$place = $city;
+				
+				if(!empty($state)){
+					$place .= ', ' . $state;
+				}
+				
+				if(!empty($country)){
+					$place .= ', ' . $country;
+				}
+				
+				// Locate place
+				if($place = new Geo($place)){
+					$geo = $place->city['city_name'];
+					if(!empty($place->city['city_state'])){
+						$geo .= ', ' . $place->city['city_state'];
+					}
+					$geo .= ', ' . $place->city['country_name'];
+					$geo_lat = $place->city['city_lat'];
+					$geo_long = $place->city['city_long'];
+				}
+			}
+			
+			$fields = array('photo_title' => $title,
+				'photo_description' => $description,
+				'photo_geo' => $geo,
+				'photo_geo_lat' => $geo_lat,
+				'photo_geo_long' => $geo_long);
+			
+			$photo = new Photo($this->photos[$i]['photo_id']);
+			$photo->updateFields($fields, false);
+		}
+		
+		return true;
 	}
 	
 	// Increase photos.photo_views by 1
