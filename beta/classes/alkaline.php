@@ -121,6 +121,9 @@ class Alkaline{
 				$input = array_map('trim', $input);
 			}
 		}
+		elseif(is_int($input)){
+			$input = array($input);
+		}
 	}
 
 	// Convert a possible string or integer into an array of integers
