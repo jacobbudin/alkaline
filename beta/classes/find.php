@@ -102,8 +102,15 @@ class Find extends Alkaline{
 		
 		parent::convertToArray($tags);
 		
-		// Find requested tags that exist
-		$query = $this->db->prepare('SELECT * FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+		// Find tags in database
+		if(is_int($tags[0])){
+			parent::convertToIntegerArray($tags);
+			$query = $this->db->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
+		}
+		else{
+			$query = $this->db->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+		}
+		
 		$query->execute();
 		$this->tags = $query->fetchAll();
 		
@@ -133,8 +140,14 @@ class Find extends Alkaline{
 		
 		parent::convertToArray($tags);
 		
-		// Find requested tags that exist
-		$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+		// Find photos with these tags in database
+		if(is_int($tags[0])){
+			parent::convertToIntegerArray($tags);
+			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+		}
+		else{
+			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+		}
 		$query->execute();
 		$this->photos = $query->fetchAll();
 		
@@ -153,13 +166,11 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY PILE
-	public function piles($piles=null){
+	public function piles($pile=null){
 		// Error checking
-		if(empty($piles)){ return false; }
+		if(empty($pile)){ return false; }
 		
-		parent::convertToArray($piles);
-		
-		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query = $this->db->prepare('SELECT * FROM piles WHERE LOWER(piles.title) LIKE "' . $pile . '";');
 		$query->execute();
 		$piles = $query->fetchAll();
 		
