@@ -2,6 +2,7 @@
 
 class Geo extends Alkaline{
 	public $city;
+	public $states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY');
 	public $sql;
 	protected $sql_conds;
 	protected $sql_limit;
@@ -71,9 +72,7 @@ class Geo extends Alkaline{
 				$geo_city = trim($matches[1]);
 				$geo_unknown = self::convertAbbrev(trim($matches[2]));
 				
-				$states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY');
-				
-				if(in_array(strtoupper($geo_unknown), $states)){
+				if(in_array(strtoupper($geo_unknown), $this->states)){
 					$geo_state = $geo_unknown;
 				}
 				else{
@@ -144,6 +143,10 @@ class Geo extends Alkaline{
 		}
 		
 		$this->city = $cities[0];
+		
+		if(!in_array(strtoupper($this->city['city_state']), $this->states)){
+			$this->city['city_state'] = '';
+		}
 		
 		return true;
 	}
