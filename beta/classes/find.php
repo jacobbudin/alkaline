@@ -98,11 +98,38 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY TAGS
-	public function tagsBOOL($tags=null){
+	public function tags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
+		if(!preg_match('/(NOT|OR|AND)/', $tags)){
+			$pieces = array($tags, 'AND');
+		}
+		else{
+			$pieces = preg_split('/(NOT|OR|AND)/', $tags, null, PREG_SPLIT_DELIM_CAPTURE);
+		}
+		$pieces = array_map('trim', $pieces);
+
+		$any = array();
+		$any_count = count(array_keys($pieces, 'OR'));
+		$all = array();
+		$not = array();
+
+		for($i = 0; $i < count($pieces); ++$i){
+			if(@$pieces[$i - 1] == 'NOT'){
+				$not[] = $pieces[$i];
+			}
+			if(((@$pieces[$i + 1] == 'OR') or (@$pieces[$i - 1] == 'OR')) and !in_array($pieces[$i], $any)){
+				$any[] = $pieces[$i];
+			}
+			if(((@$pieces[$i + 1] == 'AND') or (@$pieces[$i - 1] == 'AND')) and !in_array($pieces[$i], $any)){
+				$all[] = $pieces[$i];
+			}
+		}
 		
+		self::anyTags($any, $any_count);
+		self::allTags($all);
+		self::notTags($not);
 	}
 	
 	public function anyTags($tags=null, $count=1){
