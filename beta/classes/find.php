@@ -23,6 +23,7 @@ class Find extends Alkaline{
 	protected $sql_join_on;
 	protected $sql_group_by;
 	protected $sql_having;
+	protected $sql_injection;
 	protected $sql_having_fields;
 	protected $sql_order_by;
 	protected $sql_where;
@@ -44,6 +45,7 @@ class Find extends Alkaline{
 		$this->sql_join_on = array();
 		$this->sql_group_by = ' GROUP BY photos.photo_id';
 		$this->sql_having = '';
+		$this->sql_injection = '';
 		$this->sql_having_fields = array();
 		$this->sql_order_by = '';
 		$this->sql_where = '';
@@ -54,7 +56,7 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY DATE UPLOADED
-	public function findByUploaded($begin=null, $end=null){
+	public function uploaded($begin=null, $end=null){
 		// Error checking
 		if(empty($begin) and empty($end)){ return false; }
 		
@@ -78,7 +80,7 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY VIEWS
-	public function findByViews($min=null, $max=null){
+	public function views($min=null, $max=null){
 		// Error checking
 		if(empty($max) and empty($min)){ return false; }
 		
@@ -96,7 +98,14 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY TAGS
-	public function tags($tags=null, $match='all'){
+	public function tagsBOOL($tags=null){
+		// Error checking
+		if(empty($tags)){ return false; }
+		
+		
+	}
+	
+	public function anyTags($tags=null, $count=1){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -124,9 +133,7 @@ class Find extends Alkaline{
 		$this->sql_join_tables[] = 'links';
 		$this->sql_join_type = 'INNER JOIN';
 		
-		if($match == 'all'){
-			$this->sql_having_fields[] = 'COUNT(*) = ' . count($tags);
-		}
+		$this->sql_having_fields[] = 'COUNT(*) = ' . intval($count);
 		
 		// Set tags to find
 		$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
@@ -134,7 +141,7 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	public function excludeTags($tags=null){
+	public function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -143,7 +150,36 @@ class Find extends Alkaline{
 		// Find photos with these tags in database
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+		}
+		else{
+			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+		}
+		$query->execute();
+		$this->photos = $query->fetchAll();
+		
+		// Compile photo IDs
+		$include_photo_ids = array();	
+		foreach($this->photos as $photo){
+			$include_photo_ids[] = $photo['photo_id'];
+		}
+		
+		// Set fields to search
+		$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $include_photo_ids) . ')';
+		
+		return true;
+	}
+	
+	public function notTags($tags=null){
+		// Error checking
+		if(empty($tags)){ return false; }
+		
+		parent::convertToArray($tags);
+		
+		// Find photos with these tags in database
+		if(is_int($tags[0])){
+			parent::convertToIntegerArray($tags);
+			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 		}
 		else{
 			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
@@ -158,30 +194,21 @@ class Find extends Alkaline{
 		}
 		
 		// Set fields to search
-		foreach($exclude_photo_ids as $exclude_photo_id){
-			$this->sql_conds[] = 'photos.photo_id != ' . $exclude_photo_id;
-		}
+		$this->sql_conds[] = 'photos.photo_id NOT IN (' . implode(', ', $exclude_photo_ids) . ')';
 		
 		return true;
 	}
 	
 	// FIND BY PILE
-	public function piles($pile=null){
+	public function pile($pile=null){
 		// Error checking
 		if(empty($pile)){ return false; }
 		
-		$query = $this->db->prepare('SELECT * FROM piles WHERE LOWER(piles.title) LIKE "' . $pile . '";');
+		$query = $this->db->prepare('SELECT pile_sql FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0,1;');
 		$query->execute();
 		$piles = $query->fetchAll();
 		
-		// Add tables to query
-		$this->sql_tables[] = 'links';
-		$this->sql_tables[] = 'tags';
-		
-		// Set fields to search
-		foreach($tags as $tag){
-			$this->sql_conds[] = '(photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND tags.tag_name = "' . $tag . '")';
-		}
+		$this->sql_injection = $piles[0]['pile_sql'];
 		
 		return true;
 	}
@@ -248,24 +275,30 @@ class Find extends Alkaline{
 	
 	// EXECUTE QUERY
 	public function exec(){
-		// Prepare SQL conditions
-		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
-		
-		if(count($this->sql_conds) > 0){
-			$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
+		// Inject stored SQL
+		if(!empty($this->sql_injection)){
+			$this->sql = $this->sql_injection;
 		}
-		if(count($this->sql_sorts) > 0){
-			$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
+		// Prepare SQL
+		else{
+			$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
+	
+			if(count($this->sql_conds) > 0){
+				$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
+			}
+			if(count($this->sql_sorts) > 0){
+				$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
+			}
+			if((count($this->sql_join_on) > 0) and (count($this->sql_join_tables) > 0) and (!empty($this->sql_join_type))){
+				$this->sql_join = ' ' . $this->sql_join_type . ' ' . implode(', ', $this->sql_join_tables) . ' ON ' . implode(', ', $this->sql_join_on);
+			}
+			if(count($this->sql_having_fields) > 0){
+				$this->sql_having = ' HAVING ' . implode(', ', $this->sql_having_fields);
+			}
+	
+			// Prepare query without limit
+			$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
 		}
-		if((count($this->sql_join_on) > 0) and (count($this->sql_join_tables) > 0) and (!empty($this->sql_join_type))){
-			$this->sql_join = ' ' . $this->sql_join_type . ' ' . implode(', ', $this->sql_join_tables) . ' ON ' . implode(', ', $this->sql_join_on);
-		}
-		if(count($this->sql_having_fields) > 0){
-			$this->sql_having = ' HAVING ' . implode(', ', $this->sql_having_fields);
-		}
-		
-		// Prepare query without limit
-		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);
@@ -277,8 +310,6 @@ class Find extends Alkaline{
 		
 		// Add order, limit
 		$this->sql .= $this->sql_order_by . $this->sql_limit;
-		
-		// echo $this->sql;
 		
 		// Execute query with order, limit
 		$query = $this->db->prepare($this->sql);

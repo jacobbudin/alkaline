@@ -17,13 +17,16 @@ $header->output();
 
 $photo_ids = new Find();
 // $photo_ids->search('abacus');
-// $photo_ids->findByUploaded('2010', '2011');
-// $photo_ids->findByViews(1,2);
-$photo_ids->sort('photos.photo_published', 'DESC');
+// $photo_ids->uploaded('2010', '2011');
+// $photo_ids->views(1,2);
+// $photo_ids->sort('photos.photo_published', 'DESC');
 $photo_ids->page(1,5);
-$photo_ids->tags(2);
-$photo_ids->excludeTags(1);
+$array = array(2, 4, 5);
+$photo_ids->anyTags($array);
+$photo_ids->allTags(2);
+$photo_ids->notTags(1);
 $photo_ids->published();
+// $photo_ids->pile('fun');
 $photo_ids->exec();
 
 $photos = new Photo($photo_ids->photo_ids);
