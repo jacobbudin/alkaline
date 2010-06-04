@@ -78,8 +78,6 @@ class Geo extends Alkaline{
 			'WV' => 'West Virginia',
 			'WI' => 'Wisconsin',
 			'WY' => 'Wyoming');
-		$this->states_abbrev = array_keys($this->states);
-		$this->states_full = array_values($this->states);
 		
 		$this->sql = 'SELECT *';
 		$this->sql_conds = array();
@@ -136,8 +134,11 @@ class Geo extends Alkaline{
 				$geo_city = trim($matches[1]);
 				$geo_unknown = self::convertAbbrev(trim($matches[2]));
 				
-				if(in_array(strtoupper($geo_unknown), $this->states_abbrev) or in_array(strtoupper($geo_unknown), $this->states_full)){
+				if(array_key_exists(strtoupper($geo_unknown), $this->states)){
 					$geo_state = $geo_unknown;
+				}
+				elseif($geo_state_abbrev = array_search(ucfirst($geo_unknown), $this->states, false)){
+					$geo_state = $geo_state_abbrev;
 				}
 				else{
 					$geo_country = $geo_unknown;
@@ -208,7 +209,7 @@ class Geo extends Alkaline{
 		
 		$this->city = $cities[0];
 		
-		if(!in_array(strtoupper($this->city['city_state']), $this->states_abbrev) and !in_array(strtoupper($this->city['city_state']), $this->states_full)){
+		if(!array_key_exists(strtoupper($this->city['city_state']), $this->states)){
 			$this->city['city_state'] = '';
 		}
 		
