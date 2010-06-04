@@ -15,6 +15,13 @@ class Canvas extends Alkaline{
 		parent::__destruct();
 	}
 	
+	public function __toString(){
+		self::generate();
+		
+		// Return unevaluated
+		return $this->template;
+	}
+	
 	public function append($template){
 		 $this->template .= $template . "\n";
 	}
@@ -47,16 +54,23 @@ class Canvas extends Alkaline{
 			$template .= $loop;
 		}
 		$this->template = preg_replace('/\<!-- LOOP\(' . $array . '\) --\>(.*)\<!-- ENDLOOP\(' . $array . '\) --\>/s', $template, $this->template);
+		return true;
 	}
 	
-	public function output(){
+	public function generate(){
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ELSEIF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '$2', $this->template);
 		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '', $this->template);
+		return true;
+	}
+	
+	public function display(){
+		self::generate();
 		
-		// Evaluate and echo
+		// Echo after evaluating
 		echo @eval('?>' . $this->template);
 	}
+	
 }
 
 ?>

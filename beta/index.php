@@ -13,7 +13,7 @@ $alkaline->recordStat('home');
 $header = new Canvas();
 $header->load('header');
 $header->setVar('TITLE', 'Home Page - ' . SITE);
-$header->output();
+$header->display();
 
 $photo_ids = new Find();
 // $photo_ids->search('abacus');
@@ -41,10 +41,10 @@ $index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
 $index->setVar('PAGE_CURRENT', $photo_ids->page);
 $index->setArray('THUMBNAILS', 'PHOTO', $photos->photos);
 $index->setArray('PHOTOS', 'PHOTO', $photos->photos);
-$index->output();
+$index->display();
 
 $footer = new Canvas();
 $footer->load('footer');
-$footer->output();
+$footer->display();
 
 ?>
