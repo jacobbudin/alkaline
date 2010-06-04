@@ -151,6 +151,20 @@ class Geo extends Alkaline{
 		return true;
 	}
 	
+	public function __destruct(){
+		parent::__destruct();
+	}
+	
+	public function __toString(){
+        $str = $this->city['city_name'];
+		$str .= '<br />' . "\n";
+		$str .= '(' . $this->city['city_lat'] . ', ' . $this->city['city_long'] . ')';
+		$str .= '<br />' . "\n";
+		$str .= (!empty($this->city['city_state'])) ? $this->city['city_state'] . ', ' : null;
+		$str .= $this->city['country_name'];
+		return $str;
+    }
+	
 	protected function convertAbbrev($var){
 		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland');
 		$countries = array('United States', 'United States', 'United States', 'United Kingdom', 'United Arab Emirates', 'Netherlands');

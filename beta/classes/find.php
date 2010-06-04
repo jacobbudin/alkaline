@@ -55,6 +55,10 @@ class Find extends Alkaline{
 		parent::__destruct();
 	}
 	
+	public function __toString(){
+        return implode(', ', $this->photo_ids);
+    }
+	
 	// FIND BY DATE UPLOADED
 	public function uploaded($begin=null, $end=null){
 		// Error checking
