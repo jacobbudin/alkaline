@@ -2,8 +2,11 @@
 
 class Geo extends Alkaline{
 	public $city;
-	public $states = array('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY');
-	public $sql;
+	public $states;
+	public $states_abbrev;
+	public $states_full;
+	
+	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
 	protected $sql_sort;
@@ -16,7 +19,68 @@ class Geo extends Alkaline{
 		parent::__construct();
 		
 		// Store data to object
-		$this->photo_ids = array();
+		$this->states = array('AL' => 'Alabama',
+			'AK' => 'Alaska',
+			'AS' => 'American Samoa',
+			'AZ' => 'Arizona',
+			'AR' => 'Arkansas',
+			'CA' => 'California',
+			'CO' => 'Colorado',
+			'CT' => 'Connecticut',
+			'DE' => 'Delaware',
+			'DC' => 'District of Columbia',
+			'FM' => 'Federated States of Micronesia',
+			'FL' => 'Florida',
+			'GA' => 'Georgia',
+			'GU' => 'Guam',
+			'HI' => 'Hawaii',
+			'ID' => 'Idaho',
+			'IL' => 'Illinois',
+			'IN' => 'Indiana',
+			'IA' => 'Iowa',
+			'KS' => 'Kansas',
+			'KY' => 'Kentucky',
+			'LA' => 'Louisiana',
+			'ME' => 'Maine',
+			'MH' => 'Marshall Islands',
+			'MD' => 'Maryland',
+			'MA' => 'Massachusetts',
+			'MI' => 'Michigan',
+			'MN' => 'Minnesota',
+			'MS' => 'Mississippi',
+			'MO' => 'Missouri',
+			'MT' => 'Montana',
+			'NE' => 'Nebraska',
+			'NV' => 'Nevada',
+			'NH' => 'New Hampshire',
+			'NJ' => 'New Jersey',
+			'NM' => 'New Mexico',
+			'NY' => 'New York',
+			'NC' => 'North Carolina',
+			'ND' => 'North Dakota',
+			'MP' => 'Northern Mariana Islands',
+			'OH' => 'Ohio',
+			'OK' => 'Oklahoma',
+			'OR' => 'Oregon',
+			'PW' => 'Palau',
+			'PA' => 'Pennsylvania',
+			'PR' => 'Puerto Rico',
+			'RI' => 'Rhode Island',
+			'SC' => 'South Carolina',
+			'SD' => 'South Dakota',
+			'TN' => 'Tennessee',
+			'TX' => 'Texas',
+			'UT' => 'Utah',
+			'VT' => 'Vermont',
+			'VI' => 'Virgin Islands',
+			'VA' => 'Virginia',
+			'WA' => 'Washington',
+			'WV' => 'West Virginia',
+			'WI' => 'Wisconsin',
+			'WY' => 'Wyoming');
+		$this->states_abbrev = array_keys($this->states);
+		$this->states_full = array_values($this->states);
+		
 		$this->sql = 'SELECT *';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
@@ -72,7 +136,7 @@ class Geo extends Alkaline{
 				$geo_city = trim($matches[1]);
 				$geo_unknown = self::convertAbbrev(trim($matches[2]));
 				
-				if(in_array(strtoupper($geo_unknown), $this->states)){
+				if(in_array(strtoupper($geo_unknown), $this->states_abbrev) or in_array(strtoupper($geo_unknown), $this->states_full)){
 					$geo_state = $geo_unknown;
 				}
 				else{
@@ -144,7 +208,7 @@ class Geo extends Alkaline{
 		
 		$this->city = $cities[0];
 		
-		if(!in_array(strtoupper($this->city['city_state']), $this->states)){
+		if(!in_array(strtoupper($this->city['city_state']), $this->states_abbrev) and !in_array(strtoupper($this->city['city_state']), $this->states_full)){
 			$this->city['city_state'] = '';
 		}
 		
