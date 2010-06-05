@@ -51,12 +51,12 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	<title><?php echo SITE; ?></title>
 	<updated><?php echo date('c'); ?></updated>
 	<link href="<?php echo BASE; ?>"/>
-	<link rel="self" type="application/atom+xml" href="<?php echo DOMAIN . BASE; ?>atom.php" />
-	<id>tag:<?php echo SERVER; ?>,2010:/</id>
+	<link rel="self" type="application/atom+xml" href="<?php echo LOCATION . BASE; ?>atom.php" />
+	<id>tag:<?php echo DOMAIN; ?>,2010:/</id>
 	<author>
 		<name><?php echo OWNER; ?></name>
 	</author>
 	
-	<?php $entries->output(); ?>
+	<?php echo $entries; ?>
 
 </feed>
