@@ -2,6 +2,7 @@
 
 class Photo extends Alkaline{
 	public $photos;
+	public $comments;
 	public $photo_columns;
 	public $photo_count;
 	public $photo_ids;
@@ -617,7 +618,7 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Generate tags for images
+	// Retrieve image tags
 	public function getTags(){
 		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
@@ -632,6 +633,23 @@ class Photo extends Alkaline{
 				}
 				else{
 					$this->photos[$key]['photo_tags'] .= ', ' . $tag['tag_name']; 
+				}
+			}
+		}
+	}
+	
+	// Retrieve image comments
+	public function getComments(){
+		$query = $this->db->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
+		$query->execute();
+		$comments = $query->fetchAll();
+		
+		$this->comments = array();
+		
+		foreach($this->photo_ids as $photo_id){
+			foreach($comments as $comment){
+				if($photo_id == $comment['photo_id']){
+					$this->comments[] = $comment;
 				}
 			}
 		}

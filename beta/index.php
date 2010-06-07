@@ -33,6 +33,7 @@ $photos->getImgUrl('square');
 $photos->getImgUrl('medium');
 $photos->getExif();
 $photos->getTags();
+$photos->getComments();
 
 $index = new Canvas();
 $index->load('index');
