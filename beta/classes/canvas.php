@@ -36,7 +36,7 @@ class Canvas extends Alkaline{
 		
 		// Remove conditional
 		$this->template = str_replace('<!-- IF(' . $var . ') -->', '', $this->template);
-		$this->template = str_replace('<!-- ENDIF(' . $var . ') -->)', '', $this->template);
+		$this->template = preg_replace('/\<!-- ELSEIF\(' . $var . '\) --\>(.*?)\<!-- ENDIF\(' . $var . '\) --\>/s', '', $this->template);
 		return true;
 	}
 	
@@ -75,10 +75,13 @@ class Canvas extends Alkaline{
 				$comments_template = '';
 			
 				for($j = 0; $j < count($array->comments); ++$j){
-					$loop_commments = $loop_commments_template;
+					$loop_commments = '';
 					
 					foreach($array->comments[$j] as $key => $value){
 						if($array->comments[$j]['photo_id'] == $array->photos[$i]['photo_id']){
+							if(empty($loop_commments)){
+								$loop_commments = $loop_commments_template;
+							}
 							if(is_array($value)){
 								$value = var_export($value, true);
 								$loop_commments = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_commments);
