@@ -11,6 +11,11 @@ class Photo extends Alkaline{
 	
 	public function __construct($photos){
 		parent::__construct();
+		
+		if(is_object($photos)){
+			$photos = $photos->photo_ids;
+		}
+		
 		parent::convertToArray($photos);
 		
 		$this->user['user_id'] = DEFAULT_USER_ID;

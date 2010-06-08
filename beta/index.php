@@ -26,7 +26,7 @@ $photo_ids->published();
 // $photo_ids->pile('fun');
 $photo_ids->exec();
 
-$photos = new Photo($photo_ids->photo_ids);
+$photos = new Photo($photo_ids);
 // $photos->updateViews();
 $photos->formatTime();
 $photos->getImgUrl('square');

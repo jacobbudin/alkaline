@@ -15,7 +15,7 @@ $photo_ids->page(1,20);
 $photo_ids->published();
 $photo_ids->exec();
 
-$photos = new Photo($photo_ids->photo_ids);
+$photos = new Photo($photo_ids);
 $photos->getImgUrl('medium');
 $photos->formatTime('c');
 
@@ -40,7 +40,7 @@ $entries = new Canvas('
 <!-- ENDLOOP(PHOTOS) -->');
 $entries->setVar('BASE', BASE);
 $entries->setVar('DOMAIN', DOMAIN);
-$entries->setArray('PHOTOS', 'PHOTO', $photos->photos);
+$entries->setPhotos($photos);
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
 
