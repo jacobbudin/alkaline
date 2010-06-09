@@ -79,8 +79,8 @@ class User extends Alkaline{
 		unset($this->user['user_key']);
 		
 		// Create arrays
-		unserialize($this->user['user_permissions']);
-		unserialize($this->user['user_preferences']);
+		$this->user['user_permissions'] = unserialize($this->user['user_permissions']);
+		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
 		
 		// Set default view type
 		$this->view_type = DEFAULT_VIEW_TYPE;
@@ -124,11 +124,44 @@ class User extends Alkaline{
 		}
 	}
 	
+	// Set preference key
+	public function setPref($name, $unset=''){
+		return parent::setForm($this->user['user_preferences'], $name, $unset);
+	}
+	
 	// Read preference key and return value
-	public function readPref($preference){
-		if(!empty($this->user['user_preferences'][$preference])){
-			return $this->user['user_preferences'][$preference];
+	public function readPref($name, $check=true){
+		return parent::readForm($this->user['user_preferences'], $name, $check);
+	}
+	
+	// UPDATE USER TABLE
+	public function updateFields($array, $overwrite=true){
+		// Verify each key has changed; if not, unset the key
+		foreach($array as $key => $value){
+			if($array[$key] == $this->user[$key]){
+				unset($array[$key]);
+			}
+			if(!empty($this->user[$key]) and ($overwrite === false)){
+				unset($array[$key]);
+			}
 		}
+		
+		// If no keys have changed, break
+		if(count($array) == 0){
+			continue;
+		}
+		
+		$fields = array();
+		
+		// Prepare input
+		foreach($array as $key => $value){
+			$fields[] = $key . ' = "' . addslashes($value) . '"';
+		}
+		
+		$sql = implode(', ', $fields);
+		
+		// Update table
+		$this->db->exec('UPDATE users SET ' . $sql . ' WHERE user_id = ' . $this->user['user_id'] . ';');
 	}
 }
 

@@ -214,6 +214,37 @@ class Alkaline{
 		$this->db->exec($query);
 	}
 	
+	public function setForm(&$array, $name, $unset=''){
+		@$value = $_POST[$name];
+		if(!isset($value)){
+			$array[$name] = $unset;
+		}
+		elseif(empty($value)){
+			$array[$name] = '';
+		}
+		elseif($value == 'on'){
+			$array[$name] = 1;
+		}
+		else{
+			$array[$name] = $value;
+		}
+	}
+	
+	public function readForm($array, $name, $check=true){
+		@$value = $array[$name];
+		if(!isset($value)){
+			return false;
+		}
+		elseif($check === true){
+			if($value == 1){
+				return 'checked="checked"';
+			}
+		}
+		else{
+			return 'value="' . $value . '"';
+		}
+	}
+	
 }
 
 ?>

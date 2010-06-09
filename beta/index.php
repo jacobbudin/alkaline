@@ -40,8 +40,6 @@ $index->load('index');
 $index->setVar('PAGE_NEXT', $photo_ids->page_next);
 $index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
 $index->setVar('PAGE_CURRENT', $photo_ids->page);
-// $index->setArray('THUMBNAILS', 'PHOTO', $photos);
-// $index->setArray('PHOTOS', 'PHOTO', $photos);
 $index->setPhotos($photos);
 $index->display();
 
