@@ -162,7 +162,7 @@ class Photo extends Alkaline{
 					}
 				}
 				else{
-					$fields[] = $key . ' = "' . $value . '"';
+					$fields[] = $key . ' = "' . addslashes($value) . '"';
 				}
 			}
 			
