@@ -9,6 +9,7 @@ require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline();
 $alkaline->recordStat('home');
+$alkaline->hookOrbit('photo_upload', 1, 2);
 
 $header = new Canvas();
 $header->load('header');

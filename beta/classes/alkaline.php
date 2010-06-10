@@ -3,6 +3,7 @@
 class Alkaline{
 	public $build = '1';
 	public $version = 'Alpha (May 19)';
+	public $extensions;
 	public $js;
 	
 	protected $db;
@@ -81,6 +82,8 @@ class Alkaline{
 			unset($_SESSION['notifications']);
 			unset($this->notifications);
 			$this->notifications = array();
+			
+			return $count;
 		}
 		else{
 			return false;
@@ -245,6 +248,50 @@ class Alkaline{
 		}
 	}
 	
+	// LOAD EXTENSIONS
+	private function loadOrbit(){
+		if(!isset($this->extensions)){
+			$query = $this->db->prepare('SELECT extension_uid, extension_class, extension_hooks, extension_preferences FROM extensions WHERE extension_status > 0 ORDER BY extension_build ASC, extension_id ASC;');
+			$query->execute();
+			$extensions = $query->fetchAll();
+
+			$this->extensions = array();
+
+			foreach($extensions as $extension){
+				$extension_uid = strval($extension['extension_uid']);
+				$extension_file = PATH . EXTENSIONS . strtolower($extension['extension_class']) . '.php';
+				$extension_hooks = unserialize($extension['extension_hooks']);
+				$extension_preferences = unserialize($extension['extension_preferences']);
+				$this->extensions[$extension_uid] = array('extension_file' => $extension_file,
+					'extension_class' => $extension['extension_class'],
+					'extension_hooks' => $extension_hooks,
+					'extension_preferences' => $extension_preferences);
+			}
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	// EXECUTE EXTENSIONS AT HOOK
+	public function hookOrbit($hook){
+		// Load extensions
+		self::loadOrbit();
+		
+		// Find arguments
+		$arguments = func_get_args();
+		$arguments = array_slice($arguments, 1);
+		
+		// Find respective extensions, execute their code
+		foreach($this->extensions as $extension){
+			if(in_array($hook, $extension['extension_hooks'])){
+				include($extension['extension_file']);
+				$orbit = new $extension['extension_class']();
+				call_user_func_array(array($orbit, $hook), $arguments);
+			}
+		}
+	}
 }
 
 ?>

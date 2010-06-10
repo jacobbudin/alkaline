@@ -83,6 +83,7 @@ define('COLOR_TOLERANCE', $color_tolerance);
 define('ADMIN', 'admin/');
 define('CLASSES', 'classes/');
 define('CSS', 'css/');
+define('EXTENSIONS', 'extensions/');
 define('FUNCTIONS', 'functions/');
 define('JS', 'js/');
 define('IMAGES', 'images/');
