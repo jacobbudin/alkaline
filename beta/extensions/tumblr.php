@@ -2,7 +2,7 @@
 
 class Tumblr extends Orbit{
 	public function __construct(){
-		parent::__construct();
+		parent::__construct('Tumblr');
 	}
 	
 	public function __destruct(){

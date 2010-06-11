@@ -1,8 +1,12 @@
 <?php
 
 class Twitter extends Orbit{
+	public $twitter;
+	
 	public function __construct(){
-		parent::__construct();
+		parent::__construct('Twitter');
+		$this->fetch('twitter.php');
+		$this->twitter = new Twitter_Helper('alkalineapp', 'gkek573');
 	}
 	
 	public function __destruct(){
@@ -10,10 +14,8 @@ class Twitter extends Orbit{
 	}
 	
 	function photo_upload($photo_ids){
-		$query = $this->prepare('SELECT extension_uid, extension_class, extension_hooks, extension_preferences FROM extensions WHERE extension_status > 0 ORDER BY extension_build ASC, extension_id ASC;');
-		$query->execute();
-		$extensions = $query->fetchAll();
-		// var_dump($extensions);
+		$status = 'I just uploaded a photo.';
+		echo $this->twitter->updateStatus($status);
 	}
 }
 
