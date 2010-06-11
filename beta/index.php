@@ -4,12 +4,15 @@ require_once('./config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 require_once(PATH . CLASSES . 'canvas.php');
 require_once(PATH . CLASSES . 'find.php');
+require_once(PATH . CLASSES . 'orbit.php');
 require_once(PATH . CLASSES . 'photo.php');
 require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline();
 $alkaline->recordStat('home');
-$alkaline->hookOrbit('photo_upload', 1, 2);
+
+$orbit = new Orbit();
+$orbit->hook('photo_upload', 1, 2);
 
 $header = new Canvas();
 $header->load('header');
