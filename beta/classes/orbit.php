@@ -4,6 +4,7 @@ class Orbit extends Alkaline{
 	public $class;
 	public $uid;
 	public $extensions;
+	public $extension_count;
 	public $preferences;
 	public $sandbox;
 	private $db_safe;
@@ -16,7 +17,7 @@ class Orbit extends Alkaline{
 		unset($this->db);
 		
 		if(empty($uid)){
-			$query = $this->db_safe->prepare('SELECT extension_uid, extension_class, extension_hooks, extension_preferences FROM extensions WHERE extension_status > 0 ORDER BY extension_build ASC, extension_id ASC;');
+			$query = $this->db_safe->prepare('SELECT extension_uid, extension_title, extension_class, extension_hooks, extension_preferences FROM extensions WHERE extension_status > 0 ORDER BY extension_build ASC, extension_id ASC;');
 			$query->execute();
 			$extensions = $query->fetchAll();
 
@@ -25,11 +26,15 @@ class Orbit extends Alkaline{
 			foreach($extensions as $extension){
 				$extension_uid = strval($extension['extension_uid']);
 				$extension_file = PATH . EXTENSIONS . strtolower($extension['extension_class']) . '.php';
+				$extension_title = $extension['extension_title'];
 				$extension_hooks = unserialize($extension['extension_hooks']);
 				$this->extensions[$extension_uid] = array('extension_file' => $extension_file,
+					'extension_title' => $extension_title,
 					'extension_class' => $extension['extension_class'],
 					'extension_hooks' => $extension_hooks);
 			}
+			
+			$this->extension_count = count($this->extensions);
 		}
 		else{
 			$query = $this->db_safe->prepare('SELECT extension_class, extension_preferences FROM extensions WHERE extension_uid = "' . $this->uid . '" AND extension_status > 0;');
