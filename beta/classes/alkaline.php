@@ -256,7 +256,7 @@ class Alkaline{
 	public function findID($string){
 		$matches = array();
 		preg_match('/([0-9]+)/s', $string, $matches);
-		return $matches[1];
+		return @$matches[1];
 	}
 }
 
