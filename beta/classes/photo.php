@@ -647,17 +647,7 @@ class Photo extends Alkaline{
 	public function getComments(){
 		$query = $this->db->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
 		$query->execute();
-		$comments = $query->fetchAll();
-		
-		$this->comments = array();
-		
-		foreach($this->photo_ids as $photo_id){
-			foreach($comments as $comment){
-				if($photo_id == $comment['photo_id']){
-					$this->comments[] = $comment;
-				}
-			}
-		}
+		$this->comments = $query->fetchAll();
 	}
 	
 	// Delete photo thumbnails
