@@ -34,9 +34,9 @@ $entries = new Canvas('
 		<link rel="enclosure" type="<!-- PHOTO_MIME -->" href="<!-- DOMAIN --><!-- PHOTO_SRC_MEDIUM -->" />
 	</entry>
 <!-- ENDLOOP(PHOTOS) -->');
-$entries->setVar('BASE', BASE);
-$entries->setVar('DOMAIN', DOMAIN);
-$entries->setPhotos($photos);
+$entries->assign('BASE', BASE);
+$entries->assign('DOMAIN', DOMAIN);
+$entries->loop($photos);
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
 

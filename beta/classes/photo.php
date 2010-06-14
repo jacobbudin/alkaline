@@ -3,6 +3,7 @@
 class Photo extends Alkaline{
 	public $photos;
 	public $comments;
+	public $tags;
 	public $photo_columns;
 	public $photo_count;
 	public $photo_ids;
@@ -628,6 +629,7 @@ class Photo extends Alkaline{
 		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
+		$this->tags = $tags;
 		
 		foreach($tags as $tag){
 			$photo_id = intval($tag['photo_id']);

@@ -11,7 +11,7 @@ $orbit = new Orbit;
 
 $header = new Canvas;
 $header->load('header');
-$header->setVar('TITLE', 'Home Page - ' . SITE);
+$header->assign('TITLE', 'Home Page - ' . SITE);
 $header->display();
 
 $photo_ids = new Find;
@@ -36,10 +36,10 @@ $photos->getComments();
 
 $index = new Canvas;
 $index->load('index');
-$index->setVar('PAGE_NEXT', $photo_ids->page_next);
-$index->setVar('PAGE_PREVIOUS', $photo_ids->page_previous);
-$index->setVar('PAGE_CURRENT', $photo_ids->page);
-$index->setPhotos($photos);
+$index->assign('PAGE_NEXT', $photo_ids->page_next);
+$index->assign('PAGE_PREVIOUS', $photo_ids->page_previous);
+$index->assign('PAGE_CURRENT', $photo_ids->page);
+$index->loop($photos);
 $index->display();
 
 $footer = new Canvas;

@@ -1,11 +1,13 @@
 <?php
 
 class Canvas extends Alkaline{
+	public $tables;
 	public $template;
 	
 	public function __construct($template=null){
 		parent::__construct();
 		
+		$this->tables = array('photos', 'comments', 'tags');
 		$this->template = (empty($template)) ? '' : $template . "\n";
 	}
 	
@@ -30,7 +32,8 @@ class Canvas extends Alkaline{
 		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT) . "\n";
 	}
 	
-	public function setVar($var, $value){
+	// ASSIGN VARIABLE
+	public function assign($var, $value){
 		// Set variable
 		$this->template = str_replace('<!-- ' . $var . ' -->', $value, $this->template);
 		
@@ -40,78 +43,11 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
-	public function setArray($reel, $prefix, $array){
-		
-		// Set array; since used, remove conditionals
-		$this->template = str_replace('<!-- IF(' . $reel . ') -->', '', $this->template);
-		$this->template = str_replace('<!-- ENDIF(' . $reel . ') -->', '', $this->template);
-		preg_match('/\<!-- LOOP\(' . $reel . '\) --\>(.*)\<!-- ENDLOOP\(' . $reel . '\) --\>/s', $this->template, $matches);
-		@$loop_template = $matches[1];
-		
-		// Set array; since used, remove conditionals
-		$this->template = str_replace('<!-- IF(COMMENTS) -->', '', $this->template);
-		$this->template = str_replace('<!-- ENDIF(COMMENTS) -->', '', $this->template);
-		preg_match('/\<!-- LOOP\(COMMENTS\) --\>(.*)\<!-- ENDLOOP\(COMMENTS\) --\>/s', $this->template, $matches);
-		@$loop_commments_template = $matches[1];
-		
-		$template = '';
-		
-		// Loop through each set, append to empty string
-		for($i = 0; $i < count($array->photos); ++$i){
-			$loop = $loop_template;
-			
-			foreach($array->photos[$i] as $key => $value){
-				if(is_array($value)){
-					$value = var_export($value, true);
-					$loop = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop);
-				}
-				else{
-					$loop = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop);
-				}
-			}
-			
-			
-			if(!empty($loop_commments_template)){
-				$comments_template = '';
-			
-				for($j = 0; $j < count($array->comments); ++$j){
-					$loop_commments = '';
-					
-					foreach($array->comments[$j] as $key => $value){
-						if($array->comments[$j]['photo_id'] == $array->photos[$i]['photo_id']){
-							if(empty($loop_commments)){
-								$loop_commments = $loop_commments_template;
-							}
-							if(is_array($value)){
-								$value = var_export($value, true);
-								$loop_commments = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_commments);
-							}
-							else{
-								$loop_commments = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_commments);
-							}
-						}
-					}
-					$comments_template .= $loop_commments;
-				}
-			
-				// Replace comments loop template with string
-				$loop = preg_replace('/\<!-- LOOP\(COMMENTS\) --\>(.*)\<!-- ENDLOOP\(COMMENTS\) --\>/s', $comments_template, $loop);
-			}
-			
-			$template .= $loop;
-		}
-		
-		// Replace loop template with string
-		$this->template = preg_replace('/\<!-- LOOP\(' . $reel . '\) --\>(.*)\<!-- ENDLOOP\(' . $reel . '\) --\>/s', $template, $this->template);
-		
-		return true;
-	}
-	
-	public function setPhotos($array){
-		$tables = array('photos', 'comments');
+	// SET PHOTO CLASS ARRAY TO LOOP
+	public function loop($array){
 		$loops = array();
 		
-		$table_regex = implode('|', $tables);
+		$table_regex = implode('|', $this->tables);
 		$table_regex = strtoupper($table_regex);
 		
 		$matches = array();
@@ -147,7 +83,7 @@ class Canvas extends Alkaline{
 					}
 				}
 				
-				$loop_template = self::runLoop($array, $loop_template, $reel[$i]['photo_id']);
+				$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
 				
 				$replacement .= $loop_template;
 			}
@@ -162,11 +98,10 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
-	protected function runLoop($array, $template, $photo_id){
-		$tables = array('photos', 'comments');
+	protected function loopSub($array, $template, $photo_id){
 		$loops = array();
 		
-		$table_regex = implode('|', $tables);
+		$table_regex = implode('|', $this->tables);
 		$table_regex = strtoupper($table_regex);
 		
 		$matches = array();
