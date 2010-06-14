@@ -24,7 +24,6 @@ $photo_ids->_page(1,5);
 $photo_ids->_published();
 // $photo_ids->pile('fun');
 $photo_ids->exec();
-echo $photo_ids->getMemory();
 
 $photos = new Photo($photo_ids);
 // $photos->updateViews();

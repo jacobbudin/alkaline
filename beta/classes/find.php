@@ -76,7 +76,14 @@ class Find extends Alkaline{
 		}
 		
 		// Execute method
-		if(call_user_method_array($method, $this, $arguments)){		
+		if(call_user_method_array($method, $this, $arguments)){
+			// Remove unsaveable methods
+			$nosave_methods = array('page');
+			
+			if(in_array($method, $nosave_methods)){
+				return;
+			}
+			
 			// Prepare for memory
 			foreach($arguments as &$arg){
 				if(is_string($arg)){
