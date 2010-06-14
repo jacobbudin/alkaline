@@ -1,6 +1,9 @@
 <?php
 
-require_once('orbit.php');
+function __autoload($class){
+	$file = strtolower($class) . '.php';
+	require_once(PATH . CLASSES . $file);
+}
 
 class Alkaline{
 	public $build = '1';
