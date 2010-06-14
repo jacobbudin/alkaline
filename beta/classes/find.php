@@ -1,6 +1,7 @@
 <?php
 
 class Find extends Alkaline{
+	private $memory;
 	public $photo_ids;
 	public $photo_count;
 	public $photo_count_result;
@@ -32,6 +33,7 @@ class Find extends Alkaline{
 		parent::__construct();
 		
 		// Store data to object
+		$this->memory = array();
 		$this->photo_ids = array();
 		$this->sql = 'SELECT photos.photo_id';
 		$this->sql_conds = array();
@@ -53,6 +55,38 @@ class Find extends Alkaline{
 	
 	public function __destruct(){
 		parent::__destruct();
+	}
+	
+	// SAVE TO MEMORY
+	public function __call($method, $arguments){
+		// Error checking
+		if(substr($method, 0, 1) != '_'){
+			return false;
+		}
+		
+		// Determine real method
+		$method = substr($method, 1);
+		
+		// Error checking
+		if(!method_exists($this, $method)){
+			return false;
+		}
+		if(@count($arguments) < 1){
+			$arguments = array();
+		}
+		
+		// Execute method
+		if(call_user_method_array($method, $this, $arguments)){		
+			// Prepare for memory
+			foreach($arguments as &$arg){
+				if(is_string($arg)){
+					$arg = '\'' . addslashes($arg) . '\'';
+				}
+			}
+		
+			// Save to memory
+			$this->memory[] = $method . '(' . @implode(', ', $arguments) . '); ';
+		}
 	}
 	
 	public function __toString(){
@@ -134,6 +168,8 @@ class Find extends Alkaline{
 		self::anyTags($any, $any_count);
 		self::allTags($all);
 		self::notTags($not);
+		
+		return true;
 	}
 	
 	public function anyTags($tags=null, $count=1){
@@ -264,12 +300,15 @@ class Find extends Alkaline{
 	// FIND BY PUBLISHED
 	public function published($published=true){
 		$now = date('Y-m-d H:i:s');
+		
 		if($published == true){
 			$this->sql_conds[] = 'photos.photo_published < "' . $now . '"';
 		}
 		if($published == false){
 			$this->sql_conds[] = '(photos.photo_published > "' . $now . '" OR photo_published = null)';
 		}
+		
+		return true;
 	}
 	
 	// PAGINATE RESULTS
@@ -295,13 +334,16 @@ class Find extends Alkaline{
 		
 		$column = strtolower($column);
 		$sort = strtoupper($sort);
-		if(($sort == 'ASC') or ($sort == 'DESC')){
-			$this->sql_sorts[] = $column . ' ' . $sort;
-			return true;
-		}
-		else{
+		
+		// More error checking
+		if(($sort != 'ASC') and ($sort != 'DESC')){
 			return false;
 		}
+		
+		// Set column, sort
+		$this->sql_sorts[] = $column . ' ' . $sort;
+		
+		return true;
 	}
 	
 	// EXECUTE QUERY
@@ -369,6 +411,15 @@ class Find extends Alkaline{
 		
 		// Return photos.photo_ids
 		return $this->photo_ids;
+	}
+	
+	// GET MEMORY
+	public function getMemory(){
+		if(count($this->memory) > 0){
+			return implode(' ', $this->memory);
+			echo 1;
+		}
+		echo 2;
 	}
 }
 

@@ -6,8 +6,10 @@ function __autoload($class){
 }
 
 class Alkaline{
-	public $build = '1';
-	public $version = 'Alpha (May 19)';
+	const build = 1;
+	const copyright = 'Powered by Alkaline, copyright (c) 2010 by Budin Ltd. All rights reserved.';
+	const version = 'Alpha (May 19)';
+	
 	public $js;
 	
 	protected $db;
