@@ -77,7 +77,7 @@ class Find extends Alkaline{
 		// Execute method
 		if(call_user_method_array($method, $this, $arguments)){
 			// Remove unsaveable methods
-			$nosave_methods = array('page');
+			$nosave_methods = array('page', 'privacy');
 			
 			if(in_array($method, $nosave_methods)){
 				return;
@@ -313,6 +313,33 @@ class Find extends Alkaline{
 		$sql .= 'LOWER(photos.photo_description) LIKE "%' . $search_lower . '%"';
 		$sql .= ')';
 		$this->sql_conds[] = $sql;
+		
+		return true;
+	}
+	
+	// FIND BY PRIVACY LEVEL
+	public function privacy($privacy=null, $all=false){
+		// Error checking
+		if(empty($privacy)){ return false; }
+		
+		// Convert strings
+		if(is_string($privacy)){
+			$levels = array('public' => 1, 'protected' => 2, 'private' => 3);
+			if(array_key_exists($privacy, $levels)){
+				$privacy = $levels[$privacy];
+			}
+			else{
+				return false;
+			}
+		}
+		
+		// Set fields to search
+		if($all == true){
+			$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+		}
+		else{
+			$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+		}
 		
 		return true;
 	}
