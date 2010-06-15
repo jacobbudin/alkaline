@@ -171,6 +171,40 @@ class Alkaline{
 		closedir($handle);
 	}
 	
+	// Empty directory
+	public function emptyDirectory($dir=null){
+		// Error checking
+		if(empty($dir)){
+			return false;
+		}
+		
+		$ignore = array('.', '..');
+		
+		// Open listing
+		$handle = opendir($dir);
+		
+		// Seek directory
+		while($filename = readdir($handle)){
+			if(!in_array($filename, $ignore)){
+				// Delete directories
+				if(is_dir($dir . '/' . $filename)){
+					self::emptyDirectory($dir . $filename . '/');
+					rmdir($dir . $filename . '/');
+				}
+				// Delete files
+				else{
+					chmod($dir . $filename, 0777);
+					unlink($dir . $filename);
+				}
+			}
+	    }
+	
+		// Close listing
+		closedir($handle);
+		
+		return true;
+	}
+	
 	// CONVERT TO ARRAY
 	// Convert a possible string or integer into an array
 	public function convertToArray(&$input){
