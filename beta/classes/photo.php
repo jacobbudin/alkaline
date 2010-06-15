@@ -23,6 +23,8 @@ class Photo extends Alkaline{
 		
 		$photo_ids = array();
 		
+		$import = false;
+		
 		foreach($photos as $key => $value){
 			if(preg_match('/^\//', $value)){
 				$import = true;
@@ -47,7 +49,6 @@ class Photo extends Alkaline{
 				}
 			}
 			else{
-				$import = false;
 				$photo_ids[] = $value;
 			}
 		}
