@@ -645,6 +645,23 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// Retrieve image rights
+	public function getRights(){
+		$query = $this->db->prepare('SELECT rights.*, photos.photo_id FROM rights, photos' . $this->sql . ' AND rights.right_id = photos.right_id;');
+		$query->execute();
+		$rights = $query->fetchAll();
+		
+		foreach($rights as $right){
+			$photo_id = intval($right['photo_id']);
+			$key = array_search($photo_id, $this->photo_ids);
+			if($photo_id = $this->photo_ids[$key]){
+				foreach($right as $right_key => $right_value){
+					$this->photos[$key][$right_key] = $right_value;
+				}
+			}
+		}
+	}
+	
 	// Retrieve image comments
 	public function getComments(){
 		$query = $this->db->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
