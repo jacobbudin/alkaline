@@ -43,7 +43,12 @@ class Canvas extends Alkaline{
 	// REMOVE CONDITIONALS
 	public function scrub($var, $template){
 		$template = str_replace('<!-- IF(' . $var . ') -->', '', $template);
-		$template = preg_replace('/(?=\<\!-- ELSEIF\(' . $var . '\) --\>|.*)(?=.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
+		if(strpos($template, '<!-- ELSEIF(' . $var . ') -->')){
+			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
+		}
+		else{
+			$template = str_replace('<!-- ENDIF(' . $var . ') -->', '', $template);
+		}
 		return $template;
 	}
 	
@@ -164,8 +169,8 @@ class Canvas extends Alkaline{
 	
 	public function generate(){
 		// Remove unused conditionals, replace with ELSEIF as available
-		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ELSEIF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '$2', $this->template);
-		$this->template = preg_replace('/\<!-- IF\([A-Z0-9_]*\) --\>(.*?)\<!-- ENDIF\([A-Z0-9_]*\) --\>/s', '', $this->template);
+		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/s', '$3', $this->template);
+		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/s', '', $this->template);
 		
 		return true;
 	}
