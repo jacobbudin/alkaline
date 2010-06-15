@@ -13,6 +13,7 @@ class Alkaline{
 	public $js;
 	
 	protected $db;
+	protected $guest;
 	protected $notifications;
 	
 	public $tag_count;
@@ -57,6 +58,27 @@ class Alkaline{
 		foreach($this->js as $js){
 			echo '<script src="' . BASE . JS . $js . '.js" type="text/javascript"></script>';
 		}
+	}
+	
+	// GUESTS
+	// Authenticate guest
+	public function access($key=null){
+		// Error checking
+		if(empty($key)){ return false; }
+		
+		$key = strip_tags($key);
+		$query = $this->db->prepare('SELECT * FROM guests WHERE guest_key = "' . $key . '" LIMIT 0, 1;');
+		$query->execute();
+		$guest = $query->fetch();
+		
+		if(!$guest){
+			return false;
+		}
+		
+		$this->guest = $guest;
+		$_SESSION['guest'] = $this->guest;
+		
+		return true;
 	}
 	
 	// NOTIFICATIONS
