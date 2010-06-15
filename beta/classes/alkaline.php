@@ -31,8 +31,12 @@ class Alkaline{
 		// Begin new JS injection
 		$this->js = array();
 		
-		// Initiate database connection
-		$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
+		// Initiate database connection, if necessary
+		$nodb_classes = array('Canvas');
+		
+		if(!in_array(get_class($this), $nodb_classes)){
+			$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
+		}
 	}
 	
 	public function __destruct(){

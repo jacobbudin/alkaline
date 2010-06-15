@@ -34,13 +34,17 @@ class Canvas extends Alkaline{
 	
 	// ASSIGN VARIABLE
 	public function assign($var, $value){
-		// Set variable
+		// Set variable, scrub to remove conditionals
 		$this->template = str_replace('<!-- ' . $var . ' -->', $value, $this->template);
-		
-		// Remove conditional
-		$this->template = str_replace('<!-- IF(' . $var . ') -->', '', $this->template);
-		$this->template = preg_replace('/\<!-- ELSEIF\(' . $var . '\) --\>(.*?)\<!-- ENDIF\(' . $var . '\) --\>/s', '', $this->template);
+		$this->template = self::scrub($var, $this->template);
 		return true;
+	}
+	
+	// REMOVE CONDITIONALS
+	public function scrub($var, $template){
+		$template = str_replace('<!-- IF(' . $var . ') -->', '', $template);
+		$template = preg_replace('/(?=\<\!-- ELSEIF\(' . $var . '\) --\>|.*)(?=.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
+		return $template;
 	}
 	
 	// SET PHOTO CLASS ARRAY TO LOOP
@@ -149,7 +153,10 @@ class Canvas extends Alkaline{
 		}
 		
 		foreach($loops as $loop){
-			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+			if(!empty($loop['replacement'])){
+				$template = str_replace($loop['replace'], $loop['replacement'], $template);
+				$template = self::scrub(strtoupper($loop['reel']), $template);
+			}
 		}
 		
 		return $template;
