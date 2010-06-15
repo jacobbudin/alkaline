@@ -19,11 +19,13 @@ $photo_ids = new Find;
 // $photo_ids->uploaded('2010', '2011');
 // $photo_ids->views(1,2);
 // $photo_ids->sort('photos.photo_published', 'DESC');
-$photo_ids->_tags('beach');
+// $photo_ids->_tags('beach');
 $photo_ids->_page(1,5);
-$photo_ids->_published();
-// $photo_ids->pile('fun');
+// $photo_ids->_published();
+$photo_ids->pile('fun');
 $photo_ids->exec();
+
+// echo $photo_ids->getMemory();
 
 $photos = new Photo($photo_ids);
 // $photos->updateViews();

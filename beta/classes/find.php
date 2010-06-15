@@ -24,7 +24,6 @@ class Find extends Alkaline{
 	protected $sql_join_on;
 	protected $sql_group_by;
 	protected $sql_having;
-	protected $sql_injection;
 	protected $sql_having_fields;
 	protected $sql_order_by;
 	protected $sql_where;
@@ -92,7 +91,7 @@ class Find extends Alkaline{
 			}
 		
 			// Save to memory
-			$this->memory[] = $method . '(' . @implode(', ', $arguments) . '); ';
+			$this->memory[] = '$this->' . $method . '(' . @implode(', ', $arguments) . '); ';
 		}
 	}
 	
@@ -278,11 +277,24 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($pile)){ return false; }
 		
-		$query = $this->db->prepare('SELECT pile_sql FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0,1;');
+		// Determine input type
+		if(is_string($pile)){
+			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0,1;');
+		}
+		elseif(is_int($pile)){
+			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0,1;');
+		}
+		else{
+			return false;
+		}
+		
 		$query->execute();
 		$piles = $query->fetchAll();
 		
-		$this->sql_injection = $piles[0]['pile_sql'];
+		// Call stored functions
+		if(!eval($piles[0]['pile_call'])){
+			return false;
+		}
 		
 		return true;
 	}
@@ -355,30 +367,24 @@ class Find extends Alkaline{
 	
 	// EXECUTE QUERY
 	public function exec(){
-		// Inject stored SQL
-		if(!empty($this->sql_injection)){
-			$this->sql = $this->sql_injection;
-		}
 		// Prepare SQL
-		else{
-			$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
-	
-			if(count($this->sql_conds) > 0){
-				$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
-			}
-			if(count($this->sql_sorts) > 0){
-				$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
-			}
-			if((count($this->sql_join_on) > 0) and (count($this->sql_join_tables) > 0) and (!empty($this->sql_join_type))){
-				$this->sql_join = ' ' . $this->sql_join_type . ' ' . implode(', ', $this->sql_join_tables) . ' ON ' . implode(', ', $this->sql_join_on);
-			}
-			if(count($this->sql_having_fields) > 0){
-				$this->sql_having = ' HAVING ' . implode(', ', $this->sql_having_fields);
-			}
-	
-			// Prepare query without limit
-			$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
+		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
+
+		if(count($this->sql_conds) > 0){
+			$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
 		}
+		if(count($this->sql_sorts) > 0){
+			$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
+		}
+		if((count($this->sql_join_on) > 0) and (count($this->sql_join_tables) > 0) and (!empty($this->sql_join_type))){
+			$this->sql_join = ' ' . $this->sql_join_type . ' ' . implode(', ', $this->sql_join_tables) . ' ON ' . implode(', ', $this->sql_join_on);
+		}
+		if(count($this->sql_having_fields) > 0){
+			$this->sql_having = ' HAVING ' . implode(', ', $this->sql_having_fields);
+		}
+
+		// Prepare query without limit
+		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);
@@ -424,9 +430,7 @@ class Find extends Alkaline{
 	public function getMemory(){
 		if(count($this->memory) > 0){
 			return implode(' ', $this->memory);
-			echo 1;
 		}
-		echo 2;
 	}
 }
 
