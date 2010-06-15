@@ -6,6 +6,7 @@ class User extends Alkaline{
 	
 	public function __construct(){
 		parent::__construct();
+		
 		// Login user by session data
 		if(!empty($_SESSION['user'])){
 			$this->user = $_SESSION['user'];
@@ -19,24 +20,29 @@ class User extends Alkaline{
 		}
 	}
 	
-	// Store user to session data
 	public function __destruct(){
+		// Store user to session data
 		if(self::perm() == true){
 			$_SESSION['user'] = $this->user;
 			$_SESSION['user_view_type'] = $this->view_type;
 		}
+		
 		parent::__destruct();
 	}
 	
+	// AUTHENTICATE (LOGIN)
 	// Login user by username, password
 	public function auth($username, $password, $remember=false){
 		// Check database
 		$query = $this->db->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
-		if(self::prep($remember)){
-			return true;
+		
+		if(!self::prep($remember)){
+			return false;
 		}
+		
+		return true;
 	}
 	
 	// Login user by ID, key
@@ -44,12 +50,12 @@ class User extends Alkaline{
 		$query = $this->db->prepare('SELECT * FROM users WHERE user_id = "' . $user_id . '" AND user_key = "' . $user_key . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
-		if(self::prep($remember)){
-			return true;
-		}
-		else {
+		
+		if(!self::prep($remember)){
 			return false;
 		}
+		
+		return true;
 	}
 	
 	// Prepare user for functionality
@@ -87,9 +93,11 @@ class User extends Alkaline{
 		
 		// Update database
 		$this->db->exec('UPDATE users SET user_last_login = "' . date('Y-m-d H:i:s') . '", user_key = "' . $key . '" WHERE user_id = "' . $this->user['user_id'] . '"');
+		
 		return true;
 	}
 	
+	// DEAUTHENTICATE (LOGOUT)
 	// Logout user, destroy "remember me" data
 	public function deauth(){
 		unset($this->user);
@@ -97,9 +105,11 @@ class User extends Alkaline{
 		setcookie('id', '', time()-3600, '/');
 		setcookie('key', '', time()-3600, '/');
 		session_start();
+		
 		return true;
 	}
 	
+	// PERMISSIONS
 	// Verify user has permission to access module
 	public function perm($required=false, $permission=null){
 		if(empty($this->user)){
@@ -124,6 +134,7 @@ class User extends Alkaline{
 		}
 	}
 	
+	// PREFERENCES
 	// Set preference key
 	public function setPref($name, $unset=''){
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
@@ -134,7 +145,7 @@ class User extends Alkaline{
 		return parent::readForm($this->user['user_preferences'], $name, $check);
 	}
 	
-	// UPDATE USER TABLE
+	// UPDATE USER
 	public function updateFields($array, $overwrite=true){
 		// Verify each key has changed; if not, unset the key
 		foreach($array as $key => $value){

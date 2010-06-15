@@ -22,17 +22,19 @@ class Canvas extends Alkaline{
 		return $this->template;
 	}
 	
-	// APPEND TEMPLATE
+	// APPEND
+	// Append a string to the template
 	public function append($template){
 		 $this->template .= $template . "\n";
 	}
 	
-	// LOAD TEMPLATE FROM FILE
+	// APPEND LOAD
+	// Append a file to the template
 	public function load($file){
 		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT) . "\n";
 	}
 	
-	// ASSIGN VARIABLE
+	// VARIABLES
 	public function assign($var, $value){
 		// Set variable, scrub to remove conditionals
 		$this->template = str_replace('<!-- ' . $var . ' -->', $value, $this->template);
@@ -40,19 +42,8 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
-	// REMOVE CONDITIONALS
-	public function scrub($var, $template){
-		$template = str_replace('<!-- IF(' . $var . ') -->', '', $template);
-		if(strpos($template, '<!-- ELSEIF(' . $var . ') -->')){
-			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
-		}
-		else{
-			$template = str_replace('<!-- ENDIF(' . $var . ') -->', '', $template);
-		}
-		return $template;
-	}
-	
-	// SET PHOTO CLASS ARRAY TO LOOP
+	// LOOPS
+	// Set photo array to loop
 	public function loop($array){
 		$loops = array();
 		
@@ -107,6 +98,7 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	// Set subarrays to loop
 	protected function loopSub($array, $template, $photo_id){
 		$loops = array();
 		
@@ -167,6 +159,20 @@ class Canvas extends Alkaline{
 		return $template;
 	}
 	
+	// PREPROCESS
+	// Remove conditionals after successful variable, loop placement
+	public function scrub($var, $template){
+		$template = str_replace('<!-- IF(' . $var . ') -->', '', $template);
+		if(strpos($template, '<!-- ELSEIF(' . $var . ') -->')){
+			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
+		}
+		else{
+			$template = str_replace('<!-- ENDIF(' . $var . ') -->', '', $template);
+		}
+		return $template;
+	}
+	
+	// PROCESS
 	public function generate(){
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/s', '$3', $this->template);
@@ -175,6 +181,7 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	// DISPLAY
 	public function display(){
 		self::generate();
 		

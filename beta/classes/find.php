@@ -171,14 +171,14 @@ class Find extends Alkaline{
 			}
 		}
 		
-		self::anyTags($any, $any_count);
-		self::allTags($all);
-		self::notTags($not);
+		$this->anyTags($any, $any_count);
+		$this->allTags($all);
+		$this->notTags($not);
 		
 		return true;
 	}
 	
-	public function anyTags($tags=null, $count=1){
+	protected function anyTags($tags=null, $count=1){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -214,7 +214,7 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	public function allTags($tags=null){
+	protected function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -243,7 +243,7 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	public function notTags($tags=null){
+	protected function notTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -304,6 +304,7 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($search)){ return false; }
 		
+		// Prepare input
 		$search_lower = strtolower($search);
 		
 		// Set fields to search
@@ -347,6 +348,7 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// SORT RESULTS
 	public function sort($column, $sort='ASC'){
 		// Error checking
 		if(empty($column)){ return false; }

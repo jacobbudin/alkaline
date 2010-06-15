@@ -59,10 +59,13 @@ class Alkaline{
 		}
 	}
 	
+	// NOTIFICATIONS
+	// Add notification
 	public function addNotification($message, $type=null){
 		$this->notifications[] = array('type' => $type, 'message' => $message);
 	}
 	
+	// View notification
 	public function viewNotification($type=null){
 		$count = count($this->notifications);
 		if($count > 0){
@@ -100,6 +103,7 @@ class Alkaline{
 		}
 	}
 	
+	// SEEK PHOTOS
 	// Seek compatible photos in a directory
 	public function seekPhotos($dir){
 		// Open shoebox directory
@@ -117,11 +121,7 @@ class Alkaline{
 		else{ return false; }
 	}
 	
-	// Trim (remove whitespace) from values of an array
-	public function trimValue(&$value){
-		$value = trim($value);
-	}
-
+	// CONVERT TO ARRAY
 	// Convert a possible string or integer into an array
 	public function convertToArray(&$input){
 		if(is_string($input)){
@@ -138,7 +138,8 @@ class Alkaline{
 			$input = array($input);
 		}
 	}
-
+	
+	// CONVERT TO INTEGER ARRAY
 	// Convert a possible string or integer into an array of integers
 	public function convertToIntegerArray(&$input){
 		if(is_int($input)){
@@ -156,8 +157,9 @@ class Alkaline{
 		}
 	}
 	
+	// FORMAT TIME
 	// Make time more human-readable
-	function formatTime(&$time, $format){
+	public function formatTime(&$time, $format){
 		if(!empty($time)){
 			$time = str_replace('tonight', 'today', $time);
 			if(empty($format)){
@@ -171,8 +173,9 @@ class Alkaline{
 		}
 	}
 	
-	// Retrieve all tags
-	function allTags($cloud=false, $admin=false){
+	// SHOW TAGS
+	// Display all tags
+	public function showTags($cloud=false, $admin=false){
 		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
@@ -208,6 +211,7 @@ class Alkaline{
 		return implode(', ', $tags);
 	}
 	
+	// RECORD STATISTIC
 	// Record a visitor to statistics
 	public function recordStat($page_type=null){
 		if(empty($_SESSION['duration_start']) or ((time() - @$_SESSION['duration_recent']) > 3600)){
@@ -228,6 +232,7 @@ class Alkaline{
 		$this->db->exec($query);
 	}
 	
+	// FORM HANDLING
 	// Set form option
 	public function setForm(&$array, $name, $unset=''){
 		@$value = $_POST[$name];
@@ -261,6 +266,7 @@ class Alkaline{
 		}
 	}
 	
+	// URL HANDLING
 	// Find ID number from string
 	public function findID($string){
 		$matches = array();
