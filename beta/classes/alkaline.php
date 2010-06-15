@@ -126,21 +126,49 @@ class Alkaline{
 	}
 	
 	// SEEK PHOTOS
-	// Seek compatible photos in a directory
-	public function seekPhotos($dir){
-		// Open shoebox directory
-		if($handle = opendir($dir)){
-			$photos = array();
-			while($filename = readdir($handle)){
+	// Seek compatible photos
+	public function seekPhotos($dir=null){
+		// Error checking
+		if(empty($dir)){
+			return false;
+		}
+		
+		$photos = array();
+		
+		self::seekDirectory($dir, $photos);
+		
+		return $photos;
+	}
+	
+	// Seek directory
+	private function seekDirectory($dir=null, &$photos){
+		// Error checking
+		if(empty($dir) or !isset($photos)){
+			return false;
+		}
+		
+		$ignore = array('.', '..');
+		
+		// Open listing
+		$handle = opendir($dir);
+		
+		// Seek directory
+		while($filename = readdir($handle)){
+			if(!in_array($filename, $ignore)){ 
+				// Recusively check directories
+				if(is_dir($dir . '/' . $filename)){
+					self::seekDirectory($dir . $filename . '/', $photos);
+				}
+
 				// Find files with proper extensions
-				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
+				elseif(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
 					$photos[] = $dir . $filename;
 				}
-		    }
-		    closedir($handle);
-			return $photos;
-		}
-		else{ return false; }
+			}
+	    }
+	
+		// Close listing
+		closedir($handle);
 	}
 	
 	// CONVERT TO ARRAY
