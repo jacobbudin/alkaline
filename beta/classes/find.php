@@ -34,6 +34,8 @@ class Find extends Alkaline{
 		// Store data to object
 		$this->memory = array();
 		$this->photo_ids = array();
+		$this->page = 1;
+		$this->page_limit = LIMIT;
 		$this->sql = 'SELECT photos.photo_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
