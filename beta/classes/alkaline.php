@@ -7,7 +7,7 @@ function __autoload($class){
 
 class Alkaline{
 	const build = 1;
-	const copyright = 'Powered by Alkaline, copyright (c) 2010 by Budin Ltd. All rights reserved.';
+	const copyright = 'Powered by Alkaline. Copyright &copy; 2010 by <a href="">Budin Ltd.</a> All rights reserved.';
 	const version = 'Alpha (May 19)';
 	
 	public $js;
@@ -189,12 +189,12 @@ class Alkaline{
 				// Delete directories
 				if(is_dir($dir . '/' . $filename)){
 					self::emptyDirectory($dir . $filename . '/');
-					rmdir($dir . $filename . '/');
+					@rmdir($dir . $filename . '/');
 				}
 				// Delete files
 				else{
-					chmod($dir . $filename, 0777);
-					unlink($dir . $filename);
+					@chmod($dir . $filename, 0777);
+					@unlink($dir . $filename);
 				}
 			}
 	    }
