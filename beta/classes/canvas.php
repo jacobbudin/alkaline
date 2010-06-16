@@ -9,6 +9,7 @@ class Canvas extends Alkaline{
 		
 		$this->tables = array('photos', 'comments', 'tags');
 		$this->template = (empty($template)) ? '' : $template . "\n";
+		$this->assign('copyright', parent::copyright);
 	}
 	
 	public function __destruct(){
@@ -37,7 +38,7 @@ class Canvas extends Alkaline{
 	// VARIABLES
 	public function assign($var, $value){
 		// Set variable, scrub to remove conditionals
-		$this->template = str_replace('<!-- ' . $var . ' -->', $value, $this->template);
+		$this->template = str_ireplace('<!-- ' . $var . ' -->', $value, $this->template);
 		$this->template = self::scrub($var, $this->template);
 		return true;
 	}
@@ -76,10 +77,10 @@ class Canvas extends Alkaline{
 				foreach($reel[$i] as $key => $value){
 					if(is_array($value)){
 						$value = var_export($value, true);
-						$loop_template = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_template);
 					}
-					else{
-						$loop_template = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_template);
+					$loop_template = str_ireplace('<!-- ' . $key . ' -->', $value, $loop_template);
+					if(!empty($value)){
+						$loop_template = self::scrub($key, $loop_template);
 					}
 				}
 				
@@ -93,6 +94,7 @@ class Canvas extends Alkaline{
 		
 		foreach($loops as $loop){
 			$this->template = str_replace($loop['replace'], $loop['replacement'], $this->template);
+			$this->template = self::scrub($loop['reel'], $this->template);
 		}
 		
 		return true;
@@ -135,10 +137,10 @@ class Canvas extends Alkaline{
 					foreach($reel[$i] as $key => $value){
 						if(is_array($value)){
 							$value = var_export($value, true);
-							$loop_template = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_template);
 						}
-						else{
-							$loop_template = str_replace('<!-- ' . strtoupper($key) . ' -->', $value, $loop_template);
+						$loop_template = str_ireplace('<!-- ' . $key . ' -->', $value, $loop_template);
+						if(!empty($value)){
+							$loop_template = self::scrub($key, $loop_template);
 						}
 					}
 				}
@@ -152,7 +154,7 @@ class Canvas extends Alkaline{
 		foreach($loops as $loop){
 			if(!empty($loop['replacement'])){
 				$template = str_replace($loop['replace'], $loop['replacement'], $template);
-				$template = self::scrub(strtoupper($loop['reel']), $template);
+				$template = self::scrub($loop['reel'], $template);
 			}
 		}
 		
@@ -162,12 +164,12 @@ class Canvas extends Alkaline{
 	// PREPROCESS
 	// Remove conditionals after successful variable, loop placement
 	public function scrub($var, $template){
-		$template = str_replace('<!-- IF(' . $var . ') -->', '', $template);
-		if(strpos($template, '<!-- ELSEIF(' . $var . ') -->')){
-			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/s', '', $template);
+		$template = str_ireplace('<!-- IF(' . $var . ') -->', '', $template);
+		if(stripos($template, '<!-- ELSEIF(' . $var . ') -->')){
+			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/is', '', $template);
 		}
 		else{
-			$template = str_replace('<!-- ENDIF(' . $var . ') -->', '', $template);
+			$template = str_ireplace('<!-- ENDIF(' . $var . ') -->', '', $template);
 		}
 		return $template;
 	}
@@ -175,8 +177,8 @@ class Canvas extends Alkaline{
 	// PROCESS
 	public function generate(){
 		// Remove unused conditionals, replace with ELSEIF as available
-		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/s', '$3', $this->template);
-		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/s', '', $this->template);
+		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '$3', $this->template);
+		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '', $this->template);
 		
 		return true;
 	}
@@ -188,7 +190,6 @@ class Canvas extends Alkaline{
 		// Echo after evaluating
 		echo @eval('?>' . $this->template);
 	}
-	
 }
 
 ?>
