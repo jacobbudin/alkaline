@@ -9,7 +9,6 @@ class Canvas extends Alkaline{
 		
 		$this->tables = array('photos', 'comments', 'tags');
 		$this->template = (empty($template)) ? '' : $template . "\n";
-		$this->assign('copyright', parent::copyright);
 	}
 	
 	public function __destruct(){
@@ -37,6 +36,11 @@ class Canvas extends Alkaline{
 	
 	// VARIABLES
 	public function assign($var, $value){
+		// Error checking
+		if(empty($value)){
+			return false;
+		}
+		
 		// Set variable, scrub to remove conditionals
 		$this->template = str_ireplace('<!-- ' . $var . ' -->', $value, $this->template);
 		$this->template = self::scrub($var, $this->template);
@@ -176,6 +180,9 @@ class Canvas extends Alkaline{
 	
 	// PROCESS
 	public function generate(){
+		// Add copyright information
+		$this->assign('COPYRIGHT', parent::copyright);
+		
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '$3', $this->template);
 		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '', $this->template);
