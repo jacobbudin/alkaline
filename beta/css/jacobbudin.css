@@ -1,34 +1,71 @@
-body {
-	background-color: #381303;
-	background-image: url(/images/wood.jpg);
-	background-position: -20px -20px;
-	background-repeat: repeat;
-	background-attachment: fixed;
-	color: #fff;
-	font-family: "Helvetica Neue", Helvetica, sans-serif;
-	font-size: .8em;
-	margin: 2em auto;
+.container{
+	width: 670px;
 }
 
-h1, h2, h3, h4, h5, h6 { color: #fff; text-transform: uppercase; }
+body{
+	background-color: #eee;
+	font-size: .8em;
+	margin: 4em auto;
+}
 
-p {
+h1, h2, h3, h4, h5, h6 { color: #888; }
+
+p{
 	margin: 1em 0;
 }
 
-.frame {
-	border: 10px #fff solid;
-	-moz-box-shadow: 0 0 10px #000;
-	-webkit-box-shadow: 0 0 10px #000;
-	box-shadow: 0 0 10px #000;
+.frame{
+	border: 15px #fff solid;
+	-webkit-box-shadow: 0 0 10px #ddd;
+	-moz-box-shadow: 0 0 10px #ddd;
 	margin: 0;
 }
 
-.frame_small {
+.frame_small{
 	border: 2px #fff solid;
 	margin: 0;
 }
 
-.credits {
-	color: #b39d83;
+.title{
+	text-shadow: 1px 1px 2px #fff;
+	font-family: "Lobster";
+	font-size: 3em;
+}
+
+.float_right{
+	margin: 1em 0 3em 0;
+	float: right;
+	text-align: right;
+}
+
+.tag{
+	padding: 3px 6px 4px 6px;
+	margin-right: 10px;
+	background-color: #ddd;
+	font-family: Verdana;
+	color: #666;
+	font-size: .84em;
+	border-radius: 4px;
+}
+
+.uploaded{
+	color: #999;
+	font-weight: bold;
+	font-size: .9em;
+	text-transform: uppercase;
+}
+
+.right{
+	color: #aaa;
+	font-size: .9em;
+}
+
+.copyright{
+	margin-top: 2em;
+	font-size: .9em;
+	text-align: center;
+}
+
+.copyright, .copyright a{
+	color: #777;
 }

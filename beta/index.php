@@ -5,13 +5,14 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $alkaline->recordStat('home');
+$alkaline->access('adskajsk');
 
 $orbit = new Orbit;
 // $orbit->hook('photo_upload', 1, 2);
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('TITLE', 'Home Page - ' . SITE);
+$header->assign('TITLE', 'Welcome &#8212; ' . SITE);
 $header->display();
 
 $photo_ids = new Find;
@@ -19,9 +20,10 @@ $photo_ids = new Find;
 // $photo_ids->uploaded('2010', '2011');
 // $photo_ids->views(1,2);
 // $photo_ids->sort('photos.photo_published', 'DESC');
-$photo_ids->_tags('beach');
-$photo_ids->_page(1,5);
-$photo_ids->_published();
+// $photo_ids->_tags('beach');
+// $photo_ids->_page(1,5);
+// $photo_ids->_published();
+$photo_ids->privacy('protected', true);
 // $photo_ids->pile('fun');
 $photo_ids->exec();
 
@@ -42,6 +44,7 @@ $index->load('index');
 $index->assign('PAGE_NEXT', $photo_ids->page_next);
 $index->assign('PAGE_PREVIOUS', $photo_ids->page_previous);
 $index->assign('PAGE_CURRENT', $photo_ids->page);
+$index->assign('PAGE_COUNT', $photo_ids->page_count);
 $index->loop($photos);
 $index->display();
 

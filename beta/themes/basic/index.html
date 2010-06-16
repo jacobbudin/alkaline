@@ -1,34 +1,34 @@
-<h2>Newest photos</h2>
-
-<p>
-<!-- LOOP(PHOTOS) -->
-	<img src="<!-- PHOTO_SRC_SQUARE -->" alt="" class="frame_small" />&nbsp;
-<!-- ENDLOOP(PHOTOS) -->
-</p>
-
-<h2>Blog</h2>
-
 <!-- LOOP(PHOTOS) -->
 <p>
 	<img src="<!-- PHOTO_SRC_MEDIUM -->" alt="" class="frame" /><br />
-	<div class="credits"><!-- IF(PHOTO_EXIF_IFD0_MODEL) --><!-- PHOTO_EXIF_IFD0_MODEL --> &#0183; <!-- ENDIF(PHOTO_EXIF_IFD0_MODEL) --><!-- PHOTO_NAME --></div><br />
-	<strong>Uploaded:</strong> <!-- PHOTO_UPLOADED --><br />
-	<strong>Tags:</strong> <!-- PHOTO_TAGS --><br />
-	<strong>Rights:</strong> <!-- RIGHT_TITLE --><br />
-	<strong>Comments:</strong>
+	<div class="float_right">
+		<div class="uploaded"><!-- PHOTO_UPLOADED --></div>
+		<div class="right"><!-- IF(RIGHT_TITLE) -->
+			<!-- RIGHT_TITLE -->
+			<!-- ELSEIF(RIGHT_TITLE) -->
+			No rights set.
+			<!-- ENDIF(RIGHT_TITLE) --></div>
+	</div>
+	<div class="title">
+		<!-- PHOTO_TITLE -->
+	</div>
+</p>
+<p>
+	<!-- IF(TAGS) --><!-- LOOP(TAGS) --><span class="tag">#<!-- TAG_NAME --></span><!-- ENDLOOP(TAGS) --><br /><!-- ENDIF(TAGS) -->
+	<!-- <strong>Comments:</strong>
 	<!-- IF(COMMENTS) -->
 	<!-- LOOP(COMMENTS) -->
 			<!-- COMMENT_TEXT --> ... 
 	<!-- ENDLOOP(COMMENTS) -->
 	<!-- ELSEIF(COMMENTS) -->
 	No comments.
-	<!-- ENDIF(COMMENTS) -->
-	<br /><br />
-</p>
+	<!-- ENDIF(COMMENTS) --> -->
+</p><br />
+<hr />
 <!-- ENDLOOP(PHOTOS) -->
 
 <p>
-	Curent page: Page #<!-- PAGE_CURRENT --><br />
-	Next page: Page #<!-- PAGE_NEXT --><br />
-	Previous page: Page #<!-- PAGE_PREVIOUS -->
+	Page #<!-- PAGE_CURRENT --> of <!-- PAGE_COUNT -->
+	<!-- IF(PAGE_NEXT) --><br />Next page: Page #<!-- PAGE_NEXT --><!-- ENDIF(PAGE_NEXT) -->
+	<!-- IF(PAGE_PREVIOUS) --><br />Previous page: Page #<!-- PAGE_PREVIOUS --><!-- ENDIF(PAGE_PREVIOUS) -->
 </p>

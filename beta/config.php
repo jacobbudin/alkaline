@@ -3,7 +3,7 @@
 // MODIFY THE DEFINITIONS BELOW
 
 // Web site name
-$site = 'Jacob Budin\'s Photos';
+$site = 'Jacob Budin';
 
 // Owner's name
 $owner = 'Jacob Budin';
