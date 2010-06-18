@@ -1,5 +1,12 @@
 <?php
 
+/*
+// Alkaline
+// Copyright (c) 2010 by Budin Ltd. All rights reserved.
+// Do not redistribute this code without written permission from Budin Ltd.
+// http://www.alkalinenapp.com/
+*/
+
 function __autoload($class){
 	$file = strtolower($class) . '.php';
 	require_once(PATH . CLASSES . $file);
@@ -7,7 +14,7 @@ function __autoload($class){
 
 class Alkaline{
 	const build = 1;
-	const copyright = 'Powered by Alkaline. Copyright &copy; 2010 by <a href="">Budin Ltd.</a> All rights reserved.';
+	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = 'Alpha (May 19)';
 	
 	public $js;
