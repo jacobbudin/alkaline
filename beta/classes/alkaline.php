@@ -361,8 +361,18 @@ class Alkaline{
 	// Find ID number from string
 	public function findID($string){
 		$matches = array();
-		preg_match('/([0-9]+)/s', $string, $matches);
+		preg_match('/^([0-9]+)/s', $string, $matches);
 		return @$matches[1];
+	}
+	
+	// Make a URL-friendly string
+	public function makeURL($string){
+		$string = html_entity_decode($string, 1, 'UTF-8');
+		$string = strtolower($string);
+		$string = preg_replace('/([^a-zA-Z0-9]+)/s', '-', $string);
+		$string = preg_replace('/^(\-)+/s', '', $string);
+		$string = preg_replace('/(\-)+$/s', '', $string);
+		return $string;
 	}
 }
 
