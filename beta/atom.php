@@ -20,7 +20,7 @@ $entries = new Canvas('
 	<entry>
 		<title type="text"><!-- PHOTO_TITLE --></title>
 		<link href="" />
-		<id><!-- DOMAIN --><!-- BASE --><!-- PHOTO_ID --></id>
+		<id><!-- LOCATION --><!-- BASE --><!-- PHOTO_ID --></id>
 		<updated><!-- PHOTO_UPDATED --></updated>
 		<published><!-- PHOTO_PUBLISHED --></published>
 		<!-- IF(PHOTO_DESCRIPTION) -->
@@ -28,14 +28,14 @@ $entries = new Canvas('
 		<!-- ENDIF(PHOTO_DESCRIPTION) -->
 		<content type="xhtml">
 			<div xmlns="http://www.w3.org/1999/xhtml">
-				<a href=""><img src="<!-- DOMAIN --><!-- PHOTO_SRC_MEDIUM -->" title="<!-- PHOTO_TITLE -->" /></a>
+				<a href=""><img src="<!-- LOCATION --><!-- PHOTO_SRC_MEDIUM -->" title="<!-- PHOTO_TITLE -->" /></a>
 			</div>
 		</content>
-		<link rel="enclosure" type="<!-- PHOTO_MIME -->" href="<!-- DOMAIN --><!-- PHOTO_SRC_MEDIUM -->" />
+		<link rel="enclosure" type="<!-- PHOTO_MIME -->" href="<!-- LOCATION --><!-- PHOTO_SRC_MEDIUM -->" />
 	</entry>
 <!-- ENDLOOP(PHOTOS) -->');
 $entries->assign('BASE', BASE);
-$entries->assign('DOMAIN', DOMAIN);
+$entries->assign('LOCATION', LOCATION);
 $entries->loop($photos);
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
