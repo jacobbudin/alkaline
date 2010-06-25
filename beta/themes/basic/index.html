@@ -1,5 +1,5 @@
 <!-- LOOP(PHOTOS) -->
-<p>
+<div class="photo">
 	<img src="<!-- PHOTO_SRC_MEDIUM -->" alt="" class="frame" /><br />
 	<div class="float_right">
 		<div class="uploaded"><!-- PHOTO_UPLOADED --></div>
@@ -12,18 +12,18 @@
 	<div class="title">
 		<!-- PHOTO_TITLE -->
 	</div>
-</p>
-<p>
-	<!-- IF(TAGS) --><!-- LOOP(TAGS) --><span class="tag">#<!-- TAG_NAME --></span><!-- ENDLOOP(TAGS) --><br /><!-- ENDIF(TAGS) -->
-	<!-- <strong>Comments:</strong>
-	<!-- IF(COMMENTS) -->
-	<!-- LOOP(COMMENTS) -->
-			<!-- COMMENT_TEXT --> ... 
-	<!-- ENDLOOP(COMMENTS) -->
-	<!-- ELSEIF(COMMENTS) -->
-	No comments.
-	<!-- ENDIF(COMMENTS) --> -->
-</p><br />
+	<p>
+		<!-- IF(TAGS) --><!-- LOOP(TAGS) --><span class="tag">#<!-- TAG_NAME --></span><!-- ENDLOOP(TAGS) --><br /><!-- ENDIF(TAGS) -->
+		<!-- <strong>Comments:</strong>
+		<!-- IF(COMMENTS) -->
+		<!-- LOOP(COMMENTS) -->
+				<!-- COMMENT_TEXT --> ... 
+		<!-- ENDLOOP(COMMENTS) -->
+		<!-- ELSEIF(COMMENTS) -->
+		No comments.
+		<!-- ENDIF(COMMENTS) --> -->
+	</p>
+</div>
 <hr />
 <!-- ENDLOOP(PHOTOS) -->
 

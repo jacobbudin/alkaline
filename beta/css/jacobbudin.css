@@ -10,7 +10,8 @@ body{
 
 h1, h2, h3, h4, h5, h6 { color: #888; }
 
-p{
+.photo, .photo_comments{
+	display: block;
 	margin: 1em 0;
 }
 
@@ -33,7 +34,7 @@ p{
 }
 
 .float_right{
-	margin: 1em 0 3em 0;
+	margin: 1em 0 1.5em 0;
 	float: right;
 	text-align: right;
 }
