@@ -10,6 +10,56 @@ body{
 
 h1, h2, h3, h4, h5, h6 { color: #888; }
 
+#slideshow{
+	display: relative;
+}
+
+ul#slides{
+	display: inline; list-style: none inside; margin: 0; padding: 0;
+}
+
+ul#slides li{
+	display: none;
+}
+
+ul#slides li.selected{
+	display: inherit;
+}
+
+#controls{
+	position: absolute;
+	font-weight: bold;
+	z-index: 10;
+}
+
+#controls a:link, #controls a:visited, #controls a:hover, #controls a:active {
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 0 0 5px #000;
+	text-transform: uppercase;
+}
+
+a#next{
+	display: block;
+	position: absolute;
+	height: 226px;
+	width: 160px;
+	left: 480px;
+	padding-top: 200px;
+	padding-right: 15px;
+	text-align: right;
+}
+
+a#prev{
+	display: block;
+	position: absolute;
+	height: 226px;
+	width: 160px;
+	left: 15px;
+	padding-left: 15px;
+	padding-top: 200px;
+}
+
 .photo, .photo_comments{
 	display: block;
 	margin: 1em 0;
