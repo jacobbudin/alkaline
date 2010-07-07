@@ -53,8 +53,7 @@ a#next{
 	position: absolute;
 	margin: 0;
 	width: 160px;
-	left: 480px;
-	padding-right: 15px;
+	left: 440px;
 	text-align: right;
 }
 
@@ -63,8 +62,6 @@ a#prev{
 	position: absolute;
 	margin: 0;
 	width: 160px;
-	left: 25px;
-	padding-left: 15px;
 }
 
 .photo, .photo_comments{

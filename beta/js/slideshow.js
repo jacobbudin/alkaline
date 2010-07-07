@@ -36,8 +36,8 @@ function imgDim(){
 	margin = (670 / 2) - (height / 2) - 30;
 	photo.children('img').css('margin-top', margin + 'px');
 	padding = '305px';
-	$('#controls #next').css('padding', padding + ' inherit');
-	$('#controls #prev').css('padding', padding + ' inherit');
+	$('#controls #next').css('padding', padding + ' 30px');
+	$('#controls #prev').css('padding', padding + ' 30px');
 }
 
 function resetImgDim(){
