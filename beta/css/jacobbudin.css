@@ -51,6 +51,7 @@ ul#slides li.selected{
 a#next{
 	display: block;
 	position: absolute;
+	margin: 0;
 	width: 160px;
 	left: 480px;
 	padding-right: 15px;
@@ -60,8 +61,9 @@ a#next{
 a#prev{
 	display: block;
 	position: absolute;
+	margin: 0;
 	width: 160px;
-	left: 15px;
+	left: 25px;
 	padding-left: 15px;
 }
 

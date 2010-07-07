@@ -7,6 +7,7 @@ var photo_first;
 var photo_last;
 
 function nextPhoto(){
+	resetImgDim();
 	photo.removeClass('selected');
 	photo = photo.next();
 	if(photo.length == 0){
@@ -18,6 +19,7 @@ function nextPhoto(){
 }
 
 function prevPhoto(){
+	resetImgDim();
 	photo.removeClass('selected');
 	photo = photo.prev();
 	if(photo.length == 0){
@@ -29,13 +31,17 @@ function prevPhoto(){
 }
 
 function imgDim(){
-	height = photo.height();
-	width = photo.width();
-	margin = (670 / 2) - (height / 2);
+	height = photo.innerHeight();
+	width = photo.innerWidth();
+	margin = (670 / 2) - (height / 2) - 30;
 	photo.children('img').css('margin-top', margin + 'px');
 	padding = '305px';
-	$('#controls #next').css('padding-top', padding);
-	$('#controls #prev').css('padding-top', padding);
+	$('#controls #next').css('padding', padding + ' inherit');
+	$('#controls #prev').css('padding', padding + ' inherit');
+}
+
+function resetImgDim(){
+	photo.children('img').css('margin-top', '0');
 }
 
 $(document).ready(function(){
@@ -68,16 +74,8 @@ $(document).ready(function(){
 		if(event.keyCode == '37'){
 			nextPhoto();
 		}
-		if(event.keyCode == '38'){
-			photoSelect(0);
-			event.preventDefault();
-		}
 		if(event.keyCode == '39'){
 			prevPhoto();
-		}
-		if(event.keyCode == '40'){
-			photoSelect(0);
-			event.preventDefault();
 		}
 	});
 });
