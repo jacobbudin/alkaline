@@ -11,19 +11,28 @@ body{
 h1, h2, h3, h4, h5, h6 { color: #888; }
 
 #slideshow{
-	display: relative;
 }
 
 ul#slides{
-	display: inline; list-style: none inside; margin: 0; padding: 0;
+	position: absolute;
+	display: block;
+	margin: 0;
+	padding: 0;
+	list-style: none inside;
+	height: 670px;
+	width: 670px;
+	vertical-align: middle;
 }
 
 ul#slides li{
+	position: relative;
 	display: none;
+	margin: 0;
+	padding: 0;
 }
 
 ul#slides li.selected{
-	display: inherit;
+	display: block;
 }
 
 #controls{
@@ -42,10 +51,8 @@ ul#slides li.selected{
 a#next{
 	display: block;
 	position: absolute;
-	height: 226px;
 	width: 160px;
 	left: 480px;
-	padding-top: 200px;
 	padding-right: 15px;
 	text-align: right;
 }
@@ -53,11 +60,9 @@ a#next{
 a#prev{
 	display: block;
 	position: absolute;
-	height: 226px;
 	width: 160px;
 	left: 15px;
 	padding-left: 15px;
-	padding-top: 200px;
 }
 
 .photo, .photo_comments{
@@ -111,7 +116,7 @@ a#prev{
 	font-size: .9em;
 }
 
-.copyright{
+#copyright{
 	margin-top: 2em;
 	font-size: .9em;
 	text-align: center;
@@ -119,4 +124,8 @@ a#prev{
 
 .copyright, .copyright a{
 	color: #777;
+}
+
+ul#superview{
+	display: none;
 }

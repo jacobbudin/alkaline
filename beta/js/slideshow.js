@@ -1,3 +1,7 @@
+var height;
+var width;
+var margin;
+var padding;
 var photo;
 var photo_first;
 var photo_last;
@@ -9,6 +13,7 @@ function nextPhoto(){
 		photo = photo_first;
 	}
 	photo.addClass('selected');
+	imgDim();
 	event.preventDefault();
 }
 
@@ -19,7 +24,18 @@ function prevPhoto(){
 		photo = photo_last;
 	}
 	photo.addClass('selected');
+	imgDim();
 	event.preventDefault();
+}
+
+function imgDim(){
+	height = photo.height();
+	width = photo.width();
+	margin = (670 / 2) - (height / 2);
+	photo.children('img').css('margin-top', margin + 'px');
+	padding = '305px';
+	$('#controls #next').css('padding-top', padding);
+	$('#controls #prev').css('padding-top', padding);
 }
 
 $(document).ready(function(){
@@ -64,4 +80,8 @@ $(document).ready(function(){
 			event.preventDefault();
 		}
 	});
+});
+
+$(window).load(function(){
+	imgDim();
 });
