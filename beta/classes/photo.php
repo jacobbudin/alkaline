@@ -359,7 +359,7 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Create Colorstrip data
+	// Create Colorkey data
 	private function imageColor($src, $ext=null){
 		if(empty($ext)){ $ext = $this->imageExt($src); }
 		
@@ -700,6 +700,79 @@ class Photo extends Alkaline{
 			parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
 			parent::formatTime($this->photos[$i]['photo_published'], $format);
 			parent::formatTime($this->photos[$i]['photo_updated'], $format);
+		}
+	}
+	
+	public function watermark($src, $dest, $watermark, $quality=null, $ext=null){
+		if(empty($quality)){ $quality = IMG_QUAL; }
+		if(empty($ext)){ $ext = self::imageExt($src); }
+		
+		$watermark = imagecreatefrompng($watermark);
+		
+		$width_watermark = imagesx($watermark);
+		$height_watermark = imagesy($watermark);
+		
+		$watermark_temp = imagecreatetruecolor($width_watermark, $height_watermark);
+		
+		imagecolortransparent($watermark_temp, imagecolorallocatealpha($watermark_temp, 0, 0, 0, 0));
+		
+		imagecopyresampled($watermark_temp, $watermark, 0, 0, 0, 0, $width_watermark, $height_watermark, $width_watermark, $height_watermark);
+		
+		imagedestroy($watermark);
+		$watermark = $watermark_temp;
+		
+		switch($ext){
+			case 'jpg':
+				$image = imagecreatefromjpeg($src);
+				
+				$width = imagesx($image);
+				$height = imagesy($image);
+				
+				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
+				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				
+				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, 100);
+				
+				imagejpeg($image, $dest, $quality);
+				imagedestroy($image);
+				
+				return true;
+				break;
+			case 'png':
+				$image = imagecreatefrompng($src);
+				
+				$width = imagesx($image);
+				$height = imagesy($image);
+				
+				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
+				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				
+				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, WATERMARK_TRANSPARENCY);
+				
+				imagepng($image, $dest, $quality);
+				imagedestroy($image);
+				
+				return true;
+				break;
+			case 'gif':
+				$image = imagecreatefromgif($src);
+				
+				$width = imagesx($image);
+				$height = imagesy($image);
+				
+				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
+				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				
+				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, WATERMARK_TRANSPARENCY);
+				
+				imagegif($image, $dest, $quality);
+				imagedestroy($image);
+				
+				return true;
+				break;
+			default:
+				return false;
+				break;
 		}
 	}
 }

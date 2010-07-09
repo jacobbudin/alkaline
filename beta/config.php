@@ -53,6 +53,12 @@ $palette_size = 8;
 // Color tolerance (higher numbers varies colors more)
 $color_tolerance = 60;
 
+// Watermark margin (pixels)
+$watermark_margin = 10;
+
+// Watermark transparency (percentage)
+$watermark_transparency = 100;
+
 // DO NOT MODIFY BELOW THIS LINE
 
 date_default_timezone_set($time_zone);
@@ -79,6 +85,8 @@ define('DEFAULT_VIEW_TYPE', $default_view_type);
 define('DATE_FORMAT', $date_format);
 define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
+define('WATERMARK_MARGIN', $watermark_margin);
+define('WATERMARK_TRANSPARENCY', $watermark_transparency);
 
 define('ADMIN', 'admin/');
 define('CLASSES', 'classes/');
