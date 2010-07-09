@@ -708,22 +708,19 @@ class Photo extends Alkaline{
 		if(empty($ext)){ $ext = self::imageExt($src); }
 		
 		$watermark = imagecreatefrompng($watermark);
-		
+	
+		imagealphablending($watermark, false);
+	    imagesavealpha($watermark, true);
+	
 		$width_watermark = imagesx($watermark);
 		$height_watermark = imagesy($watermark);
 		
-		$watermark_temp = imagecreatetruecolor($width_watermark, $height_watermark);
-		
-		imagecolortransparent($watermark_temp, imagecolorallocatealpha($watermark_temp, 0, 0, 0, 0));
-		
-		imagecopyresampled($watermark_temp, $watermark, 0, 0, 0, 0, $width_watermark, $height_watermark, $width_watermark, $height_watermark);
-		
-		imagedestroy($watermark);
-		$watermark = $watermark_temp;
+		// 
 		
 		switch($ext){
 			case 'jpg':
 				$image = imagecreatefromjpeg($src);
+				imagealphablending($image, true);
 				
 				$width = imagesx($image);
 				$height = imagesy($image);
@@ -731,8 +728,8 @@ class Photo extends Alkaline{
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
 				
-				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, 100);
-				
+				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+				imagedestroy($watermark);
 				imagejpeg($image, $dest, $quality);
 				imagedestroy($image);
 				
@@ -747,8 +744,8 @@ class Photo extends Alkaline{
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
 				
-				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, WATERMARK_TRANSPARENCY);
-				
+				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+				imagedestroy($watermark);
 				imagepng($image, $dest, $quality);
 				imagedestroy($image);
 				
@@ -763,8 +760,12 @@ class Photo extends Alkaline{
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
 				
-				imagecopymerge($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark, WATERMARK_TRANSPARENCY);
+				$image_tamp = imagecreatetruecolor($width, $height);
+				imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
+				$image = $image_tamp;
 				
+				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+				imagedestroy($watermark);
 				imagegif($image, $dest, $quality);
 				imagedestroy($image);
 				
