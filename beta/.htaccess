@@ -5,6 +5,7 @@
 	RewriteEngine on
 	
 	RewriteRule ^admin/([a-z0-9\-]+)(/)?$ /admin/$1.php [NC]
+	
 	RewriteRule ^photo/([a-z0-9\-]+)(/)?$ /photo.php?identifier=$1 [NC]
 	
 </IfModule>

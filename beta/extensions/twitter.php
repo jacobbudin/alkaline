@@ -9,21 +9,19 @@ class Twitter extends Orbit{
 	public function __construct(){
 		parent::__construct('07a3f3d1b494c43417ff002ef659bebb687b75e4');
 		
-		$this->fetch('EpiCurl.php');
-		$this->fetch('EpiOAuth.php');
-		$this->fetch('EpiTwitter.php');
+		$this->fetch('twitteroauth.php');
 		
 		$this->oauth_token = $this->readPref('oauth_token');
-		$this->oauth_secret = $this->readPref('oauth_secret');
+		$this->oauth_secret = $this->readPref('oauth_secret'); 
 		
 		if(!empty($this->oauth_token) and !empty($this->oauth_secret)){
-			$this->twitter = new EpiTwitter('Ss0F1kxtvxkkmKGgvPx8w',
+			$this->twitter = new TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
 				't55gKYkDtn5uKo1enMyF1E00RwOec9aDzNo7TFhzZx4',
 				$this->oauth_token,
 				$this->oauth_secret);
 		}
 		else{
-			$this->twitter = new EpiTwitter('Ss0F1kxtvxkkmKGgvPx8w',
+			$this->twitter = new TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
 				't55gKYkDtn5uKo1enMyF1E00RwOec9aDzNo7TFhzZx4');
 		}
 	}
@@ -36,6 +34,17 @@ class Twitter extends Orbit{
 		$profile_image_url = $this->readPref('profile_image_url');
 		$screen_name = $this->readPref('screen_name');
 		
+		if(@$_GET['new'] == 1){
+			$access_token = $this->twitter->getAccessToken($_GET['oauth_verifier']);
+			var_dump($access_token);
+			$this->setPref('oauth_token', $access_token['oauth_token']);
+			$this->setPref('oauth_secret', $access_token['oauth_token_secret']);
+			$this->savePref();
+			echo 'a:' . $access_token['oauth_token'];
+			echo 'b:' . $access_token['oauth_token_secret'];
+			echo 'SUCCESS!';
+		}
+		
 		if(empty($profile_image_url) or empty($screen_name)){
 			$user = $this->twitter->get('/account/verify_credentials.json');
 			$this->setPref('profile_image_url', $user->profile_image_url);
@@ -43,7 +52,13 @@ class Twitter extends Orbit{
 			$this->savePref();
 		}
 		
-		$url = $this->twitter->getAuthorizeUrl(null, array('oauth_callback' => LOCATION . BASE . EXTENSIONS));
+		
+		$token = $this->twitter->getRequestToken(LOCATION . $_SERVER['REQUEST_URI'] . '&new=1');
+		$url = $this->twitter->getAuthorizeURL($token['oauth_token']);
+		
+		$this->setPref('oauth_token', $token['oauth_token']);
+		$this->setPref('oauth_secret', $token['oauth_token_secret']);
+		$this->savePref();
 		
 		?>
 		<h4>Current Account</h4>
@@ -55,7 +70,8 @@ class Twitter extends Orbit{
 		<br />
 		
 		<h4>Authorize</h4>
-		<p><a href="<?php echo @$url; ?>">Add or change your linked Twitter account</p>
+		<p>Add or change your linked Twitter account:</p>
+		<a href="<?php echo $url; ?>"><img src="<?php echo BASE . EXTENSIONS; ?>twitter/images/signin.png" alt="Sign in with Twitter"/></a><br />
 		<?php
 	}
 	
