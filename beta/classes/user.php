@@ -68,7 +68,6 @@ class User extends Alkaline{
 		
 		// If user exists, store their row
 		$this->user = $this->user[0];
-		$this->user['user_permissions'] = explode(',', $this->user['user_permissions']);
 		
 		$key = '';
 		

@@ -8,7 +8,7 @@ $alkaline = new Alkaline;
 $user = new User;
 
 if($user->deauth()){
-	$alkaline->addNotification('You have successfully logged out.', 'success');
+	$alkaline->addNotification('You successfully logged out.', 'success');
 }
 
 header('Location: ' . LOCATION . BASE . ADMIN . 'login/');

@@ -17,123 +17,64 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
-	<h2>Dashboard</h2>
 	
-	<?php $alkaline->viewNotification(); ?>
-	
-	<div class="span-<?php echo COLUMNS - 2; ?> last">
-		<div class="block">
-			<h3>Overview</h3>
-		</div>
-	</div>
-	
-	<div class="span-<?php echo ceil((COLUMNS/2)) - 2; ?> append-1">
-		<div class="span-1">
-			<img src="/images/icons/shoebox.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>shoebox/">Shoebox</a></h3>
-			<p class="quiet">Add photos from your shoebox to your library.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/photos.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>photos/">Photos</a></h3>
-			<p class="quiet">Browse and edit the photos in your library.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/rights.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>rights/">Rights</a></h3>
-			<p class="quiet">Assign rights to your photos for sale or print.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/tags.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>tags/">Tags</a></h3>
-			<p class="quiet">View and edit tags associated with your library.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/piles.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>piles/">Piles</a></h3>
-			<p class="quiet">Create groups of photos using tags.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/narratives.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>narratives/">Narratives</a></h3>
-			<p class="quiet">Compose pages and stories using your photos.</p>
-		</div>
-	</div>
-	<div class="span-<?php echo ceil((COLUMNS/2)) - 2; ?> last">
-		<div class="span-1">
-			<img src="/images/icons/access.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>access/">Users &#0038; Guests</a></h3>
-			<p class="quiet">Control access to your library.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/statistics.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>statistics/">Statistics</a></h3>
-			<p class="quiet">View and track your library&#8217;s statistics.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/comments.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>comments/">Comments</a></h3>
-			<p class="quiet">Review and manage user comments.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/preferences.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>preferences/">Preferences</a></h3>
-			<p class="quiet">Edit common preferences.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/themes.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>themes/">Themes</a></h3>
-			<p class="quiet">Manage the look and feel of your library.</p>
-		</div>
-
-		<div class="span-1">
-			<img src="/images/icons/extensions.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>extensions/">Extensions</a></h3>
-			<p class="quiet">Add, remove, and manage extensions.</p>
-		</div>
+<div id="statistics" class="container">
+	<table id="statistics_data">
+		<?php
 		
-		<div class="span-1">
-			<img src="/images/icons/maintenance.png" alt="" />
-		</div>
-		<div class="span-7 last">
-			<h3><a href="<?php echo BASE . ADMIN ?>maintenance/">Maintenance</a></h3>
-			<p class="quiet">Repair and correct your library.</p>
-		</div>
-	</div>
+		$stats = new Stat();
+		$stats->getDaily();
+		
+		?>
+		<tfoot>
+			<tr>
+				<?php
+				
+				foreach($stats->daily as $stat){
+					echo '<th>' . $stat['stat_month'] . '/' . $stat['stat_day'] . '</th>' . "\n";
+				}
+				
+				?>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr>
+				<?php
+				
+				foreach($stats->daily as $stat){
+					echo '<td>' . $stat['stat_views'] . '</td>' . "\n";
+				}
+				
+				?>
+			</tr>
+		</tbody>
+	</table>
+	<div id="statistics_holder"></div>
+	<p>
+		Your <a href="">library</a> contains 1,829 <a href="">photos</a> including 567 unique <a href="">tags</a>, 19 <a href="">collections</a>, 2 <a href="">narratives</a>, and 103 <a href="">comments</a>.
+	</p>
+</div>
+<hr />
+<div id="recent" class="container">
+	<h3>Recent</h3>
+	<?php
+	
+	$photo_ids = new Find;
+	$photo_ids->page(1,20);
+	$photo_ids->exec();
+	$photos = new Photo($photo_ids);
+	$photos->getImgUrl('square');
+	
+	foreach($photos->photos as $photo){
+		echo '<img src="' . $photo['photo_src_square'] . '" alt="" title="' . $photo['photo_title'] . '" />';
+	}
+	
+	?>
+</div>
+<hr />
+<div id="alkaline" class="container">
+	<h3>Alkaline</h3>
+	<p>You are running Alkaline version 1.0.</p>
 </div>
 
 <?php

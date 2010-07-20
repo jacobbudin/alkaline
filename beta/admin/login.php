@@ -30,44 +30,46 @@ if(!empty($username) or !empty($password)){
 
 
 define('TITLE', 'Alkaline Login');
-define('COLUMNS', '14');
-define('WIDTH', '550');
 
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
-	<h2>Login</h2>
-	
-	<?php $alkaline->viewNotification(); ?>
+<div id="login" class="container">
+	<h3>Login</h3>
 	
 	<form input="" method="post">
-	<table>
-		<tr>
-			<td style="width: 40%; font-weight: bold; text-align: right;">Username:</td>
-			<td>
-				<input type="text" name="login_user" />
-			</td>
-		</tr>
-		<tr>
-			<td style="font-weight: bold; text-align: right;">Password:</td>
-			<td>
-				<input type="password" name="login_pass" />
-			</td>
-		</tr>
-		<tr>
-			<td style="text-align: right;">
-				<input type="checkbox" name="login_remember" value="1" checked="checked">
-			</td>
-			<td style="padding-top: .65em;">Remember me on this computer.</td>
-		<tr>
-			<td></td>
-			<td>
-				<input type="submit" value="Login" />
-			</td>
-		</tr>
-	</table>
+		<table style="width: 0;">
+			<tr>
+				<td style="width: 40%; font-weight: bold; text-align: right;">
+					<label for="login_user">Username:</label>
+				</td>
+				<td>
+					<input type="text" name="login_user" id="login_user" />
+				</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; text-align: right;">
+					<label for="login_pass">Password:</label>
+				</td>
+				<td>
+					<input type="password" name="login_pass" id="login_pass" />
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: right;">
+					<input type="checkbox" name="login_remember" id="login_remember" value="1" checked="checked">
+				</td>
+				<td style="padding-top: .65em;">
+					<label for="login_remember">Remember me on this computer.</label>
+				</td>
+			<tr>
+				<td></td>
+				<td>
+					<input type="submit" value="Login" />
+				</td>
+			</tr>
+		</table>
 	</form>
 </div>
 

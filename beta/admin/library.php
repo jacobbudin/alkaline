@@ -34,9 +34,7 @@ $photo_ids->exec();
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
 
-define('TITLE', 'Alkaline Photos');
-define('COLUMNS', '19');
-define('WIDTH', '750');
+define('TITLE', 'Alkaline Library');
 
 $alkaline->injectJS('photos');
 
@@ -44,19 +42,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
-	
-	<h2>Photos</h2>
-	
-	<?php $alkaline->viewNotification(); ?>
-	
+<div id="library" class="container">
 	<h3>Search</h3>
 
 	<form id="search" method="get">
-		<input type="text" name="search" style="width: 50%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" /><br />
+		<input type="text" name="search" style="width: 40%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" /><br />
 		<a href="" style="line-height: 2.5em;">Advanced search</a>
-	</form><br />
-	
+	</form>
+</div>
+<hr />
+
+<div id="library" class="container">
 	<div id="view">
 		<a href="#" class="<?php if($user->view_type == 'grid'){ echo 'selected'; } ?>" id="grid"><img src="<?php echo BASE . IMAGES; ?>icons/grid.png" alt="" title="Grid view" /></a> <a href="#" class="<?php if($user->view_type == 'list'){ echo 'selected'; } ?>" id="list"><img src="<?php echo BASE . IMAGES; ?>icons/list.png" alt="" title="List view" /></a>
 	</div>

@@ -19,7 +19,7 @@ class Alkaline{
 	
 	public $js;
 	
-	protected $db;
+	public $db;
 	protected $guest;
 	protected $notifications;
 	
@@ -94,6 +94,18 @@ class Alkaline{
 		$this->notifications[] = array('type' => $type, 'message' => $message);
 	}
 	
+	// Check notifications
+	public function isNotification(){
+		$count = count($this->notifications);
+		if($count > 0){
+			// Determine unique types
+			return $count;
+		}
+		else{
+			return false;
+		}
+	}
+	
 	// View notification
 	public function viewNotification($type=null){
 		$count = count($this->notifications);
@@ -104,10 +116,12 @@ class Alkaline{
 				$types[] = $notifications['type'];
 			}
 			$types = array_unique($types);
+			
+			echo '<ul>';
 
 			// Produce HTML for display
 			foreach($types as $type){
-				echo '<p class="' . $type . '">';
+				echo '<li class="' . $type . '">';
 				$messages = '';
 				foreach($this->notifications as $notification){
 					if($notifications['type'] == $type){
@@ -115,10 +129,10 @@ class Alkaline{
 					}
 				}
 				$messages = ltrim($messages);
-				echo $messages . '</p>';
+				echo $messages . '</li>';
 			}
 			
-			echo '<br />';
+			echo '</ul>';
 
 			// Dispose of messages
 			unset($_SESSION['notifications']);
