@@ -19,36 +19,30 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	
 <div id="statistics" class="container">
-	<table id="statistics_data">
-		<?php
-		
-		$stats = new Stat();
-		$stats->getDaily();
-		
-		?>
-		<tfoot>
-			<tr>
-				<?php
-				
-				foreach($stats->daily as $stat){
-					echo '<th title="' . $stats->echoMonth($stat['stat_month']) . ' ' . $stat['stat_day'] . '">' . $stat['stat_day'] . '</th>' . "\n";
-				}
-				
-				?>
-			</tr>
-		</tfoot>
-		<tbody>
-			<tr>
-				<?php
-				
-				foreach($stats->daily as $stat){
-					echo '<td>' . $stat['stat_views'] . '</td>' . "\n";
-				}
-				
-				?>
-			</tr>
-		</tbody>
-	</table>
+	<?php
+	
+	$stats = new Stat();
+	$stats->getDaily();
+	
+	$views = array();
+	
+	foreach($stats->daily as $stat){
+		$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
+	}
+	
+	$views = json_encode($views);
+	
+	$visitors = array();
+	
+	foreach($stats->daily as $stat){
+		$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
+	}
+	
+	$visitors = json_encode($visitors);
+	
+	?>
+	<div id="statistics_views" title="<?php echo $views; ?>"></div>
+	<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 	<div id="statistics_holder"></div>
 	<p>
 		Your <a href="">library</a> contains 1,829 <a href="">photos</a> including 567 unique <a href="">tags</a>, 19 <a href="">collections</a>, 2 <a href="">narratives</a>, and 103 <a href="">comments</a>.

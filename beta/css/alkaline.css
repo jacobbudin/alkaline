@@ -116,9 +116,28 @@ p{
 
 #statistics_holder{
 	position: relative;
+	width: 100%;
+	height: 300px;
 	left: -.5em;
-	margin: 0 0 1em 0;
+	margin: 0 0 2em 0;
 	z-index: 1;
+}
+
+#statistics_holder .legend td.legendColorBox{
+	width: 10px;
+}
+
+#statistics_holder .legend table{
+	width: 130px;
+}
+
+#statistics_holder .xAxis.x1Axis div.tickLabel{
+	margin-left: 4px;
+}
+
+#statistics_holder .legend table .legendLabel{
+	color: #777;
+	font-size: 1.2em;
 }
 
 #recent img{

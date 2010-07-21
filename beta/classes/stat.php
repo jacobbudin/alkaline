@@ -40,9 +40,14 @@ class Stat extends Alkaline{
 	
 	// STAT-TO-ARRAY FUNCTIONS
 	public function getDaily(){
-		$query = $this->db->prepare('SELECT DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY DAY(stat_date), MONTH(stat_date), YEAR(stat_date) ORDER BY YEAR(stat_date) DESC, MONTH(stat_date) DESC, DAY(stat_date) DESC;');
+		$query = $this->db->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY DAY(stat_date), MONTH(stat_date), YEAR(stat_date) ORDER BY YEAR(stat_date) DESC, MONTH(stat_date) DESC, DAY(stat_date) DESC;');
 		$query->execute();
 		$stats = $query->fetchAll();
+		
+		foreach($stats as &$stat){
+			$stat['stat_ts_js'] = strtotime($stat['stat_date']) * 1000;
+			$stat['stat_views'] = intval($stat['stat_views']);
+		}
 		
 		$this->daily = array();
 		$next = date('Y-m-d', $this->stat_end_ts + 86400);
@@ -57,14 +62,16 @@ class Stat extends Alkaline{
 		
 		while(!(($next_day == $current_day) and ($next_month == $current_month) and ($next_year == $current_year))){
 			if(checkdate($current_month, $current_day, $current_year)){
-				$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0);
+				$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
+				$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 				$current_day++;
 			}
 			else{
 				$current_month++;
 				$current_day = 1;
 				if(checkdate($current_month, $current_day, $current_year)){
-					$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0);
+					$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
+					$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 					$current_day++;
 				}
 				else{
@@ -72,7 +79,8 @@ class Stat extends Alkaline{
 					$current_month = 1;
 					$current_day = 1;
 					if(checkdate($current_month, $current_day, $current_year)){
-						$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0);
+						$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
+						$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 						$current_day++;
 					}
 				}
@@ -82,10 +90,28 @@ class Stat extends Alkaline{
 		foreach($this->daily as &$daily){
 			foreach($stats as $stat){
 				if(($stat['stat_day'] == $daily['stat_day']) and ($stat['stat_month'] == $daily['stat_month']) and ($stat['stat_year'] == $daily['stat_year'])){
-					$daily = $stat;
+					$daily['stat_views'] = $stat['stat_views'];
 				}
 			}
 		}
+		
+		$query = $this->db->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY DAY(stat_date), MONTH(stat_date), YEAR(stat_date) ORDER BY YEAR(stat_date) DESC, MONTH(stat_date) DESC, DAY(stat_date) DESC;');
+		$query->execute();
+		$stats = $query->fetchAll();
+		
+		foreach($stats as &$stat){
+			$stat['stat_visitors'] = intval($stat['stat_visitors']);
+		}
+		
+		foreach($this->daily as &$daily){
+			foreach($stats as $stat){
+				if(($stat['stat_day'] == $daily['stat_day']) and ($stat['stat_month'] == $daily['stat_month']) and ($stat['stat_year'] == $daily['stat_year'])){
+					$daily['stat_visitors'] = $stat['stat_visitors'];
+				}
+			}
+		}
+		
+		return true;
 	}
 }
 

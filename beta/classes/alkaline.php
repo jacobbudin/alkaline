@@ -26,8 +26,8 @@ class Alkaline{
 	public $tag_count;
 	
 	public function __construct(){
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+		@header('Cache-Control: no-cache, must-revalidate');
+		@header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 		
 		// Begin a session, if one does not yet exist
 		if(session_id() == ''){ session_start(); }
