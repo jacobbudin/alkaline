@@ -65,7 +65,7 @@ window.onload = function () {
         X = (width - leftgutter) / labels.length,
         max = Math.max.apply(Math, data),
         Y = (height - bottomgutter - topgutter) / max;
-    r.drawGrid(leftgutter + X * .5 + .5, topgutter + .5, width - leftgutter - X, height - topgutter - bottomgutter, 36, 10, "#333");
+    r.drawGrid(leftgutter + X * .5 + .5, topgutter + .5, width - leftgutter - X, height - topgutter - bottomgutter, 30, 8, "#333");
     var path = r.path().attr({stroke: color, "stroke-width": 2, "stroke-linejoin": "round"}),
         bgp = r.path().attr({stroke: "none", opacity: .3, fill: color}),
         label = r.set(),
@@ -108,8 +108,8 @@ window.onload = function () {
                 }
                 var ppp = r.popup(x, y, label, side, 1);
                 frame.show().animate({path: ppp.path}, 100 * is_label_visible);
-                label[0].attr({text: data + " hit" + (data == 1 ? "" : "s")}).show().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 100 * is_label_visible);
-                label[1].attr({text: lbl + " September 2008"}).show().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 100 * is_label_visible);
+                label[0].attr({text: data + " view" + (data == 1 ? "" : "s")}).show().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 100 * is_label_visible);
+                label[1].attr({text: lbl}).show().animateWith(frame, {translation: [ppp.dx, ppp.dy]}, 100 * is_label_visible);
                 dot.attr("r", 0).attr({stroke: "#fff"});
                 is_label_visible = true;
             }, function () {

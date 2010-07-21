@@ -31,7 +31,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				
 				foreach($stats->daily as $stat){
-					echo '<th>' . $stat['stat_month'] . '/' . $stat['stat_day'] . '</th>' . "\n";
+					echo '<th title="' . $stats->echoMonth($stat['stat_month']) . ' ' . $stat['stat_day'] . '">' . $stat['stat_day'] . '</th>' . "\n";
 				}
 				
 				?>
@@ -74,7 +74,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <hr />
 <div id="alkaline" class="container">
 	<h3>Alkaline</h3>
-	<p>You are running Alkaline version 1.0.</p>
+	<p>You are running Alkaline <?php echo Alkaline::version; ?> (<?php echo Alkaline::build; ?>).</p>
 </div>
 
 <?php
