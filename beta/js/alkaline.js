@@ -14,13 +14,17 @@ $(document).ready(function(){
 	$.plot($("#statistics_holder"),[{
 		label: "Page views",
 		data: statistics_views,
-		bars: { show: true, lineWidth: 18 },
+		bars: { show: true, lineWidth: 20 },
+		shadowSize: 10,
+		hoverable: true,
 		yaxis: 1
 	},
 	{
 		label: "Unique visitors",
 		data: statistics_visitors,
-		bars: { show: true, lineWidth: 18 },
+		bars: { show: true, lineWidth: 20 },
+		shadowSize: 10,
+		hoverable: true,
 		yaxis: 1
 	}],{
 		legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#333", position: "ne", margin: 5 },
@@ -29,14 +33,6 @@ $(document).ready(function(){
 		yaxis: { tickDecimals: 0 },
 		grid: { color: "#ccc", borderColor: "#333", tickColor: "#333", labelMargin: 10, hoverable: true, autoHighlight: true }
 	});
-	
-	$("#statistics_holder").bind("plothover", function(event, pos, item){
-		if(item){
-			highlight(item.series, item.datapoint);
-			alert("You clicked a point!");
-		}
-	});
-
 	
 	$(".tickLabels").css('font-size', '');
 	

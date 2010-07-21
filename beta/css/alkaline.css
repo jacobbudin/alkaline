@@ -140,6 +140,11 @@ p{
 	font-size: 1.2em;
 }
 
+#statistics_holder .legend table tbody td{
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
 #recent img{
 	margin: 0 10px 10px 0;
 }
