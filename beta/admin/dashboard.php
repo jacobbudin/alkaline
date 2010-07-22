@@ -19,6 +19,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	
 <div id="statistics" class="container">
+	<h2>Vitals</h2>
 	<?php
 	
 	$stats = new Stat();
@@ -43,14 +44,27 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	?>
 	<div id="statistics_views" title="<?php echo $views; ?>"></div>
 	<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
-	<div id="statistics_holder"></div>
-	<p>
-		Your <a href="">library</a> contains 1,829 <a href="">photos</a> including 567 unique <a href="">tags</a>, 19 <a href="">collections</a>, 2 <a href="">narratives</a>, and 103 <a href="">comments</a>.
-	</p>
+	
+	<div class="span-19">
+		<div id="statistics_holder"></div>
+	</div>
+	<div class="span-4 last">
+		<ul class="sticky">
+			<li><a href="shoebox/">6 new photos</a></li>
+			<li><a href="shoebox/">1 new comment</a></li>
+		</ul>
+		<ul>
+			<li><a href="library/">1,829 photos</a></li>
+			<li><a href="">19 collections</a></li>
+			<li><a href="">2 narratives</a></li>
+			<li><a href="">567 tags</a></li>
+			<li><a href="">103 comments</a></li>
+		</ul>
+	</div>
 </div>
 <hr />
 <div id="recent" class="container">
-	<h3>Recent</h3>
+	<h2>Recent</h2>
 	<?php
 	
 	$photo_ids = new Find;
@@ -67,7 +81,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 </div>
 <hr />
 <div id="alkaline" class="container">
-	<h3>Alkaline</h3>
+	<h2>Alkaline</h2>
 	<p>You are running Alkaline <?php echo Alkaline::version; ?> (<?php echo Alkaline::build; ?>).</p>
 </div>
 
