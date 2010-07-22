@@ -358,6 +358,30 @@ class Alkaline{
 		return implode(', ', $tags);
 	}
 	
+	// GET LIBRARY INFO
+	public function getInfo(){
+		// Tables for which to retrieve info
+		$tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id');
+		
+		$info = array();
+		
+		// Run helper function
+		foreach($tables as $table => $selector){
+			$info[$table] = self::countTable($table, $selector);
+		}
+		
+		return $info;
+	}
+	
+	function countTable($table, $selector){
+		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $selector . ') AS count FROM ' . $table . ';');
+		$query->execute();
+		$count = $query->fetch();
+		
+		$count = intval($count['count']);
+		return $count;
+	}
+	
 	// RECORD STATISTIC
 	// Record a visitor to statistics
 	public function recordStat($page_type=null){
