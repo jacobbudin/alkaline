@@ -28,17 +28,22 @@
 		<div id="navigation" class="container">
 			<ul>
 				<li><a href="/admin/dashboard/">Dashboard</a></li>
-				<li><a href="/admin/library/">Library</a></li>
-				<li><a href="/admin/shoebox/">Shoebox (6)</a></li>
-				<li><a href="/admin/sections/">Sections</a>
+				<li><a href="/admin/library/"><span class="small">&#9656;</span> Library</a>
 					<ul>
-						<li><a href="/admin/tags/">Tags</a></li>
-						<li><a href="/admin/collections/">Collections</a></li>
-						<li><a href="/admin/narratives/">Narratives</a></li>
 						<li><a href="/admin/comments/">Comments</a></li>
+						<li><a href="/admin/tags/">Tags</a></li>
+						<li><a href="/admin/rights/">Rights</a></li>
+						<li><a href="/admin/statistics/">Statistics</a></li>
 					</ul>
 				</li>
-				<li><a href="/admin/settings/">Settings</a>
+				<li><a href="/admin/shoebox/">Shoebox</a></li>
+				<li><a href="/admin/sections/"><span class="small">&#9656;</span> Sections</a>
+					<ul>
+						<li><a href="/admin/piles/">Piles</a></li>
+						<li><a href="/admin/pages/">Pages</a></li>
+					</ul>
+				</li>
+				<li><a href="/admin/settings/"><span class="small">&#9656;</span> Settings</a>
 					<ul>
 						<li><a href="/admin/users/">Users</a></li>
 						<li><a href="/admin/preferences/">Preferences</a></li>

@@ -9,7 +9,7 @@ $user = new User;
 
 $user->perm(true);
 
-$tags = $alkaline->allTags(true);
+$tags = $alkaline->showTags(true);
 
 define('TITLE', 'Alkaline Tags');
 define('COLUMNS', '19');
@@ -19,29 +19,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
-	<h2>Tags</h2>
+<div id="tags" class="container">
+	<form id="tags_find" method="get">
+		<input type="text" name="search" /> <input type="submit" value="Find" />
+	</form>
 	
-	<?php $alkaline->viewNotification(); ?>
-	
-	<h3>Search</h3>
-
-	<form id="search" method="get">
-		<input type="text" name="search" style="width: 30%; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" />
-	</form><br />
-	
-	<h3>Cloud <span class="small quiet">(<span id="count"><?php echo @$alkaline->tag_count; ?></span>)</span></h3>
+	<h2>Tags <span class="small quiet">(<span id="count"><?php echo @$alkaline->tag_count; ?></span>)</span></h2>
 	
 	<hr />
 	
 	<p class="center">
-		<?php
-		
-		echo $tags;
-		
-		?>
+		<?php echo $tags; ?>
 	</p>
-	
 </div>
 
 <?php

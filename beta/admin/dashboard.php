@@ -51,14 +51,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div class="span-4 last">
 		<ul class="sticky">
 			<li><a href="shoebox/">6 new photos</a></li>
-			<li><a href="shoebox/">1 new comment</a></li>
+			<li><a href="comments/">1 new comment</a></li>
 		</ul>
 		<ul>
-			<li><a href="library/">1,829 photos</a></li>
-			<li><a href="">19 collections</a></li>
-			<li><a href="">2 narratives</a></li>
-			<li><a href="">567 tags</a></li>
-			<li><a href="">103 comments</a></li>
+			<?php
+			
+			$tables = $alkaline->getInfo();
+			
+			foreach($tables as $table => $count){
+				echo '<li><a href="">' . $count . ' ' . $table . '</a></li>';
+			}
+			
+			?>
 		</ul>
 	</div>
 </div>

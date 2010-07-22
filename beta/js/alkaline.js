@@ -5,6 +5,29 @@ var IMAGES = 'images/';
 var PHOTOS = 'photos/';
 
 $(document).ready(function(){
+	
+	$("#navigation ul li").hover(
+		function(){
+			$(this).find("span.small").html('&#9662;');
+			
+		}, 
+		function(){
+			$(this).find("span.small").html('&#9656;');
+		}
+	);
+	
+	$("#navigation ul li ul").hover(
+		function(){
+			$(this).siblings('a').addClass('selected');
+			$(this).parent('li').mouseenter(handlerIn);
+			
+		}, 
+		function(){
+			$(this).siblings('a').removeClass('selected');
+			$(this).parent('li').mouseleave(handlerOut);
+		}
+	);
+	
 	var statistics_views = $("#statistics_views").attr("title");
 	statistics_views = jQuery.parseJSON(statistics_views);
 	

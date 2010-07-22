@@ -19,53 +19,74 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="statistics" class="container">
 	<h2>Visits</h2>
-	<div class="span-14 append-1">
-		<h3>Past 24 Hours</h3>
+	
+	<div class="span-23 last">
+		<div class="span-7 append-1">
+			<h3>Past 24 Hours</h3>
+			<div id="24h_views" title="<?php echo $views; ?>"></div>
+			<div id="24h_visitors" title="<?php echo $visitors; ?>"></div>
+			<div id="24h_holder"></div>
+		</div>
+		<div class="span-7 append-1">
+			<h3>Past 30 Days</h3>
+			<div id="30d_views" title="<?php echo $views; ?>"></div>
+			<div id="30d_visitors" title="<?php echo $visitors; ?>"></div>
+			<div id="30d_holder"></div>
+		</div>
+		<div class="span-7 last">
+			<h3>Past 12 Months</h3>
+			<div id="12m_views" title="<?php echo $views; ?>"></div>
+			<div id="12m_visitors" title="<?php echo $visitors; ?>"></div>
+			<div id="12m_holder"></div>
+		</div>
 	</div>
-	<div id="durations" class="span-8 last">
-		<h3>Durations</h3>
-		<table>
-			<tr>
-				<th></th>
-				<th>Length</th>
-			</tr>
-			<tr>
-				<td>x%</td>
-				<td>&#0060; 1 minute</td>
-			</tr>
-			<tr>
-				<td>x%</td>
-				<td>1-5 minutes</td>
-			</tr>
-			<tr>
-				<td>x%</td>
-				<td>5-10 minutes</td>
-			</tr>
-			<tr>
-				<td>x%</td>
-				<td>10-30 minutes</td>
-			</tr>
-			<tr>
-				<td>x%</td>
-				<td>&#0062; 30 minutes</td>
-			</tr>
-		</table>
-	</div>
-	<div class="span-14 append-1">
-		<h3>Past 12 Months</h3>
-	</div>
-	<div class="span-8 last">
-		<h3>Page Types</h3>
+	
+	<div class="span-23 last">
+		<div id="durations" class="span-7 append-1">
+			<h3>Durations</h3>
+			<table>
+				<tr>
+					<th></th>
+					<th>Length</th>
+				</tr>
+				<tr>
+					<td>x%</td>
+					<td>&#0060; 1 minute</td>
+				</tr>
+				<tr>
+					<td>x%</td>
+					<td>1-5 minutes</td>
+				</tr>
+				<tr>
+					<td>x%</td>
+					<td>5-10 minutes</td>
+				</tr>
+				<tr>
+					<td>x%</td>
+					<td>10-30 minutes</td>
+				</tr>
+				<tr>
+					<td>x%</td>
+					<td>&#0062; 30 minutes</td>
+				</tr>
+			</table>
+		</div>
+		<div class="span-7 append-1">
+			<h3>Popular Pages</h3>
+		</div>
+		<div class="span-7 last">
+			<h3>Page Types</h3>
+		</div>
 	</div>
 </div>
 <hr />
 <div id="referrers" class="container">
 	<h2>Referrers</h2>
 	<div class="span-11 append-1">
-		<h3>Most Recent</h3>
+		<h3>Recent</h3>
 	</div>
 	<div class="span-11 last">
-		<h3>Most Popular</h3>
+		<h3>Popular</h3>
 	</div>
 </div>
 
