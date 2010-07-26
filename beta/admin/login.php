@@ -2,7 +2,6 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
@@ -30,18 +29,16 @@ if(!empty($username) or !empty($password)){
 
 
 define('TITLE', 'Alkaline Login');
-
+define('EMBED_CSS', '.container{ position: relative; top: 18%; width: 590px; }');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
 <div id="login" class="container">
-	<h3>Login</h3>
-	
 	<form input="" method="post">
-		<table style="width: 0;">
+		<table>
 			<tr>
-				<td style="width: 40%; font-weight: bold; text-align: right;">
+				<td style="width: 40%; text-align: right;">
 					<label for="login_user">Username:</label>
 				</td>
 				<td>
@@ -49,7 +46,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</td>
 			</tr>
 			<tr>
-				<td style="font-weight: bold; text-align: right;">
+				<td style="text-align: right;">
 					<label for="login_pass">Password:</label>
 				</td>
 				<td>

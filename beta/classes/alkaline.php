@@ -161,6 +161,17 @@ class Alkaline{
 		return $photos;
 	}
 	
+	// Count compatible photos in shoebox
+	public function countShoebox(){
+		$photos = array();
+		
+		self::seekDirectory(PATH . SHOEBOX, $photos);
+		
+		$count = count($photos);
+		
+		return $count;
+	}
+	
 	// Seek directory
 	private function seekDirectory($dir=null, &$photos){
 		// Error checking
@@ -177,12 +188,14 @@ class Alkaline{
 		while($filename = readdir($handle)){
 			if(!in_array($filename, $ignore)){ 
 				// Recusively check directories
+				/*
 				if(is_dir($dir . '/' . $filename)){
 					self::seekDirectory($dir . $filename . '/', $photos);
 				}
+				*/
 
 				// Find files with proper extensions
-				elseif(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
+				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
 					$photos[] = $dir . $filename;
 				}
 			}
@@ -190,6 +203,17 @@ class Alkaline{
 	
 		// Close listing
 		closedir($handle);
+	}
+	
+	// Get filename
+	public function getFilename($file){
+		$matches = array();
+		preg_match('#^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))#si', $file, $matches);
+		if(count($matches) < 1){
+			return false;
+		}
+		$filename = $matches[2] . $matches[3];
+		return $filename;
 	}
 	
 	// Empty directory
@@ -214,8 +238,8 @@ class Alkaline{
 				}
 				// Delete files
 				else{
-					@chmod($dir . $filename, 0777);
-					@unlink($dir . $filename);
+					chmod($dir . $filename, 0777);
+					unlink($dir . $filename);
 				}
 			}
 	    }
@@ -264,18 +288,27 @@ class Alkaline{
 	
 	// FORMAT TIME
 	// Make time more human-readable
-	public function formatTime(&$time, $format){
-		if(!empty($time)){
-			$time = str_replace('tonight', 'today', $time);
-			if(empty($format)){
-				$ampm = array(' am', ' pm');
-				$ampm_correct = array(' a.m.', ' p.m.');
-				$time = str_replace($ampm, $ampm_correct, date(DATE_FORMAT, @strtotime($time)));
-			}
-			else{
-				$time = date($format, @strtotime($time));
-			}
+	public function formatTime($time, $format=null){
+		// Error checking
+		if(empty($time)){
+			return false;
 		}
+		
+		$time = str_replace('tonight', 'today', $time);
+		
+		$ampm = array(' am', ' pm');
+		$ampm_correct = array(' a.m.', ' p.m.');
+		
+		if(empty($format)){
+			$time = date(DATE_FORMAT, @strtotime($time));
+		}
+		else{
+			$time = date($format, @strtotime($time));
+		}
+		
+		$time = str_replace($ampm, $ampm_correct, $time);
+		
+		return $time;
 	}
 	
 	public function echoMonth($int){
@@ -369,6 +402,20 @@ class Alkaline{
 		foreach($tables as $table => $selector){
 			$info[$table] = self::countTable($table, $selector);
 		}
+		
+		$info_new = array();
+		
+		foreach($info as $table => $count){
+			if($count == 1){
+				$table_new = preg_replace('#s$#si', '', $table);
+				$info_new[$table_new] = $count;
+			}
+			else{
+				$info_new[$table] = $count;
+			}
+		}
+		
+		$info = $info_new;
 		
 		return $info;
 	}

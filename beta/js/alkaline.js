@@ -1,10 +1,76 @@
-var BASE = 'http://beta.alkalineapstats.com/';
+var BASE = 'http://beta.alkalineapp.com/';
 
 var ADMIN = 'admin/';
 var IMAGES = 'images/';
 var PHOTOS = 'photos/';
 
+// SHOEBOX
+
+function now(){
+	var time = new Date();
+	var hour = time.getHours();
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+	var temp = "" + ((hour > 12) ? hour - 12 : hour);
+	if(hour == 0){
+		temp = "12";
+	}
+	temp += ((minute < 10) ? ":0" : ":") + minute;
+	temp += ((second < 10) ? ":0" : ":") + second;
+	temp += (hour >= 12) ? " P.M." : " A.M.";
+	return temp;
+}
+
+var now = now();
+
+function photoArray(photo_files){
+	photo_count = photo_files.length;
+	progress = 0;
+	progress_step = 100 / photo_files.length;
+	for(photo_file in photo_files){
+		$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: photo_files[photo_file] }, function(data){ appendPhoto(data); updateProgress(); } );
+	}
+}
+
+function appendPhoto(photo){
+	var photo = jQuery.parseJSON(photo);
+	photo_ids = $("#shoebox_photo_ids").val();
+	photo_ids += photo.id + ',';
+	$("#shoebox_photo_ids").attr("value", photo_ids);
+	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id"><hr /><div class="span-3 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p class="title"><input type="text" name="photo-' + photo.id + '-title" /></p><p class="description"><textarea name="photo-' + photo.id + '-description"></textarea></p><p class="tags"><img src="' + BASE + IMAGES + 'icons/tag.png" alt="" title="Tags" /><input type="text" id="photo-' + photo.id + '-tags" /></p><p class="publish"><img src="' + BASE + IMAGES + 'icons/publish.png" alt="" title="Publish date" /><input type="text" id="photo-' + photo.id + '-published" value="' + now + '" /></p><p class="geo"><img src="' + BASE + IMAGES + 'icons/geo.png" alt="" title="Geolocation" /><input type="text" id="photo-' + photo.id + '-geo" /></p><p class="delete"><a href="#" class="delete"><img src="' + BASE + IMAGES + 'icons/delete.png" alt="" title="Delete photo" /></a></p></div></div>');
+}
+
+function updateProgress(){
+	progress += progress_step;
+	progress_int = parseInt(progress);
+	$("#shoebox_progress").progressbar({ value: progress_int });
+	if(progress == 100){
+		$("#shoebox_progress").slideUp(1000);
+		$("#shoebox_add").delay(1000).removeAttr("disabled");
+	}
+}
+
+function checkCount(){
+	if(count == 0){
+		$('#shoebox_add').attr('disabled', 'disabled');
+	}
+}
+
+function executeTask(task){
+	$.ajax({
+		url: BASE + ADMIN + "tasks/" + task + ".php",
+		cache: false,
+		error: function(data){ alert(data); },
+		dataType: "json",
+		success: function(data){ photoArray(data); }
+	});
+}
+
 $(document).ready(function(){
+	// PRIMARY
+	var page = $("h2").first().text();
+	
+	// PRIMARY - NAVIGATION
 	
 	$("#navigation ul li").hover(
 		function(){
@@ -28,72 +94,88 @@ $(document).ready(function(){
 		}
 	);
 	
-	var statistics_views = $("#statistics_views").attr("title");
-	statistics_views = jQuery.parseJSON(statistics_views);
+	// SHOEBOX
 	
-	var statistics_visitors = $("#statistics_visitors").attr("title");
-	statistics_visitors = jQuery.parseJSON(statistics_visitors);
+	if(page == 'Shoebox'){
+		executeTask("add-photos");
 	
-	var stats = $.plot($("#statistics_holder"),[{
-		label: "Page views",
-		data: statistics_views,
-		bars: { show: true, lineWidth: 18 },
-		shadowSize: 10,
-		hoverable: true,
-		yaxis: 1
-	},
-	{
-		label: "Unique visitors",
-		data: statistics_visitors,
-		bars: { show: true, lineWidth: 18 },
-		shadowSize: 10,
-		hoverable: true,
-		yaxis: 1
-	}],{
-		legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#333", position: "ne", margin: 5 },
-		colors: ["#0096db", "#8dc9e8"],
-		xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
-		yaxis: { tickDecimals: 0 },
-		grid: { color: "#777", borderColor: "#333", tickColor: "#333", labelMargin: 10, hoverable: true, autoHighlight: true }
-	});
+		$("#shoebox_add").attr("disabled", "disabled");
+		$("#shoebox_progress").progressbar({ value: 0 });
 	
-	$.each(stats.getData()[0].data, function(i, el){
-		var o = stats.pointOffset({x: el[0], y: el[1]});
-		if(el[1] > 0){
-		  $('<div class="point">' + el[1] + '</div>').css( {
-		    position: 'absolute',
-		    left: o.left - 12,
-		    top: o.top - 20,
-		  }).appendTo(stats.getPlaceholder());
-		}
-	});
+		count = $('#count').text();
+		checkCount();
+	}
 	
-	var time = new Date();
-	var month = time.getMonth();
+	// DASHBOARD
 	
-	if(month == 0){ month = 'Jan'; }
-	if(month == 1){ month = 'Feb'; }
-	if(month == 2){ month = 'Mar'; }
-	if(month == 3){ month = 'Apr'; }
-	if(month == 4){ month = 'May'; }
-	if(month == 5){ month = 'Jun'; }
-	if(month == 6){ month = 'Jul'; }
-	if(month == 7){ month = 'Aug'; }
-	if(month == 8){ month = 'Sep'; }
-	if(month == 9){ month = 'Oct'; }
-	if(month == 10){ month = 'Nov'; }
-	if(month == 11){ month = 'Dec'; }
+	if(page == 'Vitals'){
+		var statistics_views = $("#statistics_views").attr("title");
+		statistics_views = jQuery.parseJSON(statistics_views);
+	
+		var statistics_visitors = $("#statistics_visitors").attr("title");
+		statistics_visitors = jQuery.parseJSON(statistics_visitors);
+	
+		var stats = $.plot($("#statistics_holder"),[{
+			label: "Page views",
+			data: statistics_views,
+			bars: { show: true, lineWidth: 18 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		},
+		{
+			label: "Unique visitors",
+			data: statistics_visitors,
+			bars: { show: true, lineWidth: 18 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		}],{
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			colors: ["#0096db", "#8dc9e8"],
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
+			yaxis: { tickDecimals: 0 },
+			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+		});
+	
+		$.each(stats.getData()[0].data, function(i, el){
+			var o = stats.pointOffset({x: el[0], y: el[1]});
+			if(el[1] > 0){
+			  $('<div class="point">' + el[1] + '</div>').css( {
+			    position: 'absolute',
+			    left: o.left - 12,
+			    top: o.top - 20,
+			  }).appendTo(stats.getPlaceholder());
+			}
+		});
+	
+		var time = new Date();
+		var month = time.getMonth();
+	
+		if(month == 0){ month = 'Jan'; }
+		if(month == 1){ month = 'Feb'; }
+		if(month == 2){ month = 'Mar'; }
+		if(month == 3){ month = 'Apr'; }
+		if(month == 4){ month = 'May'; }
+		if(month == 5){ month = 'Jun'; }
+		if(month == 6){ month = 'Jul'; }
+		if(month == 7){ month = 'Aug'; }
+		if(month == 8){ month = 'Sep'; }
+		if(month == 9){ month = 'Oct'; }
+		if(month == 10){ month = 'Nov'; }
+		if(month == 11){ month = 'Dec'; }
 
-	var day = time.getDate();
+		var day = time.getDate();
 	
-	$(".tickLabel").each(function(index){
-		var text = $(this).text();
-		if(text == (month + ' ' + day)){
-			$(this).text('Today');
-		}
-	});
+		$(".tickLabel").each(function(index){
+			var text = $(this).text();
+			if(text == (month + ' ' + day)){
+				$(this).text('Today').css('font-weight', 'bold');
+			}
+		});
 	
-	$(".tickLabels").css('font-size', '');
+		$(".tickLabels").css('font-size', '');
+	}
 	
 	$("#view a").click(function(){
 		type = $(this).attr("id");

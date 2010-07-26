@@ -15,56 +15,35 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.custom.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
+	<?php echo (defined('EMBED_CSS') ? '<style type="text/css">' . EMBED_CSS . '</style>' : ''); ?>
 	<?php $alkaline->dejectJS(); ?>
 </head>
 <body>
 	<div id="header" class="container">
 		<a href="/admin/"><img src="/images/shutter.png" alt="Alkaline" /></a>
-	</div>
-	<hr />
-	<?php
-	if($user->perm()){
-		?>
-		<div id="navigation" class="container">
-			<ul>
-				<li><a href="/admin/dashboard/">Dashboard</a></li>
-				<li><a href="/admin/library/"><span class="small">&#9656;</span> Library</a>
-					<ul>
-						<li><a href="/admin/comments/">Comments</a></li>
-						<li><a href="/admin/tags/">Tags</a></li>
-						<li><a href="/admin/rights/">Rights</a></li>
-						<li><a href="/admin/statistics/">Statistics</a></li>
-					</ul>
-				</li>
-				<li><a href="/admin/shoebox/">Shoebox</a></li>
-				<li><a href="/admin/sections/"><span class="small">&#9656;</span> Sections</a>
-					<ul>
-						<li><a href="/admin/piles/">Piles</a></li>
-						<li><a href="/admin/pages/">Pages</a></li>
-					</ul>
-				</li>
-				<li><a href="/admin/settings/"><span class="small">&#9656;</span> Settings</a>
-					<ul>
-						<li><a href="/admin/users/">Users</a></li>
-						<li><a href="/admin/preferences/">Preferences</a></li>
-						<li><a href="/admin/configuration/">Configuration</a></li>
-						<li><a href="/admin/themes/">Themes</a></li>
-						<li><a href="/admin/extensions/">Extensions</a></li>
-						<li><a href="/admin/maintenance/">Maintenance</a></li>
-					</ul>
-				</li>
-				<li><a href="/admin/logout/">Logout</a></li>
-			</ul>
-		</div>
-		<hr />
 		<?php
-	}
+		if($user->perm()){
+			?>
+			<div id="navigation">
+				<ul>
+					<li><a href="/admin/dashboard/">Dashboard</a></li>
+					<li><a href="/admin/library/">Library</a></li>
+					<li><a href="/admin/pages/">Pages</a></li>
+					<li><a href="/admin/settings/">Settings</a></li>
+					<li><a href="/admin/logout/">Logout</a></li>
+				</ul>
+			</div>
+			<?php
+		}
+		?>
+		<hr />
+	</div>
+	<?php
 	if($alkaline->isNotification()){
 		?>
 		<div id="notification" class="container">
 			<?php $alkaline->viewNotification(); ?>
 		</div>
-		<hr />
 		<?php
 	}
 	?>

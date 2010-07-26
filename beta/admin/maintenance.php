@@ -2,37 +2,32 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Maintenance');
-define('COLUMNS', '19');
-define('WIDTH', '750');
-
 $alkaline->injectJS('maintenance');
 
+define('TITLE', 'Alkaline Maintenance');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
+<div id="maintenance" class="container">
 	<h2>Maintenance</h2>
 	
-	<?php $alkaline->viewNotification(); ?>
-	
-	<p>Maintenance tasks repair or correct your library. You do not need to execute any of these tasks if you are not experiencing problems. Please let the task complete before closing your browser window. You will be redirected to your dashboard when the task is complete.</p>
+	<p>Maintenance tasks repair your library. You do not need to execute any of these tasks if you are not experiencing problems. Please let the task complete before closing your browser window. You will be automatically redirected to your dashboard when the task is complete.</p>
 	
 	<div id="progress" class="span-17 last">
 		
 	</div>
 	
-	<div id="tasks">
-		<h4><a id="rebuild-all" class="task" href="#">Rebuild photo thumbnails</a></h4>
-	</div>
+	<ul id="tasks">
+		<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>
+		<li><a href="#delete-unused">Delete unused photo thumnails</a></li>
+	</ul>
 	
 </div>
 

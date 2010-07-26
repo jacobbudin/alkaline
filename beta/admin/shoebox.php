@@ -38,36 +38,29 @@ else{
 }
 
 define('TITLE', 'Alkaline Shoebox');
-define('COLUMNS', '19');
-define('WIDTH', '750');
-
-$alkaline->injectJS('shoebox');
 
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
+<div id="shoebox" class="container">
 	<h2>Shoebox</h2>
 	
-	<?php $alkaline->viewNotification(); ?>
+	<p><?php echo $photo_count_read; ?></p><br />
 	
-	<p><?php echo @$photo_count_read; ?></p><br />
-	
-	<h3>Imported <span class="small quiet">(<span id="count"><?php echo $photo_count; ?></span>)</span></h3>
+	<h3>Imported <span class="small quiet">(<span id="shoebox_import_count"><?php echo $photo_count; ?></span>)</span></h3>
 	
 	<form action="" method="post">
-		<div id="photos">
+		<div id="shoebox_photos">
 			
 		</div>
 	
-		<div id="progress" class="span-17 last">
+		<p id="shoebox_progress" class="span-23 last">
 		
-		</div>
+		</p>
 	
-		<p class="center">
-			<br />
-			<input id="photo_ids" type="hidden" name="photo_ids" value="" />
-			<input id="add" type="submit" value="Add photos" />
+		<p>
+			<input id="shoebox_photo_ids" type="hidden" name="photo_ids" value="" />
+			<input id="shoebox_add" type="submit" value="Add photos" />
 		</p>
 	</form>
 	

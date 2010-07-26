@@ -30,6 +30,13 @@ class Photo extends Alkaline{
 				$import = true;
 				$file = $value;
 				
+				$filename = parent::getFilename($file);
+				
+				// Move file to shoebox
+				copy($file, PATH . SHOEBOX . $filename);
+				@unlink($file);
+				$file = PATH . SHOEBOX . $filename;
+				
 				// Verify file exists
 				if(file_exists($file)){
 					// Add photo to database
@@ -45,7 +52,7 @@ class Photo extends Alkaline{
 
 					// Copy photo to archive, delete original from shoebox
 					copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
-					unlink($file);
+					@unlink($file);
 				}
 			}
 			else{
@@ -84,6 +91,7 @@ class Photo extends Alkaline{
 		}
 		
 		if(@$import){
+			parent::emptyDirectory(PATH . SHOEBOX);
 			$this->sizePhoto();
 			$this->exifPhoto();
 			$this->readIPTC();
@@ -495,15 +503,15 @@ class Photo extends Alkaline{
 				$city = (!empty($iptc["2#090"][0])) ? $iptc["2#090"][0] : '';
 				$state = (!empty($iptc["2#095"][0])) ? $iptc["2#095"][0] : '';
 				$country = (!empty($iptc["2#101"][0])) ? $iptc["2#101"][0] : '';
+				
+				// Clean input
+				$title = trim($title);
+				$description = trim($description);
+				$tags = array_unique(array_map('trim', $tags));
 			}
 			
-			// Clean input
-			$title = trim($title);
-			$description = trim($description);
-			$tags = array_unique(array_map('trim', $tags));
-			
 			// If there are tags, add them (IPTC keywords)
-			if(count($tags) > 0){
+			if(@count($tags) > 0){
 				
 				// Find tags that already exist, add links
 				$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE "' . implode('" OR LOWER(tags.tag_name) LIKE "', $tags) . '";');
@@ -521,15 +529,17 @@ class Photo extends Alkaline{
 				}
 				
 				// For tags that don't exist, add tags and links
-				foreach($tags as $tag){
-					// Add tag
-					$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
-					$this->db->exec($query);
-					$tag_id = $this->db->lastInsertId();
+				if(count($tags) > 0){
+					foreach($tags as $tag){
+						// Add tag
+						$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
+						$this->db->exec($query);
+						$tag_id = $this->db->lastInsertId();
 					
-					// Add link
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
-					$this->db->exec($query);
+						// Add link
+						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+						$this->db->exec($query);
+					}
 				}
 			}
 			
@@ -559,11 +569,11 @@ class Photo extends Alkaline{
 				}
 			}
 			
-			$fields = array('photo_title' => $title,
-				'photo_description' => $description,
-				'photo_geo' => $geo,
-				'photo_geo_lat' => $geo_lat,
-				'photo_geo_long' => $geo_long);
+			$fields = array('photo_title' => @$title,
+				'photo_description' => @$description,
+				'photo_geo' => @$geo,
+				'photo_geo_lat' => @$geo_lat,
+				'photo_geo_long' => @$geo_long);
 			
 			$photo = new Photo($this->photos[$i]['photo_id']);
 			$photo->updateFields($fields, false);

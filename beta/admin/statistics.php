@@ -10,15 +10,12 @@ $user = new User;
 $user->perm(true);
 
 define('TITLE', 'Alkaline Statistics');
-define('COLUMNS', '19');
-define('WIDTH', '750');
-
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
 <div id="statistics" class="container">
-	<h2>Visits</h2>
+	<h2>Statistics</h2>
 	
 	<div class="span-23 last">
 		<div class="span-7 append-1">
@@ -40,7 +37,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<div id="12m_holder"></div>
 		</div>
 	</div>
-	
+</div>
+<hr />
+<div id="visits" class="container">
+	<h2>Visits</h2>
 	<div class="span-23 last">
 		<div id="durations" class="span-7 append-1">
 			<h3>Durations</h3>
@@ -78,6 +78,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<h3>Page Types</h3>
 		</div>
 	</div>
+	<p class="small quiet">The visitor behavior above was derived from analytics of the last 60 days.</p>
 </div>
 <hr />
 <div id="referrers" class="container">

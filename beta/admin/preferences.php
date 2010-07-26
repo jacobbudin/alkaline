@@ -2,14 +2,13 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
 
 $user->perm(true);
 
-if(!empty($_POST['save'])){
+if(!empty($_POST['preferences_save'])){
 	$user->setPref('shoe_pub', 0);
 	$user->setPref('comm_email_photo', 0);
 	
@@ -19,17 +18,14 @@ if(!empty($_POST['save'])){
 }
 
 define('TITLE', 'Alkaline Preferences');
-define('COLUMNS', '19');
-define('WIDTH', '750');
-
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
+<div id="preferences" class="container">
 	<h2>Preferences</h2>
 	
-	<?php $alkaline->viewNotification(); ?>
+	<p>Modify your user preferences.</p>
 	
 	<form action="" method="post">
 		
@@ -55,7 +51,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 		</table>
 		
-		<p class="center"><input type="submit" name="save" value="Save changes" /></p>
+		<p><input type="submit" name="preferences_save" value="Save changes" /></p>
 		
 	</form>
 	

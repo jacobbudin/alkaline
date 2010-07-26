@@ -2,7 +2,6 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
@@ -10,20 +9,17 @@ $user = new User;
 $user->perm(true);
 
 define('TITLE', 'Alkaline Configuration');
-define('COLUMNS', '19');
-define('WIDTH', '750');
-
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="content" class="span-<?php echo COLUMNS - 2; ?> prepend-1 append-1 last">
+<div id="configuration" class="container">
+	
 	<h2>Configuration</h2>
 	
-	<?php $alkaline->viewNotification(); ?>
+	<p>Modify your library&#8217;s behavior with the options below.</p>
 	
 	<form>
-		
 		<h3>Shoebox</h3>
 		
 		<table>
@@ -120,7 +116,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 		</table>
 		
-		<p class="center"><input type="submit" value="Save changes" /></p>
+		<p><input type="submit" name="configuration_save" value="Save changes" /></p>
 		
 	</form>
 	

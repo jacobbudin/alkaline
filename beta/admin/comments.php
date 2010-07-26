@@ -8,15 +8,15 @@ $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Rights');
+define('TITLE', 'Alkaline Comments');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="rights" class="container">
-	<h2>Rights<?php echo ($alkaline->tag_count) ? ' <span id="rights_count" class="small quiet">(' . $alkaline->tag_count . ')</span>' : ''; ?></h2>
+<div id="comments" class="container">
+	<h2>Comments<?php echo ($alkaline->tag_count) ? ' <span id="comments_count" class="small quiet">(' . $alkaline->tag_count . ')</span>' : ''; ?></h2>
 	
-	<p>Manage the copyright sets associated with your photos.</p>
+	<p>Administer comments posted to your photos.</p>
 	
 	<hr />
 	
