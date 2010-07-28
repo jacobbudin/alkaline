@@ -22,14 +22,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Library</h1>
-	<p>Your library contains <?php echo $photo_ids->photo_count_result; ?> photos. <a href="<?php echo BASE . ADMIN; ?>upload/">Upload photos.</a></p>
+	<p>Your library contains <?php echo $photo_ids->photo_count_result; ?> photos. <a href="<?php echo BASE . ADMIN; ?>upload/">Upload new photos.</a></p>
 </div>
 
 <div id="library" class="container">
 	
 	<div id="features" class="span-23 last">
 		<h2>Features</h2>
-		
 		<div class="span-6">
 			<h3>Tags</h3>
 			<img src="/images/icons/tag.png" alt="" />

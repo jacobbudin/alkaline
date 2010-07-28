@@ -24,12 +24,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Tags</h1>
-	<p>Your library has <?php echo $alkaline->tag_count; ?> unique tags.</p>
+	<p>Your library contains <?php echo @$alkaline->tag_count; ?> unique tags.</p>
 </div>
 
-
 <div id="tags" class="container center append-bottom">
-	<?php echo $tags; ?>
+	<?php echo @$tags; ?>
 </div>
 
 <?php

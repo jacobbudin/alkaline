@@ -29,7 +29,7 @@
 					<li><a href="/admin/dashboard/">Dashboard</a></li>
 					<li><a href="/admin/library/">Library</a></li>
 					<li><a href="/admin/pages/">Pages</a></li>
-					<li><a href="/admin/settings/">Settings</a></li>
+					<li><a href="/admin/customize/">Customize</a></li>
 					<li><a href="/admin/logout/">Logout</a></li>
 				</ul>
 			</div>

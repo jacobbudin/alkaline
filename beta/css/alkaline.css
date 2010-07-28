@@ -236,18 +236,13 @@ ul.yellow a:hover, #statistics ul.yellow a:hover, ul.yellow a:active, #statistic
 	text-decoration: none;
 }
 
-#durations table{
-	width: 0;
+table th{
+	font-weight: normal;
+	color: #777;
 }
 
-#durations th{
-	color: #999;
-	font-size: .9em;
-}
-
-#durations td{
-	padding-top: 0;
-	font-size: .9em;
+a.nu{
+	text-decoration: none;
 }
 
 #recent img{

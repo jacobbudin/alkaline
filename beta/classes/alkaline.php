@@ -387,7 +387,7 @@ class Alkaline{
 		$tags = array();
 		
 		foreach($tag_uniques as $tag){
-			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;"><a href="' . BASE . ADMIN . 'tags/' . $tag_ids[$tag] . '">' . $tag . '</a></span> <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
+			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;"><a href="' . BASE . ADMIN . 'tags/' . $tag_ids[$tag] . '">' . $tag . '</a></span> <span class="small quiet">(<a href="' . BASE . ADMIN . 'search/tags/' . $tag_ids[$tag] . '">' . $tag_counts[$tag] . '</a>)</span>';
 		}
 		
 		return implode(', ', $tags);

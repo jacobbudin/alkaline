@@ -14,36 +14,37 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
+<div id="module" class="container">
+	<h1>Statistics</h1>
+	<p>Your library has had 36 visitors over the past 30 days.</p>
+</div>
+
 <div id="statistics" class="container">
-	<h2>Statistics</h2>
-	
-	<div class="span-23 last">
+	<div class="span-23 last append-bottom">
 		<div class="span-7 append-1">
-			<h3>Past 24 Hours</h3>
+			<strong>Past 24 Hours</strong>
 			<div id="24h_views" title="<?php echo $views; ?>"></div>
 			<div id="24h_visitors" title="<?php echo $visitors; ?>"></div>
 			<div id="24h_holder"></div>
 		</div>
 		<div class="span-7 append-1">
-			<h3>Past 30 Days</h3>
+			<strong>Past 30 Days</strong>
 			<div id="30d_views" title="<?php echo $views; ?>"></div>
 			<div id="30d_visitors" title="<?php echo $visitors; ?>"></div>
 			<div id="30d_holder"></div>
 		</div>
 		<div class="span-7 last">
-			<h3>Past 12 Months</h3>
+			<strong>Past 12 Months</strong>
 			<div id="12m_views" title="<?php echo $views; ?>"></div>
 			<div id="12m_visitors" title="<?php echo $visitors; ?>"></div>
 			<div id="12m_holder"></div>
 		</div>
 	</div>
-</div>
-<hr />
-<div id="visits" class="container">
-	<h2>Visits</h2>
-	<div class="span-23 last">
+	
+	<h3>Visits</h3>
+	<div class="span-23 last append-bottom">
 		<div id="durations" class="span-7 append-1">
-			<h3>Durations</h3>
+			<strong>Durations</strong>
 			<table>
 				<tr>
 					<th></th>
@@ -72,23 +73,23 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</table>
 		</div>
 		<div class="span-7 append-1">
-			<h3>Popular Pages</h3>
+			<strong>Popular Pages</strong>
 		</div>
 		<div class="span-7 last">
-			<h3>Page Types</h3>
+			<strong>Page Types</strong>
 		</div>
 	</div>
-	<p class="small quiet">The visitor behavior above was derived from analytics of the last 60 days.</p>
-</div>
-<hr />
-<div id="referrers" class="container">
-	<h2>Referrers</h2>
-	<div class="span-11 append-1">
-		<h3>Recent</h3>
+	
+	<h3>Referrers</h3>
+	<div class="span-23 last append-bottom">
+		<div class="span-11 append-1">
+			<strong>Recent</strong>
+		</div>
+		<div class="span-11 last">
+			<strong>Popular</strong>
+		</div>
 	</div>
-	<div class="span-11 last">
-		<h3>Popular</h3>
-	</div>
+	<p class="quiet">The visitor and referrer data above was derived from analytics of the past 60 days.</p>
 </div>
 
 <?php
