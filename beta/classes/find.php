@@ -168,7 +168,7 @@ class Find extends Alkaline{
 			if(((@$pieces[$i + 1] == 'OR') or (@$pieces[$i - 1] == 'OR')) and !in_array($pieces[$i], $any)){
 				$any[] = $pieces[$i];
 			}
-			if(((@$pieces[$i + 1] == 'AND') or (@$pieces[$i - 1] == 'AND')) and !in_array($pieces[$i], $any)){
+			if(((@$pieces[$i + 1] == 'AND') or (@$pieces[$i - 1] == 'AND') or (@$pieces[$i + 1] == 'NOT')) and !in_array($pieces[$i], $any)){
 				$all[] = $pieces[$i];
 			}
 		}
