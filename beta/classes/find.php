@@ -357,7 +357,29 @@ class Find extends Alkaline{
 			$this->sql_conds[] = 'photos.photo_published < "' . $now . '"';
 		}
 		if($published == false){
-			$this->sql_conds[] = '(photos.photo_published > "' . $now . '" OR photo_published = null)';
+			$this->sql_conds[] = '(photos.photo_published > "' . $now . '" OR photo_published IS NULL OR photo_published = "")';
+		}
+		
+		return true;
+	}
+	
+	// FIND BY ORIENTATION
+	public function orientation($orientation=null){
+		if(empty($orientation)){
+			return false;
+		}
+		
+		switch($orientation){
+			case 'landscape':
+				$this->sql_conds[] = '';
+				break;
+			case 'portrait':
+				$this->sql_conds[] = '';
+				break;
+			case 'square';
+				$this->sql_conds[] = '';
+				break;
+			
 		}
 		
 		return true;
@@ -380,6 +402,9 @@ class Find extends Alkaline{
 
 				// Set tags to find
 				$this->sql_conds[] = 'links.link_id IS NULL';
+				break;
+			case 'tags':
+				$this->_allTags(intval($_GET['tag_id']));
 				break;
 		}
 	}

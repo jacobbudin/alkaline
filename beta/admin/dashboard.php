@@ -12,7 +12,7 @@ define('TITLE', 'Alkaline Dashboard');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
-<div id="module" class="container" style="background-image: url(/images/icons/dashboard.png);">
+<div id="module" class="container">
 	<h1>Dashboard</h1>
 	<p>Welcome back, <?php echo $user->user['user_name']; ?>! <?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j, Y \a\t g:i a') : ''; ?></p>
 </div>
@@ -101,6 +101,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	}
 	
 	?>
+	<p><a href="<?php echo BASE . ADMIN; ?>library/">Go to library.</a></p>
 </div>
 <div id="alkaline" class="container">
 	<h2>Alkaline</h2>

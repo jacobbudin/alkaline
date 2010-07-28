@@ -70,6 +70,38 @@ $(document).ready(function(){
 	// PRIMARY
 	var page = $("h2").first().text();
 	
+	// PRIMARY - SHOW/HIDE PANELS
+	$(".reveal").hide();
+	var original = $("a.show").text();
+	var re = /Show(.*)/;
+	var modified = 'Hide' + original.replace(re, "$1");
+	
+	$("a.show").toggle(
+		function(){
+			$(this).siblings(".switch").html('&#9662;');
+			$(this).text(modified);
+			$(this).siblings(".reveal").slideDown();
+			event.preventDefault();
+		},
+		function(){
+			$(this).siblings(".switch").html('&#9656;');
+			$(this).text(original);
+			$(this).siblings(".reveal").slideUp();
+			event.preventDefault();
+		}
+	);
+	
+	// PRIMARY - DATEPICKER
+	$(".date").datepicker({
+		showOn: 'button',
+		buttonImage: BASE + IMAGES + '/icons/calendar.png',
+		buttonImageOnly: true,
+		changeMonth: true,
+		changeYear: true,
+		constrainInput: false,
+		showAnim: null
+	});
+	
 	// PRIMARY - NAVIGATION
 	
 	$("#navigation ul li").hover(
@@ -170,7 +202,7 @@ $(document).ready(function(){
 		$(".tickLabel").each(function(index){
 			var text = $(this).text();
 			if(text == (month + ' ' + day)){
-				$(this).text('Today').css('font-weight', 'bold');
+				$(this).text('Today').css('color', '#000');
 			}
 		});
 	

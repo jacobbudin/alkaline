@@ -8,6 +8,13 @@ $user = new User;
 
 $user->perm(true);
 
+$tag_id = $alkaline->findID(@$_GET['tag_id']);
+
+if(!empty($tag_id)){
+	header('Location: ' . LOCATION . BASE . ADMIN . 'search/tags/' . $tag_id);
+	exit();
+}
+
 $tags = $alkaline->showTags(true);
 
 define('TITLE', 'Alkaline Tags');
@@ -15,17 +22,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="tags" class="container">
-	
-	<h2>Tags<?php echo ($alkaline->tag_count) ? ' <span id="tags_count" class="small quiet">(' . $alkaline->tag_count . ')</span>' : ''; ?></h2>
-	
-	<p>Add tags to your photos to easily find them later.</p>
-	
-	<hr />
-	
-	<p class="center">
-		<?php echo $tags; ?>
-	</p>
+<div id="module" class="container">
+	<h1>Tags</h1>
+	<p>Your library has <?php echo $alkaline->tag_count; ?> unique tags.</p>
+</div>
+
+
+<div id="tags" class="container center append-bottom">
+	<?php echo $tags; ?>
 </div>
 
 <?php

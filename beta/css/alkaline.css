@@ -28,11 +28,24 @@ img{
 }
 
 a{
-	color: #000;
+	color: #00539f;
 }
 
 a:hover, a:active{
-	color: #000;
+	color: #00539f;
+	text-decoration: none;
+}
+
+a.button{
+	padding: .4em .5em;
+	border-radius: 3px;
+	background-color: #00539f;
+	color: #fff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a.button:hover, a:active{
 	text-decoration: none;
 }
 
@@ -93,6 +106,10 @@ ul{
 	text-align: center;
 }
 
+.right{
+	text-align: right;
+}
+
 #header img{
 	margin-bottom: 1em;
 }
@@ -109,17 +126,12 @@ ul{
 
 #navigation a{
 	padding: .4em .5em;
-	border-radius: 3px;
+	color: #666;
 	text-decoration: none;
 }
 
-#navigation a:link, #navigation a:visited{
-	color: #999;
-}
-
 #navigation a:hover, #navigation a:active, #navigation a.selected{
-	color: #444;
-	background-color: #eee;
+	color: #222;
 }
 
 #navigation ul{
@@ -158,8 +170,9 @@ ul{
 #module{
 	border: 1px #DFDFDF solid;
 	border-width: 3px 0 0 0;
+	margin-bottom: 1em;
 	padding: .1em 1em .1em 1em;
-	background: #eee no-repeat center right;
+	background-color: #eee;
 }
 
 #statistics ul{
@@ -168,17 +181,8 @@ ul{
 	list-style-type: none;
 }
 
-#library_features ul{
-	margin: 0 0 1em 0;
-	padding: .8em 1em;
-	list-style-type: none;
-}
-
-#library_features li{
-	margin-bottom: 1em;
-}
-
 #statistics ul a{
+	color: #000;
 	text-decoration: none;
 }
 
@@ -247,7 +251,7 @@ ul.yellow a:hover, #statistics ul.yellow a:hover, ul.yellow a:active, #statistic
 }
 
 #recent img{
-	margin: 0 10px 10px 0;
+	margin-right: 10px;
 }
 
 #tags_find{
@@ -259,9 +263,33 @@ ul.yellow a:hover, #statistics ul.yellow a:hover, ul.yellow a:active, #statistic
 	width: 0;
 }
 
-#configuration td, #preferences td{
-	color: #ddd;
+td{
 	vertical-align: top;
+}
+
+img.ui-datepicker-trigger{
+	padding: 0 .5em;
+}
+
+#features h1, #features h2, #features h3, #features h4, #features h5, #features h6{
+	margin-top: 0;
+}
+
+#features{
+	margin-bottom: 2em;
+}
+
+#features ul{
+	padding: 0 0 0 5.5em;
+}
+
+#features img{
+	float: left;
+	margin: 3px 10px 0 0;
+}
+
+#search td.right{
+	padding-top: 10px;
 }
 
 #configuration td strong, #preferences td strong{
