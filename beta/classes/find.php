@@ -130,13 +130,16 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($max) and empty($min)){ return false; }
 		
+		$min = intval($min);
+		$max = intval($max);
+		
 		// Set maximum views
-		if(!empty($max) and is_int($max)){
+		if(!empty($max)){
 			$this->sql_conds[] = 'photos.photo_views <= ' . $max;
 		}
 		
 		// Set minimum views
-		if(!empty($min) and is_int($min)){
+		if(!empty($min)){
 			$this->sql_conds[] = 'photos.photo_views >= ' . $min;
 		}
 		
@@ -358,6 +361,27 @@ class Find extends Alkaline{
 		}
 		
 		return true;
+	}
+	
+	// SMART SEARCH
+	protected function smart($kind){
+		if(empty($kind)){
+			return false;
+		}
+		
+		switch($kind){
+			case 'untagged':
+				// Join tables
+				$this->sql_join_on[] = 'photos.photo_id = links.photo_id';
+				$this->sql_join_tables[] = 'links';
+				$this->sql_join_type = 'LEFT OUTER JOIN';
+
+				// $this->sql_having_fields[] = 'COUNT(*) = ' . intval($count);
+
+				// Set tags to find
+				$this->sql_conds[] = 'links.link_id IS NULL';
+				break;
+		}
 	}
 	
 	// PAGINATE RESULTS
