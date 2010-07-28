@@ -13,7 +13,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 166;
+	const build = 173;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
@@ -360,16 +360,17 @@ class Alkaline{
 		$query->execute();
 		$tags = $query->fetchAll();
 		
+		$tag_ids = array();
 		$tag_names = array();
 		$tag_counts = array();
 		$tag_uniques = array();
 		
 		foreach($tags as $tag){
 			$tag_names[] = $tag['tag_name'];
+			$tag_ids[$tag['tag_name']] = $tag['tag_id'];
 		}
 		
 		$tag_counts = array_count_values($tag_names);
-		
 		$tag_count_values = array_values($tag_counts);
 		$tag_count_high = 0;
 		
@@ -380,12 +381,13 @@ class Alkaline{
 		}
 		
 		$tag_uniques = array_unique($tag_names);
+		natsort($tag_uniques);
 		$this->tag_count = count($tag_uniques);
 		
 		$tags = array();
 		
 		foreach($tag_uniques as $tag){
-			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;">' . $tag . '</span> <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
+			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;"><a href="' . BASE . ADMIN . 'tags/' . $tag_ids[$tag] . '">' . $tag . '</a></span> <span class="small quiet">(' . $tag_counts[$tag] . ')</span>';
 		}
 		
 		return implode(', ', $tags);
