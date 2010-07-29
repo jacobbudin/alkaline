@@ -28,16 +28,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<ul>
 				<li><a href="<?php echo BASE . ADMIN; ?>themes/">View themes</a></li>
 				<li><a href="http://www.alkalineapp.com/">Get more themes</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>themes/add/">Install new theme</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>themes/install/">Install new theme</a></li>
 			</ul>
 		</div>
 		<div class="span-7 append-1">
 			<h3>Extensions</h3>
 			<img src="/images/icons/extensions.png" alt="" />
 			<ul>
-				<li><a href="<?php echo BASE . ADMIN; ?>piles/">View extensions</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>extensions/">View extensions</a></li>
 				<li><a href="http://www.alkalineapp.com/">Get more extensions</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>piles/add/">Install new extension</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>extensions/install/">Install new extension</a></li>
 			</ul>
 		</div>
 		<div class="span-6 last">

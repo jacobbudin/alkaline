@@ -82,6 +82,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						</td>
 					</tr>
 					<tr>
+						<td class="right">Rights set:</td>
+						<td class="quiet">
+							<?php echo $alkaline->showRights('rights'); ?>
+						</td>
+					</tr>
+					<tr>
 						<td class="right">Date taken:</td>
 						<td class="quiet">
 							between <input type="text" class="date" name="taken_begin" style="width: 10em;" />
@@ -199,13 +205,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<hr />
 	
 	<?php
-	for($i = 0; $i < $photos->photo_count; ++$i){
+	
+	foreach($photos->photos as $photo){
 		?>
-		<a href="<?php echo BASE . ADMIN . 'library/' . $photos->photos[$i]['photo_id']; ?>/">
-			<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" />
+		<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
+			<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" />
 		</a>
 		<?php
 	}
+	
 	?>
 </div>
 

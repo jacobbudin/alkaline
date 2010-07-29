@@ -16,7 +16,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Statistics</h1>
-	<p>Your library has had 36 visitors over the past 30 days.</p>
+	<p></p>
 </div>
 
 <div id="statistics" class="container">

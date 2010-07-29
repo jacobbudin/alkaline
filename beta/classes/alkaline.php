@@ -18,6 +18,7 @@ class Alkaline{
 	const version = '1.0';
 	
 	public $js;
+	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id');
 	
 	public $db;
 	protected $guest;
@@ -393,15 +394,104 @@ class Alkaline{
 		return implode(', ', $tags);
 	}
 	
+	// SHOW RIGHTS
+	public function showRights($name){
+		if(empty($name)){
+			return false;
+		}
+		
+		$query = $this->db->prepare('SELECT right_id, right_title FROM rights;');
+		$query->execute();
+		$rights = $query->fetchAll();
+		
+		$html = '<select name="' . $name . '" id="' . $name . '"><option value="">All</option>';
+		
+		foreach($rights as $right){
+			$html .= '<option value="' . $right['right_id'] . '">' . $right['right_title'] . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
+	public function getTable($table=null, $id=null){
+		if(empty($table)){
+			return false;
+		}
+		
+		if(empty($id)){
+			$query = $this->db->prepare('SELECT * FROM ' . $table . ';');
+		}
+		else{
+			$id = intval($id);
+			$field = $this->tables[$table];
+			
+			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . $id . ';');
+		}
+		
+		$query->execute();
+		$table = $query->fetchAll();
+		
+		return $table;
+	}
+	
+	public function updateRow($array, $table=null, $id=null){
+		if(empty($array) or empty($table) or empty($id)){
+			return false;
+		}
+		
+		$id = intval($id);
+		$field = $this->tables[$table];
+		$fields = array();
+		
+		foreach($array as $key => $value){
+			$fields[] = $key . ' = "' . addslashes($value) . '"';
+		}
+		
+		switch($table){
+			case 'piles':
+				$fields[] = 'pile_modified = "' . date('Y-m-d H:i:s') . '"';
+				break;
+		}
+		
+		$sql = implode(', ', $fields);
+		
+		// Update row
+		$query = 'UPDATE ' . $table . ' SET ' . $sql . ' WHERE ' . $field . ' = ' . $id . ';';
+		
+		if(!$this->db->exec($query)){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function deleteRow($table=null, $id=null){
+		if(empty($table) or empty($id)){
+			return false;
+		}
+		
+		$id = intval($id);
+		$field = $this->tables[$table];
+		
+		// Delete row
+		$query = 'DELETE FROM ' . $table . ' WHERE ' . $field . ' = ' . $id . ';';
+		
+		if(!$this->db->exec($query)){
+			return false;
+		}
+		
+		return true;
+	}
+	
 	// GET LIBRARY INFO
 	public function getInfo(){
-		// Tables for which to retrieve info
-		$tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id');
 		
 		$info = array();
 		
 		// Run helper function
-		foreach($tables as $table => $selector){
+		foreach($this->tables as $table => $selector){
 			$info[$table] = self::countTable($table, $selector);
 		}
 		

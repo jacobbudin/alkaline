@@ -36,6 +36,15 @@ a:hover, a:active{
 	text-decoration: none;
 }
 
+textarea{
+	width: 100%;
+	height: 10em;
+}
+
+input.title{
+	font-size: 1.2em;
+}
+
 span.button{
 	padding: .1em .3em .3em .3em;
 	margin-right: .5em;

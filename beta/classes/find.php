@@ -284,10 +284,10 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($pile)){
-			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0,1;');
+			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
 		}
 		elseif(is_int($pile)){
-			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0,1;');
+			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
 		}
 		else{
 			return false;
@@ -300,6 +300,35 @@ class Find extends Alkaline{
 		if(!eval($piles[0]['pile_call'])){
 			return false;
 		}
+		
+		return true;
+	}
+	
+	public function rights($right=null){
+		// Error checking
+		if(empty($right)){ return false; }
+		
+		// Determine input type
+		if(is_string($right)){
+			$query = $this->db->prepare('SELECT right_id FROM rights WHERE LOWER(right_title) LIKE "' . strtolower($right) . '" LIMIT 0, 1;');
+		}
+		elseif(is_int($right)){
+			$query = $this->db->prepare('SELECT right_id FROM rights WHERE right_id = ' . $right . ' LIMIT 0, 1;');
+		}
+		else{
+			return false;
+		}
+		
+		$query->execute();
+		$rights = $query->fetchAll();
+		
+		if(@count($rights) != 1){
+			return false;
+		}
+		
+		$right = $rights[0];
+		
+		$this->sql_conds[] = 'photos.right_id = ' . $right['right_id'];
 		
 		return true;
 	}
@@ -405,6 +434,12 @@ class Find extends Alkaline{
 				break;
 			case 'tags':
 				$this->_allTags(intval($_GET['id']));
+				break;
+			case 'piles':
+				$this->pile(intval($_GET['id']));
+				break;
+			case 'rights':
+				$this->right(intval($_GET['id']));
 				break;
 		}
 	}

@@ -25,9 +25,14 @@ if(!empty($_POST['search'])){
 	$photo_ids->_search($_POST['search']);
 }
 
-// Tag
+// Tags
 if(!empty($_POST['tags'])){
 	$photo_ids->_tags($_POST['tags']);
+}
+
+// Rights set
+if(!empty($_POST['rights'])){
+	$photo_ids->_rights(intval($_POST['rights']));
 }
 
 // Date taken
@@ -171,7 +176,7 @@ if($photo_ids->photo_count_result > 0){
 		<?php
 		for($i = 0; $i < $photos->photo_count; ++$i){
 			?>
-			<a href="<?php echo BASE . ADMIN . 'library/' . $photos->photos[$i]['photo_id']; ?>/">
+			<a href="<?php echo BASE . ADMIN . 'photo/' . $photos->photos[$i]['photo_id']; ?>/">
 				<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" />
 			</a>
 			<?php
