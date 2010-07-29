@@ -23,7 +23,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 </div>
 
 <div id="extensions" class="container">
-	<div style="float: right; margin: 1em 0 0 0;"><a href="" class="nu"><span class="button">&#0043;</span>Install extension</a> &#0160; <a href="" class="nu"><span class="button">&#0149;</span>Check for updates</a></div>
+	<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Install extension</a> &#0160; <a href="" class="nu"><span class="button">&#0149;</span>Check for updates</a></div>
 	<table>
 		<tr>
 			<th>Extension</th>

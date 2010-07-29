@@ -296,8 +296,8 @@ img.ui-datepicker-trigger{
 	padding-top: 10px;
 }
 
-#configuration td strong, #preferences td strong{
-	color: #fff;
+#configuration label, #preferences label{
+	font-weight: bold;
 }
 
 #configuration td.input input, #preferences td.input input{

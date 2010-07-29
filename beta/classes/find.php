@@ -433,13 +433,13 @@ class Find extends Alkaline{
 				$this->sql_conds[] = 'links.link_id IS NULL';
 				break;
 			case 'tags':
-				$this->_allTags(intval($_GET['id']));
+				$this->allTags(intval($_GET['id']));
 				break;
 			case 'piles':
 				$this->pile(intval($_GET['id']));
 				break;
 			case 'rights':
-				$this->right(intval($_GET['id']));
+				$this->rights(intval($_GET['id']));
 				break;
 		}
 	}

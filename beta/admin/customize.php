@@ -53,7 +53,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<div class="span-23 last">
 		<div class="span-11 colborder">
-			<div style="float: right;"><a href="" class="nu"><span class="button">&#0043;</span>Add guest</a></div>
+			<div style="float: right;"><a href="<?php echo BASE . ADMIN; ?>guests/add/" class="nu"><span class="button">&#0043;</span>Add guest</a></div>
 			<h2 style="margin-top: 0;">Guests</h2>
 			<table>
 				<tr>
@@ -74,7 +74,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</table>
 		</div>
 		<div class="span-11 last">
-			<div style="float: right;"><a href="" class="nu"><span class="button">&#0043;</span>Add user</a></div>
+			<div style="float: right;"><a href="<?php echo BASE . ADMIN; ?>users/add/" class="nu"><span class="button">&#0043;</span>Add user</a></div>
 			<h2 style="margin-top: 0;">Users</h2>
 			<table>
 				<tr>
