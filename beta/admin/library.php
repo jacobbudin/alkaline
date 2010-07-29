@@ -22,7 +22,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Library</h1>
-	<p>Your library contains <?php echo $photo_ids->photo_count_result; ?> photos. <a href="<?php echo BASE . ADMIN; ?>upload/">Upload new photos.</a></p>
+	<p>Your library contains <?php echo $photo_ids->photo_count_result; ?> photos.</p>
 </div>
 
 <div id="library" class="container">
@@ -191,7 +191,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 		</div>
 	</form>
-
+	
+	<div style="float: right; margin-top: 2em;"><a href="" class="nu"><span class="button">&#0043;</span>Upload photos</a></div>
+	
 	<h2>Photos</h2>
 
 	<hr />

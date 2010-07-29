@@ -162,7 +162,7 @@ if($photo_ids->photo_count_result > 0){
 	?>
 	<div id="results" class="container">
 	
-		<div style="float: right;"><a href="" class="button">Build pile</a> <a href="" class="button">View comments</a></div>
+		<div style="float: right;"><a href="" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="" class="nu"><span class="button">&#0187;</span>View comments</a></div>
 	
 		<h2>Results</h2>
 

@@ -45,9 +45,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<div class="span-18">
 		<div id="statistics_holder"></div>
-		<p>Your library has had 36 visitors over the past 30 days. <a href="<?php echo BASE . ADMIN; ?>statistics/">View statistics.</a></p>
+		<p>Your library has had 36 visitors over the past 30 days. &#0160; <a href="" class="nu"><span class="button">&#0187;</span>Go to statistics</a></p>
 	</div>
-	<div class="span-5 last">
+	<div class="span-5 prepend-top last">
 		<?php
 		
 		$shoebox_count = $alkaline->countShoebox();
@@ -88,6 +88,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 </div>
 <div id="recent" class="container">
 	<h2>Recent</h2>
+	<hr />
 	<?php
 	
 	$photo_ids = new Find;
@@ -101,7 +102,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	}
 	
 	?>
-	<p><a href="<?php echo BASE . ADMIN; ?>library/">Go to library.</a></p>
 </div>
 <div id="alkaline" class="container">
 	<h2>Alkaline</h2>

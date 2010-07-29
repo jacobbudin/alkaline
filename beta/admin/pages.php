@@ -15,10 +15,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Pages</h1>
-	<p>You have <?php echo @$alkaline->page_count; ?> pages. <a href="create/">Create a new page.</a></p>
+	<p>You have <?php echo @$alkaline->page_count; ?> pages.</p>
 </div>
 
 <div id="pages" class="container">
+	<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Create page</a></div>
 	<table>
 		<tr>
 			<th>Title</th>

@@ -24,34 +24,36 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h2>Features</h2>
 		<div class="span-7 append-1">
 			<h3>Themes</h3>
-			<img src="/images/icons/tag.png" alt="" />
+			<img src="/images/icons/themes.png" alt="" />
 			<ul>
 				<li><a href="<?php echo BASE . ADMIN; ?>themes/">View themes</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>themes/add/">Add new theme</a></li>
+				<li><a href="http://www.alkalineapp.com/">Get more themes</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>themes/add/">Install new theme</a></li>
 			</ul>
 		</div>
 		<div class="span-7 append-1">
 			<h3>Extensions</h3>
-			<img src="/images/icons/piles.png" alt="" />
+			<img src="/images/icons/extensions.png" alt="" />
 			<ul>
 				<li><a href="<?php echo BASE . ADMIN; ?>piles/">View extensions</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>piles/add/">Add new extension</a></li>
+				<li><a href="http://www.alkalineapp.com/">Get more extensions</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>piles/add/">Install new extension</a></li>
 			</ul>
 		</div>
 		<div class="span-6 last">
-			<h3>Settings</h3>
-			<img src="/images/icons/comment.png" alt="" />
+			<h3>System</h3>
+			<img src="/images/icons/settings.png" alt="" />
 			<ul>
-				<li><a href="<?php echo BASE . ADMIN; ?>maintenance/">Perform maintenance</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>configuration/">Configure installation</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>configuration/">Change configuration</a></li>
 				<li><a href="<?php echo BASE . ADMIN; ?>preferences/">Edit personal preferences</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>maintenance/">Perform maintenance</a></li>
 			</ul>
 		</div>
 	</div>
 	
 	<div class="span-23 last">
 		<div class="span-11 colborder">
-			<div style="float: right;"><a href="" class="button">Add guest</a></div>
+			<div style="float: right;"><a href="" class="nu"><span class="button">&#0043;</span>Add guest</a></div>
 			<h2 style="margin-top: 0;">Guests</h2>
 			<table>
 				<tr>
@@ -61,18 +63,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</tr>
 				<tr>
 					<td><strong><a href="">Models</a></strong></td>
-					<td class="center"><a href="">1,034</a></td>
+					<td class="center">1,034</td>
 					<td>Yesterday, 1:33 p.m.</td>
 				</tr>
 				<tr>
 					<td><strong><a href="">Parents</a></strong></td>
-					<td class="center"><a href="">4,056</a></td>
+					<td class="center">4,056</td>
 					<td>Today, 1:13 p.m.</td>
 				</tr>
 			</table>
 		</div>
 		<div class="span-11 last">
-			<div style="float: right;"><a href="" class="button">Add user</a></div>
+			<div style="float: right;"><a href="" class="nu"><span class="button">&#0043;</span>Add user</a></div>
 			<h2 style="margin-top: 0;">Users</h2>
 			<table>
 				<tr>

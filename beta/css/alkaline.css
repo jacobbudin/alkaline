@@ -36,16 +36,16 @@ a:hover, a:active{
 	text-decoration: none;
 }
 
-a.button{
-	padding: .4em .5em;
+span.button{
+	padding: .1em .3em .3em .3em;
+	margin-right: .5em;
 	border-radius: 3px;
-	background-color: #00539f;
+	background: #003a69 url(/images/button_bg.png) repeat-x;
 	color: #fff;
 	font-weight: bold;
-	text-decoration: none;
 }
 
-a.button:hover, a:active{
+a span.button{
 	text-decoration: none;
 }
 
