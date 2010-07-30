@@ -204,29 +204,50 @@ ul{
 	z-index: 1;
 }
 
-#statistics_holder .legend td.legendColorBox{
+#h_holder, #d_holder, #m_holder{
+	position: relative;
+	width: 100%;
+	height: 200px;
+	left: -.5em;
+	margin: 1em 0 2em 0;
+	z-index: 1;
+}
+
+#d_holder{
+	height: 213px;
+}
+
+.statistics_holder .legend td.legendColorBox{
 	width: 10px;
 }
 
-#statistics_holder .legend table{
+.statistics_holder .legend table{
 	width: 15em;
 }
 
-#statistics_holder .xAxis.x1Axis div.tickLabel{
+.statistics_holder .xAxis.x1Axis .tickLabel{
 	margin-left: 4px;
 }
 
-#statistics_holder .legend table .legendLabel{
+#m_holder .xAxis.x1Axis .tickLabel{
+	margin-left: 0;
+}
+
+#h_holder .xAxis.x1Axis .tickLabel{
+	margin-left: -12px;
+}
+
+.statistics_holder .legend table .legendLabel{
 	color: #777;
 	font-size: 1.2em;
 }
 
-#statistics_holder .legend table tbody td{
+.statistics_holder .legend table tbody td{
 	padding-bottom: 0;
 	margin-bottom: 0;
 }
 
-#statistics_holder .point{
+.statistics_holder .point{
 	color: #777;
 	font-size: .9em;
 	text-align: center;

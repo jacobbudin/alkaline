@@ -44,7 +44,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 	
 	<div class="span-18">
-		<div id="statistics_holder"></div>
+		<div id="statistics_holder" class="statistics_holder"></div>
 		<p>Your library has had 36 visitors over the past 30 days. &#0160; <a href="<?php echo BASE . ADMIN; ?>statistics/" class="nu"><span class="button">&#0187;</span>Go to statistics</a></p>
 	</div>
 	<div class="span-5 prepend-top last">

@@ -490,8 +490,14 @@ class Alkaline{
 		
 		$info = array();
 		
+		// Get tables
+		$tables = $this->tables;
+		
+		// Exclude tables
+		unset($tables['rights']);
+		
 		// Run helper function
-		foreach($this->tables as $table => $selector){
+		foreach($tables as $table => $selector){
 			$info[$table] = self::countTable($table, $selector);
 		}
 		

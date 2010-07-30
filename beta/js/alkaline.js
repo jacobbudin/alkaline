@@ -68,7 +68,7 @@ function executeTask(task){
 
 $(document).ready(function(){
 	// PRIMARY
-	var page = $("h2").first().text();
+	var page = $("h1").first().text();
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
@@ -140,7 +140,7 @@ $(document).ready(function(){
 	
 	// DASHBOARD
 	
-	if(page == 'Vitals'){
+	if(page == 'Dashboard'){
 		var statistics_views = $("#statistics_views").attr("title");
 		statistics_views = jQuery.parseJSON(statistics_views);
 	
@@ -207,6 +207,107 @@ $(document).ready(function(){
 		});
 	
 		$(".tickLabels").css('font-size', '');
+	}
+	
+	if(page == 'Statistics'){
+		var h_statistics_views = $("#h_views").attr("title");
+		h_statistics_views = jQuery.parseJSON(h_statistics_views);
+	
+		var h_statistics_visitors = $("#h_visitors").attr("title");
+		h_statistics_visitors = jQuery.parseJSON(h_statistics_visitors);
+	
+		var h_stats = $.plot($("#h_holder"),[{
+			label: "Page views",
+			data: h_statistics_views,
+			bars: { show: true, lineWidth: 7 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		},
+		{
+			label: "Unique visitors",
+			data: h_statistics_visitors,
+			bars: { show: true, lineWidth: 7 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		}],{
+			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			colors: ["#0096db", "#8dc9e8"],
+			xaxis: { mode: "time", tickLength: 0, timeformat: "%h %p" },
+			yaxis: { tickDecimals: 0 },
+			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+		});
+		
+	
+		var d_statistics_views = $("#d_views").attr("title");
+		d_statistics_views = jQuery.parseJSON(d_statistics_views);
+	
+		var d_statistics_visitors = $("#d_visitors").attr("title");
+		d_statistics_visitors = jQuery.parseJSON(d_statistics_visitors);
+	
+		var d_stats = $.plot($("#d_holder"),[{
+			label: "Page views",
+			data: d_statistics_views,
+			bars: { show: true, lineWidth: 6 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		},
+		{
+			label: "Unique visitors",
+			data: d_statistics_visitors,
+			bars: { show: true, lineWidth: 6 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		}],{
+			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			colors: ["#0096db", "#8dc9e8"],
+			xaxis: { mode: "time", tickLength: 0,  minTickSize: [3, "day"] },
+			yaxis: { tickDecimals: 0 },
+			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+		});
+		
+		var m_statistics_views = $("#m_views").attr("title");
+		m_statistics_views = jQuery.parseJSON(m_statistics_views);
+	
+		var m_statistics_visitors = $("#m_visitors").attr("title");
+		m_statistics_visitors = jQuery.parseJSON(m_statistics_visitors);
+	
+		var m_stats = $.plot($("#m_holder"),[{
+			label: "Page views",
+			data: m_statistics_views,
+			bars: { show: true, lineWidth: 13 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		},
+		{
+			label: "Unique visitors",
+			data: m_statistics_visitors,
+			bars: { show: true, lineWidth: 13 },
+			shadowSize: 10,
+			hoverable: true,
+			yaxis: 1
+		}],{
+			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			colors: ["#0096db", "#8dc9e8"],
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, minTickSize: [3, "month"] },
+			yaxis: { tickDecimals: 0 },
+			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+		});
+		
+		$(".tickLabel").each(function(index){
+			var text = $(this).text();
+			if(text == ('12 am')){
+				$(this).text('Midnight');
+			}
+			else if(text == ('12 pm')){
+				$(this).text('Noon');
+			}
+		});
+
 	}
 	
 	$("#view a").click(function(){
