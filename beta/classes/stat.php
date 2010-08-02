@@ -1,9 +1,12 @@
 <?php
 
 class Stat extends Alkaline{
-	public $hourly;
-	public $daily;
-	public $monthly;
+	public $durations;
+	public $pages;
+	public $page_types;
+	public $referrers_recent;
+	public $referrers_popular;
+	public $stats;
 	public $stat_begin;
 	public $stat_begin_ts;
 	public $stat_end;
@@ -52,7 +55,7 @@ class Stat extends Alkaline{
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
-		$this->monthly = array();
+		$this->stats = array();
 		$next = date('Y-m', strtotime('+1 month', $this->stat_end_ts));
 		
 		$next_month = substr($next, 5, 2);
@@ -64,19 +67,19 @@ class Stat extends Alkaline{
 		while(!(($next_month == $current_month) and ($next_year == $current_year))){
 			if($current_month < 13){
 				$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
-				$this->monthly[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+				$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 				$current_month++;
 			}
 			else{
 				$current_year++;
 				$current_month = 1;
 				$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
-				$this->monthly[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+				$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 				$current_month++;
 			}
 		}
 		
-		foreach($this->monthly as &$monthly){
+		foreach($this->stats as &$monthly){
 			foreach($stats as $stat){
 				if(($stat['stat_month'] == $monthly['stat_month']) and ($stat['stat_year'] == $monthly['stat_year'])){
 					$monthly['stat_views'] = $stat['stat_views'];
@@ -92,7 +95,7 @@ class Stat extends Alkaline{
 			$stat['stat_visitors'] = intval($stat['stat_visitors']);
 		}
 		
-		foreach($this->monthly as &$monthly){
+		foreach($this->stats as &$monthly){
 			foreach($stats as $stat){
 				if(($stat['stat_month'] == $monthly['stat_month']) and ($stat['stat_year'] == $monthly['stat_year'])){
 					$monthly['stat_visitors'] = $stat['stat_visitors'];
@@ -113,7 +116,7 @@ class Stat extends Alkaline{
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
-		$this->daily = array();
+		$this->stats = array();
 		$next = date('Y-m-d', $this->stat_end_ts + 86400);
 		
 		$next_day = intval(substr($next, 8, 2));
@@ -127,7 +130,7 @@ class Stat extends Alkaline{
 		while(!(($next_day <= $current_day) and ($next_month <= $current_month) and ($next_year <= $current_year))){
 			if(checkdate($current_month, $current_day, $current_year)){
 				$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-				$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+				$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 				$current_day++;
 			}
 			else{
@@ -135,7 +138,7 @@ class Stat extends Alkaline{
 				$current_day = 1;
 				if(checkdate($current_month, $current_day, $current_year)){
 					$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-					$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+					$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 					$current_day++;
 				}
 				else{
@@ -144,14 +147,14 @@ class Stat extends Alkaline{
 					$current_day = 1;
 					if(checkdate($current_month, $current_day, $current_year)){
 						$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-						$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+						$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 						$current_day++;
 					}
 				}
 			}
 		}
 		
-		foreach($this->daily as &$daily){
+		foreach($this->stats as &$daily){
 			foreach($stats as $stat){
 				if(($stat['stat_day'] == $daily['stat_day']) and ($stat['stat_month'] == $daily['stat_month']) and ($stat['stat_year'] == $daily['stat_year'])){
 					$daily['stat_views'] = $stat['stat_views'];
@@ -167,7 +170,7 @@ class Stat extends Alkaline{
 			$stat['stat_visitors'] = intval($stat['stat_visitors']);
 		}
 		
-		foreach($this->daily as &$daily){
+		foreach($this->stats as &$daily){
 			foreach($stats as $stat){
 				if(($stat['stat_day'] == $daily['stat_day']) and ($stat['stat_month'] == $daily['stat_month']) and ($stat['stat_year'] == $daily['stat_year'])){
 					$daily['stat_visitors'] = $stat['stat_visitors'];
@@ -188,7 +191,7 @@ class Stat extends Alkaline{
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
-		$this->hourly = array();
+		$this->stats = array();
 		$next = date('Y-m-d H', $this->stat_end_ts + 3600);
 		
 		$next_hour = substr($next, 11, 2);
@@ -204,7 +207,7 @@ class Stat extends Alkaline{
 		while(!(($next_hour == $current_hour) and ($next_day == $current_day) and ($next_month == $current_month) and ($next_year == $current_year))){
 			if(checkdate($current_month, $current_day, $current_year) and ($current_hour < 24)){
 				$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-				$this->hourly[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+				$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 				$current_hour++;
 			}
 			else{
@@ -212,7 +215,7 @@ class Stat extends Alkaline{
 				$current_hour = 0;
 				if(checkdate($current_month, $current_day, $current_year)){
 					$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-					$this->hourly[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+					$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 					$current_hour++;
 				}
 				else{
@@ -221,14 +224,14 @@ class Stat extends Alkaline{
 					$current_hour = 0;
 					if(checkdate($current_month, $current_day, $current_year)){
 						$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-						$this->hourly[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+						$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
 						$current_hour++;
 					}
 				}
 			}
 		}
 		
-		foreach($this->hourly as &$hourly){
+		foreach($this->stats as &$hourly){
 			foreach($stats as $stat){
 				if(($stat['stat_hour'] == $hourly['stat_hour']) and ($stat['stat_day'] == $hourly['stat_day']) and ($stat['stat_month'] == $hourly['stat_month']) and ($stat['stat_year'] == $hourly['stat_year'])){
 					$hourly['stat_views'] = $stat['stat_views'];
@@ -244,7 +247,7 @@ class Stat extends Alkaline{
 			$stat['stat_visitors'] = intval($stat['stat_visitors']);
 		}
 		
-		foreach($this->hourly as &$hourly){
+		foreach($this->stats as &$hourly){
 			foreach($stats as $stat){
 				if(($stat['stat_hour'] == $hourly['stat_hour']) and ($stat['stat_day'] == $hourly['stat_day']) and ($stat['stat_month'] == $hourly['stat_month']) and ($stat['stat_year'] == $hourly['stat_year'])){
 					$hourly['stat_visitors'] = $stat['stat_visitors'];
@@ -258,43 +261,33 @@ class Stat extends Alkaline{
 	public function getDurations(){
 		$query = $this->db->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_session');
 		$query->execute();
-		$durations = $query->fetchAll();
-		
-		return $durations;
+		$this->durations = $query->fetchAll();
 	}
 	
 	public function getPages(){
 		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
 		$query->execute();
-		$pages = $query->fetchAll();
-		
-		return $pages;
+		$this->pages = $query->fetchAll();
 	}
 	
 	public function getPageTypes(){
 		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
 		$query->execute();
-		$page_types = $query->fetchAll();
-		
-		return $page_types;
+		$this->page_types = $query->fetchAll();
 	}
 	
 	public function getRecentReferrers($limit=20){
 		$limit = intval($limit);
 		$query = $this->db->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
 		$query->execute();
-		$referrers = $query->fetchAll();
-
-		return $referrers;
+		$this->referrers_recent = $query->fetchAll();
 	}
 	
 	public function getPopularReferrers($limit=20){
 		$limit = intval($limit);
 		$query = $this->db->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
 		$query->execute();
-		$referrers = $query->fetchAll();
-
-		return $referrers;
+		$this->referrers_popular = $query->fetchAll();
 	}
 }
 

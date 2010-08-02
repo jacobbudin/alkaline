@@ -2,7 +2,6 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
@@ -14,16 +13,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 // PAST 24 HOURS
 
-$now = time();
-$then = strtotime('-24 hours', $now);
+$then = strtotime('-24 hours');
 
-$stats = new Stat($then, $now);
+$stats = new Stat($then);
 $stats->getHourly();
 
 $views = array();
 $visitors = array();
 
-foreach($stats->hourly as $stat){
+foreach($stats->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
@@ -34,16 +32,15 @@ $h_visitors = json_encode($visitors);
 
 // PAST 30 DAYS
 
-$now = time();
-$then = strtotime('-30 days', $now);
+$then = strtotime('-30 days');
 
-$stats = new Stat($then, $now);
+$stats = new Stat($then);
 $stats->getDaily();
 
 $views = array();
 $visitors = array();
 
-foreach($stats->daily as $stat){
+foreach($stats->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
@@ -53,16 +50,15 @@ $d_visitors = json_encode($visitors);
 
 // PAST 12 MONTHS
 
-$now = time();
-$then = strtotime('-12 months', $now);
+$then = strtotime('-12 months');
 
-$stats = new Stat($then, $now);
+$stats = new Stat($then);
 $stats->getMonthly();
 
 $views = array();
 $visitors = array();
 
-foreach($stats->monthly as $stat){
+foreach($stats->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
@@ -72,8 +68,10 @@ $m_visitors = json_encode($visitors);
 
 // DURATIONS
 
-$stats = new Stat();
-$durations = $stats->getDurations();
+$then = strtotime('-60 days');
+
+$stats = new Stat($then);
+$stats->getDurations();
 
 $levels = array('&#0060; 1 minute' => 60, '1-5 minutes' => 300, '5-10 minutes' => 600, '10-30 minutes' => 1800, '&#0062; 30 minutes');
 $zeros = array_fill(0, count($levels), 0);
@@ -82,43 +80,43 @@ $last = implode('', array_slice($levels, -1, 1));
 $keys = array_slice($levels, 0, -1);
 $keys = array_keys($keys);
 $keys[] = $last;
-$counts = array_combine($keys, $zeros);
+$durations = array_combine($keys, $zeros);
 
-$durations_count = count($durations);
+$durations_count = count($stats->durations);
 
-foreach($durations as $duration){
+foreach($stats->durations as $duration){
 	$accounted_for = false;
 	foreach($levels as $level_text => $level_max){
 		if($duration['stat_duration'] < $level_max){
-			$counts[$level_text]++;
+			$durations[$level_text]++;
 			$accounted_for = true;
 			break;
 		}
 	}
 	if($accounted_for == false){
-		$counts[$last]++;
+		$durations[$last]++;
 	}
 }
 
-foreach($counts as $text => &$count){
-	$count = round(($count / $durations_count) * 100, 1);
+foreach($durations as $text => &$duration){
+	$duration = round(($duration / $durations_count) * 100, 1);
 }
 
 // PAGES
 
-$pages = $stats->getPages();
+$stats->getPages();
 
 // PAGE TYPES
 
-$page_types = $stats->getPageTypes();
+$stats->getPageTypes();
 
 // RECENT REFERRERS
 
-$recent_referrers = $stats->getRecentReferrers();
+$stats->getRecentReferrers();
 
 // POPULAR REFERRS
 
-$popular_referrers = $stats->getPopularReferrers();
+$stats->getPopularReferrers();
 
 ?>
 
@@ -159,10 +157,10 @@ $popular_referrers = $stats->getPopularReferrers();
 					<th>Duration</th>
 				</tr>
 				<?php				
-				foreach($counts as $text => $count){
+				foreach($durations as $label => $duration){
 					echo '<tr>';
-					echo '<td class="right">' . $count . '%</td>';
-					echo '<td>' . $text . '</td>';
+					echo '<td class="right">' . $duration . '%</td>';
+					echo '<td>' . $label . '</td>';
 					echo '</tr>';
 				}
 				?>
@@ -176,7 +174,7 @@ $popular_referrers = $stats->getPopularReferrers();
 					<th>Page</th>
 				</tr>
 				<?php				
-				foreach($pages as $page){
+				foreach($stats->pages as $page){
 					echo '<tr>';
 					echo '<td class="right">' . $page['stat_count'] . '</td>';
 					echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $page['stat_page'] . '</a></td>';
@@ -193,7 +191,7 @@ $popular_referrers = $stats->getPopularReferrers();
 					<th>Page type</th>
 				</tr>
 				<?php				
-				foreach($page_types as $page_type){
+				foreach($stats->page_types as $page_type){
 					echo '<tr>';
 					echo '<td class="right">' . $page_type['stat_count'] . '</td>';
 					echo '<td>' . ucwords($page_type['stat_page_type']) . '</td>';
@@ -214,7 +212,7 @@ $popular_referrers = $stats->getPopularReferrers();
 					<th>Referrer</th>
 				</tr>
 				<?php				
-				foreach($recent_referrers as $referrer){
+				foreach($stats->referrers_recent as $referrer){
 					echo '<tr>';
 					echo '<td class="right small quiet">' . $alkaline->formatTime($referrer['stat_date'], 'M j, g:ia') . '</td>';
 					echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
@@ -231,7 +229,7 @@ $popular_referrers = $stats->getPopularReferrers();
 					<th>Referrer</th>
 				</tr>
 				<?php				
-				foreach($popular_referrers as $referrer){
+				foreach($stats->referrers_popular as $referrer){
 					echo '<tr>';
 					echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
 					echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
