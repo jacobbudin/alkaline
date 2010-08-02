@@ -99,7 +99,7 @@ class Orbit extends Alkaline{
 	}
 	
 	// Local require_once()
-	protected function fetch($file){
+	protected function load($file){
 		require_once(PATH . EXTENSIONS . $this->class . '/' . $file);
 	}
 	
@@ -123,7 +123,17 @@ class Orbit extends Alkaline{
 	public function hook($hook){
 		// Find arguments
 		$arguments = func_get_args();
-		$arguments = array_slice($arguments, 1);
+		
+		// Find pass-by-default value
+		$argument_pass_index = count($arguments) - 1;
+		$argument_pass = $arguments[$argument_pass_index];
+		
+		// Remove non-arguments
+		$arguments = array_slice($arguments, 1, count($arguments) - 2);
+		$argument_count = count($arguments);
+		
+		// Add an empty argument for returns
+		$arguments[] = '';
 		
 		// Find respective extensions, execute their code
 		if(!empty($this->extensions)){
@@ -131,10 +141,20 @@ class Orbit extends Alkaline{
 				if(in_array($hook, $extension['extension_hooks'])){
 					include($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
-					call_user_func_array(array($orbit, $hook), $arguments);
+					$return = call_user_func_array(array($orbit, $hook), $arguments);
+					if(!empty($return) and !is_bool($return)){
+						$arguments = array_slice($arguments, 0, $argument_count);
+						$arguments[] = $return;
+					}
 				}
 			}
 		}
+		
+		if(empty($arguments[$argument_count])){
+			return $argument_pass;
+		}
+		
+		return $arguments[$argument_count];
 	}
 }
 
