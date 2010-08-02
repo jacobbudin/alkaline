@@ -72,8 +72,8 @@ $m_visitors = json_encode($visitors);
 
 // DURATIONS
 
-$durations = new Stat();
-$durations = $durations->getDurations();
+$stats = new Stat();
+$durations = $stats->getDurations();
 
 $levels = array('&#0060; 1 minute' => 60, '1-5 minutes' => 300, '5-10 minutes' => 600, '10-30 minutes' => 1800, '&#0062; 30 minutes');
 $zeros = array_fill(0, count($levels), 0);
@@ -106,13 +106,19 @@ foreach($counts as $text => &$count){
 
 // PAGES
 
-$pages = new Stat();
-$pages = $pages->getPages();
+$pages = $stats->getPages();
 
 // PAGE TYPES
 
-$page_types = new Stat();
-$page_types = $page_types->getPageTypes();
+$page_types = $stats->getPageTypes();
+
+// RECENT REFERRERS
+
+$recent_referrers = $stats->getRecentReferrers();
+
+// POPULAR REFERRS
+
+$popular_referrers = $stats->getPopularReferrers();
 
 ?>
 
@@ -202,9 +208,37 @@ $page_types = $page_types->getPageTypes();
 	<div class="span-23 last append-bottom">
 		<div class="span-11 append-1">
 			<strong>Recent</strong>
+			<table>
+				<tr>
+					<th class="right">Date</th>
+					<th>Referrer</th>
+				</tr>
+				<?php				
+				foreach($recent_referrers as $referrer){
+					echo '<tr>';
+					echo '<td class="right small quiet">' . $alkaline->formatTime($referrer['stat_date'], 'M j, g:ia') . '</td>';
+					echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
+					echo '</tr>';
+				}
+				?>
+			</table>
 		</div>
 		<div class="span-11 last">
 			<strong>Popular</strong>
+			<table>
+				<tr>
+					<th class="right">Hits</th>
+					<th>Referrer</th>
+				</tr>
+				<?php				
+				foreach($popular_referrers as $referrer){
+					echo '<tr>';
+					echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
+					echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
+					echo '</tr>';
+				}
+				?>
+			</table>
 		</div>
 	</div>
 	<p class="quiet">The visitor and referrer data above was derived from analytics of the past 60 days.</p>

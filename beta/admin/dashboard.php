@@ -20,7 +20,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h2>Vitals</h2>
 	<?php
 	
-	$stats = new Stat();
+	$stats = new Stat(strtotime('-30 days'));
 	$stats->getDaily();
 	
 	$views = array();

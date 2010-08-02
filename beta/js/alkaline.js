@@ -234,7 +234,7 @@ $(document).ready(function(){
 		}],{
 			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, timeformat: "%h %p" },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0.01, timeformat: "%h %p" },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
@@ -264,7 +264,7 @@ $(document).ready(function(){
 		}],{
 			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0,  minTickSize: [3, "day"] },
+			xaxis: { mode: "time", tickLength: 0, minTickSize: [3, "day"] },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});

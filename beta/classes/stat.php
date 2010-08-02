@@ -13,7 +13,7 @@ class Stat extends Alkaline{
 		parent::__construct();
 		
 		if(empty($stat_begin)){
-			$this->stat_begin_ts = strtotime('-30 days');
+			$this->stat_begin_ts = strtotime('-60 days');
 		}
 		elseif(is_int($stat_begin)){
 			$this->stat_begin_ts = $stat_begin;
@@ -116,15 +116,15 @@ class Stat extends Alkaline{
 		$this->daily = array();
 		$next = date('Y-m-d', $this->stat_end_ts + 86400);
 		
-		$next_day = substr($next, 8, 2);
-		$next_month = substr($next, 5, 2);
-		$next_year = substr($next, 0, 4);
+		$next_day = intval(substr($next, 8, 2));
+		$next_month = intval(substr($next, 5, 2));
+		$next_year = intval(substr($next, 0, 4));
 		
-		$current_day = substr($this->stat_begin, 8, 2);
-		$current_month = substr($this->stat_begin, 5, 2);
-		$current_year = substr($this->stat_begin, 0, 4);
+		$current_day = intval(substr($this->stat_begin, 8, 2));
+		$current_month = intval(substr($this->stat_begin, 5, 2));
+		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
-		while(!(($next_day == $current_day) and ($next_month == $current_month) and ($next_year == $current_year))){
+		while(!(($next_day <= $current_day) and ($next_month <= $current_month) and ($next_year <= $current_year))){
 			if(checkdate($current_month, $current_day, $current_year)){
 				$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
 				$this->daily[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
@@ -256,7 +256,7 @@ class Stat extends Alkaline{
 	}
 	
 	public function getDurations(){
-		$query = $this->db->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats GROUP BY stat_session');
+		$query = $this->db->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_session');
 		$query->execute();
 		$durations = $query->fetchAll();
 		
@@ -264,7 +264,7 @@ class Stat extends Alkaline{
 	}
 	
 	public function getPages(){
-		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
+		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
 		$query->execute();
 		$pages = $query->fetchAll();
 		
@@ -272,11 +272,29 @@ class Stat extends Alkaline{
 	}
 	
 	public function getPageTypes(){
-		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
+		$query = $this->db->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
 		$query->execute();
 		$page_types = $query->fetchAll();
 		
 		return $page_types;
+	}
+	
+	public function getRecentReferrers($limit=20){
+		$limit = intval($limit);
+		$query = $this->db->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
+		$query->execute();
+		$referrers = $query->fetchAll();
+
+		return $referrers;
+	}
+	
+	public function getPopularReferrers($limit=20){
+		$limit = intval($limit);
+		$query = $this->db->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
+		$query->execute();
+		$referrers = $query->fetchAll();
+
+		return $referrers;
 	}
 }
 
