@@ -599,6 +599,15 @@ class Alkaline{
 		$string = preg_replace('/(\-)+$/s', '', $string);
 		return $string;
 	}
+	
+	// Minimize non-unique elements of a URL
+	public function minimizeURL($url){
+		$url = preg_replace('#^http\:\/\/www\.#s', '', $url);
+		$url = preg_replace('#^http\:\/\/#s', '', $url);
+		$url = preg_replace('#^www\.#s', '', $url);
+		$url = preg_replace('#\/$#s', '', $url);
+		return $url;
+	}
 }
 
 ?>
