@@ -267,6 +267,7 @@ class Alkaline{
 		elseif(is_int($input)){
 			$input = array($input);
 		}
+		return $input;
 	}
 	
 	// CONVERT TO INTEGER ARRAY
@@ -285,6 +286,19 @@ class Alkaline{
 				$input = array_map('trim', $input);
 			}
 		}
+		return $input;
+	}
+	
+	// CONVERT INTEGER-LIKE STRINGS TO INTEGERS
+	// Convert a possible string or integer into an array of integers
+	public function makeStringInt(&$input){
+		if(!is_string($input)){
+			break;
+		}
+		if(preg_match('#^[0-9]+$#s', $input)){
+			$input = intval($input);
+		}
+		return $input;
 	}
 	
 	// FORMAT TIME
@@ -436,12 +450,12 @@ class Alkaline{
 		return $table;
 	}
 	
-	public function updateRow($array, $table=null, $id=null){
-		if(empty($array) or empty($table) or empty($id)){
+	public function updateRow($array, $table=null, $ids=null){
+		if(empty($array) or empty($table) or empty($ids)){
 			return false;
 		}
 		
-		$id = intval($id);
+		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
 		$fields = array();
 		
@@ -453,12 +467,15 @@ class Alkaline{
 			case 'piles':
 				$fields[] = 'pile_modified = "' . date('Y-m-d H:i:s') . '"';
 				break;
+			case 'pages':
+				$fields[] = 'page_modified = "' . date('Y-m-d H:i:s') . '"';
+				break;
 		}
 		
 		$sql = implode(', ', $fields);
 		
 		// Update row
-		$query = 'UPDATE ' . $table . ' SET ' . $sql . ' WHERE ' . $field . ' = ' . $id . ';';
+		$query = 'UPDATE ' . $table . ' SET ' . $sql . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
 		
 		if(!$this->db->exec($query)){
 			return false;
@@ -586,17 +603,22 @@ class Alkaline{
 	// Find ID number from string
 	public function findID($string){
 		$matches = array();
-		preg_match('/^([0-9]+)/s', $string, $matches);
-		return @$matches[1];
+		if(preg_match('/^([0-9]+)/s', $string, $matches)){
+			$match = intval($matches[1]);
+		}
+		else{
+			return false;
+		}
+		return $match;
 	}
 	
 	// Make a URL-friendly string
 	public function makeURL($string){
 		$string = html_entity_decode($string, 1, 'UTF-8');
 		$string = strtolower($string);
-		$string = preg_replace('/([^a-zA-Z0-9]+)/s', '-', $string);
-		$string = preg_replace('/^(\-)+/s', '', $string);
-		$string = preg_replace('/(\-)+$/s', '', $string);
+		$string = preg_replace('#([^a-zA-Z0-9]+)#s', '-', $string);
+		$string = preg_replace('#^(\-)+#s', '', $string);
+		$string = preg_replace('#(\-)+$#s', '', $string);
 		return $string;
 	}
 	
