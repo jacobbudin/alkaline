@@ -25,7 +25,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	$views = array();
 	
-	foreach($stats->daily as $stat){
+	foreach($stats->stats as $stat){
 		$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	}
 	
@@ -33,7 +33,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	$visitors = array();
 	
-	foreach($stats->daily as $stat){
+	foreach($stats->stats as $stat){
 		$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 	}
 	

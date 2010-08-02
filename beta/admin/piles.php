@@ -87,6 +87,9 @@ else{
 	if(!empty($pile['pile_title'])){	
 		define('TITLE', 'Alkaline Pile: &#8220;' . $pile['pile_title']  . '&#8221;');
 	}
+	else{
+		define('TITLE', 'Alkaline Pile');
+	}
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
@@ -96,7 +99,7 @@ else{
 		<p>Pile #<?php echo $pile['pile_id']; ?> was last modified on <?php echo $alkaline->formatTime($pile['pile_modified']); ?>
 	</div>
 
-	<form id="piles" class="container" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
+	<form id="pile" class="container" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
 		<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
 		<table>
 			<tr>
