@@ -16,7 +16,7 @@ class Orbit extends Alkaline{
 	
 	private $db_safe;
 	
-	public function __construct($identifier=null){
+	public function __construct($id=null){
 		parent::__construct();
 		
 		$this->db_safe = $this->db;
@@ -24,7 +24,13 @@ class Orbit extends Alkaline{
 		
 		// Start Orbit Engine
 		if(!is_subclass_of($this, 'Orbit')){
-			$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_status > 0 ORDER BY extension_title ASC;');
+			if(empty($id)){
+				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_status > 0 ORDER BY extension_title ASC;');
+			}
+			else{
+				$id = intval($id);
+				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
+			}
 			$query->execute();
 			$extensions = $query->fetchAll();
 
@@ -41,7 +47,13 @@ class Orbit extends Alkaline{
 		}
 		// Prepare Orbit-powered extension
 		else{
-			$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_class = "' . get_class($this) . '" AND extension_status > 0;');
+			if(empty($id)){
+				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_class = "' . get_class($this) . '" AND extension_status > 0;');
+			}
+			else{
+				$id = intval($id);
+				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
+			}
 			$query->execute();
 			$extensions = $query->fetchAll();
 			
@@ -95,6 +107,18 @@ class Orbit extends Alkaline{
 		return $this->db_safe->exec('UPDATE extensions SET extension_preferences = "' . addslashes(serialize($this->preferences)) . '" WHERE extension_uid = "' . $this->uid . '";');
 	}
 	
+	// Current page for redirects
+	public function location(){
+		$location = LOCATION;
+		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
+		return $location;
+	}
+	
+	// Set preference key
+	public function reset(){
+		return $this->db_safe->exec('UPDATE extensions SET extension_preferences = "" WHERE extension_uid = "' . $this->uid . '";');
+	}
+	
 	// Execute extensions at hook
 	public function hook($hook){
 		// Find arguments
@@ -115,7 +139,7 @@ class Orbit extends Alkaline{
 		if(!empty($this->extensions)){
 			foreach($this->extensions as $extension){
 				if(in_array($hook, $extension['extension_hooks'])){
-					include($extension['extension_file']);
+					require_once($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
 					$return = call_user_func_array(array($orbit, $hook), $arguments);
 					if(!empty($return) and !is_bool($return)){
