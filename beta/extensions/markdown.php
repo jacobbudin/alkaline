@@ -2,7 +2,7 @@
 
 class Markdown extends Orbit{
 	public function __construct(){
-		parent::__construct('07a3f3d1b494c43417ff002ef659bebb687b75g1');
+		parent::__construct();
 	}
 	
 	public function __destruct(){
@@ -18,7 +18,7 @@ class Markdown extends Orbit{
 		return $page_text;
 	}
 	
-	function page_markup(){
+	function page_markup_html(){
 		echo '<option value="markdown">Markdown</option>';
 	}
 }

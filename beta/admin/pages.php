@@ -30,6 +30,8 @@ if(!empty($_POST['page_id'])){
 		$page_text_raw = $_POST['page_text_raw'];
 		$page_text = $page_text_raw;
 		
+		$page_markup = $_POST['page_markup'];
+		
 		if(!empty($_POST['page_markup'])){
 			$page_text = $orbit->hook('markup_' . $_POST['page_markup'], $page_text_raw, $page_text);
 		}
@@ -39,6 +41,7 @@ if(!empty($_POST['page_id'])){
 		$fields = array('page_title' => $page_title,
 			'page_title_url' => $page_title_url,
 			'page_text_raw' => $page_text_raw,
+			'page_markup' => $page_markup,
 			'page_text' => $page_text,
 			'page_words' => $page_words);
 		$alkaline->updateRow($fields, 'pages', $page_id);
@@ -134,9 +137,9 @@ else{
 				<td class="right"><label for="page_description">Text:</label></td>
 				<td><textarea id="page_description" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo $page['page_text_raw']; ?></textarea></td>
 			</tr>
-			<tr>
+			<tr id="tr_page_markup">
 				<td class="right"><input type="checkbox" id="page_markup" value="delete" /></td>
-				<td><strong><label for="page_markup">Markup this page using <select name="page_markup"><option value=""></option><?php $orbit->hook('page_markup'); ?></select>.</label></strong></td>
+				<td><strong><label for="page_markup">Markup this page using <select name="page_markup" title="<?php echo $page['page_markup']; ?>"><option value=""></option><?php $orbit->hook('page_markup_html'); ?></select>.</label></strong></td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>

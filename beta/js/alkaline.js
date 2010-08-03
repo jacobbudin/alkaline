@@ -92,6 +92,7 @@ $(document).ready(function(){
 	);
 	
 	// PRIMARY - DATEPICKER
+	
 	$(".date").datepicker({
 		showOn: 'button',
 		buttonImage: BASE + IMAGES + '/icons/calendar.png',
@@ -136,6 +137,18 @@ $(document).ready(function(){
 	
 		count = $('#count').text();
 		checkCount();
+	}
+	
+	// PAGE (EDIT)
+	
+	if(page == 'Page'){
+		var markup_row = $("#tr_page_markup");
+		var markup = markup_row.find("select").attr("title");
+		
+		if(markup){
+			markup_row.find("input").attr("checked", "checked");
+			markup_row.find("option[value='" + markup + "']").attr("selected", "selected");
+		}
 	}
 	
 	// DASHBOARD
