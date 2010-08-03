@@ -8,7 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$extension_id = @$alkaline->findID($_GET['identifier']);
+$extension_id = @$alkaline->findID($_GET['id']);
 $orbit = new Orbit($extension_id);
 
 define('TITLE', 'Alkaline Extensions');
@@ -19,50 +19,35 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div id="module" class="container">
 	<h1>Extensions</h1>
 	
-	<p>You have <?php echo @$orbit->extension_count; ?> extensions installed.</p>
+	<p>You have <?php echo @$orbit->extension_count; ?> extensions enabled.</p>
 </div>
 
 <div id="extensions" class="container">
-	<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Install extension</a> &#0160; <a href="" class="nu"><span class="button">&#0149;</span>Check for updates</a></div>
+	<div style="text-align: right; margin: 0 0 1em 0;" class="span-23 last"><a href="" class="nu"><span class="button">&#0043;</span>Install extension</a> &#0160; <a href="" class="nu"><span class="button">&#0149;</span>Check for updates</a></div>
+	
+	<h3>Enabled</h3><br />
+	
 	<table>
 		<tr>
 			<th>Extension</th>
-			<th class="center">Configure</th>
-			<th class="center">Web site</th>
+			<th class="center">Version</th>
+			<th class="center">Update</th>
 		</tr>
-		<tr>
-			<td>
-				<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong><br />
-				Creative Commons - Attribution 3.0 Unported
-			</td>
-			<td class="center"><a href="">103</a></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>
-				<strong><a href="http://creativecommons.org/licenses/by/3.0/">CC-By-3.0</a></strong><br />
-				Creative Commons - Attribution 3.0 Unported
-			</td>
-			<td class="center"><a href="">25</a></td>
-			<td></td>
-		</tr>
-	</table>
-	<?php
-	if(!empty($extension_id)){
-		?>
-		<h3><?php echo $orbit->title; ?></h3>
-
-		<hr />
-
 		<?php
-		$orbit->hook('config');
-	}
-	else{
+		
 		foreach($orbit->extensions as $extension){
-			echo '<p>' . $extension['extension_title'] . ' (<a href="?identifier=' . $extension['extension_id'] . '-' . $extension['extension_class']  . '">Config</a>)</p>';
+			echo '<tr>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions/' . $extension['extension_id'] . '">' . $extension['extension_title'] . '</a></strong></td>';
+			echo '<td class="center">' . $extension['extension_version'] . ' <span class="small">(' . $extension['extension_build'] . ')</span></td>';
+			echo '<td class="center quiet">&#8212;</td>';
+			echo '</tr>';
 		}
-	}
-	?>
+		
+		?>
+	</table>
+	
+	<h3>Disabled</h3><br />
+	
 </div>
 <?php
 
