@@ -22,38 +22,26 @@ class Orbit extends Alkaline{
 		$this->db_safe = $this->db;
 		unset($this->db);
 		
-		if(empty($identifier)){
-			$query = $this->db_safe->prepare('SELECT extension_id, extension_uid, extension_title, extension_class, extension_hooks, extension_preferences FROM extensions WHERE extension_status > 0 ORDER BY extension_build ASC, extension_id ASC;');
+		// Start Orbit Engine
+		if(!is_subclass_of($this, 'Orbit')){
+			$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_status > 0 ORDER BY extension_title ASC;');
 			$query->execute();
 			$extensions = $query->fetchAll();
 
 			$this->extensions = array();
 
-			foreach($extensions as $extension){
-				$extension_id = $extension['extension_id'];
-				$extension_uid = strval($extension['extension_uid']);
-				$extension_file = PATH . EXTENSIONS . strtolower($extension['extension_class']) . '.php';
-				$extension_title = $extension['extension_title'];
-				$extension_hooks = unserialize($extension['extension_hooks']);
-				$this->extensions[] = array('extension_id' => $extension_id,
-					'extension_uid' => $extension_uid,
-					'extension_file' => $extension_file,
-					'extension_title' => $extension_title,
-					'extension_class' => $extension['extension_class'],
-					'extension_hooks' => $extension_hooks);
+			foreach($extensions as &$extension){
+				$extension['extension_uid'] = strval($extension['extension_uid']);
+				$extension['extension_file'] = PATH . EXTENSIONS . $extension['extension_file'] . '.php';
+				$extension['extension_hooks'] = unserialize($extension['extension_hooks']);
 			}
 			
+			$this->extensions = $extensions;
 			$this->extension_count = count($this->extensions);
 		}
+		// Prepare Orbit-powered extension
 		else{
-			if(strlen($identifier) == 40){
-				$this->uid = $identifier;
-				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_uid = "' . $this->uid . '" AND extension_status > 0;');
-			}
-			else{
-				$this->id = $identifier;
-				$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_id = "' . $this->id . '" AND extension_status > 0;');
-			}
+			$query = $this->db_safe->prepare('SELECT * FROM extensions WHERE extension_class = "' . get_class($this) . '" AND extension_status > 0;');
 			$query->execute();
 			$extensions = $query->fetchAll();
 			
@@ -61,27 +49,15 @@ class Orbit extends Alkaline{
 				return false;
 			}
 			
-			foreach($extensions as $extension){
-				$extension_id = $extension['extension_id'];
-				$extension_uid = strval($extension['extension_uid']);
-				$extension_file = PATH . EXTENSIONS . strtolower($extension['extension_class']) . '.php';
-				$extension_title = $extension['extension_title'];
-				$extension_hooks = unserialize($extension['extension_hooks']);
-				$this->extensions[] = array('extension_id' => $extension_id,
-					'extension_uid' => $extension_uid,
-					'extension_file' => $extension_file,
-					'extension_title' => $extension_title,
-					'extension_class' => $extension['extension_class'],
-					'extension_hooks' => $extension_hooks);
+			foreach($extensions[0] as $key => $value){
+				$key = preg_replace('#^extension\_#si', '', $key, 1);
+				$this->$key = $value;
 			}
 			
-			$this->id = $extensions[0]['extension_id'];
-			$this->uid = strval($extensions[0]['extension_uid']);
-			$this->title = $extensions[0]['extension_title'];
-			$this->file = PATH . EXTENSIONS . strtolower($extensions[0]['extension_class']) . '.php';
-			$this->class = $extensions[0]['extension_class'];
-			$this->hooks = unserialize($extensions[0]['extension_hooks']);
-			$this->preferences = unserialize($extensions[0]['extension_preferences']);
+			$this->uid = strval($this->uid);
+			$this->file = PATH . EXTENSIONS . strtolower($this->file) . '.php';
+			$this->hooks = unserialize($this->hooks);
+			$this->preferences = unserialize($this->preferences);
 		}
 		return true;
 	}
@@ -100,7 +76,7 @@ class Orbit extends Alkaline{
 	
 	// Local require_once()
 	protected function load($file){
-		require_once(PATH . EXTENSIONS . $this->class . '/' . $file);
+		require_once(PATH . EXTENSIONS . $this->folder . '/' . $file);
 	}
 	
 	// Set preference key
