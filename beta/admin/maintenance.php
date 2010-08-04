@@ -15,14 +15,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
+<div id="module" class="container">
+	<h1>Maintenance</h1>
+	<p></p>
+</div>
+
 <div id="maintenance" class="container">
-	<h2>Maintenance</h2>
-	
-	<p>Maintenance tasks repair your library. You do not need to execute any of these tasks if you are not experiencing problems. Please let the task complete before closing your browser window. You will be automatically redirected to your dashboard when the task is complete.</p>
+	<p>Please let the task complete before closing your browser window. You will be automatically redirected to your dashboard when the task is complete.</p>
 	
 	<div id="progress" class="span-17 last">
 		
 	</div>
+	
+	<h3>Thumbnails</h3>
 	
 	<ul id="tasks">
 		<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>

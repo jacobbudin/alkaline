@@ -184,6 +184,14 @@ ul{
 	background-color: #eee;
 }
 
+td.right{
+	width: 10em;
+}
+
+#module p{
+	margin-bottom: 1.2em;
+}
+
 #statistics ul{
 	margin: 0 0 1em 0;
 	padding: .8em 1em;
