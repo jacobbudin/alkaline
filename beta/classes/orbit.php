@@ -98,8 +98,13 @@ class Orbit extends Alkaline{
 	}
 	
 	// Read preference key and return value
-	public function readPref($name){
-		return @$this->preferences[$name];
+	public function readPref($name, $default=null){
+		if(isset($this->preferences[$name])){
+			return $this->preferences[$name];
+		}
+		if(isset($default)){
+			return $default;
+		}	
 	}
 	
 	// Set preference key
@@ -138,7 +143,7 @@ class Orbit extends Alkaline{
 		// Find respective extensions, execute their code
 		if(!empty($this->extensions)){
 			foreach($this->extensions as $extension){
-				if(in_array($hook, $extension['extension_hooks'])){
+				if(@in_array($hook, $extension['extension_hooks'])){
 					require_once($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
 					$return = call_user_func_array(array($orbit, $hook), $arguments);
