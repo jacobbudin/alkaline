@@ -408,6 +408,61 @@ class Alkaline{
 		return implode(', ', $tags);
 	}
 	
+	// PROCESS COMMENTS
+	public function addComments(){
+		if(empty($_POST['comment_id'])){
+			return false;
+		}
+		
+		$id = self::findID($_POST['comment_id']);
+		
+		$fields = array('photo_id' => $id,
+			'comment_text' => strip_tags($_POST['comment_' . $id .'_text']),
+			'comment_author_name' => strip_tags($_POST['comment_' . $id .'_author_name']),
+			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
+			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
+			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);
+		
+		$orbit = new Orbit;
+		$fields = $orbit->hook('comment_add', $fields, $fields);
+		
+		$id = $this->addRow($fields, 'comments');
+		
+		if(!is_int($id)){
+			return false;
+		}
+		
+		$this->updateCount('comments', 'photos', 'photo_comment_count', $id);
+		
+		return true;
+	}
+	
+	public function updateCount($count_table, $result_table, $result_field, $result_id){
+		$result_id = intval($result_id);
+		
+		$count_id_field = $this->tables[$count_table];
+		$result_id_field = $this->tables[$result_table];
+		
+		// Get count
+		$query = $this->db->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field . ' = ' . $result_id .';');
+		
+		if(!$query->execute()){
+			return false;
+		}
+		
+		$counts = $query->fetchAll();
+		$count = $counts[0]['count'];
+		
+		// Update row
+		$query = 'UPDATE ' . $result_table . ' SET ' . $result_field . ' = ' . $count . ' WHERE ' . $result_id_field . ' = ' . $result_id . ';';
+		
+		if(!$this->db->exec($query)){
+			return false;
+		}
+		
+		return true;
+	}
+	
 	// SHOW RIGHTS
 	public function showRights($name){
 		if(empty($name)){
@@ -450,32 +505,70 @@ class Alkaline{
 		return $table;
 	}
 	
-	public function updateRow($array, $table=null, $ids=null){
-		if(empty($array) or empty($table) or empty($ids)){
+	public function addRow($fields, $table=null){
+		if(empty($fields) or empty($table) or !is_array($fields)){
+			return false;
+		}
+		
+		foreach($fields as $key => &$value){
+			$value = addslashes($value);
+		}
+		
+		switch($table){
+			case 'comments':
+				$fields['comment_created'] = date('Y-m-d H:i:s');
+				break;
+			case 'piles':
+				$fields['pile_created'] = date('Y-m-d H:i:s');
+				$fields['pile_modified'] = date('Y-m-d H:i:s');
+				break;
+			case 'pages':
+				$fields['page_created'] = date('Y-m-d H:i:s');
+				$fields['page_modified'] = date('Y-m-d H:i:s');
+				break;
+		}
+		
+		$columns = array_keys($fields);
+		$values = array_values($fields);
+		
+		// Add row
+		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ("' . implode('", "', $values) . '");';
+		
+		if(!$this->db->exec($query)){
+			return false;
+		}
+		
+		// Return ID
+		return $this->db->lastInsertId();
+	}
+	
+	public function updateRow($fields, $table=null, $ids=null){
+		if(empty($fields) or empty($table) or empty($ids) or !is_array($fields)){
 			return false;
 		}
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
-		$fields = array();
-		
-		foreach($array as $key => $value){
-			$fields[] = $key . ' = "' . addslashes($value) . '"';
-		}
 		
 		switch($table){
 			case 'piles':
-				$fields[] = 'pile_modified = "' . date('Y-m-d H:i:s') . '"';
+				$array['pile_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'pages':
-				$fields[] = 'page_modified = "' . date('Y-m-d H:i:s') . '"';
+				$array['page_modified'] = date('Y-m-d H:i:s');
 				break;
 		}
 		
-		$sql = implode(', ', $fields);
+		$fields_combined = array();
+		
+		foreach($array as $key => $value){
+			$fields_combined[] = $key . ' = "' . addslashes($value) . '"';
+		}
+		
+		$fields_sql = implode(', ', $fields_combined);
 		
 		// Update row
-		$query = 'UPDATE ' . $table . ' SET ' . $sql . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
+		$query = 'UPDATE ' . $table . ' SET ' . $fields_sql . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
 		
 		if(!$this->db->exec($query)){
 			return false;
