@@ -9,13 +9,19 @@ class Markdown extends Orbit{
 		parent::__destruct();
 	}
 	
-	function markup_markdown($page_text_raw){
+	public function markup_markdown($page_text_raw){
 		$this->load('markdown.php');
 		$this->load('smartypants.php');
 		
 		$page_text = SmartyPants(Markdown($page_text_raw));
 		
 		return $page_text;
+	}
+	
+	public function config(){
+		?>
+		For more information on Markdown, including its syntax, visit <a href="http://daringfireball.net/projects/markdown/">John Gruber&#8217;s Markdown page</a>.
+		<?php
 	}
 	
 	function page_markup_html(){

@@ -9,7 +9,7 @@ class TextileHandler extends Orbit{
 		parent::__destruct();
 	}
 	
-	function markup_textile($page_text_raw){
+	public function markup_textile($page_text_raw){
 		$this->load('classTextile.php');
 		
 		$textile = new Textile;
@@ -18,7 +18,13 @@ class TextileHandler extends Orbit{
 		return $page_text;
 	}
 	
-	function page_markup_html(){
+	public function config(){
+		?>
+		For more information on Textile, including its syntax, visit <a href="http://textile.thresholdstate.com/">Alex Shiels&#8217;s Textile page</a>.
+		<?php
+	}
+	
+	public function page_markup_html(){
 		echo '<option value="textile">Textile</option>';
 	}
 }

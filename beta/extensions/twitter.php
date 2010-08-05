@@ -37,7 +37,7 @@ class Twitter extends Orbit{
 	
 	public function config(){
 		?>
-		<p>Every time you publish a photo, your Twitter status will be updated with the photo&#8217;s title and a shortened link to its photo page.</p>
+		<p>Every time you publish a photo, your <a href="http://www.twitter.com/">Twitter</a> status will be updated.</p>
 		<?php
 		if($this->twitter_active){
 			?>
@@ -45,6 +45,13 @@ class Twitter extends Orbit{
 				<tr>
 					<td class="right">Username:</td>
 					<td><a href="http://twitter.com/<?php echo $this->twitter_screen_name; ?>/"><strong><?php echo $this->twitter_screen_name; ?></strong></a> &#0160; <a href="?unlink=twitter" class="nu"><span class="button">&#0150;</span>Unlink from Twitter</a></td>
+				</tr>
+				<tr>
+					<td class="right" style="padding-top: 1em;">Format:</td>
+					<td>
+						<input type="text" name="twitter_format" id="twitter_format" style="width: 30em;" /><br />
+						<span class="quiet">Use the keywords %LINK, %PHOTO, and %PHOTOGRAPHER above.</span>
+					</td>
 				</tr>
 			</table>
 
