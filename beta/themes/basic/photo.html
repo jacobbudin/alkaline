@@ -15,14 +15,21 @@
 </p>
 <p>
 	<!-- IF(TAGS) --><!-- LOOP(TAGS) --><span class="tag">#<!-- TAG_NAME --></span><!-- ENDLOOP(TAGS) --><br /><!-- ENDIF(TAGS) -->
-	<!-- <strong>Comments:</strong>
+</p>
 	<!-- IF(COMMENTS) -->
 	<!-- LOOP(COMMENTS) -->
 			<!-- COMMENT_TEXT --> ... 
 	<!-- ENDLOOP(COMMENTS) -->
 	<!-- ELSEIF(COMMENTS) -->
-	No comments.
-	<!-- ENDIF(COMMENTS) --> -->
-</p><br />
+	<p><strong>No comments.</strong></p>
+	<!-- ENDIF(COMMENTS) -->
+	<p>
+		Author: <!-- PHOTO_COMMENT_AUTHOR_NAME --><br />
+		Email: <!-- PHOTO_COMMENT_AUTHOR_EMAIL --><br />
+		URL: <!-- PHOTO_COMMENT_AUTHOR_URL --><br />
+		Comment: <!-- PHOTO_COMMENT_TEXT --><br />
+		<!-- PHOTO_COMMENT_SUBMIT -->
+	</p>
+<br />
 <hr />
 <!-- ENDLOOP(PHOTOS) -->
