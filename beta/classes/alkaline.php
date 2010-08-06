@@ -484,19 +484,32 @@ class Alkaline{
 		return $html;
 	}
 	
-	public function getTable($table=null, $id=null){
+	public function getTable($table=null, $ids=null, $limit=null, $page=1, $order_by=null){
 		if(empty($table)){
 			return false;
 		}
 		
-		if(empty($id)){
-			$query = $this->db->prepare('SELECT * FROM ' . $table . ';');
+		$order_by_sql = '';
+		$limit_sql = '';
+		
+		if(!empty($order_by)){
+			$order_by_sql = ' ORDER BY ' . $order_by;
+		}
+		
+		if(!empty($limit)){
+			$limit = intval($limit);
+			$page = intval($page);
+			$limit_sql = ' LIMIT ' . (($limit * ($page - 1)) - $limit);
+		}
+		
+		if(empty($ids)){
+			$query = $this->db->prepare('SELECT * FROM ' . $table . $order_by_sql . $limit_sql . ';');
 		}
 		else{
-			$id = intval($id);
+			$ids = self::convertToIntegerArray($ids);
 			$field = $this->tables[$table];
 			
-			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . $id . ';');
+			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
 		}
 		
 		$query->execute();
@@ -577,16 +590,16 @@ class Alkaline{
 		return true;
 	}
 	
-	public function deleteRow($table=null, $id=null){
-		if(empty($table) or empty($id)){
+	public function deleteRow($table=null, $ids=null){
+		if(empty($table) or empty($ids)){
 			return false;
 		}
 		
-		$id = intval($id);
+		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
 		
 		// Delete row
-		$query = 'DELETE FROM ' . $table . ' WHERE ' . $field . ' = ' . $id . ';';
+		$query = 'DELETE FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
 		
 		if(!$this->db->exec($query)){
 			return false;
@@ -722,6 +735,14 @@ class Alkaline{
 		$url = preg_replace('#^www\.#s', '', $url);
 		$url = preg_replace('#\/$#s', '', $url);
 		return $url;
+	}
+	
+	// Trim long strings
+	public function fitString($string, $length=50){
+		if(strlen($string) > $length){
+			$string = substr($string, 0, $length - 3) . '&#0133;';
+		}
+		return $string;
 	}
 }
 

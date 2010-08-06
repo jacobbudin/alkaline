@@ -26,8 +26,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<h3>Themes</h3>
 			<img src="/images/icons/themes.png" alt="" />
 			<ul>
-				<li><a href="<?php echo BASE . ADMIN; ?>themes/">View themes</a></li>
-				<li><a href="http://www.alkalineapp.com/">Get more themes</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>themes/">View themes and blocks</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>themes/blocks/">Create new theme block</a></li>
 				<li><a href="<?php echo BASE . ADMIN; ?>themes/install/">Install new theme</a></li>
 			</ul>
 		</div>
@@ -36,7 +36,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<img src="/images/icons/extensions.png" alt="" />
 			<ul>
 				<li><a href="<?php echo BASE . ADMIN; ?>extensions/">View extensions</a></li>
-				<li><a href="http://www.alkalineapp.com/">Get more extensions</a></li>
 				<li><a href="<?php echo BASE . ADMIN; ?>extensions/install/">Install new extension</a></li>
 			</ul>
 		</div>
