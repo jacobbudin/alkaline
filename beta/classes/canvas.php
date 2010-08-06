@@ -183,10 +183,46 @@ class Canvas extends Alkaline{
 		return $template;
 	}
 	
+	// ORBIT
+	// Find Orbit hooks and process them
+	protected function initOrbit(){
+		$orbit = new Orbit();
+		
+		$matches = array();
+		preg_match_all('#\<!-- ORBIT\_([A-Z0-9_]*) --\>#is', $this->template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			$hooks = array();
+			
+			foreach($matches as $match){
+				$hook = strtolower($match[1]);
+				$hooks[] = array('replace' => $match[0], 'hook' => $hook);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		foreach($hooks as $hook){
+			ob_start();
+			
+			// Execute Orbit hook
+			$orbit->hook($hook['hook']);
+			$content = ob_get_contents();
+			
+			// Replace contents
+			$this->template = str_ireplace($hook['replace'], $content, $this->template);
+			ob_end_clean();
+		}
+	}
+	
 	// PROCESS
 	public function generate(){
 		// Add copyright information
 		$this->assign('COPYRIGHT', parent::copyright);
+		
+		// Process Orbit
+		$this->initOrbit();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '$3', $this->template);
