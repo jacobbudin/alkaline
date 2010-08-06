@@ -77,8 +77,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		if($tables = $alkaline->getInfo()){
 			echo '<ul>';
-			foreach($tables as $table => $count){
-				echo '<li><a href="' . BASE . ADMIN . $table . '/">' . $count . ' ' . $table . '</a></li>';
+			foreach($tables as $table){
+				echo '<li><a href="' . BASE . ADMIN . $table['table'] . '/">' . $table['count'] . ' ' . $table['display'] . '</a></li>';
 			}
 			echo '</ul>';
 		}

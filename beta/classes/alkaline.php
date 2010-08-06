@@ -624,7 +624,6 @@ class Alkaline{
 	
 	// GET LIBRARY INFO
 	public function getInfo(){
-		
 		$info = array();
 		
 		// Get tables
@@ -635,22 +634,17 @@ class Alkaline{
 		
 		// Run helper function
 		foreach($tables as $table => $selector){
-			$info[$table] = self::countTable($table, $selector);
+			$info[] = array('table' => $table, 'count' => self::countTable($table, $selector));
 		}
 		
-		$info_new = array();
-		
-		foreach($info as $table => $count){
-			if($count == 1){
-				$table_new = preg_replace('#s$#si', '', $table);
-				$info_new[$table_new] = $count;
+		foreach($info as &$table){
+			if($table['count'] == 1){
+				$table['display'] = preg_replace('#s$#si', '', $table['table']);
 			}
 			else{
-				$info_new[$table] = $count;
+				$table['display'] = $table['table'];
 			}
 		}
-		
-		$info = $info_new;
 		
 		return $info;
 	}
