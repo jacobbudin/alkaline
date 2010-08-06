@@ -65,7 +65,7 @@ if(empty($pile_id)){
 				echo '<tr>';
 					echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $pile['pile_description'] . '</td>';
 					echo '<td class="center">' . $pile['pile_views'] . '</td>';
-					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photos'] . '</a></td>';
+					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
 					echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
 				echo '</tr>';
 			}
@@ -81,6 +81,15 @@ if(empty($pile_id)){
 }
 else{
 	
+	// Update photo count on pile
+	$photo_ids = new Find;
+	$photo_ids->pile($pile_id);
+	$photo_ids->exec();
+	
+	$fields = array('pile_photo_count' => $photo_ids->photo_count);
+	$alkaline->updateRow($fields, 'piles', $pile_id, false);
+	
+	// Get pile
 	$piles = $alkaline->getTable('piles', $pile_id);
 	$pile = $piles[0];
 
