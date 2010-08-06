@@ -518,15 +518,22 @@ class Alkaline{
 		return $table;
 	}
 	
-	public function addRow($fields, $table=null){
-		if(empty($fields) or empty($table) or !is_array($fields)){
+	public function addRow($fields=null, $table){
+		// Error checking
+		if(empty($table) or (!is_array($fields) and isset($fields))){
 			return false;
 		}
 		
+		if(empty($fields)){
+			$fields = array();
+		}
+		
+		// Clean up input for database insertion
 		foreach($fields as $key => &$value){
 			$value = addslashes($value);
 		}
 		
+		// Add default fields
 		switch($table){
 			case 'comments':
 				$fields['comment_created'] = date('Y-m-d H:i:s');
@@ -541,10 +548,11 @@ class Alkaline{
 				break;
 		}
 		
+		// Split up fields array for insertion
 		$columns = array_keys($fields);
 		$values = array_values($fields);
 		
-		// Add row
+		// Add row to database
 		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ("' . implode('", "', $values) . '");';
 		
 		if(!$this->db->exec($query)){
@@ -552,29 +560,35 @@ class Alkaline{
 		}
 		
 		// Return ID
-		return $this->db->lastInsertId();
+		$id = intval($this->db->lastInsertId());
+		return $id;
 	}
 	
-	public function updateRow($fields, $table=null, $ids=null){
-		if(empty($fields) or empty($table) or empty($ids) or !is_array($fields)){
+	public function updateRow($fields, $table, $ids=null, $default=true){
+		// Error checking
+		if(empty($fields) or empty($table) or !is_array($fields)){
 			return false;
 		}
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
 		
-		switch($table){
-			case 'piles':
-				$array['pile_modified'] = date('Y-m-d H:i:s');
-				break;
-			case 'pages':
-				$array['page_modified'] = date('Y-m-d H:i:s');
-				break;
+		// Add default fields
+		if($default == true){
+			switch($table){
+				case 'piles':
+					$fields['pile_modified'] = date('Y-m-d H:i:s');
+					break;
+				case 'pages':
+					$fields['page_modified'] = date('Y-m-d H:i:s');
+					break;
+			}
 		}
 		
+		// Convert array of database fields to SQL-friendly string
 		$fields_combined = array();
 		
-		foreach($array as $key => $value){
+		foreach($fields as $key => $value){
 			$fields_combined[] = $key . ' = "' . addslashes($value) . '"';
 		}
 		
@@ -590,7 +604,7 @@ class Alkaline{
 		return true;
 	}
 	
-	public function deleteRow($table=null, $ids=null){
+	public function deleteRow($table, $ids=null){
 		if(empty($table) or empty($ids)){
 			return false;
 		}
