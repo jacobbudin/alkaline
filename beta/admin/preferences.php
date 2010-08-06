@@ -9,8 +9,8 @@ $user = new User;
 $user->perm(true);
 
 if(!empty($_POST['preferences_save'])){
-	$user->setPref('shoe_pub', 0);
-	$user->setPref('comm_email_photo', 0);
+	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
+	$user->setPref('comm_email_photo', @$_POST['comm_email_photo']);
 	
 	$fields = array('user_preferences' => serialize($user->user['user_preferences']));
 	
@@ -32,7 +32,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> /></td>
+			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="on" /></td>
 			<td class="description">
 				<label for="shoe_pub">Set all photos to be published after processing by default</label>
 			</td>
@@ -43,7 +43,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="comm_email_photo" name="comm_email_photo" <?php echo $user->readPref('comm_email_photo'); ?> /></td>
+			<td class="input"><input type="checkbox" id="comm_email_photo" name="comm_email_photo" <?php echo $user->readPref('comm_email_photo'); ?> value="on" /></td>
 			<td class="description">
 				<label for="comm_email_photo">Email new comments to photographer</label>
 			</td>
