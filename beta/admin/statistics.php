@@ -114,9 +114,17 @@ $stats->getPageTypes();
 
 $stats->getRecentReferrers();
 
+foreach($stats->referrers_recent as &$referrer){
+	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
+}
+
 // POPULAR REFERRS
 
 $stats->getPopularReferrers();
+
+foreach($stats->referrers_popular as &$referrer){
+	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
+}
 
 ?>
 
@@ -177,7 +185,7 @@ $stats->getPopularReferrers();
 				foreach($stats->pages as $page){
 					echo '<tr>';
 					echo '<td class="right">' . $page['stat_count'] . '</td>';
-					echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $page['stat_page'] . '</a></td>';
+					echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $alkaline->fitString($page['stat_page'], 30) . '</a></td>';
 					echo '</tr>';
 				}
 				?>
@@ -215,7 +223,7 @@ $stats->getPopularReferrers();
 				foreach($stats->referrers_recent as $referrer){
 					echo '<tr>';
 					echo '<td class="right small quiet">' . $alkaline->formatTime($referrer['stat_date'], 'M j, g:ia') . '</td>';
-					echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
+					echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
 					echo '</tr>';
 				}
 				?>
@@ -232,7 +240,7 @@ $stats->getPopularReferrers();
 				foreach($stats->referrers_popular as $referrer){
 					echo '<tr>';
 					echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
-					echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->minimizeURL($referrer['stat_referrer']) . '</a></td>';
+					echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
 					echo '</tr>';
 				}
 				?>
