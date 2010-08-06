@@ -10,6 +10,13 @@ $user = new User;
 $user->perm(true);
 
 $page_id = @$alkaline->findID($_GET['id']);
+$page_add = @$alkaline->findID($_GET['add']);
+
+// CREATE PAGE
+
+if($page_add == 1){
+	$page_id = $alkaline->addRow(null, 'pages');
+}
 
 // SAVE CHANGES
 if(!empty($_POST['page_id'])){
@@ -65,7 +72,7 @@ if(empty($page_id)){
 	</div>
 
 	<div id="pages" class="container">
-		<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Created page</a></div>
+		<div style="float: right; margin: 1em 0 2em 0;"><a href="<?php echo BASE . ADMIN; ?>pages/create/" class="nu"><span class="button">&#0043;</span>Create page</a></div>
 		<?php
 		if($pages->count() > 0){
 			?>
@@ -115,7 +122,7 @@ else{
 	?>
 
 	<div id="module" class="container">
-		<h1>Page</h1>
+		<h1>Pages</h1>
 		<p>Page #<?php echo $page['page_id']; ?> was last modified on <?php echo $alkaline->formatTime($page['page_modified']); ?>
 	</div>
 
