@@ -24,8 +24,6 @@ class Alkaline{
 	protected $guest;
 	protected $notifications;
 	
-	public $tag_count;
-	
 	public function __construct(){
 		@header('Cache-Control: no-cache, must-revalidate');
 		@header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
@@ -358,7 +356,7 @@ class Alkaline{
 	
 	// SHOW TAGS
 	// Display all tags
-	public function showTags($cloud=false, $admin=false){
+	public function getTags(){
 		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
@@ -385,15 +383,17 @@ class Alkaline{
 		
 		$tag_uniques = array_unique($tag_names);
 		natsort($tag_uniques);
-		$this->tag_count = count($tag_uniques);
 		
 		$tags = array();
 		
 		foreach($tag_uniques as $tag){
-			$tags[] = '<span style="font-size: ' . round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2)  . 'em;"><a href="' . BASE . ADMIN . 'tags/' . $tag_ids[$tag] . '">' . $tag . '</a></span> <span class="small quiet">(<a href="' . BASE . ADMIN . 'search/tags/' . $tag_ids[$tag] . '">' . $tag_counts[$tag] . '</a>)</span>';
+			$tags[] = array('id' => $tag_ids[$tag],
+				'size' => round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2),
+				'name' => $tag,
+				'count' => $tag_counts[$tag]);
 		}
 		
-		return implode(', ', $tags);
+		return $tags;
 	}
 	
 	// PROCESS COMMENTS
