@@ -8,8 +8,6 @@ $user = new User;
 
 $user->perm(true);
 
-$alkaline->injectJS('maintenance');
-
 define('TITLE', 'Alkaline Maintenance');
 require_once(PATH . ADMIN . 'includes/header.php');
 

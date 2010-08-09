@@ -56,18 +56,6 @@ class Alkaline{
 		$this->db = null;
 	}
 	
-	// TEMPORARY
-	public function injectJS($name){
-		$this->js[] = $name;
-	}
-	
-	// TEMPORARY
-	public function dejectJS(){
-		foreach($this->js as $js){
-			echo '<script src="' . BASE . JS . $js . '.js" type="text/javascript"></script>';
-		}
-	}
-	
 	// GUESTS
 	// Authenticate guest
 	public function access($key=null){

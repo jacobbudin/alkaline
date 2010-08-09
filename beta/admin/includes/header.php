@@ -16,7 +16,6 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 	<?php echo (defined('EMBED_CSS') ? '<style type="text/css">' . EMBED_CSS . '</style>' : ''); ?>
-	<?php $alkaline->dejectJS(); ?>
 </head>
 <body>
 	<div id="header" class="container">
