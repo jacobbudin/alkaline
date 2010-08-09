@@ -13,7 +13,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 173;
+	const build = 224;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
@@ -385,6 +385,17 @@ class Alkaline{
 		}
 		
 		return $tags;
+	}
+	
+	// Display all blocks
+	public function getBlocks(){
+		$blocks = self::seekDirectory(PATH . BLOCKS, '.*');
+		
+		foreach($blocks as &$block){
+			$block = self::getFilename($block);
+		}
+		
+		return $blocks;
 	}
 	
 	// PROCESS COMMENTS

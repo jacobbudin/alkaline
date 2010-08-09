@@ -238,11 +238,15 @@ class Canvas extends Alkaline{
 			$path = PATH . BLOCKS . $block['block'] . '.php';
 			
 			if(is_file($path)){
-				// Retrieve block
-				$content = file_get_contents($path);
+				ob_start();
 
+				// Include block
+				include($path);
+				$content = ob_get_contents();
+				
 				// Replace contents
 				$this->template = str_ireplace($block['replace'], $content, $this->template);
+				ob_end_clean();
 			}
 		}
 	}

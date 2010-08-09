@@ -1,1 +1,1 @@
-Hello world!
+<?php echo date('U'); ?>

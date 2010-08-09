@@ -31,6 +31,8 @@ if(empty($theme_id)){
 	$themes = $alkaline->getTable('themes', null, null, null, '');
 	$theme_count = @count($themes);
 	
+	$blocks = $alkaline->getBlocks();
+	
 	define('TITLE', 'Alkaline Themes');
 	require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -75,9 +77,24 @@ if(empty($theme_id)){
 			?>
 		</table>
 		
-		<div style="text-align: right; margin: 0 0 1em 0;" class="span-23 last"><a href="" class="nu"><span class="button">&#0043;</span>Add block</a></div>
-			
 		<h3>Blocks</h3><br />
+		
+		<table>
+			<tr>
+				<th>Block</th>
+				<th class="center">Canvas Markup</th>
+			</tr>
+			<?php
+			
+			foreach($blocks as $block){
+				echo '<tr>';
+				echo '<td><strong>' . $block . '</strong></td>';
+				echo '<td class="center">&#0060;&#0033;&#0045;&#0045; CANVAS_' . strtoupper(preg_replace('#\..+#si', '', $block)) . ' &#0045;&#0045;&#0062;</td>';
+				echo '</tr>';
+			}
+		
+			?>
+		</table>
 		
 	</div>
 	<?php
