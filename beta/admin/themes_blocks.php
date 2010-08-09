@@ -30,6 +30,16 @@ if(!empty($_POST['theme_id'])){
 if(empty($theme_id)){
 	$themes = $alkaline->getTable('themes', null, null, null, '');
 	$theme_count = @count($themes);
+
+	if($theme_count == 1){
+		$theme_count_text = '1 theme';
+	}
+	elseif($theme_count > 1){
+		$theme_count_text = $theme_count . ' themes';
+	}
+	else{
+		$theme_count_text = '0 themes';
+	}
 	
 	define('TITLE', 'Alkaline Themes');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -38,7 +48,7 @@ if(empty($theme_id)){
 
 	<div id="module" class="container">
 		<h1>Themes &#0038; Blocks</h1>
-		<p>You have <?php $alkaline->echoCount($theme_count, 'theme'); ?> installed.</p>
+		<p>You have <?php echo $theme_count_text; ?> installed.</p>
 	</div>
 
 	<div id="themes" class="container">

@@ -18,7 +18,7 @@ class Alkaline{
 	const version = '1.0';
 	
 	public $js;
-	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id');
+	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id');
 	
 	public $db;
 	protected $guest;
@@ -703,7 +703,7 @@ class Alkaline{
 	// Find ID number from string
 	public function findID($string){
 		$matches = array();
-		if(preg_match('/^([0-9]+)/s', $string, $matches)){
+		if(preg_match('#^([0-9]+)#s', $string, $matches)){
 			$match = intval($matches[1]);
 		}
 		else{

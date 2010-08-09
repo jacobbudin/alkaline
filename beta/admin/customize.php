@@ -23,12 +23,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div id="features" class="span-23 last prepend-top">
 		<h2>Features</h2>
 		<div class="span-7 append-1">
-			<h3>Themes</h3>
+			<h3>Themes &#0038; Blocks</h3>
 			<img src="/images/icons/themes.png" alt="" />
 			<ul>
 				<li><a href="<?php echo BASE . ADMIN; ?>themes/">View themes and blocks</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>themes/blocks/">Create new theme block</a></li>
 				<li><a href="<?php echo BASE . ADMIN; ?>themes/install/">Install new theme</a></li>
+				<li><a href="<?php echo BASE . ADMIN; ?>themes/blocks/">Add new block</a></li>
 			</ul>
 		</div>
 		<div class="span-7 append-1">
