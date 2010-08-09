@@ -89,6 +89,7 @@ define('WATERMARK_MARGIN', $watermark_margin);
 define('WATERMARK_TRANSPARENCY', $watermark_transparency);
 
 define('ADMIN', 'admin/');
+define('BLOCKS', 'blocks/');
 define('CLASSES', 'classes/');
 define('CSS', 'css/');
 define('EXTENSIONS', 'extensions/');

@@ -216,13 +216,45 @@ class Canvas extends Alkaline{
 		}
 	}
 	
+	// BLOCKS
+	// Find Canvas blocks and process them
+	protected function initBlocks(){
+		$matches = array();
+		preg_match_all('#\<!-- CANVAS\_([A-Z0-9_]*) --\>#is', $this->template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			$blocks = array();
+			
+			foreach($matches as $match){
+				$block = strtolower($match[1]);
+				$blocks[] = array('replace' => $match[0], 'block' => $block);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		foreach($blocks as $block){
+			$path = PATH . BLOCKS . $block['block'] . '.php';
+			
+			if(is_file($path)){
+				// Retrieve block
+				$content = file_get_contents($path);
+
+				// Replace contents
+				$this->template = str_ireplace($block['replace'], $content, $this->template);
+			}
+		}
+	}
+	
 	// PROCESS
 	public function generate(){
 		// Add copyright information
 		$this->assign('COPYRIGHT', parent::copyright);
 		
-		// Process Orbit
+		// Process Orbit and Blocks
 		$this->initOrbit();
+		$this->initBlocks();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '$3', $this->template);
