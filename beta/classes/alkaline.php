@@ -133,39 +133,15 @@ class Alkaline{
 		}
 	}
 	
-	// SEEK PHOTOS
-	// Seek compatible photos
-	public function seekPhotos($dir=null){
+	// FILE HANDLING
+	// Seek directory
+	private function seekDirectory($dir=null, $ext=IMG_EXT){
 		// Error checking
 		if(empty($dir)){
-			return false;
+			$dir = PATH . SHOEBOX;
 		}
 		
-		$photos = array();
-		
-		self::seekDirectory($dir, $photos);
-		
-		return $photos;
-	}
-	
-	// Count compatible photos in shoebox
-	public function countShoebox(){
-		$photos = array();
-		
-		self::seekDirectory(PATH . SHOEBOX, $photos);
-		
-		$count = count($photos);
-		
-		return $count;
-	}
-	
-	// Seek directory
-	private function seekDirectory($dir=null, &$photos){
-		// Error checking
-		if(empty($dir) or !isset($photos)){
-			return false;
-		}
-		
+		$files = array();
 		$ignore = array('.', '..');
 		
 		// Open listing
@@ -177,19 +153,34 @@ class Alkaline{
 				// Recusively check directories
 				/*
 				if(is_dir($dir . '/' . $filename)){
-					self::seekDirectory($dir . $filename . '/', $photos);
+					self::seekDirectory($dir . $filename . '/', $files);
 				}
 				*/
 
 				// Find files with proper extensions
-				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . IMG_EXT . '){1,1})', $filename)){
-					$photos[] = $dir . $filename;
+				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})', $filename)){
+					$files[] = $dir . $filename;
 				}
 			}
 	    }
 	
 		// Close listing
 		closedir($handle);
+		
+		return $files;
+	}
+	
+	// Count compatible photos in shoebox
+	public function countDirectory($dir = null){
+		// Error checking
+		if(empty($dir)){
+			$dir = PATH . SHOEBOX;
+		}
+		
+		$files = self::seekDirectory($dir);
+		$count = count($files);
+		
+		return $count;
 	}
 	
 	// Get filename

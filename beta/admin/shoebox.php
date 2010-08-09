@@ -25,7 +25,7 @@ if(!empty($_POST['photo_ids'])){
 	exit();
 }
 
-$photos = $alkaline->seekPhotos(PATH . SHOEBOX);
+$photos = $alkaline->seekDirectory(PATH . SHOEBOX);
 $photo_count = count($photos);
 
 if(!($photo_count > 1)){
