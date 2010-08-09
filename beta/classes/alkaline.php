@@ -426,9 +426,7 @@ class Alkaline{
 		$orbit = new Orbit;
 		$fields = $orbit->hook('comment_add', $fields, $fields);
 		
-		$id = $this->addRow($fields, 'comments');
-		
-		if(!is_int($id)){
+		if($this->addRow($fields, 'comments')){
 			return false;
 		}
 		
