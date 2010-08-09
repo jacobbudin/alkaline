@@ -30,23 +30,13 @@ if(empty($comment_id)){
 	$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');
 	$comment_count = @count($comments);
 
-	if($comment_count == 1){
-		$comment_count_text = '1 pile';
-	}
-	elseif($comment_count > 1){
-		$comment_count_text = $comment_count . ' comments';
-	}
-	else{
-		$comment_count_text = '0 comments';
-	}
-
 	define('TITLE', 'Alkaline Comments');
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
 	<div id="module" class="container">
 		<h1>Comments</h1>
-		<p>Your library contains <?php echo $comment_count_text; ?>.</p>
+		<p>Your library contains <?php $alkaline->echoCount($comment_count, 'comment'); ?>.</p>
 	</div>
 
 	<div id="comments" class="container">

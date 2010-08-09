@@ -33,25 +33,15 @@ if(!empty($_POST['right_id'])){
 		}
 		$alkaline->updateRow($fields, 'rights', $right_id);
 	}
+	
 	unset($right_id);
 }
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($right_id)){
-
 	$rights = $alkaline->getTable('rights');
 	$right_count = @count($rights);
-
-	if($right_count == 1){
-		$right_count_text = '1 rights set';
-	}
-	elseif($right_count > 1){
-		$right_count_text = $right_count . ' rights sets';
-	}
-	else{
-		$right_count_text = '0 rights sets';
-	}
-
+	
 	define('TITLE', 'Alkaline Rights Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -59,7 +49,7 @@ if(empty($right_id)){
 
 	<div id="module" class="container">
 		<h1>Rights</h1>
-		<p>Your library contains <?php echo $right_count_text; ?>.</p>
+		<p>Your library contains <?php $alkaline->echoCount($right_count, 'rights set'); ?>.</p>
 	</div>
 
 	<div id="rights" class="container">
@@ -75,7 +65,7 @@ if(empty($right_id)){
 			foreach($rights as $pile){
 				echo '<tr>';
 					echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $pile['right_id'] . '">' . $pile['right_title'] . '</a></strong><br />' . $pile['right_description'] . '</td>';
-					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $pile['right_id'] . '">' . $pile['right_photos'] . '</a></td>';
+					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $pile['right_id'] . '">' . $pile['right_photo_count'] . '</a></td>';
 					echo '<td>' . $alkaline->formatTime($pile['right_modified']) . '</td>';
 				echo '</tr>';
 			}
@@ -91,6 +81,15 @@ if(empty($right_id)){
 }
 else{
 	
+	// Update photo count on rights set
+	$photo_ids = new Find;
+	$photo_ids->rights($right_id);
+	$photo_ids->exec();
+	
+	$fields = array('right_photo_count' => $photo_ids->photo_count);
+	$alkaline->updateRow($fields, 'rights', $right_id, false);
+	
+	// Get rights set
 	$rights = $alkaline->getTable('rights', $right_id);
 	$right = $rights[0];
 

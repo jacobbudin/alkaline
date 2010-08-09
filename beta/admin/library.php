@@ -22,7 +22,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Library</h1>
-	<p>Your library contains <?php echo $photo_ids->photo_count_result; ?> photos.</p>
+	<p>Your library contains <?php $alkaline->echoCount($photo_ids->photo_count_result, 'photo'); ?>.</p>
 </div>
 
 <div id="library" class="container">

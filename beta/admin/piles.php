@@ -29,17 +29,7 @@ if(empty($pile_id)){
 
 	$piles = $alkaline->getTable('piles');
 	$pile_count = @count($piles);
-
-	if($pile_count == 1){
-		$pile_count_text = '1 pile';
-	}
-	elseif($pile_count > 1){
-		$pile_count_text = $pile_count . ' piles';
-	}
-	else{
-		$pile_count_text = '0 piles';
-	}
-
+	
 	define('TITLE', 'Alkaline Piles');
 	require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -47,7 +37,7 @@ if(empty($pile_id)){
 
 	<div id="module" class="container">
 		<h1>Piles</h1>
-		<p>Your library contains <?php echo $pile_count_text; ?>.</p>
+		<p>Your library contains <?php $alkaline->echoCount($pile_count, 'pile'); ?>.</p>
 	</div>
 
 	<div id="piles" class="container">

@@ -26,26 +26,22 @@ if(!empty($_POST['photo_ids'])){
 }
 
 $photos = $alkaline->seekPhotos(PATH . SHOEBOX);
-
 $photo_count = count($photos);
 
-if($photo_count == 1){ $photo_count_read = 'There is 1 photo in your shoebox. Please wait while it is  processed&#8230;'; }
-elseif($photo_count > 1){ $photo_count_read = 'There are ' . $photo_count . ' photos in your shoebox. Please wait while they are processed&#8230;'; }
-else{
-	$alkaline->addNotification('There are currently no photos in your shoebox.', 'notice');
+if(!($photo_count > 1)){
+	$alkaline->addNotification('There are no photos in your shoebox.', 'notice');
 	header('Location: ' . BASE . ADMIN . 'dashboard/');
 	exit();
 }
 
 define('TITLE', 'Alkaline Shoebox');
-
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 <div id="shoebox" class="container">
 	<h2>Shoebox</h2>
 	
-	<p><?php echo $photo_count_read; ?></p><br />
+	<p>You have <?php $alkaline->echoCount($photo_count, 'photo'); ?> in your shoebox. Please wait&#8230;</p><br />
 	
 	<h3>Imported <span class="small quiet">(<span id="shoebox_import_count"><?php echo $photo_count; ?></span>)</span></h3>
 	

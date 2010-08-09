@@ -738,6 +738,20 @@ class Alkaline{
 		}
 		return $string;
 	}
+	
+	// Chose between singular and plural nouns
+	public function echoCount($count, $singular, $plural=null){
+		if(empty($plural)){
+			$plural = $singular . 's';
+		}
+		
+		if($count == 1){
+			echo $count . ' ' . $singular;
+		}
+		else{
+			echo $count . ' ' . $plural;
+		}
+	}
 }
 
 ?>

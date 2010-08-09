@@ -158,7 +158,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="module" class="container">
 	<h1>Search</h1>
-	<p>Your query matched <?php echo $photo_ids->photo_count_result; ?> photos. <a href="<?php echo BASE . ADMIN; ?>library/">Start over.</a></p>
+	<p>Your query matched <?php $alkaline->echoCount($photo_ids->photo_count_result, 'photo'); ?>. <a href="<?php echo BASE . ADMIN; ?>library/">Start over.</a></p>
 </div>
 
 <?php

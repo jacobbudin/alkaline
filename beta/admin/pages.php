@@ -68,7 +68,7 @@ if(empty($page_id)){
 
 	<div id="module" class="container">
 		<h1>Pages</h1>
-		<p>You have <?php echo number_format($pages->count()); ?> pages published.</p>
+		<p>You have <?php $alkaline->echoCount($pages->count(), 'page'); ?>.</p>
 	</div>
 
 	<div id="pages" class="container">
