@@ -100,6 +100,30 @@ class Find extends Alkaline{
 	public function __toString(){
         return implode(', ', $this->photo_ids);
     }
+
+	// FIND BY DATE TAKEN
+	public function taken($begin=null, $end=null){
+		// Error checking
+		if(empty($begin) and empty($end)){ return false; }
+		
+		// Set begin date
+		if(!empty($begin)){
+			if(is_int($begin)){ $begin = strval($begin); }
+			if(strlen($begin) == 4){ $begin .= '-01-01'; }
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = 'photos.photo_taken >= "' . $begin . '"';
+		}
+		
+		// Set end date
+		if(!empty($end)){
+			if(is_int($end)){ $end = strval($end); }
+			if(strlen($end) == 4){ $end .= '-01-01'; }
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = 'photos.photo_taken <= "' . $end . '"';
+		}
+		
+		return true;
+	}
 	
 	// FIND BY DATE UPLOADED
 	public function uploaded($begin=null, $end=null){

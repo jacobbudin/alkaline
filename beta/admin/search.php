@@ -37,7 +37,7 @@ if(!empty($_POST['rights'])){
 
 // Date taken
 if(!empty($_POST['taken_begin']) or !empty($_POST['taken_end'])){
-	// NA
+	$photo_ids->_taken($_POST['taken_begin'], $_POST['taken_end']);
 }
 
 // Date uploaded
