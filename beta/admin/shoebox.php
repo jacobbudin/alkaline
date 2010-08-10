@@ -2,8 +2,6 @@
 
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
-require_once(PATH . CLASSES . 'photo.php');
-require_once(PATH . CLASSES . 'user.php');
 
 $alkaline = new Alkaline;
 $user = new User;
@@ -28,7 +26,7 @@ if(!empty($_POST['photo_ids'])){
 $photos = $alkaline->seekDirectory(PATH . SHOEBOX);
 $photo_count = count($photos);
 
-if(!($photo_count > 1)){
+if(!($photo_count > 0)){
 	$alkaline->addNotification('There are no photos in your shoebox.', 'notice');
 	header('Location: ' . BASE . ADMIN . 'dashboard/');
 	exit();
@@ -38,11 +36,12 @@ define('TITLE', 'Alkaline Shoebox');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
-<div id="shoebox" class="container">
-	<h2>Shoebox</h2>
-	
+<div id="module" class="container">
+	<h1>Shoebox</h1>
 	<p>You have <?php $alkaline->echoCount($photo_count, 'photo'); ?> in your shoebox. Please wait&#8230;</p><br />
-	
+</div>
+
+<div id="shoebox" class="container">
 	<h3>Imported <span class="small quiet">(<span id="shoebox_import_count"><?php echo $photo_count; ?></span>)</span></h3>
 	
 	<form action="" method="post">

@@ -135,7 +135,7 @@ class Alkaline{
 	
 	// FILE HANDLING
 	// Seek directory
-	private function seekDirectory($dir=null, $ext=IMG_EXT){
+	public function seekDirectory($dir=null, $ext=IMG_EXT){
 		// Error checking
 		if(empty($dir)){
 			$dir = PATH . SHOEBOX;

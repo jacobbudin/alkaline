@@ -4,6 +4,8 @@ var ADMIN = 'admin/';
 var IMAGES = 'images/';
 var PHOTOS = 'photos/';
 
+var task;
+
 // SHOEBOX
 
 function now(){
@@ -56,7 +58,7 @@ function checkCount(){
 	}
 }
 
-function executeTask(task){
+function executeTask(){
 	$.ajax({
 		url: BASE + ADMIN + "tasks/" + task + ".php",
 		cache: false,
@@ -130,7 +132,8 @@ $(document).ready(function(){
 	// SHOEBOX
 	
 	if(page == 'Shoebox'){
-		executeTask("add-photos");
+		task = "add-photos";
+		executeTask();
 	
 		$("#shoebox_add").attr("disabled", "disabled");
 		$("#shoebox_progress").progressbar({ value: 0 });

@@ -50,7 +50,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div class="span-5 prepend-top last">
 		<?php
 		
-		$shoebox_count = $alkaline->countShoebox();
+		$shoebox_count = $alkaline->countDirectory();
 		$comment_count = 0;
 		
 		if(($shoebox_count > 0) or ($comment_count > 0)){

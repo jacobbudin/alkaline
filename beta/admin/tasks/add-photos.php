@@ -11,7 +11,7 @@ $user = new User;
 $user->perm(true);
 
 if(empty($_POST['photo_file'])){
-	$photo_files = $alkaline->seekDirectory(PATH . SHOEBOX);
+	$photo_files = $alkaline->seekDirectory();
 	echo json_encode($photo_files);
 }
 else{

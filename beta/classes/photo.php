@@ -33,19 +33,19 @@ class Photo extends Alkaline{
 				$filename = parent::getFilename($file);
 				
 				// Move file to shoebox
-				copy($file, PATH . SHOEBOX . $filename);
-				@unlink($file);
-				$file = PATH . SHOEBOX . $filename;
+				//  copy($file, PATH . SHOEBOX . $filename);
+				//  @unlink($file);
+				//  $file = PATH . SHOEBOX . $filename;
 				
 				// Verify file exists
 				if(file_exists($file)){
 					// Add photo to database
 					$photo_ext = $this->imageExt($file);
 					$photo_mime = $this->imageMime($file);
-					$photo_color = $this->imageColor($file);
+					// $photo_color = $this->imageColor($file);
 					$filename = substr(strrchr($file, '/'), 1);
 					
-					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_colors, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . addslashes(serialize($photo_color)) . '", "' . date('Y-m-d H:i:s') . '");';
+					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name,  photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
 					$this->db->exec($query);
 					$photo_id = $this->db->lastInsertId();
 					$photo_ids[] = $photo_id;
@@ -72,7 +72,6 @@ class Photo extends Alkaline{
 		
 		$this->photos = array();
 		
-		
 		foreach($photo_ids as $photo_id){
 			foreach($photos as $photo){
 				if($photo_id == $photo['photo_id']){
@@ -80,7 +79,6 @@ class Photo extends Alkaline{
 				}
 			}
 		}
-		
 		
 		// Store photo count as integer
 		$this->photo_count = count($this->photos);
@@ -481,6 +479,12 @@ class Photo extends Alkaline{
 				    foreach($section as $name => $value){
 						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $this->photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '")';
 						$this->db->exec($query);
+						
+						// Check for date taken, insert to photos table
+						if(($key == 'IFD0') and ($name == 'DateTime')){
+							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $this->photos[$i]['photo_id'];
+							$this->db->exec($query);
+						}
 				    }
 				}
 			}
