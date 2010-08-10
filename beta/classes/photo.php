@@ -18,16 +18,17 @@ class Photo extends Alkaline{
 		// User attribution
 		$this->user['user_id'] = DEFAULT_USER_ID;
 		
+		// Input handling
+		if(is_object($photo_ids)){
+			$photo_ids = $photo_ids->photo_ids;
+		}
+		
+		$this->photo_ids = parent::convertToIntegerArray($photo_ids);
+		
 		// Error checking
 		if(empty($photo_ids)){
 			return false;
 		}
-		if(is_object($photo_ids)){
-			$photo_ids = $photos->photo_ids;
-		}
-		
-		// Input handling
-		$this->photo_ids = parent::convertToIntegerArray($photo_ids);
 		
 		// Retrieve photos from database
 		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
@@ -94,6 +95,9 @@ class Photo extends Alkaline{
 			@unlink($file);
 		}
 		
+		// Store initial photo_ids array
+		$exisiting_photo_ids = $this->photo_ids;
+		
 		// Construct object anew
 		self::__construct($photo_ids);
 		
@@ -101,6 +105,14 @@ class Photo extends Alkaline{
 		$this->readEXIF();
 		$this->readIPTC();
 		$this->sizePhoto();
+		
+		// Combine existing and imported photo_ids arrays
+		if(!empty($exisiting_photo_ids)){
+			$this->photo_ids = array_merge($exisiting_photo_ids, $this->photo_ids);
+		}
+		
+		// Merge with previous photo_ids
+		self::__construct($this->photo_ids);
 	}
 	
 	// USER ATTRIBUTION
