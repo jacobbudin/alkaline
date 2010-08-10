@@ -11,14 +11,18 @@ $user->perm(true);
 if(!empty($_POST['photo_ids'])){
 	$photo_ids = explode(',', $_POST['photo_ids']);
 	array_pop($photo_ids);
+	
 	$alkaline->convertToIntegerArray($photo_ids);
+	
 	foreach($photo_ids as $photo_id){
 		$photo = new Photo($photo_id);
 		$fields = array('photo_title' => $_POST['photo-' . $photo_id . '-title'],
 			'photo_description' => $_POST['photo-' . $photo_id . '-description']);
 		$photo->updateFields($fields);
 	}
+	
 	$alkaline->addNotification('Your shoebox has been successfully processed.', 'success');
+	
 	header('Location: ' . BASE . ADMIN . 'dashboard/');
 	exit();
 }
@@ -38,7 +42,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 <div id="module" class="container">
 	<h1>Shoebox</h1>
-	<p>You have <?php $alkaline->echoCount($photo_count, 'photo'); ?> in your shoebox. Please wait&#8230;</p><br />
+	<p>You have <?php $alkaline->echoCount($photo_count, 'photo'); ?> in your shoebox. Please wait&#8230;</p>
 </div>
 
 <div id="shoebox" class="container">

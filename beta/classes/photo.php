@@ -1,78 +1,43 @@
 <?php
 
 class Photo extends Alkaline{
-	public $photos;
+	public $db;
+	public $photos = array();
 	public $comments;
 	public $tags;
 	public $photo_columns;
 	public $photo_count;
-	public $photo_ids;
+	public $photo_import_ids = array();
+	public $photo_ids = array();
 	public $user;
 	protected $sql;
 	
-	public function __construct($photos){
+	public function __construct($photo_ids=null){
 		parent::__construct();
 		
-		if(is_object($photos)){
-			$photos = $photos->photo_ids;
-		}
-		
-		parent::convertToArray($photos);
-		
+		// User attribution
 		$this->user['user_id'] = DEFAULT_USER_ID;
 		
-		$photo_ids = array();
-		
-		$import = false;
-		
-		foreach($photos as $key => $value){
-			if(preg_match('/^\//', $value)){
-				$import = true;
-				$file = $value;
-				
-				$filename = parent::getFilename($file);
-				
-				// Move file to shoebox
-				//  copy($file, PATH . SHOEBOX . $filename);
-				//  @unlink($file);
-				//  $file = PATH . SHOEBOX . $filename;
-				
-				// Verify file exists
-				if(file_exists($file)){
-					// Add photo to database
-					$photo_ext = $this->imageExt($file);
-					$photo_mime = $this->imageMime($file);
-					// $photo_color = $this->imageColor($file);
-					$filename = substr(strrchr($file, '/'), 1);
-					
-					$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name,  photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
-					$this->db->exec($query);
-					$photo_id = $this->db->lastInsertId();
-					$photo_ids[] = $photo_id;
-
-					// Copy photo to archive, delete original from shoebox
-					copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
-					@unlink($file);
-				}
-			}
-			else{
-				$photo_ids[] = $value;
-			}
+		// Error checking
+		if(empty($photo_ids)){
+			return false;
+		}
+		if(is_object($photo_ids)){
+			$photo_ids = $photos->photo_ids;
 		}
 		
-		parent::convertToIntegerArray($photo_ids);
+		// Input handling
+		$this->photo_ids = parent::convertToIntegerArray($photo_ids);
 		
-		$this->photo_ids = $photo_ids;
-		
-		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $photo_ids) . ')';
+		// Retrieve photos from database
+		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
 		
 		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
 		$query->execute();
 		$photos = $query->fetchAll();
 		
-		$this->photos = array();
-		
-		foreach($photo_ids as $photo_id){
+		// Ensure photos array correlates to photo_ids array
+		foreach($this->photo_ids as $photo_id){
 			foreach($photos as $photo){
 				if($photo_id == $photo['photo_id']){
 					$this->photos[] = $photo;
@@ -87,32 +52,79 @@ class Photo extends Alkaline{
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
 		}
-		
-		if(@$import){
-			parent::emptyDirectory(PATH . SHOEBOX);
-			$this->sizePhoto();
-			$this->exifPhoto();
-			$this->readIPTC();
-		}
 	}
 	
 	public function __destruct(){
 		parent::__destruct();
 	}
 	
+	public function import($files){
+		if(empty($files)){
+			return false;
+		}
+		
+		$files = $this->convertToArray($files);
+		
+		foreach($files as $file){
+			if(!file_exists($file)){
+				return false;
+			}
+		
+			$filename = $this->getFilename($file);
+		
+			// Add photo to database
+			$photo_ext = $this->getExt($file);
+			$photo_mime = $this->getMIME($file);
+		
+			$photo_color = $this->imageColor($file);
+			$photo_color_dom = $this->imageColorDom($photo_color);
+			$photo_color_dom = explode(',', $photo_color_dom);
+			$photo_color_r = $photo_color_dom[0];
+			$photo_color_g = $photo_color_dom[1];
+			$photo_color_b = $photo_color_dom[2];
+		
+			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_colors, photo_color_r, photo_color_g, photo_color_b, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . addslashes(serialize($photo_color)) . '", ' . $photo_color_r . ', ' . $photo_color_g . ', ' . $photo_color_b . ', "' . date('Y-m-d H:i:s') . '");';
+			$this->db->exec($query);
+			
+			$photo_id = intval($this->db->lastInsertId());
+			$photo_ids[] = $photo_id;
+
+			// Copy photo to archive, delete original from shoebox
+			copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
+			@unlink($file);
+		}
+		
+		// Construct object anew
+		self::__construct($photo_ids);
+		
+		// Process imported photos
+		$this->readEXIF();
+		$this->readIPTC();
+		$this->sizePhoto();
+	}
+	
+	// USER ATTRIBUTION
 	public function attachUser($user){
 		$this->user = $user->user;
 	}
 	
 	// Generate photo thumbnails based on sizes in database
-	public function sizePhoto(){
+	public function sizePhoto($photos=null){
+		if(empty($photos)){
+			$photos = $this->photos;
+			$photo_count = $this->photo_count;
+		}
+		else{
+			$photo_count = count($photos);
+		}
+		
 		// Look up sizes in database
 		$query = $this->db->prepare('SELECT * FROM sizes');
 		$query->execute();
 		$sizes = $query->fetchAll();
 		
 		// Generate thumbnails
-		for($i = 0; $i < $this->photo_count; ++$i){
+		for($i = 0; $i < $photo_count; ++$i){
 			foreach($sizes as $size){
 				$size_height = $size['size_height'];
 				$size_width = $size['size_width'];
@@ -121,10 +133,10 @@ class Photo extends Alkaline{
 				$size_append = $size['size_append'];
 				switch($size_type){
 					case 'fill':
-						$this->imageFill($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, null, $this->photos[$i]['photo_ext']);
+						$this->imageFill($photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'], $size_height, $size_width, null, $photos[$i]['photo_ext']);
 						break;
 					case 'scale':
-						$this->imageScale($this->photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'], $size_height, $size_width, null, $this->photos[$i]['photo_ext']);
+						$this->imageScale($photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'], $size_height, $size_width, null, $photos[$i]['photo_ext']);
 						break;
 					default:
 						return false; break;
@@ -184,8 +196,14 @@ class Photo extends Alkaline{
 	}
 	
 	// Detemine image extension
-	private function imageExt($file){
+	public function getExt($file){
+		// Error checking
+		if(empty($file)){
+			return false;
+		}
+		
 		$type = exif_imagetype($file);
+		
 		switch($type){
 			case 1:
 				return 'gif'; break;
@@ -199,8 +217,14 @@ class Photo extends Alkaline{
 	}
 	
 	// Detemine image MIME type
-	private function imageMime($file){
+	public function getMIME($file){
+		// Error checking
+		if(empty($file)){
+			return false;
+		}
+		
 		$type = exif_imagetype($file);
+		
 		switch($type){
 			case 1:
 				return 'image/gif'; break;
@@ -216,7 +240,7 @@ class Photo extends Alkaline{
 	// Fill image
 	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = IMG_QUAL; }
-		if(empty($ext)){ $ext = self::imageExt($src); }
+		if(empty($ext)){ $ext = self::getExt($src); }
 		switch($ext){
 			case 'jpg':
 				list($width_orig, $height_orig) = getimagesize($src);
@@ -302,7 +326,7 @@ class Photo extends Alkaline{
 	// Scale image
 	private function imageScale($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = IMG_QUAL; }
-		if(empty($ext)){ $ext = self::imageExt($src); }
+		if(empty($ext)){ $ext = self::getExt($src); }
 		
 		switch($ext){
 			case 'jpg':
@@ -366,8 +390,8 @@ class Photo extends Alkaline{
 	}
 	
 	// Create Colorkey data
-	private function imageColor($src, $ext=null){
-		if(empty($ext)){ $ext = $this->imageExt($src); }
+	public function imageColor($src, $ext=null){
+		if(empty($ext)){ $ext = $this->getExt($src); }
 		
 		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
 		
@@ -459,6 +483,7 @@ class Photo extends Alkaline{
 		if($total != 100){
 			$remaining = 100 - $total;
 			$rgbs[$rgb_last] += strval($remaining);
+			$rgbs[$rgb_last] = strval(floatval(round($rgbs[$rgb_last], 1)));
 		}
 		
 		imagedestroy($image);
@@ -467,22 +492,41 @@ class Photo extends Alkaline{
 		return $rgbs;
 	}
 	
-	public function exifPhoto(){
-		for($i = 0; $i < $this->photo_count; ++$i){
+	// Find Colorkey dominant color
+	public function imageColorDom($rgbs){
+		$rgb_dom_percent = 0;
+		foreach($rgbs as $rgb => $percent){
+			if($percent > $rgb_dom_percent){
+				$rgb_dom = $rgb;
+			}
+		}
+		return $rgb_dom;
+	}
+	
+	public function readEXIF($photos=null){
+		if(empty($photos)){
+			$photos = $this->photos;
+			$photo_count = $this->photo_count;
+		}
+		else{
+			$photo_count = count($photos);
+		}
+		
+		for($i = 0; $i < $photo_count; ++$i){
 			// Read EXIF data
-			$exif = @exif_read_data($this->photos[$i]['photo_file'], 0, true, false);
+			$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
 			
 			// If EXIF data exists, add each key (group), name, value to database
 			if(count($exif) > 0){
 				$inserts = array();
 				foreach($exif as $key => $section){
 				    foreach($section as $name => $value){
-						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $this->photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '")';
+						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '")';
 						$this->db->exec($query);
 						
 						// Check for date taken, insert to photos table
 						if(($key == 'IFD0') and ($name == 'DateTime')){
-							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $this->photos[$i]['photo_id'];
+							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $photos[$i]['photo_id'];
 							$this->db->exec($query);
 						}
 				    }
@@ -492,9 +536,17 @@ class Photo extends Alkaline{
 	}
 	
 	public function readIPTC(){
-		for($i = 0; $i < $this->photo_count; ++$i){
+		if(empty($photos)){
+			$photos = $this->photos;
+			$photo_count = $this->photo_count;
+		}
+		else{
+			$photo_count = count($photos);
+		}
+		
+		for($i = 0; $i < $photo_count; ++$i){
 			// Read IPTC data
-			$size = getimagesize($this->photos[$i]['photo_file'], $info);
+			$size = getimagesize($photos[$i]['photo_file'], $info);
 			
 			if(isset($info['APP13']))
 			{
@@ -528,7 +580,7 @@ class Photo extends Alkaline{
 					unset($tags[$tag_key]);
 					
 					// Add link
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag['tag_id'] . ');';
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag['tag_id'] . ');';
 					$this->db->exec($query);
 				}
 				
@@ -541,7 +593,7 @@ class Photo extends Alkaline{
 						$tag_id = $this->db->lastInsertId();
 					
 						// Add link
-						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag_id . ');';
 						$this->db->exec($query);
 					}
 				}
@@ -579,7 +631,7 @@ class Photo extends Alkaline{
 				'photo_geo_lat' => @$geo_lat,
 				'photo_geo_long' => @$geo_long);
 			
-			$photo = new Photo($this->photos[$i]['photo_id']);
+			$photo = new Photo($photos[$i]['photo_id']);
 			$photo->updateFields($fields, false);
 		}
 		
@@ -738,7 +790,7 @@ class Photo extends Alkaline{
 	
 	public function watermark($src, $dest, $watermark, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = IMG_QUAL; }
-		if(empty($ext)){ $ext = self::imageExt($src); }
+		if(empty($ext)){ $ext = self::getExt($src); }
 		
 		$watermark = imagecreatefrompng($watermark);
 	

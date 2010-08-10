@@ -116,7 +116,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						</td>
 					</tr>
 					<tr>
-						<td class="right" style="padding-top: 7px;">Primary color:</td>
+						<td class="right" style="padding-top: 7px;">Dominant color:</td>
 						<td>
 							<select name="color_type">
 								<option value="is">is</option>

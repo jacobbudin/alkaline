@@ -25,13 +25,22 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 	</div>
 	
-	<h3>Thumbnails</h3>
+	<div class="span-7 append-1">
+		<h3>Thumbnails</h3>
+		
+		<ul id="tasks">
+			<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>
+			<li><a href="#delete-unused">Delete unclaimed photo thumbnails</a></li>
+		</ul>
+	</div>
 	
-	<ul id="tasks">
-		<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>
-		<li><a href="#delete-unused">Delete unused photo thumnails</a></li>
-	</ul>
-	
+	<div class="span-7 append-1">
+		<h3>System</h3>
+		
+		<ul id="tasks">
+			<li><a href="#delete-shoebox">Delete all files in shoebox</a></li>
+		</ul>
+	</div>
 </div>
 
 <?php
