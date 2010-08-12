@@ -18,31 +18,3 @@
 	<?php echo (defined('EMBED_CSS') ? '<style type="text/css">' . EMBED_CSS . '</style>' : ''); ?>
 </head>
 <body>
-	<div id="header" class="container">
-		<a href="/admin/"><img src="/images/shutter.png" alt="Alkaline" /></a>
-		<?php
-		if($user->perm()){
-			?>
-			<div id="navigation">
-				<ul>
-					<li><a href="/admin/dashboard/">Dashboard</a></li>
-					<li><a href="/admin/library/">Library</a></li>
-					<li><a href="/admin/pages/">Pages</a></li>
-					<li><a href="/admin/customize/">Customize</a></li>
-					<li><a href="/admin/logout/">Logout</a></li>
-				</ul>
-			</div>
-			<?php
-		}
-		?>
-		<hr />
-	</div>
-	<?php
-	if($alkaline->isNotification()){
-		?>
-		<div id="notification" class="container">
-			<?php $alkaline->viewNotification(); ?>
-		</div>
-		<?php
-	}
-	?>

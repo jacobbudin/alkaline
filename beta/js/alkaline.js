@@ -82,13 +82,13 @@ $(document).ready(function(){
 		function(){
 			$(this).siblings(".switch").html('&#9662;');
 			$(this).text(modified);
-			$(this).siblings(".reveal").slideDown();
+			$(this).parent().siblings(".reveal").slideDown();
 			event.preventDefault();
 		},
 		function(){
 			$(this).siblings(".switch").html('&#9656;');
 			$(this).text(original);
-			$(this).siblings(".reveal").slideUp();
+			$(this).parent().siblings(".reveal").slideUp();
 			event.preventDefault();
 		}
 	);
@@ -107,25 +107,30 @@ $(document).ready(function(){
 	
 	// PRIMARY - NAVIGATION
 	
-	$("#navigation ul li").hover(
+	$("#primary ul#navigation li").hover(
 		function(){
-			$(this).find("span.small").html('&#9662;');
-			
+			$(this).siblings().each(function(index){
+				bool = $(this).find("img").hasClass("hide");
+				if(bool === true){
+					$(this).find("img").hide();
+				}
+			});
+			$(this).find("img").fadeIn(600);
+			attr = $(this).attr("class");
+			if(attr == "logout"){
+				$(this).find("a").animate({"color": "#f02415"}, 600);
+			}
 		}, 
 		function(){
-			$(this).find("span.small").html('&#9656;');
-		}
-	);
-	
-	$("#navigation ul li ul").hover(
-		function(){
-			$(this).siblings('a').addClass('selected');
-			$(this).parent('li').mouseenter(handlerIn);
-			
-		}, 
-		function(){
-			$(this).siblings('a').removeClass('selected');
-			$(this).parent('li').mouseleave(handlerOut);
+			attr = $(this).find("img").attr("class");
+			if(attr == 'hide'){
+				$(this).find("img").hide();
+			}
+			attr = $(this).attr("class");
+			if(attr == "logout"){
+				$(this).find("a").stop();
+				$(this).find("a").css("color", "#999");
+			}
 		}
 	);
 	
@@ -155,8 +160,7 @@ $(document).ready(function(){
 	}
 	
 	// DASHBOARD
-	
-	if(page == 'Dashboard'){
+	if(page == 'Statistics'){
 		var statistics_views = $("#statistics_views").attr("title");
 		statistics_views = jQuery.parseJSON(statistics_views);
 	
@@ -166,7 +170,7 @@ $(document).ready(function(){
 		var stats = $.plot($("#statistics_holder"),[{
 			label: "Page views",
 			data: statistics_views,
-			bars: { show: true, lineWidth: 18 },
+			bars: { show: true, lineWidth: 15 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
@@ -174,12 +178,12 @@ $(document).ready(function(){
 		{
 			label: "Unique visitors",
 			data: statistics_visitors,
-			bars: { show: true, lineWidth: 18 },
+			bars: { show: true, lineWidth: 15 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
 			yaxis: { tickDecimals: 0 },
