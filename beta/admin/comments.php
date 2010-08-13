@@ -32,27 +32,20 @@ if(empty($comment_id)){
 
 	define('TITLE', 'Alkaline Comments');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
-	<div id="module" class="container">
-		<h1>Comments</h1>
-		<p>Your library contains <?php $alkaline->echoCount($comment_count, 'comment'); ?>.</p>
-	</div>
-
-	<div id="comments" class="container">
-		<?php
 	
-		foreach($comments as $comment){
-			echo '<p class="comment_block">';
-				echo '<strong><a href="' . BASE . ADMIN . 'comments/' . $comment['comment_id'] . '">' . $comment['comment_text'] . '</a></strong>';
-				echo '' . $alkaline->formatTime($comment['comment_created']) . '';
-			echo '</p>';
-		}
+	<h1>Comments (<?php echo $comment_count; ?>)</h1>
 	
-		?>
-	</div>
-
 	<?php
+	
+	foreach($comments as $comment){
+		echo '<p class="comment_block">';
+			echo '<strong><a href="' . BASE . ADMIN . 'comments/' . $comment['comment_id'] . '">' . $comment['comment_text'] . '</a></strong>';
+			echo '' . $alkaline->formatTime($comment['comment_created']) . '';
+		echo '</p>';
+	}
 	
 	require_once(PATH . ADMIN . 'includes/footer.php');
 	

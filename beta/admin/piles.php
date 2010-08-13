@@ -32,37 +32,33 @@ if(empty($pile_id)){
 	
 	define('TITLE', 'Alkaline Piles');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 
-	<div id="module" class="container">
-		<h1>Piles</h1>
-		<p>Your library contains <?php $alkaline->echoCount($pile_count, 'pile'); ?>.</p>
-	</div>
+	<h1>Piles (<?php echo $pile_count; ?>)</h1>
 
-	<div id="piles" class="container">
-		<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Build pile</a></div>
-		<table>
-			<tr>
-				<th style="width: 60%;">Title</th>
-				<th class="center">Views</th>
-				<th class="center">Photos</th>
-				<th>Last modified</th>
-			</tr>
-			<?php
-		
-			foreach($piles as $pile){
-				echo '<tr>';
-					echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $pile['pile_description'] . '</td>';
-					echo '<td class="center">' . $pile['pile_views'] . '</td>';
-					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
-					echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
-				echo '</tr>';
-			}
-		
-			?>
-		</table>
-	</div>
+	<div style="float: right; margin: 1em 0 2em 0;">
+	<table>
+		<tr>
+			<th style="width: 60%;">Title</th>
+			<th class="center">Views</th>
+			<th class="center">Photos</th>
+			<th>Last modified</th>
+		</tr>
+		<?php
+	
+		foreach($piles as $pile){
+			echo '<tr>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $pile['pile_description'] . '</td>';
+				echo '<td class="center">' . $pile['pile_views'] . '</td>';
+				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
+				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
+			echo '</tr>';
+		}
+	
+		?>
+	</table>
 
 	<?php
 	
@@ -90,23 +86,22 @@ else{
 		define('TITLE', 'Alkaline Pile');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
-
-	<div id="module" class="container">
-		<h1>Piles</h1>
-		<p>Pile #<?php echo $pile['pile_id']; ?> was last modified on <?php echo $alkaline->formatTime($pile['pile_modified']); ?>
-	</div>
-
-	<form id="pile" class="container" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
-		<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
+	
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
+	
+	<h1>Pile #<?php echo $pile['pile_id']; ?></h1>
+	
+	<form id="pile" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
 		<table>
 			<tr>
-				<td class="right"><label for="pile_title">Title:</label></td>
+				<td class="right middle"><label for="pile_title">Title:</label></td>
 				<td><input type="text" id="pile_title" name="pile_title" value="<?php echo $pile['pile_title']; ?>" class="title" /></td>
 			</tr>
 			<tr>
-				<td class="right"><label for="pile_description">Description:</label></td>
+				<td class="right pad"><label for="pile_description">Description:</label></td>
 				<td><textarea id="pile_description" name="pile_description"><?php echo $pile['pile_description']; ?></textarea></td>
 			</tr>
 			<tr>

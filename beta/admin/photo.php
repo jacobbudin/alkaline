@@ -24,17 +24,13 @@ if(!empty($photo['photo_title'])){
 	define('TITLE', 'Alkaline Photo: &#8220;' . $photo['photo_title']  . '&#8221;');
 }
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 
-<div id="module" class="container">
-	<h1>Photo</h1>
-	<p>Photo #<?php echo $photo['photo_id']; ?> was uploaded on <?php echo $alkaline->formatTime($photo['photo_uploaded']); ?></p>
-</div>
+<h1>Photo #<?php echo $photo['photo_id']; ?></h1>
 
-<div id="edit" class="container">
-	<img src="<?php echo $photo['photo_src_medium']; ?>" alt="" />
-</div>
+<img src="<?php echo $photo['photo_src_medium']; ?>" alt="" />
 
 <?php
 

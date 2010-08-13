@@ -10,15 +10,13 @@ $user->perm(true);
 
 define('TITLE', 'Alkaline Configuration');
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/settings.php');
 
 ?>
 
-<div id="module" class="container">
+<form id="configuration">
 	<h1>Configuration</h1>
-	<p>Modify your library&#8217;s behavior with the options below.</p>
-</div>
-
-<form id="configuration" class="container">
+	
 	<h3>Shoebox</h3>
 	
 	<table>

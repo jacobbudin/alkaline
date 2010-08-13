@@ -36,51 +36,45 @@ if(empty($extension_id)){
 	
 	define('TITLE', 'Alkaline Extensions');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 
-	<div id="module" class="container">
-		<h1>Extensions</h1>
-		<p>You have <?php echo @$orbit->extension_count; ?> extensions enabled.</p>
-	</div>
+	<h1>Extensions (<?php echo @$orbit->extension_count; ?>)</h1>
 
-	<div id="extensions" class="container">
-		<div style="text-align: right; margin: 0 0 1em 0;" class="span-23 last"><a href="" class="nu"><span class="button">&#0043;</span>Install extension</a> &#0160; <a href="" class="nu"><span class="button">&#0149;</span>Check for updates</a></div>
+	<h3>Enabled</h3>
+
+	<table>
+		<tr>
+			<th>Extension</th>
+			<th class="center">Version</th>
+			<th class="center">Update</th>
+		</tr>
+		<?php
 	
-		<h3>Enabled</h3><br />
-	
-		<table>
-			<tr>
-				<th>Extension</th>
-				<th class="center">Version</th>
-				<th class="center">Update</th>
-			</tr>
-			<?php
-		
-			foreach($orbit->extensions as $extension){
-				echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'extensions/' . $extension['extension_id'] . '">' . $extension['extension_title'] . '</a></strong>';
-				if(!empty($extension['extension_creator'])){
-					echo ' \ ';
-					if(!empty($extension['extension_creator_url'])){
-						echo '<a href="' . $extension['extension_creator_url'] . '" class="nu">' . $extension['extension_creator'] . '</a>';
-					}
-					else{
-						echo $extension['extension_creator'];
-					}
+		foreach($orbit->extensions as $extension){
+			echo '<tr>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions/' . $extension['extension_id'] . '">' . $extension['extension_title'] . '</a></strong>';
+			if(!empty($extension['extension_creator'])){
+				echo ' \ ';
+				if(!empty($extension['extension_creator_url'])){
+					echo '<a href="' . $extension['extension_creator_url'] . '" class="nu">' . $extension['extension_creator'] . '</a>';
 				}
-				echo '<br />' . $extension['extension_description'] . '</td>';
-				echo '<td class="center">' . $extension['extension_version'] . ' <span class="small">(' . $extension['extension_build'] . ')</span></td>';
-				echo '<td class="center quiet">&#8212;</td>';
-				echo '</tr>';
+				else{
+					echo $extension['extension_creator'];
+				}
 			}
-		
-			?>
-		</table>
+			echo '<br />' . $extension['extension_description'] . '</td>';
+			echo '<td class="center">' . $extension['extension_version'] . ' <span class="small">(' . $extension['extension_build'] . ')</span></td>';
+			echo '<td class="center quiet">&#8212;</td>';
+			echo '</tr>';
+		}
 	
-		<h3>Disabled</h3><br />
+		?>
+	</table>
+
+	<h3>Disabled</h3><br />
 	
-	</div>
 	<?php
 
 	require_once(PATH . ADMIN . 'includes/footer.php');
@@ -94,16 +88,15 @@ else{
 	
 	define('TITLE', 'Alkaline Extensions');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/settings.php');
 	
 	?>
 	
-	<div id="module" class="container">
-		<h1><?php echo $extension['extension_title']; ?></h1>
-		<p><?php echo $extension['extension_description']; ?></p>
-	</div>
+	<h1><?php echo $extension['extension_title']; ?></h1>
+	<p><?php echo $extension['extension_description']; ?></p>
 	
-	<form id="extension" class="container" action="<?php echo BASE . ADMIN; ?>extensions/" method="post">
-		<div class="span-23 last prepend-top append-bottom">
+	<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions/" method="post">
+		<div>
 			<?php $has_config = $extensions->hook('config', true); ?>
 		</div>
 		

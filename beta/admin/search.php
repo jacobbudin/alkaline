@@ -151,39 +151,29 @@ $photo_ids->exec();
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
 
-define('TITLE', 'Alkaline Search');
+define('TITLE', 'Alkaline Search Results');
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/library_wide.php');
 
 ?>
 
-<div id="module" class="container">
-	<h1>Search</h1>
-	<p>Your query matched <?php $alkaline->echoCount($photo_ids->photo_count_result, 'photo'); ?>. <a href="<?php echo BASE . ADMIN; ?>library/">Start over.</a></p>
-</div>
+<div style="float: right;"><a href="" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="" class="nu"><span class="button">&#0187;</span>View comments</a></div>
+
+<h1>Search Results (<?php echo $photo_ids->photo_count_result; ?>)</h1>
 
 <?php
 
 if($photo_ids->photo_count_result > 0){
 	?>
-	<div id="results" class="container">
-	
-		<div style="float: right;"><a href="" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="" class="nu"><span class="button">&#0187;</span>View comments</a></div>
-	
-		<h2>Results</h2>
-
-		<hr />
-	
-		<?php
-		for($i = 0; $i < $photos->photo_count; ++$i){
-			?>
-			<a href="<?php echo BASE . ADMIN . 'photo/' . $photos->photos[$i]['photo_id']; ?>/">
-				<img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" />
-			</a>
-			<?php
-		}
+	<p>
+	<?php
+	for($i = 0; $i < $photos->photo_count; ++$i){
 		?>
-	
-	</div>
+		<a href="<?php echo BASE . ADMIN . 'photo/' . $photos->photos[$i]['photo_id']; ?>/"><img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" class="frame" /></a>
+		<?php
+	}
+	?>
+	</p>
 	<?php
 }
 

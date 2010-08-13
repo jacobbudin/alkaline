@@ -63,47 +63,40 @@ if(empty($page_id)){
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
-
-	<div id="module" class="container">
-		<h1>Pages</h1>
-		<p>You have <?php $alkaline->echoCount($pages->count(), 'page'); ?>.</p>
-	</div>
-
-	<div id="pages" class="container">
-		<div style="float: right; margin: 1em 0 2em 0;"><a href="<?php echo BASE . ADMIN; ?>pages/create/" class="nu"><span class="button">&#0043;</span>Create page</a></div>
-		<?php
-		if($pages->count() > 0){
-			?>
-			<table>
-				<tr>
-					<th>Title</th>
-					<th class="center">Views</th>
-					<th class="center">Words</th>
-					<th>Created</th>
-					<th>Last modified</th>
-				</tr>
-				<?php
-
-				foreach($pages->pages as $page){
-					echo '<tr>';
-						echo '<td><a href="' . BASE . ADMIN . 'pages/' . $page['page_id'] . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'pages/' . $page['page_title_url'] . '" class="nu">/' . $page['page_title_url'] . '</td>';
-						echo '<td class="center">' . number_format($page['page_views']) . '</td>';
-						echo '<td class="center">' . number_format($page['page_words']) . '</td>';
-						echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
-						echo '<td>' . $pages->formatTime($page['page_modified']) . '</td>';
-					echo '</tr>';
-				}
-
-				?>
-			</table>
-			<?php
-		}
-		?>
-	</div>
+	
+	<h1>Pages (<?php echo $pages->count(); ?>)</h1>
 
 	<?php
+	
+	if($pages->count() > 0){
+		?>
+		<table>
+			<tr>
+				<th>Title</th>
+				<th class="center">Views</th>
+				<th class="center">Words</th>
+				<th>Created</th>
+				<th>Last modified</th>
+			</tr>
+			<?php
+
+			foreach($pages->pages as $page){
+				echo '<tr>';
+					echo '<td><a href="' . BASE . ADMIN . 'pages/' . $page['page_id'] . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'pages/' . $page['page_title_url'] . '" class="nu">/' . $page['page_title_url'] . '</td>';
+					echo '<td class="center">' . number_format($page['page_views']) . '</td>';
+					echo '<td class="center">' . number_format($page['page_words']) . '</td>';
+					echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
+					echo '<td>' . $pages->formatTime($page['page_modified']) . '</td>';
+				echo '</tr>';
+			}
+
+			?>
+		</table>
+		<?php
+	}
 
 	require_once(PATH . ADMIN . 'includes/footer.php');
 }
@@ -118,23 +111,22 @@ else{
 		define('TITLE', 'Alkaline Page');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
+	
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View page</a></div>
+	
+	<h1>Page #<?php echo $page['page_id']; ?></h1>
 
-	<div id="module" class="container">
-		<h1>Pages</h1>
-		<p>Page #<?php echo $page['page_id']; ?> was last modified on <?php echo $alkaline->formatTime($page['page_modified']); ?>
-	</div>
-
-	<form id="page" class="container" action="<?php echo BASE . ADMIN; ?>pages/" method="post">
-		<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View page</a></div>
+	<form id="page" action="<?php echo BASE . ADMIN; ?>pages/" method="post">
 		<table>
 			<tr>
-				<td class="right"><label for="page_title">Title:</label></td>
+				<td class="right middle"><label for="page_title">Title:</label></td>
 				<td><input type="text" id="page_title" name="page_title" value="<?php echo $page['page_title']; ?>" class="title" /></td>
 			</tr>
 			<tr>
-				<td class="right"><label for="page_title_url">Custom URL:</label></td>
+				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
 				<td class="quiet">
 					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo $page['page_title_url']; ?>" style="width: 300px;" /><br />
 					Optional. Use only lowercase letters, numbers, underscores, and hyphens.

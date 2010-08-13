@@ -19,15 +19,13 @@ if(!empty($_POST['preferences_save'])){
 
 define('TITLE', 'Alkaline Preferences');
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/settings.php');
 
 ?>
 
-<div id="module" class="container">
-	<h1>Preferences</h1>
-	<p>Modify your personal preferences.</p>
-</div>
+<h1>Preferences</h1>
 
-<form id="preferences" class="container" action="" method="post">	
+<form id="preferences"  action="" method="post">	
 	<h3>Shoebox</h3>
 	
 	<table>

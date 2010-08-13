@@ -20,7 +20,7 @@ class TextileHandler extends Orbit{
 	
 	public function config(){
 		?>
-		For more information on Textile, including its syntax, visit <a href="http://textile.thresholdstate.com/">Alex Shiels&#8217;s Textile page</a>.
+		<p>For more information on Textile, including its syntax, visit <a href="http://textile.thresholdstate.com/">Alex Shiels&#8217;s Textile page</a>.</p>
 		<?php
 	}
 	

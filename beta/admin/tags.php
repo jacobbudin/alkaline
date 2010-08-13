@@ -21,15 +21,13 @@ $tag_count = count($tags);
 
 define('TITLE', 'Alkaline Tags');
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/features.php');
 
 ?>
 
-<div id="module" class="container">
-	<h1>Tags</h1>
-	<p>Your library contains <?php $alkaline->echoCount($tag_count, 'unique tag'); ?>.</p>
-</div>
+<h1>Tags (<?php echo $tag_count; ?>)</h1>
 
-<div id="tags" class="container center append-bottom">
+<p id="tags" class="center">
 	<?php
 	
 	$tags_html = array();
@@ -41,7 +39,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	echo implode($tags_html, ', ');
 	
 	?>
-</div>
+</p>
 
 <?php
 

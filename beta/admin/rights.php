@@ -44,35 +44,30 @@ if(empty($right_id)){
 	
 	define('TITLE', 'Alkaline Rights Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 
-	<div id="module" class="container">
-		<h1>Rights</h1>
-		<p>Your library contains <?php $alkaline->echoCount($right_count, 'rights set'); ?>.</p>
-	</div>
+	<h1>Rights (<?php echo $right_count; ?>)</h1>
 
-	<div id="rights" class="container">
-		<div style="float: right; margin: 1em 0 2em 0;"><a href="" class="nu"><span class="button">&#0043;</span>Add rights</a></div>
-		<table>
-			<tr>
-				<th style="width: 60%;">Title</th>
-				<th class="center">Photos</th>
-				<th>Last modified</th>
-			</tr>
-			<?php
-		
-			foreach($rights as $pile){
-				echo '<tr>';
-					echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $pile['right_id'] . '">' . $pile['right_title'] . '</a></strong><br />' . $pile['right_description'] . '</td>';
-					echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $pile['right_id'] . '">' . $pile['right_photo_count'] . '</a></td>';
-					echo '<td>' . $alkaline->formatTime($pile['right_modified']) . '</td>';
-				echo '</tr>';
-			}
-		
-			?>
-		</table>
-	</div>
+	<table>
+		<tr>
+			<th style="width: 60%;">Title</th>
+			<th class="center">Photos</th>
+			<th>Last modified</th>
+		</tr>
+		<?php
+	
+		foreach($rights as $pile){
+			echo '<tr>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $pile['right_id'] . '">' . $pile['right_title'] . '</a></strong><br />' . $pile['right_description'] . '</td>';
+				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $pile['right_id'] . '">' . $pile['right_photo_count'] . '</a></td>';
+				echo '<td>' . $alkaline->formatTime($pile['right_modified']) . '</td>';
+			echo '</tr>';
+		}
+	
+		?>
+	</table>
 
 	<?php
 	
@@ -97,23 +92,22 @@ else{
 		define('TITLE', 'Alkaline Rights Set: &#8220;' . $right['right_title']  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
-
-	<div id="module" class="container">
-		<h1>Rights Set</h1>
-		<p>Rights set #<?php echo $right['right_id']; ?> was last modified on <?php echo $alkaline->formatTime($right['right_modified']); ?>
-	</div>
-
-	<form id="rights" class="container" action="<?php echo BASE . ADMIN; ?>rights/" method="post">
-		<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
+	
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
+	
+	<h1>Rights Set #<?php echo $right['right_id']; ?></h1>
+	
+	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights/" method="post">
 		<table>
 			<tr>
-				<td class="right"><label for="right_title">Title:</label></td>
+				<td class="right middle"><label for="right_title">Title:</label></td>
 				<td><input type="text" id="right_title" name="right_title" value="<?php echo $right['right_title']; ?>" class="title" /></td>
 			</tr>
 			<tr>
-				<td class="right"><label for="right_description">Description:</label></td>
+				<td class="right pad"><label for="right_description">Description:</label></td>
 				<td><textarea id="right_description" name="right_description"><?php echo $right['right_description']; ?></textarea></td>
 			</tr>
 			<tr>

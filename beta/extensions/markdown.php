@@ -20,7 +20,7 @@ class Markdown extends Orbit{
 	
 	public function config(){
 		?>
-		For more information on Markdown, including its syntax, visit <a href="http://daringfireball.net/projects/markdown/">John Gruber&#8217;s Markdown page</a>.
+		<p>For more information on Markdown, including its syntax, visit <a href="http://daringfireball.net/projects/markdown/">John Gruber&#8217;s Markdown page</a>.</p>
 		<?php
 	}
 	
