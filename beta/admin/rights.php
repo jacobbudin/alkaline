@@ -9,6 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $right_id = @$alkaline->findID($_GET['id']);
+$right_add = @$alkaline->findID($_GET['add']);
 
 // SAVE CHANGES
 if(!empty($_POST['right_id'])){
@@ -36,8 +37,16 @@ if(!empty($_POST['right_id'])){
 	
 	unset($right_id);
 }
+else{
+	$alkaline->deleteEmptyRow('rights', array('right_title', 'right_description', 'right_url', 'right_image', 'right_default'));
+}
 
-// GET PILES TO VIEW OR PILE TO EDIT
+// CREATE RIGHTS SET
+if($right_add == 1){
+	$right_id = $alkaline->addRow(null, 'rights');
+}
+
+// GET RIGHTS SETS TO VIEW OR RIGHTS SET TO EDIT
 if(empty($right_id)){
 	$rights = $alkaline->getTable('rights');
 	$right_count = @count($rights);
@@ -58,11 +67,11 @@ if(empty($right_id)){
 		</tr>
 		<?php
 	
-		foreach($rights as $pile){
+		foreach($rights as $right){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $pile['right_id'] . '">' . $pile['right_title'] . '</a></strong><br />' . $pile['right_description'] . '</td>';
-				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $pile['right_id'] . '">' . $pile['right_photo_count'] . '</a></td>';
-				echo '<td>' . $alkaline->formatTime($pile['right_modified']) . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $right['right_id'] . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
+				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_photo_count'] . '</a></td>';
+				echo '<td>' . $alkaline->formatTime($right['right_modified']) . '</td>';
 			echo '</tr>';
 		}
 	
@@ -98,7 +107,7 @@ else{
 	
 	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
 	
-	<h1>Rights Set #<?php echo $right['right_id']; ?></h1>
+	<h1>Rights Set</h1>
 	
 	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights/" method="post">
 		<table>

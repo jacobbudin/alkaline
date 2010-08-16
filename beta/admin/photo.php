@@ -15,7 +15,7 @@ if(!$photo_id = $alkaline->findID($_GET['id'])){
 }
 
 $photos = new Photo($photo_id);
-$photos->getImgUrl('medium');
+$photos->getImgUrl('admin');
 
 $photo = $photos->photos[0];
 
@@ -28,9 +28,7 @@ require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 
-<h1>Photo #<?php echo $photo['photo_id']; ?></h1>
-
-<img src="<?php echo $photo['photo_src_medium']; ?>" alt="" />
+<p><img src="<?php echo $photo['photo_src_admin']; ?>" alt="" /></p>
 
 <?php
 

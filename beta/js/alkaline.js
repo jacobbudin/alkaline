@@ -5,6 +5,8 @@ var IMAGES = 'images/';
 var PHOTOS = 'photos/';
 
 var task;
+var progress;
+var progress_step;
 
 // SHOEBOX
 
@@ -25,15 +27,30 @@ function now(){
 
 var now = now();
 
-function photoArray(photo_files){
-	photo_count = photo_files.length;
+function photoArray(input){
+	photo_count = input.length;
 	progress = 0;
-	progress_step = 100 / photo_files.length;
-	for(photo_file in photo_files){
-		$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: photo_files[photo_file] }, function(data){ appendPhoto(data); updateProgress(); } );
+	progress_step = 100 / input.length;
+	if(task == 'add-photos'){
+		for(item in input){
+			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: input[item] }, function(data){ appendPhoto(data); updateProgress(); } );
+		}
+	}
+	else if(task == 'rebuild-all'){
+		for(item in input){
+			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_id: input[item] }, function(data){ updateMaintProgress(); } );
+		}
 	}
 }
 
+function updateMaintProgress(){
+	progress += progress_step;
+	progress_int = parseInt(progress);
+	$("#progress").progressbar({ value: progress_int });
+	if(progress > 99.9999999){
+		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ window.location = BASE + ADMIN; } );
+	}
+}
 function appendPhoto(photo){
 	var photo = jQuery.parseJSON(photo);
 	photo_ids = $("#shoebox_photo_ids").val();
@@ -133,6 +150,27 @@ $(document).ready(function(){
 			}
 		}
 	);
+	
+	// MAINTENACE
+	
+	if(page == 'Maintenance'){
+		$("#progress").hide(0);
+		$("#tasks a").click(function(){
+			task = $(this).attr("href").slice(1);
+			executeTask();
+			$("#tasks").slideUp(500);
+			$("#progress").delay(500).slideDown(500);
+			$("#progress").progressbar({ value: 0 });
+			$.ajax({
+				url: BASE + ADMIN + "tasks/" + task + ".php",
+				cache: false,
+				error: function(data){ alert(data); },
+				dataType: "json",
+				success: function(data){ photoArray(data); }
+			});
+			event.preventDefault();
+		});
+	}
 	
 	// SHOEBOX
 	

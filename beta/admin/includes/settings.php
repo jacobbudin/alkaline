@@ -25,7 +25,7 @@
 	
 	<h2>Thumbnails</h2>
 	<ul>
-		<li><a href="<?php echo BASE . ADMIN; ?>thumbnails/add/">View thumbnail sizes</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>thumbnails/">View thumbnail sizes</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>thumbnails/add/">Add new thumbnail size</a></li>
 	</ul>
 	

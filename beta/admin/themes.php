@@ -31,8 +31,6 @@ if(empty($theme_id)){
 	$themes = $alkaline->getTable('themes', null, null, null, '');
 	$theme_count = @count($themes);
 	
-	$blocks = $alkaline->getBlocks();
-	
 	define('TITLE', 'Alkaline Themes');
 	require_once(PATH . ADMIN . 'includes/header.php');
 	require_once(PATH . ADMIN . 'includes/settings.php');

@@ -23,7 +23,9 @@ input.title{
 	width: 100%;
 }
 
-p, table, hr{
+input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
+
+p, table, hr, div#progress{
 	margin: .3em 2.1em 1.5em 1.75em;
 }
 
@@ -33,12 +35,14 @@ p.library{
 }
 
 h1, h2, h3, h4, h5, h6{
-	margin: .3em 2.1em .3em 1.75em;
+	margin: .3em 2.1em .3em 1.7em;
 	color: #444;
 	font-weight: bold;
 	line-height: 1.5em;
 	text-transform: uppercase;
 }
+
+.error, .notice, .success { padding: 2%; width: 95%; }
 
 h1{
 	margin: .1em 1.333em .5em 1.2em;
@@ -358,7 +362,9 @@ ul.yellow a:hover, #statistics ul.yellow a:hover, ul.yellow a:active, #statistic
 }
 
 table th{
-	font-weight: normal;
+	border: solid #ccc;
+	border-width: 0 0 1px 0;
+	font-weight: bold;
 	color: #777;
 }
 
@@ -385,23 +391,6 @@ td{
 
 img.ui-datepicker-trigger{
 	padding: 0 .5em;
-}
-
-#features h1, #features h2, #features h3, #features h4, #features h5, #features h6{
-	margin-top: 0;
-}
-
-#features{
-	margin-bottom: 2em;
-}
-
-#features ul{
-	padding: 0 0 0 5.5em;
-}
-
-#features img{
-	float: left;
-	margin: 3px 10px 0 0;
 }
 
 #search td.right{

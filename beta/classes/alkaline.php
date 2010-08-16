@@ -17,7 +17,7 @@ class Alkaline{
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
-	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id');
+	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id');
 	
 	public $db;
 	protected $guest;
@@ -103,11 +103,9 @@ class Alkaline{
 			}
 			$types = array_unique($types);
 			
-			echo '<ul>';
-
 			// Produce HTML for display
 			foreach($types as $type){
-				echo '<li class="' . $type . '">';
+				echo '<p class="' . $type . '">';
 				$messages = '';
 				foreach($this->notifications as $notification){
 					if($notifications['type'] == $type){
@@ -115,10 +113,10 @@ class Alkaline{
 					}
 				}
 				$messages = ltrim($messages);
-				echo $messages . '</li>';
+				echo $messages . '</p>';
 			}
 			
-			echo '</ul>';
+			echo '<br />';
 
 			// Dispose of messages
 			unset($_SESSION['notifications']);
@@ -486,7 +484,7 @@ class Alkaline{
 		if(!empty($limit)){
 			$limit = intval($limit);
 			$page = intval($page);
-			$limit_sql = ' LIMIT ' . (($limit * ($page - 1)) - $limit);
+			$limit_sql = ' LIMIT ' . (($limit * ($page - 1)) + $limit) . ', ' . $limit;
 		}
 		
 		if(empty($ids)){
@@ -525,17 +523,24 @@ class Alkaline{
 			case 'comments':
 				$fields['comment_created'] = date('Y-m-d H:i:s');
 				break;
-			case 'piles':
-				$fields['pile_created'] = date('Y-m-d H:i:s');
-				$fields['pile_modified'] = date('Y-m-d H:i:s');
+			case 'rights':
+				$fields['right_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'pages':
 				$fields['page_created'] = date('Y-m-d H:i:s');
 				$fields['page_modified'] = date('Y-m-d H:i:s');
 				break;
+			case 'piles':
+				$fields['pile_created'] = date('Y-m-d H:i:s');
+				$fields['pile_modified'] = date('Y-m-d H:i:s');
+				break;
+			default:
+				break;
 		}
 		
-		// Split up fields array for insertion
+		$field = $this->tables[$table];
+		$fields[$field] = "";
+		
 		$columns = array_keys($fields);
 		$values = array_values($fields);
 		
@@ -601,6 +606,27 @@ class Alkaline{
 		
 		// Delete row
 		$query = 'DELETE FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
+		
+		if(!$this->db->exec($query)){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function deleteEmptyRow($table, $fields){
+		if(empty($table) or empty($fields)){
+			return false;
+		}
+		
+		$fields = self::convertToArray($fields);
+		
+		$conditions = array();
+		foreach($fields as $field){
+			$conditions[] = '(' . $field . ' = "" OR ' . $field . ' IS NULL)';
+		}
+		
+		$query = 'DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';';
 		
 		if(!$this->db->exec($query)){
 			return false;

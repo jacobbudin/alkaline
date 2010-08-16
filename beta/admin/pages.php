@@ -12,12 +12,6 @@ $user->perm(true);
 $page_id = @$alkaline->findID($_GET['id']);
 $page_add = @$alkaline->findID($_GET['add']);
 
-// CREATE PAGE
-
-if($page_add == 1){
-	$page_id = $alkaline->addRow(null, 'pages');
-}
-
 // SAVE CHANGES
 if(!empty($_POST['page_id'])){
 	$page_id = $alkaline->findID($_POST['page_id']);
@@ -54,6 +48,14 @@ if(!empty($_POST['page_id'])){
 		$alkaline->updateRow($fields, 'pages', $page_id);
 	}
 	unset($page_id);
+}
+else{
+	$alkaline->deleteEmptyRow('pages', array('page_title', 'page_text_raw'));
+}
+
+// CREATE PAGE
+if($page_add == 1){
+	$page_id = $alkaline->addRow(null, 'pages');
 }
 
 // GET PAGES TO VIEW OR PAGE TO EDIT
@@ -111,13 +113,13 @@ else{
 		define('TITLE', 'Alkaline Page');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
+	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	
 	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View page</a></div>
 	
-	<h1>Page #<?php echo $page['page_id']; ?></h1>
+	<h1>Page</h1>
 
 	<form id="page" action="<?php echo BASE . ADMIN; ?>pages/" method="post">
 		<table>

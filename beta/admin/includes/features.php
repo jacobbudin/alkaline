@@ -17,7 +17,6 @@
 	<h2>Tags</h2>
 	<ul>
 		<li><a href="<?php echo BASE . ADMIN; ?>tags/">View tag cloud</a></li>
-		<li><a href="<?php echo BASE . ADMIN; ?>tags/edit/">Bulk edit tags</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>search/untagged/">Find untagged photos</a></li>
 	</ul>
 	
@@ -26,6 +25,7 @@
 	<h2>Comments</h2>
 	<ul>
 		<li><a href="<?php echo BASE . ADMIN; ?>comments/">View comments</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>comments/unpublished/">Find unpublished comments</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>comments/reply/">Reply to comments</a></li>
 	</ul>
 	

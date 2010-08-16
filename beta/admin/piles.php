@@ -50,7 +50,7 @@ if(empty($pile_id)){
 	
 		foreach($piles as $pile){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $pile['pile_description'] . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $alkaline->fitString($pile['pile_description'], 150) . '</td>';
 				echo '<td class="center">' . $pile['pile_views'] . '</td>';
 				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
@@ -92,7 +92,7 @@ else{
 	
 	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
 	
-	<h1>Pile #<?php echo $pile['pile_id']; ?></h1>
+	<h1>Pile</h1>
 	
 	<form id="pile" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
 		<table>

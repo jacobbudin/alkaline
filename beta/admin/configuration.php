@@ -39,13 +39,6 @@ require_once(PATH . ADMIN . 'includes/settings.php');
 				Use <select name="shoe_geo_prov" style="font-size: .9em;"><option value="bing">Bing</option><option value="google">Google</option><option value="yahoo">Yahoo</option></select> to map locations
 			</td>
 		</tr>
-		<tr>
-			<td class="input"><input type="checkbox" id="shoe_twitter" name="shoe_twitter" checked="checked" /></td>
-			<td class="description">
-				<label for="shoe_twitter">Send to Twitter</label><br />
-				Post the name of and a link to one photo at random each time you add photos to your library
-			</td>
-		</tr>
 	</table>
 	
 	<h3>Photos</h3>
@@ -78,8 +71,8 @@ require_once(PATH . ADMIN . 'includes/settings.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="comm_mod" name="comm_mod" /></td>
 			<td class="description">
-				<label for="comm_mod">Moderate anonymous comments</label><br />
-				Require administrator approval before anonymous comments appear
+				<label for="comm_mod">Moderate visitor comments</label><br />
+				Require administrator approval before visitor comments appear
 			</td>
 		</tr>
 	</table>
