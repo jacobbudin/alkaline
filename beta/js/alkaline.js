@@ -151,6 +151,24 @@ $(document).ready(function(){
 		}
 	);
 	
+	// UPLOAD
+	
+	if(page == 'Upload'){
+		$("#upload").html5_upload({
+			url: BASE + ADMIN + 'upload/',
+			sendBoundary: window.FormData || $.browser.mozilla,
+			onStart: function(event, total) {
+				return confirm("You are about to upload " + total + " files. Are you sure?");
+			},
+			setProgress: function(val) {
+				$("#progress_report_bar").css('width', Math.ceil(val*100)+"%");
+			},
+			onFinishOne: function(event, response, name, number, total) {
+				//alert(response);
+			}
+		});
+	}
+	
 	// MAINTENACE
 	
 	if(page == 'Maintenance'){
