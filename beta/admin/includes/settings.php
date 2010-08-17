@@ -16,9 +16,9 @@
 	
 	<h2>Access</h2>
 	<ul>
-		<li><a href="<?php echo BASE . ADMIN; ?>themes/">View users and guests</a></li>
-		<li><a href="<?php echo BASE . ADMIN; ?>blocks/">Add new user</a></li>
-		<li><a href="<?php echo BASE . ADMIN; ?>themes/install/">Add new guest</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>access/">View users and guests</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>users/new/">Add new user</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>guests/new/">Add new guest</a></li>
 	</ul>
 	
 	<img src="/images/iconblocks/thumbnails.png" alt="" class="icon_block" />

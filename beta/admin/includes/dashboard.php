@@ -17,10 +17,32 @@
 	<h2>Hello</h2>
 	<p>Welcome back, <a href=""><?php echo $user->user['user_name']; ?></a>!</p><p><?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
 	
+	<?php
+	
+	$shoebox_count = $alkaline->countDirectory();
+	if($shoebox_count > 0){	
+		?>
+		<img src="/images/iconblocks/announcement.png" alt="" class="icon_block" />
+	
+		<h2>New</h2>
+		<table class="counts">
+			<tr>
+				<td class="right"><?php echo $shoebox_count; ?></td>
+				<td><a href="<?php echo BASE . ADMIN; ?>shoebox/">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
+			</tr>
+			<tr>
+				<td class="right">1</td>
+				<td><a href="<?php echo BASE . ADMIN; ?>comments/new/">new comments</a></td>
+			</tr>
+		</table>
+		<?php
+	}
+	?>
+	
 	<img src="/images/iconblocks/compass.png" alt="" class="icon_block" />
 	
 	<h2>Vitals</h2>
-	<table id="vitals">
+	<table class="counts">
 		<?php
 		$tables = $alkaline->getInfo();
 		foreach($tables as $table){

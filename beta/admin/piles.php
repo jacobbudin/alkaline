@@ -37,8 +37,7 @@ if(empty($pile_id)){
 	?>
 
 	<h1>Piles (<?php echo $pile_count; ?>)</h1>
-
-	<div style="float: right; margin: 1em 0 2em 0;">
+	
 	<table>
 		<tr>
 			<th style="width: 60%;">Title</th>

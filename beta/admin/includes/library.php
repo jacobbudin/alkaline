@@ -10,7 +10,7 @@
 	</ul>
 </div>
 <div id="secondary" class="column">
-	<p class="expand"><a href="">Expand &#9656;</a></p>
+	<!-- <p class="expand"><a href="">Expand &#9656;</a></p> -->
 	
 	<img src="/images/empty/64.png" alt="" class="bumper" /><br /><br />
 	

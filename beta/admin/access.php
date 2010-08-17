@@ -16,8 +16,8 @@ require_once(PATH . ADMIN . 'includes/settings.php');
 	
 <h1>Access</h1>
 
-<h2>Guests</h2>
 <table>
+	<h2>Guests</h2>
 	<tr>
 		<th>Title</th>
 		<th class="center">Views</th>
@@ -35,8 +35,8 @@ require_once(PATH . ADMIN . 'includes/settings.php');
 	</tr>
 </table>
 
-<h2>Users</h2>
 <table>
+	<h2>Users</h2>
 	<tr>
 		<th>Name</th>
 		<th class="center">Photos</th>

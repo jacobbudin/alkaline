@@ -167,15 +167,15 @@ img.icon_block{
 	z-index: -50;
 }
 
-table#vitals{
-	width: 0;
-}
-
-table#vitals td{
+table.counts td{
 	padding: 0 0 0 .5em;
 }
 
-table#vitals a{
+table.counts td.right{
+	width: 2.5em;
+}
+
+table.counts a{
 	text-decoration: none;
 }
 
