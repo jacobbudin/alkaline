@@ -9,6 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $user_id = @$alkaline->findID($_GET['id']);
+$user_add = @$alkaline->findID($_GET['add']);
 
 // SAVE CHANGES
 if(!empty($_POST['user_id'])){
@@ -20,9 +21,20 @@ if(!empty($_POST['user_id'])){
 		$fields = array('user_name' => $_POST['user_name'],
 			'user_user' => $_POST['user_user'],
 			'user_email' => $_POST['user_email']);
+		if(!empty($_POST['user_pass'])){
+			$fields['user_pass'] = sha1($_POST['user_pass']);
+		}
 		$alkaline->updateRow($fields, 'users', $user_id);
 	}
 	unset($user_id);
+}
+else{
+	$alkaline->deleteEmptyRow('users', array('user_name'));
+}
+
+// CREATE User
+if($user_add == 1){
+	$user_id = $alkaline->addRow(null, 'users');
 }
 
 // GET USERS TO VIEW OR USER TO EDIT
@@ -41,6 +53,7 @@ if(empty($user_id)){
 	
 	<table>
 		<tr>
+			<th>Username</th>
 			<th>Name</th>
 			<th class="center">Photos</th>
 			<th>Last login</th>
@@ -49,8 +62,9 @@ if(empty($user_id)){
 	
 		foreach($users as $user){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong> <em>' . $user['user_name'] . '</em></td>';
-				echo '<td class="center">~' . $user['user_photo_count'] . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong></td>';
+				echo '<td>' . $user['user_name'] . '</td>';
+				echo '<td class="center">' . number_format($user['user_photo_count']) . '</td>';
 				echo '<td>' . $alkaline->formatTime($user['user_last_login']) . '</td>';
 			echo '</tr>';
 		}
@@ -77,8 +91,8 @@ else{
 	$users = $alkaline->getTable('users', $user_id);
 	$user = $users[0];
 
-	if(!empty($user['user_title'])){	
-		define('TITLE', 'Alkaline user: &#8220;' . $user['user_title']  . '&#8221;');
+	if(!empty($user['user_name'])){
+		define('TITLE', 'Alkaline User: ' . $user['user_name']);
 	}
 	else{
 		define('TITLE', 'Alkaline user');
@@ -101,6 +115,10 @@ else{
 			<tr>
 				<td class="right middle"><label for="user_user">Username:</label></td>
 				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user['user_user']; ?>" /></td>
+			</tr>
+			<tr>
+				<td class="right pad"><label for="user_pass">New password:</label></td>
+				<td><input type="text" id="user_pass" name="user_pass" value="" /></td>
 			</tr>
 			<tr>
 				<td class="right middle"><label for="user_email">Email:</label></td>
