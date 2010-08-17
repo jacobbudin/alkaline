@@ -70,7 +70,7 @@ if(empty($right_id)){
 		foreach($rights as $right){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $right['right_id'] . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
-				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_photo_count'] . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_photo_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($right['right_modified']) . '</td>';
 			echo '</tr>';
 		}

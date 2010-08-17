@@ -51,7 +51,7 @@ if(empty($pile_id)){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $alkaline->fitString($pile['pile_description'], 150) . '</td>';
 				echo '<td class="center">' . $pile['pile_views'] . '</td>';
-				echo '<td class="center">&#0126;<a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
 			echo '</tr>';
 		}

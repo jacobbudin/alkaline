@@ -113,7 +113,29 @@ else{
 		<table>
 			<tr>
 				<td class="right"><label for="comment_text">Author:</label></td>
-				<td><?php echo (!empty($comment['comment_author_email'])) ? '<a href="mailto:' . $comment['comment_author_email'] . '">': ''; echo (!empty($comment['comment_author_name'])) ? $comment['comment_author_name'] : '<em>(Unsigned)</em>'; echo (!empty($comment['comment_author_email'])) ? '</a>': ''; ?></td>
+				<td>
+					<?php
+					
+					if(!empty($comment['comment_author_name'])){
+						echo $comment['comment_author_name'];
+					}
+					else{
+						echo '<em>(Unsigned)</em>';
+					}
+					
+					echo '<br />';
+					
+					
+					if(!empty($comment['comment_author_email'])){
+						echo '<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a><br />';
+					}
+					
+					if(!empty($comment['comment_author_url'])){
+						echo '<a href="' . $comment['comment_author_url'] . '">' . $comment['comment_author_url'] . '</a>';
+					}
+					
+					?>
+				</td>
 			</tr>
 			<tr>
 				<td class="right"><label for="comment_text">Text:</label></td>

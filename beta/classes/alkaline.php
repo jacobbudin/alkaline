@@ -17,7 +17,7 @@ class Alkaline{
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
-	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id');
+	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
 	public $db;
 	protected $guest;
@@ -523,6 +523,9 @@ class Alkaline{
 			case 'comments':
 				$fields['comment_created'] = date('Y-m-d H:i:s');
 				break;
+			case 'guests':
+				$fields['guest_created'] = date('Y-m-d H:i:s');
+				break;
 			case 'rights':
 				$fields['right_modified'] = date('Y-m-d H:i:s');
 				break;
@@ -533,6 +536,9 @@ class Alkaline{
 			case 'piles':
 				$fields['pile_created'] = date('Y-m-d H:i:s');
 				$fields['pile_modified'] = date('Y-m-d H:i:s');
+				break;
+			case 'users':
+				$fields['user_created'] = date('Y-m-d H:i:s');
 				break;
 			default:
 				break;

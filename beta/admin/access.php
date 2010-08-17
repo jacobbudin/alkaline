@@ -12,6 +12,8 @@ define('TITLE', 'Alkaline Settings');
 require_once(PATH . ADMIN . 'includes/header.php');
 require_once(PATH . ADMIN . 'includes/settings.php');
 
+$users = $alkaline->getTable('users');
+
 ?>
 	
 <h1>Access</h1>
@@ -38,20 +40,21 @@ require_once(PATH . ADMIN . 'includes/settings.php');
 <table>
 	<h2>Users</h2>
 	<tr>
-		<th>Name</th>
+		<th>Username</th>
 		<th class="center">Photos</th>
 		<th>Last login</th>
 	</tr>
-	<tr>
-		<td><strong><a href="">Alex</a></strong></td>
-		<td class="center"><a href="">133</a></td>
-		<td>Yesterday, 9:33 p.m.</td>
-	</tr>
-	<tr>
-		<td><strong><a href="">Brian</a></strong></td>
-		<td class="center"><a href="">12</a></td>
-		<td>Yesterday, 2:33 p.m.</td>
-	</tr>
+	<?php
+
+	foreach($users as $user){
+		echo '<tr>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong></td>';
+			echo '<td class="center">' . number_format($user['user_photo_count']) . '</td>';
+			echo '<td>' . $alkaline->formatTime($user['user_last_login']) . '</td>';
+		echo '</tr>';
+	}
+
+	?>
 </table>
 
 <?php
