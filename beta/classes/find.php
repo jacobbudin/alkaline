@@ -328,6 +328,7 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY RIGHTS SET
 	public function rights($right=null){
 		// Error checking
 		if(empty($right)){ return false; }
@@ -353,6 +354,24 @@ class Find extends Alkaline{
 		$right = $rights[0];
 		
 		$this->sql_conds[] = 'photos.right_id = ' . $right['right_id'];
+		
+		return true;
+	}
+	
+	// FIND BY USER
+	public function user($users=null){
+		// Error checking
+		if(empty($users)){ return false; }
+		
+		$users = parent::convertToIntegerArray($users);
+		
+		$users_sql = array();
+		
+		foreach($users as $user){
+			$users_sql[] = 'photos.user_id = ' . $user;
+		}
+		
+		$this->sql_conds[] = '(' . implode(' OR ', $users_sql) . ')';
 		
 		return true;
 	}
