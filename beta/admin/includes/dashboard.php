@@ -15,7 +15,7 @@
 	<img src="/images/iconblocks/dashboard.png" alt="" class="icon_block" />
 	
 	<h2>Hello</h2>
-	<p>Welcome back, <a href=""><?php echo $user->user['user_name']; ?></a>!</p><p><?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
+	<p>Welcome back, <a href="<?php echo BASE . ADMIN . 'users/' . $user->user['user_id']; ?>"><?php echo $user->user['user_name']; ?></a>!</p><p><?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
 	
 	<?php
 	

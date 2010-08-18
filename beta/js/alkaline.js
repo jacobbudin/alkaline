@@ -27,7 +27,33 @@ function now(){
 
 var now = now();
 
+function empty (mixed_var) {
+    var key;
+    
+    if (mixed_var === "" ||
+        mixed_var === 0 ||
+        mixed_var === "0" ||
+        mixed_var === null ||
+        mixed_var === false ||
+        typeof mixed_var === 'undefined'
+    ){
+        return true;
+    }
+ 
+    if (typeof mixed_var == 'object') {
+        for (key in mixed_var) {
+            return false;
+        }
+        return true;
+    }
+ 
+    return false;
+}
+
 function photoArray(input){
+	if(empty(input)){
+		updateProgress(100); return;
+	}
 	photo_count = input.length;
 	progress = 0;
 	progress_step = 100 / input.length;
@@ -48,7 +74,7 @@ function updateMaintProgress(){
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress > 99.9999999){
-		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ window.location = BASE + ADMIN; } );
+		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ window.location = BASE + ADMIN + 'maintenance/'; } );
 	}
 }
 function appendPhoto(photo){
@@ -59,8 +85,9 @@ function appendPhoto(photo){
 	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id"><hr /><div class="span-3 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p class="title"><input type="text" name="photo-' + photo.id + '-title" /></p><p class="description"><textarea name="photo-' + photo.id + '-description"></textarea></p><p class="tags"><img src="' + BASE + IMAGES + 'icons/tag.png" alt="" title="Tags" /><input type="text" id="photo-' + photo.id + '-tags" /></p><p class="publish"><img src="' + BASE + IMAGES + 'icons/publish.png" alt="" title="Publish date" /><input type="text" id="photo-' + photo.id + '-published" value="' + now + '" /></p><p class="geo"><img src="' + BASE + IMAGES + 'icons/geo.png" alt="" title="Geolocation" /><input type="text" id="photo-' + photo.id + '-geo" /></p><p class="delete"><a href="#" class="delete"><img src="' + BASE + IMAGES + 'icons/delete.png" alt="" title="Delete photo" /></a></p></div></div>');
 }
 
-function updateProgress(){
+function updateProgress(val){
 	progress += progress_step;
+	if(!empty(val)){ progress = val; }
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress == 100){
@@ -406,9 +433,4 @@ $(document).ready(function(){
 
 	}
 	
-	$("#view a").click(function(){
-		type = $(this).attr("id");
-		$.post(BASE + ADMIN + "tasks/switch-view.php", { type: type }, function(data){ window.location.href = window.location.href; } );
-		event.preventDefault();
-	});
 });

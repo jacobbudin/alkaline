@@ -55,3 +55,5 @@
 </div>
 <div id="tertiary" class="column">
 	<img src="/images/empty/64.png" alt="" class="bumper" /><br /><br />
+	
+	<?php $alkaline->viewNotification(); ?>

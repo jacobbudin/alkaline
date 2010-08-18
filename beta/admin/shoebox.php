@@ -23,7 +23,7 @@ if(!empty($_POST['photo_ids'])){
 	
 	$alkaline->addNotification('Your shoebox has been successfully processed.', 'success');
 	
-	header('Location: ' . BASE . ADMIN . 'dashboard/');
+	header('Location: ' . BASE . ADMIN . 'library/');
 	exit();
 }
 
@@ -32,7 +32,7 @@ $photo_count = count($photos);
 
 if(!($photo_count > 0)){
 	$alkaline->addNotification('There are no photos in your shoebox.', 'notice');
-	header('Location: ' . BASE . ADMIN . 'dashboard/');
+	header('Location: ' . BASE . ADMIN . 'library/');
 	exit();
 }
 

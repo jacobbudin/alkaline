@@ -135,7 +135,7 @@ class Alkaline{
 	public function seekDirectory($dir=null, $ext=IMG_EXT){
 		// Error checking
 		if(empty($dir)){
-			$dir = PATH . SHOEBOX;
+			return false;
 		}
 		
 		$files = array();
@@ -168,10 +168,10 @@ class Alkaline{
 	}
 	
 	// Count compatible photos in shoebox
-	public function countDirectory($dir = null){
+	public function countDirectory($dir=null){
 		// Error checking
 		if(empty($dir)){
-			$dir = PATH . SHOEBOX;
+			return false;
 		}
 		
 		$files = self::seekDirectory($dir);
@@ -469,9 +469,12 @@ class Alkaline{
 		return $html;
 	}
 	
-	public function getTable($table=null, $ids=null, $limit=null, $page=1, $order_by=null){
+	public function getTable($table, $ids=null, $limit=null, $page=1, $order_by=null){
 		if(empty($table)){
 			return false;
+		}
+		if(!is_int($page) or ($page < 1)){
+			$page = 1;
 		}
 		
 		$order_by_sql = '';
@@ -484,7 +487,7 @@ class Alkaline{
 		if(!empty($limit)){
 			$limit = intval($limit);
 			$page = intval($page);
-			$limit_sql = ' LIMIT ' . (($limit * ($page - 1)) + $limit) . ', ' . $limit;
+			$limit_sql = ' LIMIT ' . ($limit * ($page - 1)) . ', ' . $limit;
 		}
 		
 		if(empty($ids)){
