@@ -76,15 +76,8 @@ class Photo extends Alkaline{
 			// Add photo to database
 			$photo_ext = $this->getExt($file);
 			$photo_mime = $this->getMIME($file);
-		
-			$photo_color = $this->imageColor($file);
-			$photo_color_dom = $this->imageColorDom($photo_color);
-			$photo_color_dom = explode(',', $photo_color_dom);
-			$photo_color_r = $photo_color_dom[0];
-			$photo_color_g = $photo_color_dom[1];
-			$photo_color_b = $photo_color_dom[2];
-		
-			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_colors, photo_color_r, photo_color_g, photo_color_b, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . addslashes(serialize($photo_color)) . '", ' . $photo_color_r . ', ' . $photo_color_g . ', ' . $photo_color_b . ', "' . date('Y-m-d H:i:s') . '");';
+			
+			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
 			$this->db->exec($query);
 			
 			$photo_id = intval($this->db->lastInsertId());
@@ -102,6 +95,7 @@ class Photo extends Alkaline{
 		self::__construct($photo_ids);
 		
 		// Process imported photos
+		$this->findColors();
 		$this->readEXIF();
 		$this->readIPTC();
 		$this->sizePhoto();
@@ -402,117 +396,128 @@ class Photo extends Alkaline{
 	}
 	
 	// Create Colorkey data
-	public function imageColor($src, $ext=null){
-		if(empty($ext)){ $ext = $this->getExt($src); }
-		
-		$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-temp$2', $src);
-		
-		self::imageScale($src, $dest, 50, 50, 100, $ext);
-		
-		switch($ext){
-			case 'jpg':
-				$image = imagecreatefromjpeg($dest);
-				break;
-			case 'png':
-				$image = imagecreatefrompng($dest);
-				break;
-			case 'gif':
-				$image = imagecreatefromgif($dest);
-				break;
-			default:
-				return false;
-				break;
+	public function findColors($photos=null){
+		if(empty($photos)){
+			$photos = $this->photos;
+			$photo_count = $this->photo_count;
 		}
+		else{
+			$photo_count = count($photos);
+		}
+		for($i = 0; $i < $photo_count; ++$i){		
+			$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-tmp$2', $photos[$i]['photo_file']);
 		
-		$colors = array();
+			self::imageScale($photos[$i]['photo_file'], $dest, 50, 50, 100, $photos[$i]['photo_ext']);
 		
-		$width = imagesx($image);
-		$height = imagesy($image);
+			switch($photos[$i]['photo_ext']){
+				case 'jpg':
+					$image = imagecreatefromjpeg($dest);
+					break;
+				case 'png':
+					$image = imagecreatefrompng($dest);
+					break;
+				case 'gif':
+					$image = imagecreatefromgif($dest);
+					break;
+				default:
+					return false;
+					break;
+			}
 		
-		for($x = 0; $x < $width; ++$x){
-			for($y = 0; $y < $height; ++$y){
-				$rgb = imagecolorat($image, $x, $y);
-				$r = ($rgb >> 16) & 0xFF;
-				$g = ($rgb >> 8) & 0xFF;
-				$b = $rgb & 0xFF;
-				$diff = abs($r - $g) + abs($r - $b) + abs($g - $b);
+			$colors = array();
+		
+			$width = imagesx($image);
+			$height = imagesy($image);
+		
+			for($x = 0; $x < $width; ++$x){
+				for($y = 0; $y < $height; ++$y){
+					$rgb = imagecolorat($kmage, $x, $y);
+					$r = ($rgb >> 16) & 0xFF;
+					$g = ($rgb >> 8) & 0xFF;
+					$b = $rgb & 0xFF;
+					$diff = abs($r - $g) + abs($r - $b) + abs($g - $b);
 				
-				$color_present = false;
+					$color_present = false;
 				
-				// See if it's in the same color class
-				for($i = 0; $i < count($colors); ++$i){
-					if((abs($colors[$i]['r'] - $r) < COLOR_TOLERANCE) and (abs($colors[$i]['g'] - $g) < COLOR_TOLERANCE) and (abs($colors[$i]['b'] - $b) < COLOR_TOLERANCE)){
-						//If a more saturated color comes along in same color class, replace color
-						if($diff > $colors[$i]['diff']){
-							$colors[$i]['r'] = $r;
-							$colors[$i]['g'] = $g;
-							$colors[$i]['b'] = $b;
-						}
+					// See if it's in the same color class
+					for($k = 0; $k < count($colors); ++$k){
+						if((abs($colors[$k]['r'] - $r) < COLOR_TOLERANCE) and (abs($colors[$k]['g'] - $g) < COLOR_TOLERANCE) and (abs($colors[$k]['b'] - $b) < COLOR_TOLERANCE)){
+							//If a more saturated color comes along in same color class, replace color
+							if($diff > $colors[$k]['diff']){
+								$colors[$k]['r'] = $r;
+								$colors[$k]['g'] = $g;
+								$colors[$k]['b'] = $b;
+							}
 						
-						// Add one to count
-						$colors[$i]['count']++;
-						$color_present = true;
-						break;
+							// Add one to count
+							$colors[$k]['count']++;
+							$color_present = true;
+							break;
+						}
+					}
+				
+					if($color_present === false){
+						$colors[] = array('r' => $r, 'g' => $g, 'b' => $b, 'diff' => $diff, 'count' => 1);
 					}
 				}
-				
-				if($color_present === false){
-					$colors[] = array('r' => $r, 'g' => $g, 'b' => $b, 'diff' => $diff, 'count' => 1);
+			}
+		
+			$diffs = array();
+		
+			foreach($colors as $key => $row){
+			    $diffs[$key] = $row['diff'];
+			}
+		
+			array_multisort($diffs, SORT_DESC, $colors);
+		
+			$colors = array_slice($colors, 0, PALETTE_SIZE);
+		
+			$counts = 0;
+		
+			for($j = 0; $j < count($colors); ++$j){
+				$colors[$j]['count'] = intval(pow($colors[$j]['count'], .35));
+				$counts += $colors[$j]['count'];
+			}
+		
+			$rgbs = array();
+		
+			$total = 0;
+			$rgb_last = '';
+		
+			foreach($colors as $color){
+				$rgb = $color['r'] . ',' . $color['g'] . ',' . $color['b'];
+				$percent = strval(round((($color['count'] / $counts) * 100), 1));
+				$total += $percent;
+				$rgbs[$rgb] = $percent;
+				$rgb_last = $rgb;
+			}
+		
+			if($total != 100){
+				$remaining = 100 - $total;
+				$rgbs[$rgb_last] += strval($remaining);
+				$rgbs[$rgb_last] = strval(floatval(round($rgbs[$rgb_last], 1)));
+			}
+		
+			imagedestroy($image);
+			unlink($dest);
+			
+			$rgb_dom_percent = 0;
+			foreach($rgbs as $rgb => $percent){
+				if($percent > $rgb_dom_percent){
+					$rgb_dom = $rgb;
 				}
 			}
+			
+			$rgb_dom = explode(',', $rgb_dom);
+			$rgb_dom_r = $rgb_dom[0];
+			$rgb_dom_g = $rgb_dom[1];
+			$rgb_dom_b = $rgb_dom[2];
+			
+			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
+			$this->db->exec($query);
+			
+			return true;
 		}
-		
-		$diffs = array();
-		
-		foreach($colors as $key => $row){
-		    $diffs[$key] = $row['diff'];
-		}
-		
-		array_multisort($diffs, SORT_DESC, $colors);
-		
-		$colors = array_slice($colors, 0, PALETTE_SIZE);
-		
-		$counts = 0;
-		
-		for($i = 0; $i < count($colors); ++$i){
-			$colors[$i]['count'] = intval(pow($colors[$i]['count'], .35));
-			$counts += $colors[$i]['count'];
-		}
-		
-		$rgbs = array();
-		
-		$total = 0;
-		$rgb_last = '';
-		
-		foreach($colors as $color){
-			$rgb = $color['r'] . ',' . $color['g'] . ',' . $color['b'];
-			$percent = strval(round((($color['count'] / $counts) * 100), 1));
-			$total += $percent;
-			$rgbs[$rgb] = $percent;
-			$rgb_last = $rgb;
-		}
-		
-		if($total != 100){
-			$remaining = 100 - $total;
-			$rgbs[$rgb_last] += strval($remaining);
-			$rgbs[$rgb_last] = strval(floatval(round($rgbs[$rgb_last], 1)));
-		}
-		
-		imagedestroy($image);
-		unlink($dest);
-		
-		return $rgbs;
-	}
-	
-	// Find Colorkey dominant color
-	public function imageColorDom($rgbs){
-		$rgb_dom_percent = 0;
-		foreach($rgbs as $rgb => $percent){
-			if($percent > $rgb_dom_percent){
-				$rgb_dom = $rgb;
-			}
-		}
-		return $rgb_dom;
 	}
 	
 	public function readEXIF($photos=null){
@@ -533,12 +538,12 @@ class Photo extends Alkaline{
 				$inserts = array();
 				foreach($exif as $key => $section){
 				    foreach($section as $name => $value){
-						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '")';
+						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '");';
 						$this->db->exec($query);
 						
 						// Check for date taken, insert to photos table
 						if(($key == 'IFD0') and ($name == 'DateTime')){
-							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $photos[$i]['photo_id'];
+							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
 							$this->db->exec($query);
 						}
 				    }
@@ -547,7 +552,7 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	public function readIPTC(){
+	public function readIPTC($photos=null){
 		if(empty($photos)){
 			$photos = $this->photos;
 			$photo_count = $this->photo_count;
