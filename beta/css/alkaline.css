@@ -25,8 +25,12 @@ input.title{
 
 input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
 
-p, form, table, hr, div#progress{
+p, table, hr, div#progress{
 	margin: .3em 2.1em 1.5em 1.75em;
+}
+
+div#progress{
+	width: 99%;
 }
 
 p.library{

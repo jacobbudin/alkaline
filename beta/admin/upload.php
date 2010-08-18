@@ -21,19 +21,24 @@ $block_count = count($blocks);
 
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/dashboard.php');
+require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 
 <h1>Upload</h1>
 
 <form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-	<img src="/images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-	<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
+	<p>
+		<img src="/images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+		<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
+	</p>
 </form>
 
+<div id="progress">
+</div>
+
 <p>
-	You have uploaded <span id="upload_count">0</span> files.
+	You have uploaded <span id="upload_count_text">0 files</span>.
 </p>
 
 <?php

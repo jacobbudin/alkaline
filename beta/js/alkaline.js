@@ -62,9 +62,9 @@ function appendPhoto(photo){
 function updateProgress(){
 	progress += progress_step;
 	progress_int = parseInt(progress);
-	$("#shoebox_progress").progressbar({ value: progress_int });
+	$("#progress").progressbar({ value: progress_int });
 	if(progress == 100){
-		$("#shoebox_progress").slideUp(1000);
+		$("#progress").slideUp(1000);
 		$("#shoebox_add").delay(1000).removeAttr("disabled");
 	}
 }
@@ -88,6 +88,8 @@ function executeTask(){
 $(document).ready(function(){
 	// PRIMARY
 	var page = $("h1").first().text();
+	var page_re = /^(\w+).*/;
+	page = page.replace(page_re, "$1");
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
@@ -154,17 +156,38 @@ $(document).ready(function(){
 	// UPLOAD
 	
 	if(page == 'Upload'){
+		var upload_count = 0;
+		var upload_count_text;
+		$("#progress").hide(0);
 		$("#upload").html5_upload({
 			url: BASE + ADMIN + 'upload/',
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
-				return confirm("You are about to upload " + total + " files. Are you sure?");
+				if(total == 1){
+					return confirm("You are about to upload 1 file. Are you sure?");
+				}
+				else{
+					return confirm("You are about to upload " + total + " files. Are you sure?");
+				}
+			},
+			setName: function(text) {
+				$("#progress").slideDown(500);
 			},
 			setProgress: function(val) {
-				$("#progress_report_bar").css('width', Math.ceil(val*100)+"%");
+				$("#progress").progressbar({ value: Math.ceil(val*100) });
 			},
 			onFinishOne: function(event, response, name, number, total) {
-				//alert(response);
+				upload_count = upload_count + 1;
+				if(upload_count == 1){
+					upload_count_text = upload_count + ' file';
+				}
+				else{
+					upload_count_text = upload_count + ' files';
+				}
+				$("#upload_count_text").text(upload_count_text);
+				if(number == (total - 1)){
+					$("#progress").slideUp(500);
+				}
 			}
 		});
 	}
@@ -193,14 +216,11 @@ $(document).ready(function(){
 	// SHOEBOX
 	
 	if(page == 'Shoebox'){
-		task = "add-photos";
+		task = 'add-photos';
 		executeTask();
-	
+		
 		$("#shoebox_add").attr("disabled", "disabled");
-		$("#shoebox_progress").progressbar({ value: 0 });
-	
-		count = $('#count').text();
-		checkCount();
+		$("#progress").progressbar({ value: 0 });
 	}
 	
 	// PAGE (EDIT)
