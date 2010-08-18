@@ -65,7 +65,7 @@ if(empty($user_id)){
 				echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user['user_name'] . '</td>';
 				echo '<td class="center">' . number_format($user['user_photo_count']) . '</td>';
-				echo '<td>' . $alkaline->formatTime($user['user_last_login']) . '</td>';
+				echo '<td>' . $alkaline->formatTime($user['user_last_login'], null, '<em>(Never)</em>') . '</td>';
 			echo '</tr>';
 		}
 	

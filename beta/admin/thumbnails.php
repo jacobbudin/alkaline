@@ -48,7 +48,7 @@ if(empty($size_id)){
 	$sizes = $alkaline->getTable('sizes');
 	$size_count = @count($sizes);
 	
-	define('TITLE', 'Alkaline sizes Sets');
+	define('TITLE', 'Alkaline Thumbnails');
 	require_once(PATH . ADMIN . 'includes/header.php');
 	require_once(PATH . ADMIN . 'includes/settings.php');
 
@@ -88,7 +88,7 @@ else{
 	$size = $sizes[0];
 
 	if(!empty($size['size_title'])){	
-		define('TITLE', 'Alkaline Size: &#8220;' . $size['size_title']  . '&#8221;');
+		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
 	require_once(PATH . ADMIN . 'includes/settings.php');

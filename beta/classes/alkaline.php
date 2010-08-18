@@ -277,10 +277,10 @@ class Alkaline{
 	
 	// FORMAT TIME
 	// Make time more human-readable
-	public function formatTime($time, $format=null){
+	public function formatTime($time, $format=null, $empty=false){
 		// Error checking
-		if(empty($time)){
-			return false;
+		if(empty($time) or ($time == '0000-00-00 00:00:00')){
+			return $empty;
 		}
 		
 		$time = str_replace('tonight', 'today', $time);

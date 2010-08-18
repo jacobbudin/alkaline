@@ -35,7 +35,7 @@ $user_count = @count($users);
 		echo '<tr>';
 			echo '<td><strong><a href="' . BASE . ADMIN . 'guests/' . $guest['guest_id'] . '">' . $guest['guest_title'] . '</a></strong></td>';
 			echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
-			echo '<td>' . $alkaline->formatTime($guest['guest_last_login']) . '</td>';
+			echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>(Never)</em>') . '</td>';
 		echo '</tr>';
 	}
 
@@ -57,7 +57,7 @@ $user_count = @count($users);
 		echo '<tr>';
 			echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong></td>';
 			echo '<td class="center">' . number_format($user['user_photo_count']) . '</td>';
-			echo '<td>' . $alkaline->formatTime($user['user_last_login']) . '</td>';
+			echo '<td>' . $alkaline->formatTime($user['user_last_login'], null, '<em>(Never)</em>') . '</td>';
 		echo '</tr>';
 	}
 

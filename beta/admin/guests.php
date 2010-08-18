@@ -62,7 +62,7 @@ if(empty($guest_id)){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'guests/' . $guest['guest_id'] . '">' . $guest['guest_title'] . '</a></strong></td>';
 				echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
-				echo '<td>' . $alkaline->formatTime($guest['guest_last_login']) . '</td>';
+				echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>(Never)</em>') . '</td>';
 			echo '</tr>';
 		}
 	
