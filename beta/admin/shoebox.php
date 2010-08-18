@@ -38,32 +38,27 @@ if(!($photo_count > 0)){
 
 define('TITLE', 'Alkaline Shoebox');
 require_once(PATH . ADMIN . 'includes/header.php');
+require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
-<div id="module" class="container">
-	<h1>Shoebox</h1>
-	<p>You have <?php $alkaline->echoCount($photo_count, 'photo'); ?> in your shoebox. Please wait&#8230;</p>
-</div>
 
-<div id="shoebox" class="container">
-	<h3>Imported <span class="small quiet">(<span id="shoebox_import_count"><?php echo $photo_count; ?></span>)</span></h3>
-	
-	<form action="" method="post">
-		<div id="shoebox_photos">
-			
-		</div>
-	
-		<p id="shoebox_progress" class="span-23 last">
+<h1>Shoebox (<?php echo $photo_count; ?>)</h1>
+
+<form action="" method="post">
+	<div id="shoebox_photos">
 		
-		</p>
+	</div>
+
+	<p id="progress">
 	
-		<p>
-			<input id="shoebox_photo_ids" type="hidden" name="photo_ids" value="" />
-			<input id="shoebox_add" type="submit" value="Add photos" />
-		</p>
-	</form>
+	</p>
+
+	<p>
+		<input id="shoebox_photo_ids" type="hidden" name="photo_ids" value="" />
+		<input id="shoebox_add" type="submit" value="Add photos" />
+	</p>
+</form>
 	
-</div>
 <?php
 
 require_once(PATH . ADMIN . 'includes/footer.php');

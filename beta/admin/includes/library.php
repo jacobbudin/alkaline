@@ -16,11 +16,20 @@
 	
 	<img src="/images/iconblocks/library.png" alt="" class="icon_block" />
 	
-	<h2>Photos</h2>
+	<h2>Manage</h2>
 	
 	<ul>
 		<li><a href="<?php echo BASE . ADMIN; ?>library/">View photos</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>search/">Search photos</a></li>
+	</ul>
+	
+	<img src="/images/iconblocks/blank.png" alt="" class="icon_block" />
+	
+	<h2>Add</h2>
+	
+	<ul>
+		<li><a href="<?php echo BASE . ADMIN; ?>shoebox/">Manage shoebox</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>upload/">Upload photos</a></li>
 	</ul>
 	
 </div>
