@@ -12,33 +12,40 @@ define('TITLE', 'Alkaline Settings');
 require_once(PATH . ADMIN . 'includes/header.php');
 require_once(PATH . ADMIN . 'includes/settings.php');
 
-$users = $alkaline->getTable('users');
+$guests = $alkaline->getTable('guests', null, 10);
+$guest_count = @count($guests);
+
+$users = $alkaline->getTable('users', null, 10);
+$user_count = @count($users);
 
 ?>
 	
 <h1>Access</h1>
 
 <table>
-	<h2>Guests</h2>
+	<h2><a href="<?php echo BASE . ADMIN . 'guests/'; ?>">Guests</a></h2>
 	<tr>
 		<th>Title</th>
 		<th class="center">Views</th>
 		<th>Last login</th>
 	</tr>
-	<tr>
-		<td><strong><a href="">Models</a></strong></td>
-		<td class="center">1,034</td>
-		<td>Yesterday, 1:33 p.m.</td>
-	</tr>
-	<tr>
-		<td><strong><a href="">Parents</a></strong></td>
-		<td class="center">4,056</td>
-		<td>Today, 1:13 p.m.</td>
-	</tr>
+	<?php
+
+	foreach($guests as $guest){
+		echo '<tr>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'guests/' . $guest['guest_id'] . '">' . $guest['guest_title'] . '</a></strong></td>';
+			echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
+			echo '<td>' . $alkaline->formatTime($guest['guest_last_login']) . '</td>';
+		echo '</tr>';
+	}
+
+	?>
 </table>
 
+<?php if($guest_count > 10){ echo '<p><a href="' . BASE . ADMIN . 'guests/">View all ' . $guest_count . ' guests.</a></p>'; } ?>
+
 <table>
-	<h2>Users</h2>
+	<h2><a href="<?php echo BASE . ADMIN . 'users/'; ?>">Users</h2>
 	<tr>
 		<th>Username</th>
 		<th class="center">Photos</th>
@@ -58,6 +65,8 @@ $users = $alkaline->getTable('users');
 </table>
 
 <?php
+
+if($user_count > 10){ echo '<p><a href="' . BASE . ADMIN . 'users/">View all ' . $guest_count . ' users.</a></p>'; }
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 
