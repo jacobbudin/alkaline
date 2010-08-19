@@ -189,13 +189,13 @@ class Find extends Alkaline{
 		$not = array();
 
 		for($i = 0; $i < count($pieces); ++$i){
-			if(@$pieces[$i - 1] == 'NOT'){
+			if((@$pieces[$i - 1] == 'NOT') and !in_array($pieces[$i], $any) and !in_array($pieces[$i], $all) and !in_array($pieces[$i], $not) and !empty($pieces[$i])){
 				$not[] = $pieces[$i];
 			}
-			if(((@$pieces[$i + 1] == 'OR') or (@$pieces[$i - 1] == 'OR')) and !in_array($pieces[$i], $any)){
+			if(((@$pieces[$i + 1] == 'OR') or (@$pieces[$i - 1] == 'OR')) and !in_array($pieces[$i], $any) and !in_array($pieces[$i], $any) and !in_array($pieces[$i], $all) and !in_array($pieces[$i], $not) and !empty($pieces[$i])){
 				$any[] = $pieces[$i];
 			}
-			if(((@$pieces[$i + 1] == 'AND') or (@$pieces[$i - 1] == 'AND') or (@$pieces[$i + 1] == 'NOT')) and !in_array($pieces[$i], $any)){
+			if(((@$pieces[$i + 1] == 'AND') or (@$pieces[$i - 1] == 'AND') or (@$pieces[$i + 1] == 'NOT')) and !in_array($pieces[$i], $any) and !in_array($pieces[$i], $all) and !in_array($pieces[$i], $not) and !empty($pieces[$i])){
 				$all[] = $pieces[$i];
 			}
 		}
@@ -235,7 +235,7 @@ class Find extends Alkaline{
 		$this->sql_join_tables[] = 'links';
 		$this->sql_join_type = 'INNER JOIN';
 		
-		$this->sql_having_fields[] = 'COUNT(*) = ' . intval($count);
+		$this->sql_having_fields[] = 'COUNT(*) >= ' . intval($count);
 		
 		// Set tags to find
 		$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
@@ -246,6 +246,8 @@ class Find extends Alkaline{
 	protected function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
+		
+		$tag_count = count($tags);
 		
 		parent::convertToArray($tags);
 		
@@ -263,8 +265,19 @@ class Find extends Alkaline{
 		// Compile photo IDs
 		$include_photo_ids = array();	
 		foreach($this->photos as $photo){
-			$include_photo_ids[] = $photo['photo_id'];
+			if(array_key_exists($photo['photo_id'], $include_photo_ids)){
+				$include_photo_ids[$photo['photo_id']]++;
+			}
+			else{
+				$include_photo_ids[$photo['photo_id']] = 1;
+			}
 		}
+		foreach($include_photo_ids as $photo_id => $count){
+			if($count < $tag_count){
+				unset($include_photo_ids[$photo_id]);
+			}
+		}
+		$include_photo_ids = array_keys($include_photo_ids);
 		
 		// Set fields to search
 		$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $include_photo_ids) . ')';
@@ -294,6 +307,7 @@ class Find extends Alkaline{
 		foreach($this->photos as $photo){
 			$exclude_photo_ids[] = $photo['photo_id'];
 		}
+		$exclude_photo_ids = array_unique($exclude_photo_ids);
 		
 		// Set fields to search
 		$this->sql_conds[] = 'photos.photo_id NOT IN (' . implode(', ', $exclude_photo_ids) . ')';
@@ -543,6 +557,7 @@ class Find extends Alkaline{
 
 		// Prepare query without limit
 		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
+		echo $this->sql;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);

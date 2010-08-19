@@ -8,150 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$photo_ids = new Find();
-$photo_ids->page(1,100);
-
-// MANAGE SEARCH QUERY
-array_map('strip_tags', $_GET);
-array_map('strip_tags', $_POST);
-
-// Smart search
-if(!empty($_GET['smart'])){
-	$photo_ids->_smart($_GET['smart']);
-}
-
-// Title and description
-if(!empty($_POST['search'])){
-	$photo_ids->_search($_POST['search']);
-}
-
-// Tags
-if(!empty($_POST['tags'])){
-	$photo_ids->_tags($_POST['tags']);
-}
-
-// Rights set
-if(!empty($_POST['rights'])){
-	$photo_ids->_rights(intval($_POST['rights']));
-}
-
-// Date taken
-if(!empty($_POST['taken_begin']) or !empty($_POST['taken_end'])){
-	$photo_ids->_taken($_POST['taken_begin'], $_POST['taken_end']);
-}
-
-// Date uploaded
-if(!empty($_POST['uploaded_begin']) or !empty($_POST['uploaded_end'])){
-	$photo_ids->_uploaded($_POST['uploaded_begin'], $_POST['uploaded_end']);
-}
-
-// Location
-if(!empty($_POST['location'])){
-	// NA
-}
-
-// Primary color
-if(!empty($_POST['color'])){
-	switch($_POST['color']){
-		case 'grey':
-			break;
-		case 'blue':
-			break;
-		case 'red':
-			break;
-		case 'yellow':
-			break;
-		case 'green':
-			break;
-		case 'purple':
-			break;
-		case 'orange':
-			break;
-	}
-	switch($_POST['color_type']){
-		case 'is':
-			break;
-		case 'is_not':
-			break;
-	}
-}
-
-// Views
-if(!empty($_POST['views'])){
-	switch($_POST['views_operator']){
-		case 'greater':
-			$photo_ids->_views($_POST['views'], null);
-			break;
-		case 'less':
-			$photo_ids->_views(null, $_POST['views']);
-			break;
-		case 'equal':
-			$photo_ids->_views($_POST['views'], $_POST['views']);
-			break;
-	}
-}
-
-// Orientation
-if(!empty($_POST['orientation'])){
-	switch($_POST['orientation']){
-		case 'portrait':
-			break;
-		case 'landscape':
-			break;
-		case 'square':
-			break;
-	}
-}
-
-// Privacy
-if(!empty($_POST['privacy'])){
-	switch($_POST['privacy']){
-		case 'public':
-			$photo_ids->_privacy(1);
-			break;
-		case 'protected':
-			$photo_ids->_privacy(2);
-			break;
-		case 'private':
-			$photo_ids->_privacy(3);
-			break;
-	}
-}
-
-// Published
-if(!empty($_POST['published'])){
-	switch($_POST['published']){
-		case 'published':
-			$photo_ids->_published(true);
-			break;
-		case 'unpublished':
-			$photo_ids->_published(false);
-			break;
-	}
-}
-
-// Sort
-if(!empty($_POST['sort'])){
-	switch($_POST['sort']){
-		case 'taken':
-			break;
-		case 'uploaded':
-			break;
-		case 'updated':
-			break;
-		case 'title':
-			break;
-		case 'views':
-			break;
-	}
-}
-
-$photo_ids->exec();
-
-$photos = new Photo($photo_ids->photo_ids);
-$photos->getImgUrl('square');
-
-if(empty($_GET) and empty($POST)){
+if(empty($_GET) and empty($_POST)){
 	
 	define('TITLE', 'Alkaline Search');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -163,7 +20,7 @@ if(empty($_GET) and empty($POST)){
 
 	<form action="<?php echo BASE . ADMIN; ?>search/" method="post">
 		<p>
-			<input type="text" name="search" style="width: 50em; font-size: .9em; margin-left: 0;" /> <input type="submit" value="Search" />
+			<input type="text" name="search" style="width: 50em; margin-left: 0;" /> <input type="submit" value="Search" />
 		</p>
 
 		<p>
@@ -172,7 +29,7 @@ if(empty($_GET) and empty($POST)){
 
 		<table class="reveal">
 			<tr>
-				<td class="right">Tags:</td>
+				<td class="right pad">Tags:</td>
 				<td class="quiet">
 					<input type="text" name="tags" style="width: 30em;" /><br />
 					Tip: Use the boolean operators AND, OR, and NOT.
@@ -299,6 +156,148 @@ if(empty($_GET) and empty($POST)){
 	
 }
 else{
+	$photo_ids = new Find();
+	$photo_ids->page(1, 100);
+	
+	// SANITIZE SEARCH QUERY
+	$_GET = array_map('strip_tags', $_GET);
+	$_POST = array_map('strip_tags', $_POST);
+
+	// Smart search
+	if(!empty($_GET['smart'])){
+		$photo_ids->_smart($_GET['smart']);
+	}
+
+	// Title and description
+	if(!empty($_POST['search'])){
+		$photo_ids->_search($_POST['search']);
+	}
+
+	// Tags
+	if(!empty($_POST['tags'])){
+		$photo_ids->_tags($_POST['tags']);
+	}
+
+	// Rights set
+	if(!empty($_POST['rights'])){
+		$photo_ids->_rights(intval($_POST['rights']));
+	}
+
+	// Date taken
+	if(!empty($_POST['taken_begin']) or !empty($_POST['taken_end'])){
+		$photo_ids->_taken($_POST['taken_begin'], $_POST['taken_end']);
+	}
+
+	// Date uploaded
+	if(!empty($_POST['uploaded_begin']) or !empty($_POST['uploaded_end'])){
+		$photo_ids->_uploaded($_POST['uploaded_begin'], $_POST['uploaded_end']);
+	}
+
+	// Location
+	if(!empty($_POST['location'])){
+		// NA
+	}
+
+	// Primary color
+	if(!empty($_POST['color'])){
+		switch($_POST['color']){
+			case 'grey':
+				break;
+			case 'blue':
+				break;
+			case 'red':
+				break;
+			case 'yellow':
+				break;
+			case 'green':
+				break;
+			case 'purple':
+				break;
+			case 'orange':
+				break;
+		}
+		switch($_POST['color_type']){
+			case 'is':
+				break;
+			case 'is_not':
+				break;
+		}
+	}
+
+	// Views
+	if(!empty($_POST['views'])){
+		switch($_POST['views_operator']){
+			case 'greater':
+				$photo_ids->_views($_POST['views'], null);
+				break;
+			case 'less':
+				$photo_ids->_views(null, $_POST['views']);
+				break;
+			case 'equal':
+				$photo_ids->_views($_POST['views'], $_POST['views']);
+				break;
+		}
+	}
+
+	// Orientation
+	if(!empty($_POST['orientation'])){
+		switch($_POST['orientation']){
+			case 'portrait':
+				break;
+			case 'landscape':
+				break;
+			case 'square':
+				break;
+		}
+	}
+
+	// Privacy
+	if(!empty($_POST['privacy'])){
+		switch($_POST['privacy']){
+			case 'public':
+				$photo_ids->_privacy(1);
+				break;
+			case 'protected':
+				$photo_ids->_privacy(2);
+				break;
+			case 'private':
+				$photo_ids->_privacy(3);
+				break;
+		}
+	}
+
+	// Published
+	if(!empty($_POST['published'])){
+		switch($_POST['published']){
+			case 'published':
+				$photo_ids->_published(true);
+				break;
+			case 'unpublished':
+				$photo_ids->_published(false);
+				break;
+		}
+	}
+
+	// Sort
+	if(!empty($_POST['sort'])){
+		switch($_POST['sort']){
+			case 'taken':
+				break;
+			case 'uploaded':
+				break;
+			case 'updated':
+				break;
+			case 'title':
+				break;
+			case 'views':
+				break;
+		}
+	}
+
+	$photo_ids->exec();
+
+	$photos = new Photo($photo_ids->photo_ids);
+	$photos->getImgUrl('square');
 	
 	define('TITLE', 'Alkaline Search Results');
 	require_once(PATH . ADMIN . 'includes/header.php');
