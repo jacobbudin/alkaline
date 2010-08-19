@@ -282,22 +282,61 @@ class Alkaline{
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
 			return $empty;
 		}
+		if(empty($format)){
+			$format = DATE_FORMAT;
+		}
 		
 		$time = str_replace('tonight', 'today', $time);
+		$time = @strtotime($time);
+		$time = date($format, $time);
 		
 		$ampm = array(' am', ' pm');
 		$ampm_correct = array(' a.m.', ' p.m.');
 		
-		if(empty($format)){
-			$time = date(DATE_FORMAT, @strtotime($time));
-		}
-		else{
-			$time = date($format, @strtotime($time));
-		}
-		
 		$time = str_replace($ampm, $ampm_correct, $time);
 		
 		return $time;
+	}
+	
+	// Turn time into relative
+	public function formatRelTime($time, $format=null, $empty=false){
+		// Error checking
+		if(empty($time) or ($time == '0000-00-00 00:00:00')){
+			return $empty;
+		}
+		if(empty($format)){
+			$format = DATE_FORMAT;
+		}
+		
+		$time = @strtotime($time);
+		$seconds = time() - $time;
+		
+		switch($seconds){
+			case($seconds < 3600):
+				$minutes = intval($seconds / 60);
+				if($minutes < 2){ $span = 'a minute ago'; }
+				else{ $span = $minutes . ' minutes ago'; }
+				break;
+			case($seconds < 86400):
+				$hours = intval($seconds / 3600);
+				if($hours < 2){ $span = 'an hour ago'; }
+				else{ $span = $hours . ' hours ago'; }
+				break;
+			case($seconds < 2419200):
+				$days = intval($seconds / 86400);
+				if($days < 2){ $span = 'yesterday'; }
+				else{ $span = $days . ' days ago'; }
+				break;
+			case($seconds < 29030400):
+				$months = intval($seconds / 2419200);
+				if($months < 2){ $months = 'a month ago'; }
+				else{ $span = $months . ' months ago'; }
+				break;
+			default:
+				$span = date($format, $time);
+				break;
+		}
+		return $span;
 	}
 	
 	public function echoMonth($int){
