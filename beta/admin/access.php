@@ -12,6 +12,9 @@ define('TITLE', 'Alkaline Settings');
 require_once(PATH . ADMIN . 'includes/header.php');
 require_once(PATH . ADMIN . 'includes/settings.php');
 
+$alkaline->deleteEmptyRow('users', array('user_name'));
+$alkaline->deleteEmptyRow('guests', array('guest_title', 'guest_key'));
+
 $guests = $alkaline->getTable('guests', null, 10);
 $guest_count = @count($guests);
 
