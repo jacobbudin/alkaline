@@ -359,10 +359,11 @@ $(document).ready(function(){
 		}],{
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0.01, timeformat: "%h %p" },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, timeformat: "%h %p" },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
+		
 		
 	
 		var d_statistics_views = $("#d_views").attr("title");
@@ -389,7 +390,7 @@ $(document).ready(function(){
 		}],{
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0.01, minTickSize: [3, "day"] },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, minTickSize: [3, "day"] },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
@@ -421,6 +422,39 @@ $(document).ready(function(){
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+		});
+		
+		$.each(h_stats.getData()[0].data, function(i, el){
+			var o = h_stats.pointOffset({x: el[0], y: el[1]});
+			if(el[1] > 0){
+			  $('<div class="point">' + el[1] + '</div>').css( {
+			    position: 'absolute',
+			    left: o.left - 12,
+			    top: o.top - 20,
+			  }).appendTo(h_stats.getPlaceholder());
+			}
+		});
+		
+		$.each(d_stats.getData()[0].data, function(i, el){
+			var o = d_stats.pointOffset({x: el[0], y: el[1]});
+			if(el[1] > 0){
+			  $('<div class="point">' + el[1] + '</div>').css( {
+			    position: 'absolute',
+			    left: o.left - 12,
+			    top: o.top - 20,
+			  }).appendTo(d_stats.getPlaceholder());
+			}
+		});
+		
+		$.each(m_stats.getData()[0].data, function(i, el){
+			var o = m_stats.pointOffset({x: el[0], y: el[1]});
+			if(el[1] > 0){
+			  $('<div class="point">' + el[1] + '</div>').css( {
+			    position: 'absolute',
+			    left: o.left - 12,
+			    top: o.top - 20,
+			  }).appendTo(m_stats.getPlaceholder());
+			}
 		});
 		
 		$(".tickLabel").each(function(index){

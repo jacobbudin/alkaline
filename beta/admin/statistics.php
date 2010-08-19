@@ -199,22 +199,6 @@ foreach($stats->referrers_popular as &$referrer){
 
 <h2>Referrers</h2>
 
-<h3>Recent</h3>
-<table>
-	<tr>
-		<th class="right">Date</th>
-		<th>Referrer</th>
-	</tr>
-	<?php				
-	foreach($stats->referrers_recent as $referrer){
-		echo '<tr>';
-		echo '<td class="right quiet">' . $alkaline->formatTime($referrer['stat_date'], 'M j, g:i a') . '</td>';
-		echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
-		echo '</tr>';
-	}
-	?>
-</table>
-
 <h3>Popular</h3>
 <table>
 	<tr>
@@ -226,6 +210,22 @@ foreach($stats->referrers_popular as &$referrer){
 		echo '<tr>';
 		echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
 		echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
+		echo '</tr>';
+	}
+	?>
+</table>
+
+<h3>Recent</h3>
+<table>
+	<tr>
+		<th class="right">Date</th>
+		<th>Referrer</th>
+	</tr>
+	<?php				
+	foreach($stats->referrers_recent as $referrer){
+		echo '<tr>';
+		echo '<td class="right quiet">' . $alkaline->formatRelTime($referrer['stat_date'], 'M j, g:i a') . '</td>';
+		echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
 		echo '</tr>';
 	}
 	?>
