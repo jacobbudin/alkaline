@@ -14,7 +14,7 @@ require_once(PATH . ADMIN . 'includes/dashboard.php');
 
 ?>
 
-<h1>Statistics</h1>
+<h1>Dashboard</h1>
 
 <?php
 $stats = new Stat(strtotime('-30 days'));

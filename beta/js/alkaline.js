@@ -263,7 +263,7 @@ $(document).ready(function(){
 	}
 	
 	// DASHBOARD
-	if(page == 'Statistics'){
+	if(page == 'Dashboard'){
 		var statistics_views = $("#statistics_views").attr("title");
 		statistics_views = jQuery.parseJSON(statistics_views);
 	
@@ -332,6 +332,8 @@ $(document).ready(function(){
 		$(".tickLabels").css('font-size', '');
 	}
 	
+	// STATISTICS
+	
 	if(page == 'Statistics'){
 		var h_statistics_views = $("#h_views").attr("title");
 		h_statistics_views = jQuery.parseJSON(h_statistics_views);
@@ -342,7 +344,7 @@ $(document).ready(function(){
 		var h_stats = $.plot($("#h_holder"),[{
 			label: "Page views",
 			data: h_statistics_views,
-			bars: { show: true, lineWidth: 7 },
+			bars: { show: true, lineWidth: 16 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
@@ -350,12 +352,12 @@ $(document).ready(function(){
 		{
 			label: "Unique visitors",
 			data: h_statistics_visitors,
-			bars: { show: true, lineWidth: 7 },
+			bars: { show: true, lineWidth: 16 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0.01, timeformat: "%h %p" },
 			yaxis: { tickDecimals: 0 },
@@ -372,7 +374,7 @@ $(document).ready(function(){
 		var d_stats = $.plot($("#d_holder"),[{
 			label: "Page views",
 			data: d_statistics_views,
-			bars: { show: true, lineWidth: 6 },
+			bars: { show: true, lineWidth: 15 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
@@ -380,14 +382,14 @@ $(document).ready(function(){
 		{
 			label: "Unique visitors",
 			data: d_statistics_visitors,
-			bars: { show: true, lineWidth: 6 },
+			bars: { show: true, lineWidth: 15 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, minTickSize: [3, "day"] },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0.01, minTickSize: [3, "day"] },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
@@ -401,7 +403,7 @@ $(document).ready(function(){
 		var m_stats = $.plot($("#m_holder"),[{
 			label: "Page views",
 			data: m_statistics_views,
-			bars: { show: true, lineWidth: 13 },
+			bars: { show: true, lineWidth: 30 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
@@ -409,14 +411,14 @@ $(document).ready(function(){
 		{
 			label: "Unique visitors",
 			data: m_statistics_visitors,
-			bars: { show: true, lineWidth: 13 },
+			bars: { show: true, lineWidth: 30 },
 			shadowSize: 10,
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: false, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, minTickSize: [3, "month"] },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
 			yaxis: { tickDecimals: 0 },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
@@ -430,7 +432,34 @@ $(document).ready(function(){
 				$(this).text('Noon');
 			}
 		});
+		
+		var time = new Date();
+		var month = time.getMonth();
+	
+		if(month == 0){ month = 'Jan'; }
+		if(month == 1){ month = 'Feb'; }
+		if(month == 2){ month = 'Mar'; }
+		if(month == 3){ month = 'Apr'; }
+		if(month == 4){ month = 'May'; }
+		if(month == 5){ month = 'Jun'; }
+		if(month == 6){ month = 'Jul'; }
+		if(month == 7){ month = 'Aug'; }
+		if(month == 8){ month = 'Sep'; }
+		if(month == 9){ month = 'Oct'; }
+		if(month == 10){ month = 'Nov'; }
+		if(month == 11){ month = 'Dec'; }
 
+		var day = time.getDate();
+	
+		$(".tickLabel").each(function(index){
+			var text = $(this).text();
+			if(text == (month + ' ' + day)){
+				$(this).text('Today').css('color', '#000');
+			}
+		});
+	
+		$(".tickLabels").css('font-size', '');
+		
 	}
 	
 });
