@@ -557,7 +557,6 @@ class Find extends Alkaline{
 
 		// Prepare query without limit
 		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
-		echo $this->sql;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);

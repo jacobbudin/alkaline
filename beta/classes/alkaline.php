@@ -488,7 +488,7 @@ class Alkaline{
 	}
 	
 	// SHOW RIGHTS
-	public function showRights($name){
+	public function showRights($name, $right_id=null){
 		if(empty($name)){
 			return false;
 		}
@@ -497,10 +497,37 @@ class Alkaline{
 		$query->execute();
 		$rights = $query->fetchAll();
 		
-		$html = '<select name="' . $name . '" id="' . $name . '"><option value="">All</option>';
+		$html = '<select name="' . $name . '" id="' . $name . '"><option value=""></option>';
 		
 		foreach($rights as $right){
-			$html .= '<option value="' . $right['right_id'] . '">' . $right['right_title'] . '</option>';
+			$html .= '<option value="' . $right['right_id'] . '"';
+			if($right['right_id'] == $right_id){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $right['right_title'] . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
+	// SHOW PRIVACY
+	public function showPrivacy($name, $privacy_id){
+		if(empty($name)){
+			return false;
+		}
+		
+		$privacy_levels = array(1 => 'Public', 2 => 'Protected', 3 => 'Private');
+		
+		$html = '<select name="' . $name . '" id="' . $name . '">';
+		
+		foreach($privacy_levels as $privacy_level => $privacy_label){
+			$html .= '<option value="' . $privacy_level . '"';
+			if($privacy_level == $privacy_id){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $privacy_label . '</option>';
 		}
 		
 		$html .= '</select>';

@@ -88,6 +88,9 @@ class Geo extends Alkaline{
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 		
+		// Remove parenthetical coordinates
+		$geo = trim(preg_replace('#\(.*\)#si', '', $geo));
+		
 		// Convert integer-like strings into integers
 		if(preg_match('/^[0-9]+$/', $geo)){
 			$geo = intval($geo);

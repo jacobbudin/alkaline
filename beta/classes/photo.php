@@ -153,6 +153,11 @@ class Photo extends Alkaline{
 	
 	// UPDATE PHOTO TABLE
 	public function updateFields($array, $overwrite=true){
+		// Error checking
+		if(!is_array($array)){
+			return false;
+		}
+		
 		for($i = 0; $i < $this->photo_count; ++$i){
 			// Verify each key has changed; if not, unset the key
 			foreach($array as $key => $value){
@@ -186,6 +191,18 @@ class Photo extends Alkaline{
 						$value = date('Y-m-d H:i:s', strtotime($value));
 						$fields[] = $key . ' = "' . $value . '"';
 					}
+				}
+				elseif($key == 'photo_geo'){
+					$geo = new Geo($value);
+					if($geo->city['country_name'] == 'United States'){
+						$fields[] = $key . ' = "' . $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'] . '"';
+					}
+					else{
+						$fields[] = $key . ' = "' . $geo->city['city_name'] . ', ' . $geo->city['country_name'] . '"';
+					}
+					$fields[] = 'photo_geo_lat = ' . $geo->city['city_lat'];
+					$fields[] = 'photo_geo_long = '. $geo->city['city_long'];
+					
 				}
 				else{
 					$fields[] = $key . ' = "' . addslashes($value) . '"';

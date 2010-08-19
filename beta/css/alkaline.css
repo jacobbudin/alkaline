@@ -18,15 +18,24 @@ textarea{
 	height: 10em;
 }
 
+input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
+input[type=text], input.text {padding:.35em; width: 60%;}
+
 input.title{
 	font-size: 1.2em;
 	width: 100%;
 }
 
-input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
+input.full{
+	width: 100%;
+}
 
 p, table, hr, div#progress{
 	margin: .3em 2.1em 1.5em 1.75em;
+}
+
+#tertiary p{
+	width: 98%;
 }
 
 div#progress{
@@ -306,6 +315,10 @@ a.wrapper{
 	padding: .6em;
 	background-color: #CFE1FF;
 	border-radius: 3px;
+}
+
+.bottom-border{
+	border-width: 0 0 1px 0;
 }
 
 .statistics_holder .legend td.legendColorBox{
