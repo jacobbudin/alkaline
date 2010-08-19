@@ -118,6 +118,16 @@ $(document).ready(function(){
 	var page_re = /^(\w+).*/;
 	page = page.replace(page_re, "$1");
 	
+	// PHOTO
+	$("#photo_tag_add").click(function(){
+		var tag = $("#photo_tag").val();
+		var tags = $("#photo_tags").html();
+		tag = tag + ' <a href="">x</a>';
+		tags = tags + ' ' + tag;
+		$("#photo_tags").html(tags);
+		event.preventDefault();
+	});
+	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
 	var original = $("a.show").text();
