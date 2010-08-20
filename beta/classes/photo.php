@@ -241,6 +241,20 @@ class Photo extends Alkaline{
 						unset($tags[$tag_key]);
 						continue;
 					}
+					else{
+						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
+						$this->db->exec($query);
+						
+						$query = $this->db->prepare('SELECT COUNT(*) as count FROM links WHERE tag_id = ' . $tag['tag_id'] . ';');
+						$query->execute();
+						$tag_exists = $query->fetchAll();
+						$tag_count = $tag_exists[0]['count'];
+						
+						if($tag_count < 1){
+							$query = 'DELETE FROM tags WHERE tag_id = ' . $tag['tag_id'] . ';';
+							$this->db->exec($query);
+						}
+					}
 				}
 			}
 			
@@ -792,7 +806,7 @@ class Photo extends Alkaline{
 	
 	// Retrieve image tags
 	public function getTags(){
-		$query = $this->db->prepare('SELECT tags.tag_name, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
 		$this->tags = $tags;
