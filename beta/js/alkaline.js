@@ -139,20 +139,20 @@ $(document).ready(function(){
 		event.preventDefault();
 	});
 	
-	$("#photo_tags a.tag").click(function(){
+	$("#photo_tags a.tag").live('click', function(){
 		var tag = $(this).contents().text();
 		tag = jQuery.trim(tag);
 		var index = tags.lastIndexOf(tag);
 		if(index > -1){
 			tags.splice(index, 1);
-			updateTags();
+			$(this).fadeOut();
 		}
-		$(this).fadeOut();
+		updateTags();
 		event.preventDefault();
 	});
 	
 	function updateTags(){
-		var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + '/icons/tag.png" alt="" /> <a href="#delete_tag" class="tag">' + item + '</a>'; });
+		var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a href="" class="tag">' + item + '</a>'; });
 		$("#photo_tags_input").val($.toJSON(tags));
 		$("#photo_tags").html(tags_html.join(', '));
 	}
