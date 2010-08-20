@@ -29,11 +29,13 @@ if(!empty($_POST['photo_id'])){
 			'photo_privacy' => @$_POST['photo_privacy'],
 			'right_id' => @$_POST['right_id']);
 		$photos->updateFields($fields);
+		$photos->updateTags(json_decode($_POST['photo_tags_input']));
 	}
 }
 
 $photos = new Photo($photo_id);
 $photos->getImgUrl('admin');
+$photos->getTags();
 
 $photo = $photos->photos[0];
 
@@ -61,7 +63,8 @@ require_once(PATH . ADMIN . 'includes/library.php');
 			<td class="right pad"><label for="photo_tag">Tags:</label></td>
 			<td>
 				<input type="text" id="photo_tag" name="photo_tag" style="width: 40%;" /> <input type="submit" id="photo_tag_add" value="Add" /><br />
-				<div id="photo_tags"></div>
+				<div id="photo_tags"><?php $tags = array(); foreach($photos->tags as $tag){ $tags[] = $tag['tag_name']; } echo json_encode($tags);  ?></div>
+				<input type="hidden" name="photo_tags_input" id="photo_tags_input" value="" />
 			</td>
 		</tr>
 		<tr>

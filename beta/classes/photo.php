@@ -218,6 +218,71 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	// UPDATE TAGS & LINKS TABLES
+	public function updateTags($tags){		
+		// Error checking
+		if(!is_array($tags)){
+			return false;
+		}
+		
+		// Sanitize input
+		$tags = array_map('strip_tags', $tags);
+		$tags = array_map('trim', $tags);
+		$tags = array_unique($tags);
+		
+		$this->getTags();
+		
+		for($i = 0; $i < $this->photo_count; ++$i){
+			// Verify tags have changed; if not, unset the key
+			foreach($this->tags as $tag){
+				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+					$tag_key = array_search($tag['tag_name'], $tags);
+					if($tag_key !== false){
+						unset($tags[$tag_key]);
+						continue;
+					}
+				}
+			}
+			
+			// If no tags have changed, break
+			if(count($tags) == 0){
+				continue;
+			}
+			
+			// Grab tag IDs
+			$tags = array_map('addslashes', $tags);
+			
+			$query = $this->db->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+			$query->execute();
+			$tags_db = $query->fetchAll();
+			
+			$tags = array_map('stripslashes', $tags);
+			
+			foreach($tags as $tag){
+				$found = false;
+				foreach($tags_db as $tag_db){
+					if($tag == $tag_db['tag_name']){
+						$found = true;
+						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_db['tag_id'] . ');';
+						$this->db->exec($query);
+						continue;
+					}
+				}
+				if($found === false){
+					$query = 'INSERT INTO tags (tag_name) VALUES ("' . addslashes($tag) . '");';
+					$this->db->exec($query);
+					$tag_id = intval($this->db->lastInsertId());
+					
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+					$this->db->exec($query);	
+				}
+			}
+			
+			// Update table
+			$this->db->exec('UPDATE photos SET photo_updated = "' . date('Y-m-d H:i:s') . '" WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+		}
+	}
+	
 	// Detemine image extension
 	public function getExt($file){
 		// Error checking

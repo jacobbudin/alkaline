@@ -317,6 +317,24 @@ a.wrapper{
 	border-radius: 3px;
 }
 
+a.x{
+	padding: 0 .3em .2em .3em;
+	border-radius: 3px;
+	color: #ccc;
+	font-family: Verdana, sans-serif;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a.tag{
+	text-decoration: none;
+}
+
+a.x:hover, a.x:active{
+	background-color: #ccc;
+	color: #fff;
+}
+
 .bottom-border{
 	border-width: 0 0 1px 0;
 }

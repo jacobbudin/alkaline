@@ -78,7 +78,7 @@ function updateMaintProgress(){
 	}
 }
 function appendPhoto(photo){
-	var photo = jQuery.parseJSON(photo);
+	var photo = $.evalJSON(photo);
 	photo_ids = $("#shoebox_photo_ids").val();
 	photo_ids += photo.id + ',';
 	$("#shoebox_photo_ids").attr("value", photo_ids);
@@ -118,15 +118,44 @@ $(document).ready(function(){
 	var page_re = /^(\w+).*/;
 	page = page.replace(page_re, "$1");
 	
+	var tags = $("#photo_tags").text();
+	if(empty(tags)){
+		tags = new Array();
+	}
+	else{
+		tags = $.evalJSON(tags);
+	}
+	updateTags();
+	
 	// PHOTO
 	$("#photo_tag_add").click(function(){
 		var tag = $("#photo_tag").val();
-		var tags = $("#photo_tags").html();
-		tag = tag + ' <a href="">x</a>';
-		tags = tags + ' ' + tag;
-		$("#photo_tags").html(tags);
+		tag = jQuery.trim(tag);
+		if(tags.indexOf(tag) == -1){
+			tags.push(tag);
+			updateTags();
+		}
+		$("#photo_tag").val('');
 		event.preventDefault();
 	});
+	
+	$("#photo_tags a.tag").click(function(){
+		var tag = $(this).contents().text();
+		tag = jQuery.trim(tag);
+		var index = tags.lastIndexOf(tag);
+		if(index > -1){
+			tags.splice(index, 1);
+			updateTags();
+		}
+		$(this).fadeOut();
+		event.preventDefault();
+	});
+	
+	function updateTags(){
+		var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + '/icons/tag.png" alt="" /> <a href="#delete_tag" class="tag">' + item + '</a>'; });
+		$("#photo_tags_input").val($.toJSON(tags));
+		$("#photo_tags").html(tags_html.join(', '));
+	}
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
@@ -275,10 +304,10 @@ $(document).ready(function(){
 	// DASHBOARD
 	if(page == 'Dashboard'){
 		var statistics_views = $("#statistics_views").attr("title");
-		statistics_views = jQuery.parseJSON(statistics_views);
+		statistics_views = $.evalJSON(statistics_views);
 	
 		var statistics_visitors = $("#statistics_visitors").attr("title");
-		statistics_visitors = jQuery.parseJSON(statistics_visitors);
+		statistics_visitors = $.evalJSON(statistics_visitors);
 	
 		var stats = $.plot($("#statistics_holder"),[{
 			label: "Page views",
@@ -346,10 +375,10 @@ $(document).ready(function(){
 	
 	if(page == 'Statistics'){
 		var h_statistics_views = $("#h_views").attr("title");
-		h_statistics_views = jQuery.parseJSON(h_statistics_views);
+		h_statistics_views = $.evalJSON(h_statistics_views);
 	
 		var h_statistics_visitors = $("#h_visitors").attr("title");
-		h_statistics_visitors = jQuery.parseJSON(h_statistics_visitors);
+		h_statistics_visitors = $.evalJSON(h_statistics_visitors);
 	
 		var h_stats = $.plot($("#h_holder"),[{
 			label: "Page views",
@@ -377,10 +406,10 @@ $(document).ready(function(){
 		
 	
 		var d_statistics_views = $("#d_views").attr("title");
-		d_statistics_views = jQuery.parseJSON(d_statistics_views);
+		d_statistics_views = $.evalJSON(d_statistics_views);
 	
 		var d_statistics_visitors = $("#d_visitors").attr("title");
-		d_statistics_visitors = jQuery.parseJSON(d_statistics_visitors);
+		d_statistics_visitors = $.evalJSON(d_statistics_visitors);
 	
 		var d_stats = $.plot($("#d_holder"),[{
 			label: "Page views",
@@ -406,10 +435,10 @@ $(document).ready(function(){
 		});
 		
 		var m_statistics_views = $("#m_views").attr("title");
-		m_statistics_views = jQuery.parseJSON(m_statistics_views);
+		m_statistics_views = $.evalJSON(m_statistics_views);
 	
 		var m_statistics_visitors = $("#m_visitors").attr("title");
-		m_statistics_visitors = jQuery.parseJSON(m_statistics_visitors);
+		m_statistics_visitors = $.evalJSON(m_statistics_visitors);
 	
 		var m_stats = $.plot($("#m_holder"),[{
 			label: "Page views",
