@@ -348,8 +348,9 @@ class Photo extends Alkaline{
 		}
 		
 		$size = array();
-		$size['width'] = imagesy($file);
-		$size['height'] = imagesx($file);
+		$info = getimagesize($file);
+		$size['width'] = $info[0];
+		$size['height'] = $info[1];
 		
 		return $size;
 	}
@@ -542,7 +543,7 @@ class Photo extends Alkaline{
 		
 			for($x = 0; $x < $width; ++$x){
 				for($y = 0; $y < $height; ++$y){
-					$rgb = imagecolorat($kmage, $x, $y);
+					$rgb = imagecolorat($image, $x, $y);
 					$r = ($rgb >> 16) & 0xFF;
 					$g = ($rgb >> 8) & 0xFF;
 					$b = $rgb & 0xFF;
