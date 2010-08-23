@@ -3,9 +3,13 @@
 class Find extends Alkaline{
 	private $memory;
 	public $photo_ids;
+	public $photo_ids_after;
+	public $photo_ids_before;
 	public $photo_count;
 	public $photo_count_result;
+	public $photo_offset_length;
 	public $page;
+	public $page_begin;
 	public $page_count;
 	public $page_limit;
 	public $page_next;
@@ -512,10 +516,18 @@ class Find extends Alkaline{
 		$this->page_limit = intval($limit);
 		
 		// Set SQL limit
-		$begin = ($page * $limit) - $limit;
-		$this->sql_limit = ' LIMIT ' . $begin . ', ' . $limit;
+		$this->page_begin = ($page * $limit) - $limit;
+		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
 		
 		return true;
+	}
+	
+	// OFFSET PHOTOS
+	public function offset($length){
+		// Error checking
+		if(!($length = intval($length))){ return false; }
+		
+		$this->photo_offset_length = $length;
 	}
 	
 	// SORT RESULTS
@@ -556,18 +568,24 @@ class Find extends Alkaline{
 		}
 
 		// Prepare query without limit
-		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having;
+		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having . $this->sql_order_by;
 		
 		// Execute query without limit
 		$query = $this->db->prepare($this->sql);
 		$query->execute();
 		$photos = $query->fetchAll();
 		
+		// Grab photos.photo_ids of results
+		$photo_ids = array();
+		foreach($photos as $photo){
+			$photo_ids[] = intval($photo['photo_id']);
+		}
+		
 		// Determine number of photos
 		$this->photo_count = count($photos);
 		
 		// Add order, limit
-		$this->sql .= $this->sql_order_by . $this->sql_limit;
+		$this->sql .= $this->sql_limit;
 		
 		// Execute query with order, limit
 		$query = $this->db->prepare($this->sql);
@@ -577,7 +595,7 @@ class Find extends Alkaline{
 		// Grab photos.photo_ids of results
 		$this->photo_ids = array();
 		foreach($photos as $photo){
-			$this->photo_ids[] = $photo['photo_id'];
+			$this->photo_ids[] = intval($photo['photo_id']);
 		}
 		
 		// Count photos
@@ -592,6 +610,24 @@ class Find extends Alkaline{
 			if($this->page > 1){
 				$this->page_previous = $this->page - 1;
 			}
+		}
+		
+		// Determine offset photos
+		if(!empty($this->page_limit)){
+			if(!empty($this->photo_offset_length)){
+				$offset = $this->page_begin - $this->photo_offset_length;
+				$this->photo_ids_before = array_slice($photo_ids, $offset, $this->photo_offset_length);
+				
+				$offset = $this->page_begin + $this->page_limit;
+				$this->photo_ids_after = array_slice($photo_ids, $offset, $this->photo_offset_length);
+			}
+			else{
+				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin);
+				
+				$offset = $this->page_begin + $this->page_limit;
+				$this->photo_ids_after = array_slice($photo_ids, $offset);
+			}
+			
 		}
 		
 		// Return photos.photo_ids

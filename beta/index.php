@@ -21,11 +21,15 @@ $photo_ids = new Find;
 // $photo_ids->views(1,2);
 // $photo_ids->sort('photos.photo_published', 'DESC');
 // $photo_ids->_tags('beach');
-// $photo_ids->_page(1,5);
+$photo_ids->_page(3,1);
+// $photo_ids->offset(2);
 // $photo_ids->_published();
 $photo_ids->privacy('protected', true);
 // $photo_ids->pile('fun');
 $photo_ids->exec();
+
+var_dump($photo_ids->photo_ids_before);
+var_dump($photo_ids->photo_ids_after);
 
 // echo $photo_ids->getMemory();
 
