@@ -860,6 +860,27 @@ class Alkaline{
 		$count =  number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
 		return $count;
 	}
+	
+	// REDIRECT HANDLING
+	// Current page for redirects
+	public function location(){
+		$location = LOCATION;
+		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
+		return $location;
+	}
+	
+	public function setCallback(){
+		$_SESSION['callback'] = self::location();
+	}
+	
+	public function callback(){
+		if(!empty($_SESSION['callback'])){
+			header('Location: ' . $_SESSION['callback']);
+			exit();
+		}
+		
+		return false;
+	}
 }
 
 ?>

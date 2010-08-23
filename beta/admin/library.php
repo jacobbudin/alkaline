@@ -8,6 +8,8 @@ $user = new User;
 
 $user->perm(true);
 
+$alkaline->setCallback();
+
 $photo_ids = new Find();
 $photo_ids->page(1,100);
 $photo_ids->exec();

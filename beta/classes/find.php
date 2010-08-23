@@ -485,20 +485,18 @@ class Find extends Alkaline{
 				$this->sql_join_on[] = 'photos.photo_id = links.photo_id';
 				$this->sql_join_tables[] = 'links';
 				$this->sql_join_type = 'LEFT OUTER JOIN';
-
-				// $this->sql_having_fields[] = 'COUNT(*) = ' . intval($count);
-
+				
 				// Set tags to find
 				$this->sql_conds[] = 'links.link_id IS NULL';
 				break;
 			case 'tags':
-				$this->allTags(intval($_GET['id']));
+				$this->_allTags(intval($_GET['id']));
 				break;
 			case 'piles':
-				$this->pile(intval($_GET['id']));
+				$this->_pile(intval($_GET['id']));
 				break;
 			case 'rights':
-				$this->rights(intval($_GET['id']));
+				$this->_rights(intval($_GET['id']));
 				break;
 		}
 	}
@@ -679,9 +677,53 @@ class Find extends Alkaline{
 	
 	// GET MEMORY
 	public function getMemory(){
-		if(count($this->memory) > 0){
-			return implode(' ', $this->memory);
+		if(count($this->memory) < 1){
+			return false;
 		}
+		
+		return implode(' ', $this->memory);
+	}
+	
+	
+	// SAVE MEMORY
+	public function saveMemory(){
+		if(count($this->memory) < 1){
+			return false;
+		}
+		
+		$_SESSION['recent_memory'] = $this->memory;
+		
+		return true;
+	}
+	
+	// RECENT MEMORY
+	public function recentMemory($fallback_url=null){
+		if(count($this->memory) > 0){
+			$recent = $this->memory;
+		}
+		elseif(!empty($_SESSION['recent_memory'])){
+			$recent = $_SESSION['recent_memory'];
+		}
+		elseif(!empty($fallback_url)){
+			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+			exit();
+		}
+		else{
+			return false;
+		}
+		
+		$recent = implode(' ', $recent);
+		
+		if(!eval($recent)){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function clearMemory(){
+		unset($_SESSION['recent_memory']);
+		return true;
 	}
 }
 

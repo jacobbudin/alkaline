@@ -31,6 +31,8 @@ if(!empty($_POST['photo_id'])){
 		$photos->updateFields($fields);
 		$photos->updateTags(json_decode($_POST['photo_tags_input']));
 	}
+	
+	$alkaline->callback();
 }
 
 $photos = new Photo($photo_id);

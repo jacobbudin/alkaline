@@ -114,9 +114,7 @@ class Orbit extends Alkaline{
 	
 	// Current page for redirects
 	public function location(){
-		$location = LOCATION;
-		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
-		return $location;
+		return parent::location();
 	}
 	
 	// Set preference key
