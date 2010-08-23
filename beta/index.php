@@ -28,8 +28,8 @@ $photo_ids->privacy('protected', true);
 // $photo_ids->pile('fun');
 $photo_ids->exec();
 
-var_dump($photo_ids->photo_ids_before);
-var_dump($photo_ids->photo_ids_after);
+// var_dump($photo_ids->photo_ids_before);
+// var_dump($photo_ids->photo_ids_after);
 
 // echo $photo_ids->getMemory();
 

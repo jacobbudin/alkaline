@@ -76,8 +76,9 @@ class Photo extends Alkaline{
 			// Add photo to database
 			$photo_ext = $this->getExt($file);
 			$photo_mime = $this->getMIME($file);
+			$photo_size = $this->getSize($file);
 			
-			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '");';
+			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded, photo_height, photo_width) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '", ' . $photo_size['height'] . ', ' . $photo_size['width'] . ');';
 			$this->db->exec($query);
 			
 			$photo_id = intval($this->db->lastInsertId());
@@ -337,6 +338,20 @@ class Photo extends Alkaline{
 			default:
 				return false; break;
 		}
+	}
+	
+	// Detemine image MIME type
+	public function getSize($file){
+		// Error checking
+		if(empty($file)){
+			return false;
+		}
+		
+		$size = array();
+		$size['width'] = imagesy($file);
+		$size['height'] = imagesx($file);
+		
+		return $size;
 	}
 	
 	// Fill image

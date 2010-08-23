@@ -243,10 +243,13 @@ else{
 	if(!empty($_POST['orientation'])){
 		switch($_POST['orientation']){
 			case 'portrait':
+				$photo_ids->ratio(null, 1);
 				break;
 			case 'landscape':
+				$photo_ids->ratio(1, null);
 				break;
 			case 'square':
+				$photo_ids->ratio(1, 1);
 				break;
 		}
 	}
@@ -293,8 +296,10 @@ else{
 				break;
 		}
 	}
-
+	
 	$photo_ids->exec();
+	
+	$photo_ids->getMemory();
 
 	$photos = new Photo($photo_ids->photo_ids);
 	$photos->getImgUrl('square');

@@ -454,23 +454,19 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY ORIENTATION
-	public function orientation($orientation=null){
-		if(empty($orientation)){
+	// FIND BY IMAGE RATIO
+	public function ratio($min=null, $max=null){
+		if(empty($min) and empty($max)){
 			return false;
 		}
 		
-		switch($orientation){
-			case 'landscape':
-				$this->sql_conds[] = '';
-				break;
-			case 'portrait':
-				$this->sql_conds[] = '';
-				break;
-			case 'square';
-				$this->sql_conds[] = '';
-				break;
-			
+		if(!empty($min)){
+			$min = intval($min);
+			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) <= ' . $min;
+		}
+		if(!empty($max)){
+			$max = intval($max);
+			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) >= ' . $min;
 		}
 		
 		return true;

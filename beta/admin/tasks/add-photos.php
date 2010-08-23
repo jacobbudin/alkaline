@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 if(empty($_POST['photo_file'])){
-	$photo_files = $alkaline->seekDirectory();
+	$photo_files = $alkaline->seekDirectory(PATH . SHOEBOX);
 	$photo_files = array_map('base64_encode', $photo_files);
 	echo json_encode($photo_files);
 }
