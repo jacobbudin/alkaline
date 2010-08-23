@@ -9,6 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $pile_id = @$alkaline->findID($_GET['id']);
+$pile_add = @$alkaline->findID($_GET['add']);
 
 // SAVE CHANGES
 if(!empty($_POST['pile_id'])){
@@ -22,6 +23,16 @@ if(!empty($_POST['pile_id'])){
 		$alkaline->updateRow($fields, 'piles', $pile_id);
 	}
 	unset($pile_id);
+}
+else{
+	$alkaline->deleteEmptyRow('piles', array('page_title', 'pile_call'));
+}
+
+// CREATE PILE
+if($pile_add == 1){
+	$pile_call = Find::recentMemory();
+	$fields = array('pile_call' => $pile_call);
+	$pile_id = $alkaline->addRow($fields, 'piles');
 }
 
 // GET PILES TO VIEW OR PILE TO EDIT
@@ -89,7 +100,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>results/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
 	
 	<h1>Pile</h1>
 	

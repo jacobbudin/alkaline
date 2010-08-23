@@ -168,7 +168,7 @@ require_once(PATH . ADMIN . 'includes/library_wide.php');
 
 ?>
 
-<div style="float: right;"><a href="" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="" class="nu"><span class="button">&#0187;</span>View comments</a></div>
+<div style="float: right;"><a href="<?php echo BASE . ADMIN; ?>piles/build/" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="<?php echo BASE . ADMIN; ?>search/" class="nu"><span class="button">&#0131;</span>New search</a></div>
 
 <h1>Search Results (<?php echo $photo_ids->photo_count_result; ?>)</h1>
 
