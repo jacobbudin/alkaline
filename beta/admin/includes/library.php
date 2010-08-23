@@ -20,6 +20,7 @@
 	
 	<ul>
 		<li><a href="<?php echo BASE . ADMIN; ?>library/">View photos</a></li>
+		<li><a href="<?php echo BASE . ADMIN; ?>results/">View search results</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>search/">Search photos</a></li>
 	</ul>
 	

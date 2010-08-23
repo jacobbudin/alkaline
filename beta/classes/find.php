@@ -348,6 +348,15 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY MEMORY
+	public function memory(){
+		if(!eval($this->recentMemory())){
+			return false;
+		}
+		
+		return true;
+	}
+	
 	// FIND BY RIGHTS SET
 	public function rights($right=null){
 		// Error checking
@@ -490,15 +499,20 @@ class Find extends Alkaline{
 				$this->sql_conds[] = 'links.link_id IS NULL';
 				break;
 			case 'tags':
-				$this->_allTags(intval($_GET['id']));
+				$this->_allTags(@intval($_GET['id']));
 				break;
 			case 'piles':
-				$this->_pile(intval($_GET['id']));
+				$this->_pile(@intval($_GET['id']));
 				break;
 			case 'rights':
-				$this->_rights(intval($_GET['id']));
+				$this->_rights(@intval($_GET['id']));
+				break;
+			default:
+				return false;
 				break;
 		}
+		
+		return true;
 	}
 	
 	// FIND PAGE BY PHOTO ID
@@ -675,9 +689,10 @@ class Find extends Alkaline{
 		return $this->photo_ids;
 	}
 	
-	// GET MEMORY
+	// SEARCH MEMORY
+	// Retrieve memory
 	public function getMemory(){
-		if(count($this->memory) < 1){
+		if(count($this->memory) > 0){
 			return false;
 		}
 		
@@ -685,7 +700,7 @@ class Find extends Alkaline{
 	}
 	
 	
-	// SAVE MEMORY
+	// Save memory
 	public function saveMemory(){
 		if(count($this->memory) < 1){
 			return false;
@@ -696,33 +711,19 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// RECENT MEMORY
-	public function recentMemory($fallback_url=null){
-		if(count($this->memory) > 0){
-			$recent = $this->memory;
-		}
-		elseif(!empty($_SESSION['recent_memory'])){
-			$recent = $_SESSION['recent_memory'];
-		}
-		elseif(!empty($fallback_url)){
-			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
-			exit();
-		}
-		else{
+	// Most recent saved memory
+	public function recentMemory(){
+		if(empty($_SESSION['recent_memory'])){
 			return false;
 		}
 		
-		$recent = implode(' ', $recent);
-		
-		if(!eval($recent)){
-			return false;
-		}
-		
-		return true;
+		return implode(' ', $_SESSION['recent_memory']);
 	}
 	
+	// Clear memory
 	public function clearMemory(){
 		unset($_SESSION['recent_memory']);
+		
 		return true;
 	}
 }

@@ -603,6 +603,7 @@ class Alkaline{
 				$fields['page_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'piles':
+				$fields['pile_views'] = 0;
 				$fields['pile_created'] = date('Y-m-d H:i:s');
 				$fields['pile_modified'] = date('Y-m-d H:i:s');
 				break;

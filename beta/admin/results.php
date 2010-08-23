@@ -12,12 +12,15 @@ $alkaline->setCallback();
 
 $photo_ids = new Find();
 
-$photo_ids->recentMemory();
 $photo_ids->page(1, 100);
 
 // SANITIZE SEARCH QUERY
 $_GET = array_map('strip_tags', $_GET);
 $_POST = array_map('strip_tags', $_POST);
+
+if(empty($_GET) and empty($_POST)){
+	$photo_ids->memory();
+}
 
 // Smart search
 if(!empty($_GET['smart'])){
