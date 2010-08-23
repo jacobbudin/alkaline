@@ -11,6 +11,7 @@ class Find extends Alkaline{
 	public $page;
 	public $page_begin;
 	public $page_count;
+	public $page_first;
 	public $page_limit;
 	public $page_next;
 	public $page_previous;
@@ -506,17 +507,20 @@ class Find extends Alkaline{
 	}
 	
 	// PAGINATE RESULTS
-	public function page($page, $limit=LIMIT){
+	public function page($page, $limit=LIMIT, $first=null){
 		// Error checking
 		if(empty($page)){ return false; }
 		if($page == 0){ return false; }
+		if(empty($first)){ $first = $limit; }
 		
 		// Store data to object
 		$this->page = intval($page);
 		$this->page_limit = intval($limit);
+		$this->page_first = intval($first);
 		
 		// Set SQL limit
-		$this->page_begin = ($page * $limit) - $limit;
+		if($page == 1){ $limit = $first; }
+		$this->page_begin = (($page - 1) * $limit) - $limit + $first;
 		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
 		
 		return true;
@@ -603,7 +607,7 @@ class Find extends Alkaline{
 		
 		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil($this->photo_count / ($this->page * $this->page_limit));
+			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
@@ -618,13 +622,23 @@ class Find extends Alkaline{
 				$offset = $this->page_begin - $this->photo_offset_length;
 				$this->photo_ids_before = array_slice($photo_ids, $offset, $this->photo_offset_length);
 				
-				$offset = $this->page_begin + $this->page_limit;
+				if($this->page == 1){
+					$offset = $this->page_begin + $this->page_first;
+				}
+				else{
+					$offset = $this->page_begin + $this->page_limit;
+				}
 				$this->photo_ids_after = array_slice($photo_ids, $offset, $this->photo_offset_length);
 			}
 			else{
 				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin);
 				
-				$offset = $this->page_begin + $this->page_limit;
+				if($this->page == 1){
+					$offset = $this->page_begin + $this->page_first;
+				}
+				else{
+					$offset = $this->page_begin + $this->page_limit;
+				}
 				$this->photo_ids_after = array_slice($photo_ids, $offset);
 			}
 			
