@@ -17,6 +17,7 @@ class Find extends Alkaline{
 	public $page_previous;
 	public $piles;
 	public $tags;
+	public $with;
 	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
@@ -502,11 +503,23 @@ class Find extends Alkaline{
 		}
 	}
 	
+	// FIND PAGE BY PHOTO ID
+	public function with($photo_id){
+		// Error checking
+		if(empty($photo_id)){ return false; }
+		if(!$photo_id = intval($photo_id)){ return false; }
+		
+		$this->with = $photo_id;
+		
+		return true;
+	}
+	
 	// PAGINATE RESULTS
-	public function page($page, $limit=LIMIT, $first=null){
+	public function page($page, $limit=null, $first=null){
 		// Error checking
 		if(empty($page)){ return false; }
 		if($page == 0){ return false; }
+		if(empty($limit)){ $limit = LIMIT; }
 		if(empty($first)){ $first = $limit; }
 		
 		// Store data to object
@@ -584,6 +597,37 @@ class Find extends Alkaline{
 		// Determine number of photos
 		$this->photo_count = count($photos);
 		
+		// Determine where "with" photo id is placed in pages
+		if(!empty($this->with)){
+			$key = array_search($this->with, $photo_ids);
+			if($key === false){
+				return false;
+			}
+			
+			if(empty($this->page_limit)){ $this->page_limit = LIMIT; }
+			if(empty($this->page_first)){ $this->page_first = $this->page_limit; }
+			
+			if($key < $this->page_first){
+				$page = 1;
+			}
+			else{
+				$page = intval(ceil((($key + 1) - $this->page_first) / $this->page_limit) + 1);
+			}
+			
+			$this->page($page, $this->page_limit, $this->page_first);
+		}
+		
+		// Determine pagination
+		if(!empty($this->page)){
+			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
+			if($this->page < $this->page_count){
+				$this->page_next = $this->page + 1;
+			}
+			if($this->page > 1){
+				$this->page_previous = $this->page - 1;
+			}
+		}
+		
 		// Add order, limit
 		$this->sql .= $this->sql_limit;
 		
@@ -600,17 +644,6 @@ class Find extends Alkaline{
 		
 		// Count photos
 		$this->photo_count_result = count($this->photo_ids);
-		
-		// Determine pagination
-		if(!empty($this->page)){
-			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
-			if($this->page < $this->page_count){
-				$this->page_next = $this->page + 1;
-			}
-			if($this->page > 1){
-				$this->page_previous = $this->page - 1;
-			}
-		}
 		
 		// Determine offset photos
 		if(!empty($this->page_limit)){

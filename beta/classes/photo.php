@@ -814,7 +814,7 @@ class Photo extends Alkaline{
 		foreach($exifs as $exif){
 			$photo_id = intval($exif['photo_id']);
 			$key = array_search($photo_id, $this->photo_ids);
-			if($photo_id = $this->photo_ids[$key]){
+			if(@$photo_id = $this->photo_ids[$key]){
 				@$this->photos[$key]['photo_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
 			}
 		}
