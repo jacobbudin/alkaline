@@ -390,20 +390,22 @@ class Photo extends Alkaline{
 
 				$ratio_orig = $width_orig / $height_orig;
 				$ratio = $width / $height;
-
+				
+				$quality_tmp = floor((1 / $quality) * 95);
+				
 				if($ratio_orig > $ratio){
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefrompng($src);
 					$pixel = ($width_orig - $height_orig) / 2;
 					imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-					imagepng($image_p, $dest, $quality);
+					imagepng($image_p, $dest, $quality_tmp);
 				}
 				else{
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefrompng($src);
 					$pixel = ($height_orig - $width_orig) / 2;
 					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-					imagepng($image_p, $dest, $quality);
+					imagepng($image_p, $dest, $quality_tmp);
 				}
 
 				imagedestroy($image);
@@ -421,14 +423,14 @@ class Photo extends Alkaline{
 					$image = imagecreatefromgif($src);
 					$pixel = ($width_orig - $height_orig) / 2;
 					imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-					imagegif($image_p, $dest, $quality);
+					imagegif($image_p, $dest);
 				}
 				else{
 					$image_p = imagecreatetruecolor($width, $height);
 					$image = imagecreatefromgif($src);
 					$pixel = ($height_orig - $width_orig) / 2;
 					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-					imagegif($image_p, $dest, $quality);
+					imagegif($image_p, $dest);
 				}
 
 				imagedestroy($image);
@@ -477,7 +479,8 @@ class Photo extends Alkaline{
 				$image_p = imagecreatetruecolor($width, $height);
 				$image = imagecreatefrompng($src);
 				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-				imagepng($image_p, $dest, $quality);
+				$quality_tmp = floor((1 / $quality) * 95);
+				imagepng($image_p, $dest, $quality_tmp);
 
 				imagedestroy($image);
 				imagedestroy($image_p);
@@ -495,7 +498,7 @@ class Photo extends Alkaline{
 				$image_p = imagecreatetruecolor($width, $height);
 				$image = imagecreatefromgif($src);
 				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-				imagegif($image_p, $dest, $quality);
+				imagegif($image_p, $dest);
 
 				imagedestroy($image);
 				imagedestroy($image_p);
@@ -646,9 +649,9 @@ class Photo extends Alkaline{
 			$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
 			
 			// If EXIF data exists, add each key (group), name, value to database
-			if(count($exif) > 0){
+			if((count($exif) > 0) and is_array($exif)){
 				$inserts = array();
-				foreach($exif as $key => $section){
+				foreach(@$exif as $key => $section){
 				    foreach($section as $name => $value){
 						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '");';
 						$this->db->exec($query);

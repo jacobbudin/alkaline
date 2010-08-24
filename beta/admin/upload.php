@@ -13,11 +13,8 @@ if(!empty($_FILES)){
 	$tmp_file = $_FILES['user_file']['tmp_name'][0];
 	copy($tmp_file, PATH . SHOEBOX . $filename);
 	unlink($tmp_file);
-	var_dump($_FILES);
+	exit();
 }
-
-$blocks = $alkaline->getBlocks();
-$block_count = count($blocks);
 
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
