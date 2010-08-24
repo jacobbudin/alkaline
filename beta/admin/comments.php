@@ -9,6 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $comment_id = @$alkaline->findID($_GET['id']);
+$comment_unpublished = @$alkaline->findID($_GET['unpublished']);
 
 // SAVE CHANGES
 if(!empty($_POST['comment_id'])){
@@ -17,7 +18,7 @@ if(!empty($_POST['comment_id'])){
 		$alkaline->deleteRow('comments', $comment_id);
 	}
 	else{
-		if($_POST['comment_spam'] == 'spam'){
+		if(@$_POST['comment_spam'] == 'spam'){
 			$comment_status = -1;
 		}
 		else{
@@ -31,8 +32,14 @@ if(!empty($_POST['comment_id'])){
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
-
-	$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');
+	
+	if($comment_unpublished != 1){
+		$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');	
+	}
+	else{
+		$comments = $alkaline->getTableNew('comments', null, null, null, 'comment_created DESC');
+	}
+	
 	$comment_count = @count($comments);
 	
 	$photo_ids = array();
@@ -67,7 +74,7 @@ if(empty($comment_id)){
 				echo '<td>';
 				$key = array_search($comment['photo_id'], $photos->photo_ids);
 				if(is_int($key)){
-					echo '<img src="' . $photos->photos[$key]['photo_src_square'] . '" class="frame" />';
+					echo '<a href="' . BASE . ADMIN . 'photo/' . $photos->photos[$key]['photo_id'] . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
 				}
 				echo '</td>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'comments/' . $comment['comment_id'] . '">';
@@ -105,7 +112,7 @@ else{
 	
 	?>
 	
-			<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/comments/<?php echo $comment['comment_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photo</a></div>
+			<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>photo/<?php echo $comment['photo_idx']; ?>/" class="nu"><span class="button">&#0187;</span>View photo</a></div>
 	
 	<h1>Comment</h1>
 
@@ -155,7 +162,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>comments/">cancel</a></td>
+				<td><input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" /><input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo BASE . ADMIN; ?>comments/">cancel</a></td>
 			</tr>
 		</table>
 	</form>

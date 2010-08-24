@@ -572,6 +572,44 @@ class Alkaline{
 		return $table;
 	}
 	
+	public function getTableNew($table, $ids=null, $limit=null, $page=1, $order_by=null){
+		if(empty($table)){
+			return false;
+		}
+		if(!is_int($page) or ($page < 1)){
+			$page = 1;
+		}
+		
+		$order_by_sql = '';
+		$limit_sql = '';
+		
+		if(!empty($order_by)){
+			$order_by_sql = ' ORDER BY ' . $order_by;
+		}
+		
+		if(!empty($limit)){
+			$limit = intval($limit);
+			$page = intval($page);
+			$limit_sql = ' LIMIT ' . ($limit * ($page - 1)) . ', ' . $limit;
+		}
+		
+		if(empty($ids)){
+			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 ' . $order_by_sql . $limit_sql . ';');
+		}
+		else{
+			$ids = self::convertToIntegerArray($ids);
+			$field = $this->tables[$table];
+			echo 'SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';';
+			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
+		}
+		
+		$query->execute();
+		$table = $query->fetchAll();
+		
+		return $table;
+	}
+	
+	
 	public function addRow($fields=null, $table){
 		// Error checking
 		if(empty($table) or (!is_array($fields) and isset($fields))){

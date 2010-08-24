@@ -26,7 +26,6 @@
 	<ul>
 		<li><a href="<?php echo BASE . ADMIN; ?>comments/">View comments</a></li>
 		<li><a href="<?php echo BASE . ADMIN; ?>comments/unpublished/">Find unpublished comments</a></li>
-		<li><a href="<?php echo BASE . ADMIN; ?>comments/reply/">Reply to comments</a></li>
 	</ul>
 	
 	<img src="/images/iconblocks/piles.png" alt="" class="icon_block" />
