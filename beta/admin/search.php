@@ -72,10 +72,6 @@ require_once(PATH . ADMIN . 'includes/library.php');
 		<tr>
 			<td class="right" style="padding-top: 7px;">Dominant color:</td>
 			<td>
-				<select name="color_type">
-					<option value="is">is</option>
-					<option value="is_not">is not</option>
-				</select>
 				<select name="color">
 					<option></option>
 					<option value="grey">grey</option>

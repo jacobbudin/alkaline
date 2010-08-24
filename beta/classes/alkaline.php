@@ -653,7 +653,7 @@ class Alkaline{
 		}
 		
 		$field = $this->tables[$table];
-		$fields[$field] = "";
+		unset($fields[$field]);
 		
 		$columns = array_keys($fields);
 		$values = array_values($fields);
@@ -757,6 +757,10 @@ class Alkaline{
 		$tables = $this->tables;
 		
 		// Exclude tables
+		unset($tables['rights']);
+		unset($tables['extensions']);
+		unset($tables['themes']);
+		unset($tables['sizes']);
 		unset($tables['rights']);
 		
 		// Run helper function

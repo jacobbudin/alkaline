@@ -450,6 +450,52 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY COLOR (HSL)
+	public function hsl($h, $s, $l){
+		// Error checking
+		if(empty($h) and empty($s) and empty($l)){ return false; }
+		
+		$h_tolerance = 40;
+		$s_tolerance = 50;
+		$l_tolerance = 75;
+		
+		// H - Hue
+		if(!empty($h)){
+			$h = intval($h);
+			if(($h < $h_tolerance) or ($h > (360 - $h_tolerance))){
+				if($h < $h_tolerance){
+					$h_top = $h;
+					$h_bottom = 360 + ($h - $h_tolerance);
+				}
+				if($h > (360 - $h_tolerance)){
+					$h_top = ($h + $h_tolerance) - 360;
+					$h_bottom = $h;
+				}
+				$this->sql_conds[] = '(photos.photo_color_h <= ' . $h_top . ' OR photos.photo_color_h >= ' . $h_bottom . ')';
+			}
+			else{
+				$this->sql_conds[] = 'photos.photo_color_h >= ' . ($h - $h_tolerance);
+				$this->sql_conds[] = 'photos.photo_color_h <= ' . ($h + $h_tolerance);
+			}
+		}
+		
+		// S - Saturation
+		if(!empty($s)){
+			$s = intval($s);
+			$this->sql_conds[] = 'photos.photo_color_s >= ' . ($s - $s_tolerance);
+			$this->sql_conds[] = 'photos.photo_color_s <= ' . ($s + $s_tolerance);
+		}
+		
+		// L - Lightness
+		if(!empty($l)){
+			$l = intval($l);
+			$this->sql_conds[] = 'photos.photo_color_l >= ' . ($l - $l_tolerance);
+			$this->sql_conds[] = 'photos.photo_color_l <= ' . ($l + $l_tolerance);
+		}
+		
+		return true;
+	}
+	
 	// FIND BY PUBLISHED
 	public function published($published=true){
 		$now = date('Y-m-d H:i:s');

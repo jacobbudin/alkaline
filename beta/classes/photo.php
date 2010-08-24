@@ -659,9 +659,9 @@ class Photo extends Alkaline{
 				if($H>1){ $H--; }
 			} 
 
-			$hsl_dom_h = $H * 365;
-			$hsl_dom_s = $S * 100;
-			$hsl_dom_l = $V * 100;
+			$hsl_dom_h = round($H * 360);
+			$hsl_dom_s = round($S * 100);
+			$hsl_dom_l = round($V * 100);
 		
 			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ', photo_color_h = ' . $hsl_dom_h . ', photo_color_s = ' . $hsl_dom_s . ', photo_color_l = ' . $hsl_dom_l . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
 			$this->db->exec($query);
