@@ -20,20 +20,26 @@
 	<?php
 	
 	$shoebox_count = $alkaline->countDirectory();
-	if($shoebox_count > 0){	
+	$comment_count = $alkaline->countTableNew('comments');
+	
+	if(($shoebox_count > 0) or ($comment_count > 0)){
 		?>
 		<img src="/images/iconblocks/announcement.png" alt="" class="icon_block" />
 	
 		<h2>New</h2>
 		<table class="counts">
-			<tr>
-				<td class="right"><?php echo $shoebox_count; ?></td>
-				<td><a href="<?php echo BASE . ADMIN; ?>shoebox/">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
-			</tr>
-			<tr>
-				<td class="right">1</td>
-				<td><a href="<?php echo BASE . ADMIN; ?>comments/new/">new comments</a></td>
-			</tr>
+			<?php if($shoebox_count > 0){ ?>
+				<tr>
+					<td class="right"><?php echo $shoebox_count; ?></td>
+					<td><a href="<?php echo BASE . ADMIN; ?>shoebox/">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
+				</tr>
+			<?php } ?>
+			<?php if($comment_count > 0){ ?>
+				<tr>
+					<td class="right">1</td>
+					<td><a href="<?php echo BASE . ADMIN; ?>comments/unpublished/">new <?php $alkaline->echoCount($comment_count, 'comment'); ?></a></td>
+				</tr>
+			<?php } ?>
 		</table>
 		<?php
 	}

@@ -723,7 +723,7 @@ class Alkaline{
 		
 		// Run helper function
 		foreach($tables as $table => $selector){
-			$info[] = array('table' => $table, 'count' => self::countTable($table, $selector));
+			$info[] = array('table' => $table, 'count' => self::countTable($table));
 		}
 		
 		foreach($info as &$table){
@@ -738,8 +738,19 @@ class Alkaline{
 		return $info;
 	}
 	
-	function countTable($table, $selector){
-		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $selector . ') AS count FROM ' . $table . ';');
+	function countTable($table){
+		$field = $this->tables[$table];
+		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
+		$query->execute();
+		$count = $query->fetch();
+		
+		$count = intval($count['count']);
+		return $count;
+	}
+	
+	function countTableNew($table){
+		$field = $this->tables[$table];
+		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0;');
 		$query->execute();
 		$count = $query->fetch();
 		
