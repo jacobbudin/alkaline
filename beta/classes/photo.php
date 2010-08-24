@@ -616,6 +616,8 @@ class Photo extends Alkaline{
 			imagedestroy($image);
 			unlink($dest);
 			
+			// Calculate dominant color (RGB)
+			
 			$rgb_dom_percent = 0;
 			foreach($rgbs as $rgb => $percent){
 				if($percent > $rgb_dom_percent){
@@ -628,7 +630,40 @@ class Photo extends Alkaline{
 			$rgb_dom_g = $rgb_dom[1];
 			$rgb_dom_b = $rgb_dom[2];
 			
-			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
+			$R = ($rgb_dom_r / 255);
+			$G = ($rgb_dom_g / 255);
+			$B = ($rgb_dom_b / 255);
+
+			$min = min($R, $G, $B);
+			$max = max($R, $G, $B);
+			$delta = $max - $min;
+
+			$V = $max;
+
+			if($delta == 0){ 
+				$H = 0;
+				$S = 0;
+			} 
+			else{ 
+				$S = $delta / $max;
+
+				$del_R = ((($max - $R ) / 6) + ($delta / 2 )) / $delta;
+				$del_G = ((($max - $G ) / 6) + ($delta / 2 )) / $delta;
+				$del_B = ((($max - $B ) / 6) + ($delta / 2 )) / $delta;
+
+				if($R == $max){ $H = $del_B - $del_G; }
+				elseif($G == $max){ $H = ( 1 / 3 ) + $del_R - $del_B; }
+				elseif($B == $max){ $H = ( 2 / 3 ) + $del_G - $del_R; }
+
+				if($H<0){ $H++; }
+				if($H>1){ $H--; }
+			} 
+
+			$hsl_dom_h = $H * 365;
+			$hsl_dom_s = $S * 100;
+			$hsl_dom_l = $V * 100;
+		
+			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ', photo_color_h = ' . $hsl_dom_h . ', photo_color_s = ' . $hsl_dom_s . ', photo_color_l = ' . $hsl_dom_l . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
 			$this->db->exec($query);
 			
 			return true;
