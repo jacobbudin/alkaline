@@ -43,6 +43,8 @@ if($size_add == 1){
 	$size_id = $alkaline->addRow(null, 'sizes');
 }
 
+define('TAB', 'settings');
+
 // GET SIZES TO VIEW OR SIZE TO EDIT
 if(empty($size_id)){
 	$sizes = $alkaline->getTable('sizes');
@@ -50,7 +52,6 @@ if(empty($size_id)){
 	
 	define('TITLE', 'Alkaline Thumbnails');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 
@@ -91,7 +92,6 @@ else{
 		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 	

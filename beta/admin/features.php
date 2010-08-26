@@ -15,9 +15,9 @@ $photo_ids->exec();
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
 
+define('TAB', 'features');
 define('TITLE', 'Alkaline Features');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/features.php');
 
 ?>
 

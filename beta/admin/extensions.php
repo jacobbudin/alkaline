@@ -30,13 +30,13 @@ if(!empty($_POST['extension_id'])){
 	unset($extension_id);
 }
 
+define('TAB', 'settings');
 
 if(empty($extension_id)){	
 	$orbit = new Orbit();
 	
 	define('TITLE', 'Alkaline Extensions');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 
@@ -88,7 +88,6 @@ else{
 	
 	define('TITLE', 'Alkaline Extensions');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 	
 	?>
 	

@@ -11,9 +11,9 @@ $user->perm(true);
 $blocks = $alkaline->getBlocks();
 $block_count = count($blocks);
 
+define('TAB', 'settings');
 define('TITLE', 'Alkaline Theme Blocks');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/settings.php');
 
 ?>
 

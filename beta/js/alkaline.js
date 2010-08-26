@@ -190,34 +190,6 @@ $(document).ready(function(){
 		showAnim: null
 	});
 	
-	// PRIMARY - NAVIGATION
-	
-	$("#primary ul#navigation li").hover(
-		function(){
-			$(this).siblings().each(function(index){
-				bool = $(this).find("img").hasClass("hide");
-				if(bool === true){
-					$(this).find("img").hide();
-				}
-			});
-			$(this).find("img").fadeIn(600);
-			attr = $(this).attr("class");
-			if(attr == "logout"){
-				$(this).find("a").animate({"color": "#f02415"}, 600);
-			}
-		}, 
-		function(){
-			attr = $(this).find("img").attr("class");
-			if(attr == 'hide'){
-				$(this).find("img").hide();
-			}
-			attr = $(this).attr("class");
-			if(attr == "logout"){
-				$(this).find("a").stop();
-				$(this).find("a").css("color", "#999");
-			}
-		}
-	);
 	
 	// UPLOAD
 	
@@ -302,7 +274,7 @@ $(document).ready(function(){
 	}
 	
 	// DASHBOARD
-	if(page == 'Dashboard'){
+	if(page == 'Vitals'){
 		var statistics_views = $("#statistics_views").attr("title");
 		statistics_views = $.evalJSON(statistics_views);
 	

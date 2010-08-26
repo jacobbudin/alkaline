@@ -8,9 +8,9 @@ $user = new User;
 
 $user->perm(true);
 
+define('TAB', 'settings');
 define('TITLE', 'Alkaline Settings');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/settings.php');
 
 ?>
 	

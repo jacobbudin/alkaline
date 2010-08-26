@@ -165,9 +165,9 @@ $photo_ids->saveMemory();
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
 
+define('TAB', 'library');
 define('TITLE', 'Alkaline Search Results');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/library_wide.php');
 
 ?>
 

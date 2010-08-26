@@ -37,6 +37,8 @@ if($user_add == 1){
 	$user_id = $alkaline->addRow(null, 'users');
 }
 
+define('TAB', 'settings');
+
 // GET USERS TO VIEW OR USER TO EDIT
 if(empty($user_id)){
 
@@ -45,7 +47,6 @@ if(empty($user_id)){
 	
 	define('TITLE', 'Alkaline Users');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 
@@ -98,7 +99,6 @@ else{
 		define('TITLE', 'Alkaline user');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 	

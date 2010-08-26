@@ -58,6 +58,8 @@ if($page_add == 1){
 	$page_id = $alkaline->addRow(null, 'pages');
 }
 
+define('TAB', 'features');
+
 // GET PAGES TO VIEW OR PAGE TO EDIT
 if(empty($page_id)){
 	$pages = new Page();
@@ -65,7 +67,6 @@ if(empty($page_id)){
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	
@@ -113,7 +114,6 @@ else{
 		define('TITLE', 'Alkaline Page');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	

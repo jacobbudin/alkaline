@@ -8,15 +8,6 @@ $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Dashboard');
-require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/dashboard.php');
-
-?>
-
-<h1>Dashboard</h1>
-
-<?php
 $stats = new Stat(strtotime('-30 days'));
 $stats->getDaily();
 
@@ -36,10 +27,66 @@ foreach($stats->stats as $stat){
 
 $visitors = json_encode($visitors);
 
+define('TAB', 'dashboard');
+define('TITLE', 'Alkaline Dashboard');
+require_once(PATH . ADMIN . 'includes/header.php');
+
 ?>
-<div id="statistics_holder" class="statistics_holder"></div>
-<div id="statistics_views" title="<?php echo $views; ?>"></div>
-<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+
+<h1>Vitals</h1>
+
+<div class="span-24 last">
+	<div class="span-16 append-1">
+		<div id="statistics_holder" class="statistics_holder"></div>
+		<div id="statistics_views" title="<?php echo $views; ?>"></div>
+		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+	</div>
+	<div class="span-7 last">
+		<h3>Hello</h3>
+		
+		<p>Welcome back, <strong><a href="<?php echo BASE . ADMIN . 'users/' . $user->user['user_id']; ?>"><?php echo $user->user['user_name']; ?></a></strong>! <?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
+
+		<?php
+
+		$shoebox_count = $alkaline->countDirectory();
+		$comment_count = $alkaline->countTableNew('comments');
+
+		if(($shoebox_count > 0) or ($comment_count > 0)){
+			?>
+
+			<h3>New</h3>
+			<table class="counts">
+				<?php if($shoebox_count > 0){ ?>
+					<tr>
+						<td class="right"><?php echo $shoebox_count; ?></td>
+						<td><a href="<?php echo BASE . ADMIN; ?>shoebox/">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
+					</tr>
+				<?php } ?>
+				<?php if($comment_count > 0){ ?>
+					<tr>
+						<td class="right">1</td>
+						<td><a href="<?php echo BASE . ADMIN; ?>comments/unpublished/">new <?php $alkaline->echoCount($comment_count, 'comment'); ?></a></td>
+					</tr>
+				<?php } ?>
+			</table>
+			<?php
+		}
+		?>
+		
+		<h3>Counts</h3>
+		<table class="counts">
+			<?php
+			$tables = $alkaline->getInfo();
+			foreach($tables as $table){
+				echo '<tr><td class="right">' . number_format($table['count']) . '</td><td><a href="' . BASE . ADMIN . $table['table'] . '/">' . $table['display'] . '</a></td></tr>';
+			}
+			?>
+		</table>
+		
+		<h3>Alkaline</h3>
+		<p>You are running Alkaline <?php echo Alkaline::version; ?>.</p>
+	</div>
+</div>
 
 <h1>Recent</h1>
 

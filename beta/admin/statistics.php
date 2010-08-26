@@ -8,10 +8,6 @@ $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Statistics');
-require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/dashboard.php');
-
 // PAST 24 HOURS
 
 $then = strtotime('-24 hours');
@@ -113,7 +109,7 @@ $stats->getPageTypes();
 
 // RECENT REFERRERS
 
-$stats->getRecentReferrers();
+$stats->getRecentReferrers(10);
 
 foreach($stats->referrers_recent as &$referrer){
 	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
@@ -121,118 +117,119 @@ foreach($stats->referrers_recent as &$referrer){
 
 // POPULAR REFERRS
 
-$stats->getPopularReferrers();
+$stats->getPopularReferrers(10);
 
 foreach($stats->referrers_popular as &$referrer){
 	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
 }
 
+define('TAB', 'dashboard');
+define('TITLE', 'Alkaline Statistics');
+require_once(PATH . ADMIN . 'includes/header.php');
+
 ?>
 
 <h1>Statistics</h1>
 
-<h3>Past 24 Hours</h3>
-<div id="h_views" title="<?php echo $h_views; ?>"></div>
-<div id="h_visitors" title="<?php echo $h_visitors; ?>"></div>
-<div id="h_holder" class="statistics_holder"></div>
+<div class="span-24 last">
+	<div class="span-15 append-1">
+		<h3>Past 24 Hours</h3>
+		<div id="h_views" title="<?php echo $h_views; ?>"></div>
+		<div id="h_visitors" title="<?php echo $h_visitors; ?>"></div>
+		<div id="h_holder" class="statistics_holder"></div>
 
-<h3>Past 30 Days</h3>
-<div id="d_views" title="<?php echo $d_views; ?>"></div>
-<div id="d_visitors" title="<?php echo $d_visitors; ?>"></div>
-<div id="d_holder" class="statistics_holder"></div>
+		<h3>Past 30 Days</h3>
+		<div id="d_views" title="<?php echo $d_views; ?>"></div>
+		<div id="d_visitors" title="<?php echo $d_visitors; ?>"></div>
+		<div id="d_holder" class="statistics_holder"></div>
 
-<h3>Past 12 Months</h3>
-<div id="m_views" title="<?php echo $m_views; ?>"></div>
-<div id="m_visitors" title="<?php echo $m_visitors; ?>"></div>
-<div id="m_holder" class="statistics_holder"></div>
+		<h3>Past 12 Months</h3>
+		<div id="m_views" title="<?php echo $m_views; ?>"></div>
+		<div id="m_visitors" title="<?php echo $m_visitors; ?>"></div>
+		<div id="m_holder" class="statistics_holder"></div>
+	</div>
+	<div class="span-8 last">
+		<h3>Durations</h3>
+		<table>
+			<tr>
+				<th class="right">%</th>
+				<th>Duration</th>
+			</tr>
+			<?php				
+			foreach($durations as $label => $duration){
+				echo '<tr>';
+				echo '<td class="right">' . $duration . '%</td>';
+				echo '<td>' . $label . '</td>';
+				echo '</tr>';
+			}
+			?>
+		</table>
 
+		<h3>Popular Pages</h3>
+		<table>
+			<tr>
+				<th class="right">Hits</th>
+				<th>Page</th>
+			</tr>
+			<?php				
+			foreach($stats->pages as $page){
+				echo '<tr>';
+				echo '<td class="right">' . $page['stat_count'] . '</td>';
+				echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $alkaline->fitString($page['stat_page'], 30) . '</a></td>';
+				echo '</tr>';
+			}
+			?>
+		</table>
 
-<h2>Visits</h2>
+		<h3>Page Types</h3>
+		<table>
+			<tr>
+				<th class="right">Hits</th>
+				<th>Page type</th>
+			</tr>
+			<?php				
+			foreach($stats->page_types as $page_type){
+				echo '<tr>';
+				echo '<td class="right">' . $page_type['stat_count'] . '</td>';
+				echo '<td>' . ucwords($page_type['stat_page_type']) . '</td>';
+				echo '</tr>';
+			}
+			?>
+		</table>
 
-<h3>Durations</h3>
-<table>
-	<tr>
-		<th class="right">%</th>
-		<th>Duration</th>
-	</tr>
-	<?php				
-	foreach($durations as $label => $duration){
-		echo '<tr>';
-		echo '<td class="right">' . $duration . '%</td>';
-		echo '<td>' . $label . '</td>';
-		echo '</tr>';
-	}
-	?>
-</table>
+		<h3>Popular Referrers</h3>
+		<table>
+			<tr>
+				<th class="right">Hits</th>
+				<th>Referrer</th>
+			</tr>
+			<?php				
+			foreach($stats->referrers_popular as $referrer){
+				echo '<tr>';
+				echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
+				echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->fitString($referrer['stat_referrer_display'], 30) . '</a></td>';
+				echo '</tr>';
+			}
+			?>
+		</table>
 
-<h3>Popular Pages</h3>
-<table>
-	<tr>
-		<th class="right">Hits</th>
-		<th>Page</th>
-	</tr>
-	<?php				
-	foreach($stats->pages as $page){
-		echo '<tr>';
-		echo '<td class="right">' . $page['stat_count'] . '</td>';
-		echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $alkaline->fitString($page['stat_page'], 30) . '</a></td>';
-		echo '</tr>';
-	}
-	?>
-</table>
-
-<h3>Page Types</h3>
-<table>
-	<tr>
-		<th class="right">Hits</th>
-		<th>Page type</th>
-	</tr>
-	<?php				
-	foreach($stats->page_types as $page_type){
-		echo '<tr>';
-		echo '<td class="right">' . $page_type['stat_count'] . '</td>';
-		echo '<td>' . ucwords($page_type['stat_page_type']) . '</td>';
-		echo '</tr>';
-	}
-	?>
-</table>
-
-<h2>Referrers</h2>
-
-<h3>Popular</h3>
-<table>
-	<tr>
-		<th class="right">Hits</th>
-		<th>Referrer</th>
-	</tr>
-	<?php				
-	foreach($stats->referrers_popular as $referrer){
-		echo '<tr>';
-		echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
-		echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
-		echo '</tr>';
-	}
-	?>
-</table>
-
-<h3>Recent</h3>
-<table>
-	<tr>
-		<th class="right">Date</th>
-		<th>Referrer</th>
-	</tr>
-	<?php				
-	foreach($stats->referrers_recent as $referrer){
-		echo '<tr>';
-		echo '<td class="right quiet">' . $alkaline->formatRelTime($referrer['stat_date'], 'M j, g:i a') . '</td>';
-		echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
-		echo '</tr>';
-	}
-	?>
-</table>
-
-<p class="quiet">The visitor and referrer data above reflects data from the past 60 days.</p>
-
+		<h3>Recent Referrers</h3>
+		<table>
+			<tr>
+				<th class="right">Date</th>
+				<th>Referrer</th>
+			</tr>
+			<?php				
+			foreach($stats->referrers_recent as $referrer){
+				echo '<tr>';
+				echo '<td class="right quiet">' . $alkaline->formatRelTime($referrer['stat_date'], 'M j, g:i a') . '</td>';
+				echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
+				echo '</tr>';
+			}
+			?>
+		</table>
+	</div>
+</div>
 
 <?php
 

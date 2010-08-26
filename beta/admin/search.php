@@ -10,9 +10,9 @@ $user->perm(true);
 
 Find::clearMemory();
 	
+define('TAB', 'library');
 define('TITLE', 'Alkaline Search');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 

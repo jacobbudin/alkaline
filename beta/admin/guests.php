@@ -36,6 +36,8 @@ if($guest_add == 1){
 	$guest_id = $alkaline->addRow(null, 'guests');
 }
 
+define('TAB', 'settings');
+
 // GET GUEST TO VIEW OR GUEST TO EDIT
 if(empty($guest_id)){
 
@@ -43,7 +45,6 @@ if(empty($guest_id)){
 	$guest_count = @count($guests);
 	
 	define('TITLE', 'Alkaline Guests');
-	require_once(PATH . ADMIN . 'includes/header.php');
 	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
@@ -79,7 +80,7 @@ else{
 	// Get guest
 	$guests = $alkaline->getTable('guests', $guest_id);
 	$guest = $guests[0];
-
+	
 	if(!empty($guest['guest_title'])){	
 		define('TITLE', 'Alkaline Guest: ' . $guest['guest_title']);
 	}
@@ -87,7 +88,6 @@ else{
 		define('TITLE', 'Alkaline Guest');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 	

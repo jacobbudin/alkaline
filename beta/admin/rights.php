@@ -46,6 +46,8 @@ if($right_add == 1){
 	$right_id = $alkaline->addRow(null, 'rights');
 }
 
+define('TAB', 'features');
+
 // GET RIGHTS SETS TO VIEW OR RIGHTS SET TO EDIT
 if(empty($right_id)){
 	$rights = $alkaline->getTable('rights');
@@ -53,7 +55,6 @@ if(empty($right_id)){
 	
 	define('TITLE', 'Alkaline Rights Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 
@@ -101,7 +102,6 @@ else{
 		define('TITLE', 'Alkaline Rights Set: &#8220;' . $right['right_title']  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	

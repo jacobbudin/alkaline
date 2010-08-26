@@ -35,6 +35,8 @@ if($pile_add == 1){
 	$pile_id = $alkaline->addRow($fields, 'piles');
 }
 
+define('TAB', 'features');
+
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($pile_id)){
 
@@ -43,7 +45,6 @@ if(empty($pile_id)){
 	
 	define('TITLE', 'Alkaline Piles');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 
@@ -96,7 +97,6 @@ else{
 		define('TITLE', 'Alkaline Pile');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	

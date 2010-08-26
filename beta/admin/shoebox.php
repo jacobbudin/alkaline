@@ -36,9 +36,9 @@ if(!($photo_count > 0)){
 	exit();
 }
 
+define('TAB', 'library');
 define('TITLE', 'Alkaline Shoebox');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 

@@ -16,9 +16,9 @@ if(!empty($_FILES)){
 	exit();
 }
 
+define('TAB', 'library');
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/library.php');
 
 ?>
 

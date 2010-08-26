@@ -30,6 +30,8 @@ if(!empty($_POST['comment_id'])){
 	unset($comment_id);
 }
 
+define('TAB', 'features');
+
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
 	
@@ -55,7 +57,6 @@ if(empty($comment_id)){
 	
 	define('TITLE', 'Alkaline Comments');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 
 	?>
 	
@@ -100,7 +101,7 @@ else{
 	
 	$comments = $alkaline->getTable('comments', $comment_id);
 	$comment = $comments[0];
-
+	
 	if(!empty($comment['pile_title'])){	
 		define('TITLE', 'Alkaline Comment: &#8220;' . $comment['pile_title']  . '&#8221;');
 	}
@@ -108,7 +109,6 @@ else{
 		define('TITLE', 'Alkaline Comment');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/features.php');
 	
 	?>
 	

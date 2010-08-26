@@ -26,6 +26,7 @@ if(!empty($_POST['theme_id'])){
 	unset($theme_id);
 }
 
+define('TAB', 'settings');
 
 if(empty($theme_id)){
 	$themes = $alkaline->getTable('themes', null, null, null, '');
@@ -33,7 +34,6 @@ if(empty($theme_id)){
 	
 	define('TITLE', 'Alkaline Themes');
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
 
@@ -87,7 +87,6 @@ else{
 	}
 	
 	require_once(PATH . ADMIN . 'includes/header.php');
-	require_once(PATH . ADMIN . 'includes/settings.php');
 	
 	?>
 	

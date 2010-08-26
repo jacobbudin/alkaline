@@ -17,9 +17,9 @@ if(!empty($_POST['preferences_save'])){
 	$user->updateFields($fields);
 }
 
+define('TAB', 'settings');
 define('TITLE', 'Alkaline Preferences');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/settings.php');
 
 ?>
 

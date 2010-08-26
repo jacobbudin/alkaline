@@ -8,10 +8,6 @@ $user = new User;
 
 $user->perm(true);
 
-define('TITLE', 'Alkaline Settings');
-require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/settings.php');
-
 $alkaline->deleteEmptyRow('users', array('user_name'));
 $alkaline->deleteEmptyRow('guests', array('guest_title', 'guest_key'));
 
@@ -20,6 +16,10 @@ $guest_count = @count($guests);
 
 $users = $alkaline->getTable('users', null, 10);
 $user_count = @count($users);
+
+define('TAB', 'settings');
+define('TITLE', 'Alkaline Access');
+require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 	

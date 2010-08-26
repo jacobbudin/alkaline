@@ -19,9 +19,9 @@ if(!empty($tag_id)){
 $tags = $alkaline->getTags();
 $tag_count = count($tags);
 
+define('TAB', 'features');
 define('TITLE', 'Alkaline Tags');
 require_once(PATH . ADMIN . 'includes/header.php');
-require_once(PATH . ADMIN . 'includes/features.php');
 
 ?>
 
