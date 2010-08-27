@@ -754,6 +754,9 @@ class Photo extends Alkaline{
 				// For tags that don't exist, add tags and links
 				if(count($tags) > 0){
 					foreach($tags as $tag){
+						// Error checking
+						if(empty($tag)){ continue; }
+						
 						// Add tag
 						$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
 						$this->db->exec($query);

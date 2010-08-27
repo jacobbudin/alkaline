@@ -70,7 +70,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			<p>
 				<label for="">Location:</label><br />
-				<input type="text" id="photo_geo" name="photo_geo" value="<?php echo $photo['photo_geo']; ?>" />
+				<input type="text" id="photo_geo" name="photo_geo" value="<?php echo $photo['photo_geo']; ?>" /><br />
+				<img src="/images/icons/geo.png" alt="" /> <?php echo round($photo['photo_geo_lat'], 5); ?>, <?php echo round($photo['photo_geo_long'], 5); ?>
 			</p>
 			
 			<p>
@@ -87,6 +88,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<label for="">Rights set:</label><br />
 				<?php echo $alkaline->showRights('right_id', $photo['right_id']); ?>
 			</p>
+			
+			<hr />
 			
 			<table>
 				<tr>

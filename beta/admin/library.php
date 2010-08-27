@@ -24,11 +24,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-
-<h1>Search</h1>
-
 <div class="span-24 last">
-	<div class="span-14 append-1">
+	<div class="span-16 colborder">
+		<h1>Search</h1>
 		<form action="<?php echo BASE . ADMIN; ?>search/" method="post">
 			<p style="margin-bottom: 0;">
 				<input type="search" name="search" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
@@ -43,7 +41,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<td class="right pad"><label for="tags">Tags:</label></td>
 					<td class="quiet">
 						<input type="text" id="tags" name="tags" style="width: 30em;" /><br />
-						Tip: Use the boolean operators AND, OR, and NOT.
+						<em>Tip: Use the uppercase boolean operators AND, OR, and NOT.</em>
 					</td>
 				</tr>
 				<tr>
@@ -156,27 +154,27 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</tr>
 			</table>
 		</form>
-	</div>
-	<div class="span-13 last">
 		
+		<h1>Photos (<?php echo $photo_ids->photo_count_result; ?>)</h1>
+		<p>
+			<?php
+
+			foreach($photos->photos as $photo){
+				?>
+				<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
+					<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+				</a>
+				<?php
+			}
+
+			?>
+		</p>
+	</div>
+	<div class="span-7 last">
+		<h2><a href="<?php echo BASE . ADMIN; ?>upload/"><img src="/images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox/"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
 	</div>
 </div>
-
-<h1>Photos (<?php echo $photo_ids->photo_count_result; ?>)</h1>
-
-<p>
-	<?php
-
-	foreach($photos->photos as $photo){
-		?>
-		<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
-			<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
-		</a>
-		<?php
-	}
-	
-	?>
-</p>
 
 <?php
 

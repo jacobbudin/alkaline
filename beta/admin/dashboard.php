@@ -33,19 +33,42 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Vitals</h1>
-
 <div class="span-24 last">
-	<div class="span-16 append-1">
+	<div class="span-16 colborder">
+		<h1>Vitals</h1>
 		<div id="statistics_holder" class="statistics_holder"></div>
 		<div id="statistics_views" title="<?php echo $views; ?>"></div>
 		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+		
+		<h1>Recent</h1>
+		<p>
+			<?php
+			$photo_ids = new Find;
+			$photo_ids->page(1,20);
+			$photo_ids->exec();
+			$photos = new Photo($photo_ids);
+			$photos->getImgUrl('square');
+
+			foreach($photos->photos as $photo){
+				?>
+				<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
+					<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+				</a>
+				<?php
+			}
+			?>
+		</p>
 	</div>
 	<div class="span-7 last">
+		<h2><a href="<?php echo BASE . ADMIN; ?>statistics/"><img src="/images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>preferences/"><img src="/images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
 		
-				
+		<hr />
+		
+		<h3>Hello</h3>
+		
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
-
+		
 		<?php
 
 		$shoebox_count = $alkaline->countDirectory();
@@ -87,26 +110,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<p>You are running Alkaline <?php echo Alkaline::version; ?>.</p>
 	</div>
 </div>
-
-<h1>Recent</h1>
-
-<p>
-	<?php
-	$photo_ids = new Find;
-	$photo_ids->page(1,20);
-	$photo_ids->exec();
-	$photos = new Photo($photo_ids);
-	$photos->getImgUrl('square');
-
-	foreach($photos->photos as $photo){
-		?>
-		<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
-			<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
-		</a>
-		<?php
-	}
-	?>
-</p>
 
 <?php
 
