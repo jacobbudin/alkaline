@@ -16,7 +16,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <h1>Maintenance</h1>
 
-<p>Please let the task complete before closing your browser window. You will be automatically redirected to your dashboard when the task is complete.</p>
+<p>Please let the task complete before closing your browser window. You will automatically be redirected to your dashboard when the task is complete.</p>
 
 <div id="progress">
 </div>

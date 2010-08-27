@@ -4,8 +4,8 @@
 	
 	RewriteEngine on
 	
-	RewriteRule ^admin/search/([a-z0-9\-]+)(/)?$ /admin/results.php?smart=$1 [NC]
-	RewriteRule ^admin/search/([a-z0-9\-]+)/([0-9]+)(/)?$ /admin/results.php?smart=$1&id=$2 [NC]
+	RewriteRule ^admin/search/([a-z0-9\-]+)(/)?$ /admin/search.php?smart=$1 [NC]
+	RewriteRule ^admin/search/([a-z0-9\-]+)/([0-9]+)(/)?$ /admin/search.php?smart=$1&id=$2 [NC]
 	RewriteRule ^admin/photos(/)?$ /admin/library/ [NC]
 	RewriteRule ^admin/comments/unpublished(/)?$ /admin/comments.php?unpublished=1 [NC]
 	RewriteRule ^admin/([a-z0-9\-]+)(/)?$ /admin/$1.php [NC]

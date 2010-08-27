@@ -90,7 +90,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			<table>
 				<tr>
-					<td class="right" style="width: 10%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td>
+					<td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td>
 					<td>
 						<strong><label for="photo_delete">Delete this photo.</label></strong><br />
 						This action cannot be undone.

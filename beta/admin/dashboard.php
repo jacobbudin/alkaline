@@ -42,9 +42,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 	</div>
 	<div class="span-7 last">
-		<h3>Hello</h3>
 		
-		<p>Welcome back, <strong><a href="<?php echo BASE . ADMIN . 'users/' . $user->user['user_id']; ?>"><?php echo $user->user['user_name']; ?></a></strong>! <?php echo ($user->user['user_last_login']) ? 'You last logged in on ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
+				
+		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
 
 		<?php
 
@@ -73,8 +73,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		}
 		?>
 		
-		<h3>Counts</h3>
-		<table class="counts">
+		<h3>Census</h3>
+		<table class="census">
 			<?php
 			$tables = $alkaline->getInfo();
 			foreach($tables as $table){
