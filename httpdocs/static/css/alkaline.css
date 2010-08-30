@@ -1,0 +1,8 @@
+body {
+	background-color: #003050;
+	background-image: url(/static/images/bg.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+	padding-top: 26%;
+	text-align: center;
+}

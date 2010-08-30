@@ -1,8 +1,165 @@
-body {
-	background-color: #003050;
-	background-image: url(/images/bg.jpg);
-	background-position: top center;
-	background-repeat: repeat;
-	padding-top: 23%;
-	text-align: center;
+.container{
+	width: 910px;
+}
+
+body{
+	margin: 5em 0;
+	background-color: #0c2f47;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+a, .link, .blue{
+	color: #005abb;
+}
+
+h1, h2, h3, h4, h5, h6{
+	margin-bottom: .5em;
+}
+
+h4{
+	font-size: 1.3em;
+}
+
+hr{
+	color: #103a54;
+	background-color: #103a54;
+}
+
+#header{
+	margin-bottom: 2em;
+}
+
+#header_navigation{
+	padding-top: 1em;
+	font-weight: 600;
+	text-align: right;
+}
+
+#header_navigation ul{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#header_navigation li{
+	display: inline;
+	padding-left: 1.4em;
+}
+
+#header_navigation a{
+	color: #fff;
+	text-decoration: none;
+}
+
+#header_navigation a:hover, #header_navigation a:active{
+	color: #fff;
+}
+
+#welcome{
+	position: relative;
+	background: url(/images/welcome.jpg) top left no-repeat;
+	color: #fff;
+	height: 296px;
+	overflow: hidden;
+}
+
+#welcome_text{
+	position: absolute;
+	top: 125px;
+	left: 49px;
+	font-size: 1.1em;
+	line-height: 1.5em;
+	text-shadow: 1px 1px 1px #00539f;
+	width: 420px;
+}
+
+#welcome_navigation{
+	position: absolute;
+	bottom: 22px;
+	left: 49px;
+	font-size: .9em;
+}
+
+#welcome_navigation img{
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+#welcome_navigation a{
+	padding-right: 3em;
+	color: #fff;
+	text-decoration: none;
+}
+
+#intro{
+	margin-top: 2em;
+	border-radius: 4px;
+	background: #fff url(/images/3columns.png) top center repeat-y;
+}
+
+#intro a{
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+
+#intro a:hover .link, #intro a:active .link{
+	text-decoration: underline;
+}
+
+.column1{
+	padding: 2em 30px .5em 25px;
+}
+.column2{
+	padding: 2em 5px .5em 10px;
+}
+.column3{
+	padding: 2em 25px .5em 30px;
+}
+
+#sitemap{
+	margin-top: 4em;
+	margin-bottom: 1.5em;
+	color: #88abc3;
+	font-size: .9em;
+}
+
+#sitemap ul{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#sitemap ul>ul{
+	float: left;
+	margin: 0 30px 0 0;
+	width: 110px;
+}
+
+#sitemap ul>ul:last-child{
+	margin: 0;
+}
+
+#sitemap li:first-child{
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+#sitemap a{
+	color: #5b98bc;
+	text-decoration: none;
+}
+
+#sitemap a:hover, #sitemap a:active{
+	color: #8dc9e8;
+}
+
+#footer{
+	color: #5b98bc;
+	font-size: .9em;
+}
+
+#footer a{
+	color: #4e82a0;
+	text-decoration: none;
 }

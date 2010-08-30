@@ -70,8 +70,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			<p>
 				<label for="">Location:</label><br />
-				<input type="text" id="photo_geo" name="photo_geo" value="<?php echo $photo['photo_geo']; ?>" /><br />
-				<img src="/images/icons/geo.png" alt="" /> <?php echo round($photo['photo_geo_lat'], 5); ?>, <?php echo round($photo['photo_geo_long'], 5); ?>
+				<input type="text" id="photo_geo" name="photo_geo" value="<?php echo $photo['photo_geo']; ?>" />
+				<?php
+				
+				if(!empty($photo['photo_geo_lat'])){
+					?>
+					<br />
+					<img src="/images/icons/geo.png" alt="" /> <?php echo round($photo['photo_geo_lat'], 5); ?>, <?php echo round($photo['photo_geo_long'], 5); ?>
+					<?php
+				}
+				?>
 			</p>
 			
 			<p>
