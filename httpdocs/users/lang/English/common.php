@@ -89,7 +89,7 @@ $lang_common = array(
 'BBCode list size error'			=>	'Your list was too long to parse, please make it smaller!',
 
 // Stuff for the navigator (top of every page)
-'Index'								=>	'Index',
+'Index'								=>	'Community',
 'User list'							=>	'User list',
 'Rules'								=>	'Rules',
 'Search'							=>	'Search',
@@ -109,12 +109,12 @@ $lang_common = array(
 // Stuff for the page footer
 'Board footer'						=>	'Board footer',
 'Search links'						=>	'Search links',
-'Show recent posts'					=>	'Show recent posts',
-'Show unanswered posts'				=>	'Show unanswered posts',
-'Show your posts'					=>	'Show your posts',
-'Show subscriptions'				=>	'Show your subscribed topics',
+'Show recent posts'					=>	'Recent posts',
+'Show unanswered posts'				=>	'Unanswered posts',
+'Show your posts'					=>	'Your posts',
+'Show subscriptions'				=>	'Your subscribed topics',
 'Jump to'							=>	'Jump to',
-'Go'								=>	' Go ', // Submit button in forum jump
+'Go'								=>	'Go', // Submit button in forum jump
 'Moderate topic'					=>	'Moderate topic',
 'Move topic'						=>	'Move topic',
 'Open topic'						=>	'Open topic',

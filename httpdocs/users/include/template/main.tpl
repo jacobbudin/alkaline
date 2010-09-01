@@ -26,7 +26,7 @@
 			</div>
 		</div>
 		<div id="content" class="span-23 last">
-			<div id="content_buffer">
+			<div class="full_buffer">
 				<div id="pun<pun_page>" class="pun">
 					<div class="top-box"><div><!-- Top Corners --></div></div>
 					<div class="punwrap">

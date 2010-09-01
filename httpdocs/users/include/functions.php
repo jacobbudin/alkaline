@@ -949,7 +949,7 @@ function format_time($timestamp, $date_only = false, $date_format = null, $time_
 	else if ($time_only)
 		return gmdate($time_format, $timestamp);
 	else
-		return $date.' '.gmdate($time_format, $timestamp);
+		return $date.', '.str_replace(array('am','pm'), array('a.m.', 'p.m.'), gmdate($time_format, $timestamp));
 }
 
 

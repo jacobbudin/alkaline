@@ -11,6 +11,12 @@ body{
 
 a, .link, .blue{
 	color: #005abb;
+	text-decoration: underline;
+}
+
+a:hover, a:visited{
+	color: #005abb;
+	text-decoration: none;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -66,8 +72,12 @@ hr{
 	background: #fff url(/images/content_bg.png) top center no-repeat;
 }
 
-#content_buffer{
+.buffer{
 	padding: 1.5em 2em 0 2em;
+}
+
+.full_buffer{
+	padding: 1.5em 2em 2em 2em;
 }
 
 #welcome{

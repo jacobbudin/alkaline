@@ -71,31 +71,29 @@ if ($footer_style == 'index' || $footer_style == 'search')
 	echo "\t\t\t".'<div class="conl">'."\n";
 
 	if (!$pun_user['is_guest'] && $pun_user['g_search'] == '1')
-	{
-		echo "\t\t\t\t".'<dl id="searchlinks">'."\n";
-		echo "\t\t\t\t\t".'<dt><strong>'.$lang_common['Search links'].'</strong></dt>'."\n";
-
-		echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_24h">'.$lang_common['Show recent posts'].'</a></span></dd>'."\n";
-		echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_unanswered">'.$lang_common['Show unanswered posts'].'</a></span></dd>'."\n";
-
-		if ($pun_config['o_subscriptions'] == '1')
-			echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_subscriptions">'.$lang_common['Show subscriptions'].'</a></span></dd>'."\n";
-
-		echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_user&amp;user_id='.$pun_user['id'].'">'.$lang_common['Show your posts'].'</a></span></dd>'."\n";
-
-		echo "\t\t\t\t".'</dl>'."\n";
+	{	
+		echo '<form action="search.php" method="get">
+			<select name="action">
+				<option value="show_24h">'.$lang_common['Show recent posts'].'</option>
+				<option value="show_unanswered">'.$lang_common['Show unanswered posts'].'</option>
+				<option value="show_subscriptions">'.$lang_common['Show subscriptions'].'</option>
+				<option value="show_user">'.$lang_common['Show your posts'].'</option>
+			</select>
+			<input type="hidden" name="user_id" value="' . $pun_user['id'] . '" />
+			<input type="submit" value="Show" />
+		</form>';
 	}
 	else
 	{
 		if ($pun_user['g_search'] == '1')
 		{
-			echo "\t\t\t\t".'<dl id="searchlinks">'."\n";
-			echo "\t\t\t\t\t".'<dt><strong>'.$lang_common['Search links'].'</strong></dt>'."\n";
-
-			echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_24h">'.$lang_common['Show recent posts'].'</a></span></dd>'."\n";
-			echo "\t\t\t\t\t".'<dd><span><a href="search.php?action=show_unanswered">'.$lang_common['Show unanswered posts'].'</a></span></dd>'."\n";
-
-			echo "\t\t\t\t".'</dl>'."\n";
+			echo '<form action="search.php" method="get">
+				<select name="action">
+					<option value="show_24h">'.$lang_common['Show recent posts'].'</option>
+					<option value="show_unanswered">'.$lang_common['Show unanswered posts'].'</option>
+				</select>
+				<input type="submit" value="Show" />
+			</form>';
 		}
 	}
 

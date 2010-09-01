@@ -83,14 +83,6 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 	font-style: italic;
 }
 
-.pun a, .pun a:link, .pun a:visited {
-	text-decoration: none;
-}
-
-.pun a:hover, .pun a:active, .pun a:focus {
-	text-decoration: underline;
-}
-
 .pun .actions span {
 	padding-left: 16px;
 	padding-right: 8px;
@@ -167,13 +159,13 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 
 #brdmain {
 	border-style: solid none;
-	border-width: 2px 0;
+	border-width: 0 0 1px 0;
+	border-color: #ddd;
 	margin-bottom: 12px;
-	padding: 12px 0;
+	padding: 0 0 12px 0;
 }
 
 #punindex #brdmain {
-	padding-top: 24px;
 }
 
 #punredirect #brdmain, #punmaint #brdmain {
@@ -184,14 +176,16 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 
 #brdstats {
 	border-style: solid none none none;
-	border-width: 2px 0 0 0;
+	border-width: 1px 0;
+	border-color: #ddd;
 	margin-top: 24px;
 	padding-top: 12px;
 }
 
 #quickpost {
 	border-style: solid none none none;
-	border-width: 2px 0 0 0;
+	border-width: 1px 0 0 0;
+	border-color: #ddd;
 	margin-top: 12px;
 	padding-top: 12px;
 }
@@ -209,20 +203,6 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 /* Logo, Description and Main Menu
 ----------------------------------------------------------------*/
 
-#brdtitle h1 {
-	padding: 0 0 10px 0;
-}
-
-#brddesc {
-	border-top-style: dotted;
-	border-top-width: 1px;
-	padding: 10px 0;
-}
-
-#brddesc p {
-	padding: 0;
-}
-
 #brdmenu ul {
 	padding: 0;
 }
@@ -232,12 +212,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 #brdmenu a:link, #brdmenu a:visited {
-	border-right-style: solid;
-	border-width: 1px;
-	display: block;
-	min-width: 60px;
-	padding: 12px 16px 6px 8px;
-	white-space: nowrap;
+	margin-right: 1.5em;
 }
 
 #brdmenu a:hover, #brmenu a:active, #brdmenu a:focus {
@@ -249,6 +224,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 
 #brdwelcome {
 	padding: 10px 0;
+	text-align: right;
 }
 
 #brdwelcome .conl, #brdwelcome .conr, #brdwelcome p, #brdwelcome li {
@@ -296,7 +272,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 ----------------------------------------------------------------*/
 
 .pun #modcontrols {
-	border-style: none none dotted none;
+	border-style: none none none none;
 	border-width: 0 0 1px 0;
 	margin-bottom: 4px;
 	text-align: center;
@@ -376,22 +352,24 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 .pun .linkst .crumbs {
-	font-size: 1.462em;
-	line-height: 1.211em;
-	padding: 7px 0;
+	color: #777;
 }
 
 .pun .linksb .crumbs, .pun .postlinksb .crumbs {
-	font-size: 1.154em;
+	color: #777;
+}
+
+.pun .linkst .crumbs a, .pun .linksb .crumbs a, .pun .postlinksb .crumbs a{
+	color: #555;
 }
 
 .pun .linkst .crumbsplus .pagepost {
-	border-top-style: dotted;
+	border-top-style: none;
 	border-top-width: 1px;
 }
 
 .pun .linksb .crumbsplus .pagepost, .pun .postlinksb .crumbsplus .pagepost {
-	border-bottom-style: dotted;
+	border-bottom-style: none;
 	border-bottom-width: 1px;
 }
 
@@ -461,7 +439,8 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 #punindex #brdmain .blocktable h2, #punsearch #vf h2 {
-
+	margin-top: 1em;
+	font-size: 1.2em;
 }
 
 #punindex .blocktable th.tcl, #punsearch #vf th.tcl {
@@ -648,7 +627,6 @@ MAIN POSTS
 }
 
 .pun .blockpost h2 {
-	font: 1em/1.462em Arial, Helvetica, sans-serif;
 	white-space: nowrap;
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
@@ -666,7 +644,6 @@ MAIN POSTS
 #punsearch .blockpost h2 span span {
 	white-space: nowrap;
 	display: inline-block;
-	font: 1.077em "Trebuchet MS", Arial, Helvetica, sans-serif
 }
 
 #punsearch .blockpost .icon {
@@ -804,7 +781,6 @@ MAIN POSTS
 }
 
 .pun .postmsg p, .pun .postmsg li, #punhelp p samp {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 .pun .usercontent h1, .pun .usercontent h2, .pun .usercontent h3,
@@ -932,7 +908,7 @@ MAIN POSTS
 
 .pun .postmsg .postimg a:link img, .pun .postmsg .postimg a:visited img {
 	border-style: solid;
-	border-width: 2px;
+	border-width: 1px;
 }
 
 /*****************************************************************
@@ -941,10 +917,8 @@ MAIN FORMS
 
 #punedit .blockform h2, #punpost .blockform h2, #postpreview h2, #posterror h2,
 .pun #quickpost h2, .pun #reportform h2, #pundelete .blockform h2 {
-	font: 1em/1.462em Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	white-space: nowrap;
-	padding: 10px 19px 4px 37px;
+	font-size: 1.2em;
+	padding: 10px 19px 10px 18px;
 	border: 0;
 }
 
@@ -1104,7 +1078,6 @@ MAIN FORMS
 }
 
 .pun input[type=text], .pun select, .pun textarea {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 .pun .txtarea textarea, .pun input.longinput {
@@ -1313,15 +1286,13 @@ COLOUR SCHEME
 
 #brdtitle #brddesc, .pun .pagepost, #brdstats #onlinelist, #brdfooter #searchlinks, #brdfooter #modcontrols,
 #punmaint h2, #punredirect h2, #adminconsole .submittop, .pun #debugtime, .pun .pagelink a, .pun .pagelink * {
-	border-color: #b9c5ce;
+
 }
 
 .pun a, .pun a:link, .pun a:visited {
-	color: #2365B0;
 }
 
 .pun a:hover, .pun a:active, .pun a:focus {
-	color: #b50000;
 }
 
 .pun .postmsg .postimg a:link img, .pun .postmsg .postimg a:visited img {
@@ -1336,19 +1307,13 @@ COLOUR SCHEME
 ----------------------------------------------------------------*/
 
 #brdmenu {
-	background: #44699c;
+
 }
 
 #brdmenu a, #brdmenu a:link, #brdmenu a:visited {
-	background: #44699c;
-	border-color: #fff;
-	color: #d4dae2;
 }
 
 #brdmenu a:hover, #brdmenu a:active, #brdmenu a:focus {
-	background: #b50000;
-	border-color: #fff;
-	color: #fff;
 }
 
 /* Main Tables
@@ -1356,11 +1321,11 @@ COLOUR SCHEME
 
 .pun .blocktable .box {
 	background: #fcfdfe;
-	border-color: #b9c5ce #d9e1e7;
+	border-color: #d4e5ed #d4e5ed;
 }
 
 #punindex .blocktable h2, .pun #vf h2 {
-	color: #357082;
+
 }
 
 #adminconsole fieldset th, #adminconsole fieldset td {
@@ -1377,9 +1342,9 @@ COLOUR SCHEME
 }
 
 .pun .blocktable th {
-	background: #ebf1f5;
-	border-color: #cad7e1;
-	color: #357082;
+	background: #ddeff8;
+	border-color: #d4e5ed;
+	color: #003a69;
 }
 
 .pun .blocktable td.tcl span.stickytext {
@@ -1395,8 +1360,14 @@ COLOUR SCHEME
 }
 
 .pun .blockpost h2 {
+	font-size: 1em;
 	background: #ebf1f5;
 	border-color: #cad7e1;
+	color: #357082;
+}
+
+.pun .blockpost h2 a{
+	text-decoration: none;
 	color: #357082;
 }
 
@@ -1456,7 +1427,6 @@ COLOUR SCHEME
 .pun #quickpost h2, #punpost .blockform h2, #punedit .blockform h2, #posterror h2,
 #pundelete .blockform h2 {
 	background: #ebf1f5;
-	color: #357082;
 }
 
 .pun .forminfo {
