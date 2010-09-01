@@ -1,5 +1,6 @@
 .container{
 	width: 910px;
+	text-align: left;
 }
 
 body{
@@ -30,8 +31,7 @@ hr{
 }
 
 #header_navigation{
-	padding-top: 1em;
-	font-weight: 600;
+	padding-top: .9em;
 	text-align: right;
 }
 
@@ -46,13 +46,28 @@ hr{
 	padding-left: 1.4em;
 }
 
+#header_navigation li img{
+	vertical-align: middle;
+}
+
 #header_navigation a{
 	color: #fff;
 	text-decoration: none;
 }
 
 #header_navigation a:hover, #header_navigation a:active{
-	color: #fff;
+	color: #5bb4e5;
+}
+
+#content{
+	border: solid #fff;
+	border-width: 6px 0 0 0;
+	border-radius: 0 0 4px 4px;
+	background: #fff url(/images/content_bg.png) top center no-repeat;
+}
+
+#content_buffer{
+	padding: 1.5em 2em 0 2em;
 }
 
 #welcome{
@@ -160,6 +175,10 @@ hr{
 }
 
 #footer a{
-	color: #4e82a0;
+	color: #5b98bc;
 	text-decoration: none;
+}
+
+.box{
+	background: transparent;
 }

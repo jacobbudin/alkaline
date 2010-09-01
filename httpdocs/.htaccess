@@ -8,4 +8,6 @@
 	RewriteCond %{REMOTE_ADDR} !108\.14\.192\.240
 	RewriteRule ^$ /static.php [L]
 	
+	# RewriteRule ^([a-z0-9\-]+)(/)?$ /$1.php [NC]
+	
 </IfModule>
