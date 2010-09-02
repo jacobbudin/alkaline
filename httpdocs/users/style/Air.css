@@ -184,7 +184,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 	border-style: solid none none none;
 	border-width: 1px 0 0 0;
 	border-color: #ddd;
-	margin-top: 12px;
+	margin: 12px 0 6px 0;
 	padding-top: 12px;
 }
 
@@ -681,6 +681,10 @@ MAIN POSTS
 	position: relative;
 }
 
+.pun .blockpost .postleft dd {
+	display: block;
+}
+
 .pun .blockpost .postleft dl {
 	padding: 0;
 }
@@ -688,6 +692,7 @@ MAIN POSTS
 #punviewtopic .blockpost dt, #punmoderate .blockpost dt {
 	display: block;
 	position: absolute;
+	font-size: .9em;
 	padding: 0.538em 0 0.538em 12px;
 	height: 1.462em;
 	top: -2.615em;
@@ -918,16 +923,13 @@ MAIN FORMS
 #punedit .blockform h2, #punpost .blockform h2, #postpreview h2, #posterror h2,
 .pun #quickpost h2, .pun #reportform h2, #pundelete .blockform h2 {
 	font-size: 1.2em;
-	padding: 10px 19px 10px 18px;
+	padding: 10px 19px 0 10px;
 	border: 0;
 }
 
 #punpost .blockform h2, #punedit .blockform h2,.pun #quickpost h2,
 #pundelete .blockform h2 {
 	margin: 1px 1px 0 1px;
-	width: 25em;
-	position: absolute;
-	z-index: 100;
 }
 
 .pun #quickpost legend, #punpost legend, #punedit legend {
@@ -1017,7 +1019,6 @@ MAIN FORMS
 
 .pun fieldset label {
 	display: block;
-	padding: 0 0 7px 0;
 }
 
 .pun label em {
@@ -1043,13 +1044,12 @@ MAIN FORMS
 	padding-right: 12px;
 }
 
-.pun form .buttons {
-	padding: 8px 19px 8px 34px;
-	margin-bottom: -12px;
-}
-
 .pun .blockform .buttons input {
 	margin-right: 12px;
+}
+
+.pun form .buttons{
+	margin-left: 10px;
 }
 
 .pun .rbox {
@@ -1085,8 +1085,8 @@ MAIN FORMS
 }
 
 .pun #quickpost .txtarea {
-	padding-right: 12px;
-	padding-left: 200px;
+	padding: 5px 12px 0 12px;
+	margin: 0;
 	position: relative;
 }
 
@@ -1358,25 +1358,25 @@ COLOUR SCHEME
 ----------------------------------------------------------------*/
 
 .pun .blockpost {
-	background: #f6f9fc;
-	border-color: #b9c5ce #d9e1e7;
+	background: #fafafa;
+	border-color: #eee #eee;
 }
 
 .pun .blockpost h2 {
-	font-size: 1em;
-	background: #ebf1f5;
-	border-color: #cad7e1;
-	color: #357082;
+	font-size: .9em;
+	background: #eee;
+	border-color: #eee;
+	color: #555;
 }
 
 .pun .blockpost h2 a{
 	text-decoration: none;
-	color: #357082;
+	color: #555;
 }
 
 .pun .blockpost .postbody, .pun .blockpost .postfoot {
-	background: #fcfdfe;
-	border-color: #dfe6ee;
+	background: #fff;
+	border-color: #eee;
 }
 
 .pun .blockpost .postfootright li {
@@ -1418,8 +1418,8 @@ COLOUR SCHEME
 ----------------------------------------------------------------*/
 
 .pun .blockform .box, #adstats, #adintro, #postpreview, #posterror {
-	border-color: #b9c5ce #d9e1e7;
-	background: #ebf1f5;
+	border-color: #eee #eee;
+	background: #fafafa;
 }
 
 #punmisc #rules .box, #punhelp .box {
@@ -1429,7 +1429,11 @@ COLOUR SCHEME
 
 .pun #quickpost h2, #punpost .blockform h2, #punedit .blockform h2, #posterror h2,
 #pundelete .blockform h2 {
-	background: #ebf1f5;
+	background: transparent;
+}
+
+.inform fieldset legend{
+	display: none;
 }
 
 .pun .forminfo {
