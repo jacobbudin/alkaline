@@ -1341,7 +1341,7 @@ function redirect($destination_url, $message)
 	<h2><?php echo $lang_common['Redirecting'] ?></h2>
 	<div class="box">
 		<div class="inbox">
-			<p><?php echo $message.'<br /><br /><a href="'.$destination_url.'">'.$lang_common['Click redirect'].'</a>' ?></p>
+			<p><?php echo $message.'<br /><br /><span class="small quiet">'.$lang_common['ifClick redirect'].' <a href="'.$destination_url.'">'.$lang_common['Click redirect'].'</a></span>' ?></p>
 		</div>
 	</div>
 </div>

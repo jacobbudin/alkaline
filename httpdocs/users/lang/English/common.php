@@ -34,7 +34,8 @@ $lang_common = array(
 'Go back'							=>	'Go back',
 'Maintenance'						=>	'Maintenance',
 'Redirecting'						=>	'Redirecting',
-'Click redirect'					=>	'Click here if you do not want to wait any longer (or if your browser does not automatically forward you)',
+'Click redirect'					=>	'Click here to continue.',
+'ifClick redirect'					=>  'Not being automatically redirected?',
 'on'								=>	'on', // As in "BBCode is on"
 'off'								=>	'off',
 'Invalid email'						=>	'The email address you entered is invalid.',
@@ -69,7 +70,7 @@ $lang_common = array(
 'Write message legend'				=>	'Write your message and submit',
 'Previous'							=>	'Previous',
 'Next'								=>	'Next',
-'Spacer'							=>	'…', // Ellipsis for paginate
+'Spacer'							=>	'&#0133;', // Ellipsis for paginate
 
 // Title
 'Title'								=>	'Title',

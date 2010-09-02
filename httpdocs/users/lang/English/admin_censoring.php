@@ -5,9 +5,9 @@ $lang_admin_censoring = array(
 
 'Must enter both message'	=>	'You must enter both a word to censor and text to replace it with.',
 'Must search both message'	=>	'You must enter both text to search for and text to replace with.',
-'Word updated redirect'		=>	'Censor word updated. Redirecting …',
-'Word added redirect'		=>	'Censor word added. Redirecting …',
-'Word removed redirect'		=>	'Censor word removed. Redirecting …',
+'Word updated redirect'		=>	'Censor word updated. Redirecting &#0133;',
+'Word added redirect'		=>	'Censor word added. Redirecting &#0133;',
+'Word removed redirect'		=>	'Censor word removed. Redirecting &#0133;',
 'Censoring head'			=>	'Censoring',
 'Add word subhead'			=>	'Add word',
 'Add word info'				=>	'Enter a word that you want to censor and the replacement text for this word. Wildcards are accepted (i.e. *some* would match somewhere and lonesome). Censor words also affect usernames. New users will not be able to register with usernames containing any censored words. The search is case insensitive.',

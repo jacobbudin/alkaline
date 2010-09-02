@@ -5,7 +5,7 @@ $lang_admin_prune = array(
 
 'Must be integer message'	=>	'Days to prune must be a positive integer value.',
 'No old topics message'		=>	'There are no topics that are %s days old. Please decrease the value of "Days old" and try again.',
-'Posts pruned redirect'		=>	'Posts pruned. Redirecting …',
+'Posts pruned redirect'		=>	'Posts pruned. Redirecting &#0133;',
 'Prune head'				=>	'Prune',
 'Prune subhead'				=>	'Prune old posts',
 'Days old label'			=>	'Days old',

@@ -50,6 +50,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 .pun h2, .pun .hd h2 {
+	font-size: 1.4em;
 	padding: 7px 0;
 }
 
@@ -141,7 +142,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 ----------------------------------------------------------------*/
 
 #punredirect, #punmaint {
-	padding: 60px 20% 12px 20%;
+	padding: 0 20%;
 }
 
 #puninstall, #pundb_update {
@@ -149,7 +150,8 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 #punredirect h2, #punmaint h2 {
-	border-bottom-style: dotted;
+	font-size: 1.4em;
+	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	margin-bottom: 3px;
 }
@@ -660,6 +662,7 @@ MAIN POSTS
 .pun .blockpost .inbox {
 	float: right;
 	position: relative;
+	font-size: .9em;
 	width: 100%;
 }
 
@@ -692,7 +695,7 @@ MAIN POSTS
 #punviewtopic .blockpost dt, #punmoderate .blockpost dt {
 	display: block;
 	position: absolute;
-	font-size: .9em;
+	font-size: 1em;
 	padding: 0.538em 0 0.538em 12px;
 	height: 1.462em;
 	top: -2.615em;
@@ -722,6 +725,7 @@ MAIN POSTS
 
 .pun .blockpost .postright {
 	position: relative;
+	font-size: 1.05em;
 	padding: 4px 230px 7px 18px;
 }
 
@@ -999,9 +1003,7 @@ MAIN FORMS
 }
 
 .pun .infldset {
-	border-style: solid;
-	border-width: 1px;
-	padding: 12px 18px;
+	padding: 12px 0 0 0;
 }
 
 #punregister #rules .infldset {
@@ -1290,7 +1292,7 @@ COLOUR SCHEME
 
 #brdtitle #brddesc, .pun .pagepost, #brdstats #onlinelist, #brdfooter #searchlinks, #brdfooter #modcontrols,
 #punmaint h2, #punredirect h2, #adminconsole .submittop, .pun #debugtime, .pun .pagelink a, .pun .pagelink * {
-
+	border-color: #ddd;
 }
 
 .pun a, .pun a:link, .pun a:visited {
@@ -1458,12 +1460,10 @@ COLOUR SCHEME
 }
 
 .pun .infldset, #adintro .inbox, #adstats .inbox {
-	background: #f6f9fc;
-	border-color: #dfe6ee;
 }
 
 .pun label, .pun legend, #adminconsole fieldset th {
-	color: #357082;
+	color: #555;
 }
 
 .pun fieldset p {

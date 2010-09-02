@@ -978,7 +978,7 @@ else
 
 		function _conv_bans($cur_item, $old_charset)
 		{
-			echo 'Converting ban '.$cur_item['id'].' …<br />'."\n";
+			echo 'Converting ban '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			convert_to_utf8($cur_item['username'], $old_charset);
 			convert_to_utf8($cur_item['message'], $old_charset);
@@ -998,7 +998,7 @@ else
 	case 'conv_categories':
 		$query_str = '?stage=conv_censors&req_old_charset='.$old_charset;
 
-		echo 'Converting categories …'."<br />\n";
+		echo 'Converting categories &#0133;'."<br />\n";
 
 		function _conv_categories($cur_item, $old_charset)
 		{
@@ -1016,7 +1016,7 @@ else
 	case 'conv_censors':
 		$query_str = '?stage=conv_config&req_old_charset='.$old_charset;
 
-		echo 'Converting censor words …'."<br />\n";
+		echo 'Converting censor words &#0133;'."<br />\n";
 
 		function _conv_censoring($cur_item, $old_charset)
 		{
@@ -1035,7 +1035,7 @@ else
 	case 'conv_config':
 		$query_str = '?stage=conv_forums&req_old_charset='.$old_charset;
 
-		echo 'Converting configuration …'."<br />\n";
+		echo 'Converting configuration &#0133;'."<br />\n";
 
 		function _conv_config($cur_item, $old_charset)
 		{
@@ -1053,7 +1053,7 @@ else
 	case 'conv_forums':
 		$query_str = '?stage=conv_perms&req_old_charset='.$old_charset;
 
-		echo 'Converting forums …'."<br />\n";
+		echo 'Converting forums &#0133;'."<br />\n";
 
 		function _conv_forums($cur_item, $old_charset)
 		{
@@ -1092,7 +1092,7 @@ else
 	case 'conv_groups':
 		$query_str = '?stage=conv_online&req_old_charset='.$old_charset;
 
-		echo 'Converting groups …'."<br />\n";
+		echo 'Converting groups &#0133;'."<br />\n";
 
 		function _conv_groups($cur_item, $old_charset)
 		{
@@ -1125,7 +1125,7 @@ else
 
 		function _conv_posts($cur_item, $old_charset)
 		{
-			echo 'Converting post '.$cur_item['id'].' …<br />'."\n";
+			echo 'Converting post '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			convert_to_utf8($cur_item['poster'], $old_charset);
 			convert_to_utf8($cur_item['message'], $old_charset);
@@ -1146,7 +1146,7 @@ else
 	case 'conv_ranks':
 		$query_str = '?stage=conv_reports&req_old_charset='.$old_charset;
 
-		echo 'Converting ranks …'."<br />\n";
+		echo 'Converting ranks &#0133;'."<br />\n";
 
 		function _conv_ranks($cur_item, $old_charset)
 		{
@@ -1166,7 +1166,7 @@ else
 
 		function _conv_reports($cur_item, $old_charset)
 		{
-			echo 'Converting report '.$cur_item['id'].' …<br />'."\n";
+			echo 'Converting report '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			convert_to_utf8($cur_item['message'], $old_charset);
 
@@ -1247,7 +1247,7 @@ else
 
 		function _conv_topics($cur_item, $old_charset)
 		{
-			echo 'Converting topic '.$cur_item['id'].' …<br />'."\n";
+			echo 'Converting topic '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			convert_to_utf8($cur_item['poster'], $old_charset);
 			convert_to_utf8($cur_item['subject'], $old_charset);
@@ -1270,7 +1270,7 @@ else
 
 		function _conv_users($cur_item, $old_charset)
 		{
-			echo 'Converting user '.$cur_item['id'].' …<br />'."\n";
+			echo 'Converting user '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			convert_to_utf8($cur_item['username'], $old_charset);
 			convert_to_utf8($cur_item['title'], $old_charset);
@@ -1502,7 +1502,7 @@ foreach ($errors[$id] as $cur_error)
 		$end_at = 0;
 		while ($cur_item = $db->fetch_assoc($result))
 		{
-			echo 'Preparsing post '.$cur_item['id'].' …<br />'."\n";
+			echo 'Preparsing post '.$cur_item['id'].' &#0133;<br />'."\n";
 			$db->query('UPDATE '.$db->prefix.'posts SET message = \''.$db->escape(preparse_bbcode($cur_item['message'], $temp)).'\' WHERE id = '.$cur_item['id']) or error('Unable to update post', __FILE__, __LINE__, $db->error());
 
 			$end_at = $cur_item['id'];
@@ -1537,7 +1537,7 @@ foreach ($errors[$id] as $cur_error)
 		$end_at = 0;
 		while ($cur_item = $db->fetch_assoc($result))
 		{
-			echo 'Preparsing signature '.$cur_item['id'].' …<br />'."\n";
+			echo 'Preparsing signature '.$cur_item['id'].' &#0133;<br />'."\n";
 			$db->query('UPDATE '.$db->prefix.'users SET signature = \''.$db->escape(preparse_bbcode($cur_item['signature'], $temp, true)).'\' WHERE id = '.$cur_item['id']) or error('Unable to update user', __FILE__, __LINE__, $db->error());
 
 			$end_at = $cur_item['id'];
@@ -1593,7 +1593,7 @@ foreach ($errors[$id] as $cur_error)
 		$end_at = 0;
 		while ($cur_item = $db->fetch_assoc($result))
 		{
-			echo 'Rebuilding index for post '.$cur_item['id'].' …<br />'."\n";
+			echo 'Rebuilding index for post '.$cur_item['id'].' &#0133;<br />'."\n";
 
 			if ($cur_item['id'] == $cur_item['first_post_id'])
 				update_search_index('post', $cur_item['id'], $cur_item['message'], $cur_item['subject']);

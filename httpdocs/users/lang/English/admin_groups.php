@@ -5,11 +5,11 @@ $lang_admin_groups = array(
 
 'Must enter title message'		=>	'You must enter a group title.',
 'Title already exists message'	=>	'There is already a group with the title <strong>%s</strong>.',
-'Default group redirect'		=>	'Default group set. Redirecting …',
+'Default group redirect'		=>	'Default group set. Redirecting &#0133;',
 'Cannot remove default message'	=>	'The default group cannot be removed. In order to delete this group, you must first setup a different group as the default.',
-'Group removed redirect'		=>	'Group removed. Redirecting …',
-'Group added redirect'			=>	'Group added. Redirecting …',
-'Group edited redirect'			=>	'Group edited. Redirecting …',
+'Group removed redirect'		=>	'Group removed. Redirecting &#0133;',
+'Group added redirect'			=>	'Group added. Redirecting &#0133;',
+'Group edited redirect'			=>	'Group edited. Redirecting &#0133;',
 
 'Add groups head'				=>	'Add/setup groups',
 'Add group subhead'				=>	'Add new group',

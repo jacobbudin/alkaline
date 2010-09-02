@@ -16,8 +16,8 @@ $lang_admin_maintenance = array(
 'Rebuild index'					=>	'Rebuild index',
 'Rebuilding search index'		=>	'Rebuilding search index',
 'Rebuilding index info'			=>	'Rebuilding index. This might be a good time to put on some coffee :-)',
-'Processing post'				=>	'Processing post <strong>%s</strong> …',
+'Processing post'				=>	'Processing post <strong>%s</strong> &#0133;',
 'Click here'					=>	'Click here',
-'Javascript redirect failed'	=>	'JavaScript redirect unsuccessful. %s to continue …',
+'Javascript redirect failed'	=>	'JavaScript redirect unsuccessful. %s to continue &#0133;',
 
 );
