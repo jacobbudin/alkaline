@@ -34,9 +34,11 @@ class User extends Alkaline{
 	// Login user by username, password
 	public function auth($username, $password, $remember=false){
 		// Error checking
-		if(empty($user) or empty($password)){
+		if(empty($username) or empty($password)){
 			return false;
 		}
+		
+		echo 'SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";';
 		
 		// Check database
 		$query = $this->db->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');

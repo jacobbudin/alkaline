@@ -29,16 +29,15 @@ if(!empty($username) or !empty($password)){
 
 
 define('TITLE', 'Alkaline Login');
-define('EMBED_CSS', '.container{ position: relative; top: 18%; width: 590px; }');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div id="login" class="container">
+<div class="span-24 last">
 	<form input="" method="post">
 		<table>
 			<tr>
-				<td style="width: 40%; text-align: right;">
+				<td class="right middle">
 					<label for="login_user">Username:</label>
 				</td>
 				<td>
@@ -46,7 +45,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</td>
 			</tr>
 			<tr>
-				<td style="text-align: right;">
+				<td class="right middle">
 					<label for="login_pass">Password:</label>
 				</td>
 				<td>
