@@ -76,6 +76,48 @@ hr{
 	background: #fff url(/images/content_bg.png) top center no-repeat;
 }
 
+.trim{
+	position: relative;
+	width: 100%;
+	background: url(/images/papertrim.png) bottom left repeat-x;
+}
+
+.trim_pad{
+	padding: 1em 1.5em 1.5em 1.5em;
+	color: #fff;
+}
+
+.trim_pad #brdmenu.inbox{
+	display: block;
+}
+
+.trim_pad #brdmenu ul{
+	display: block;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.trim_pad #brdmenu li{
+	margin-right: 1.5em;
+	display: inline;
+}
+
+.trim_pad #brdwelcome{
+	margin: 0;
+	padding: 0;
+}
+
+.trim_pad a{
+	color: #e9dbcf;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.trim_pad a:hover, .trim_pad a:active{
+	color: #fff;
+}
+
 .buffer{
 	padding: 1.5em 2em 0 2em;
 }

@@ -105,7 +105,7 @@ $is_admmod = ($pun_user['g_id'] == PUN_ADMIN || ($pun_user['g_moderator'] == '1'
 if ($cur_topic['closed'] == '0')
 {
 	if (($cur_topic['post_replies'] == '' && $pun_user['g_post_replies'] == '1') || $cur_topic['post_replies'] == '1' || $is_admmod)
-		$post_link = "\t\t\t".'<p class="postlink conr"><a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a></p>'."\n";
+		$post_link = "\t\t\t".'<p class="postlink conr"><img src="/users/style/Air/img/post.png" style="vertical-align: middle;" alt="" /> <a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a></p>'."\n";
 	else
 		$post_link = '';
 }
@@ -114,7 +114,7 @@ else
 	$post_link = $lang_topic['Topic closed'];
 
 	if ($is_admmod)
-		$post_link .= ' / <a href="post.php?tid='.$id.'">'.$lang_topic['Post reply'].'</a>';
+		$post_link .= ' / <a href="post.php?tid='.$id.'"><img src="/users/style/Air/img/post.png" style="vertical-align: middle;" alt="" /> '.$lang_topic['Post reply'].'</a>';
 
 	$post_link = "\t\t\t".'<p class="postlink conr">'.$post_link.'</p>'."\n";
 }
@@ -178,7 +178,7 @@ require PUN_ROOT.'header.php';
 <div class="linkst">
 	<div class="inbox crumbsplus">
 		<ul class="crumbs">
-			<li><a href="index.php"><?php echo $lang_common['Index'] ?></a></li>
+			<li><a href="/users/"><?php echo $lang_common['Index'] ?></a></li>
 			<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_topic['forum_id'] ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
 			<li><span>»&#160;</span><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></li>
 		</ul>
@@ -381,7 +381,7 @@ while ($cur_post = $db->fetch_assoc($result))
 <?php echo $post_link ?>
 		</div>
 		<ul class="crumbs">
-			<li><a href="index.php"><?php echo $lang_common['Index'] ?></a></li>
+			<li><a href="/users/"><?php echo $lang_common['Index'] ?></a></li>
 			<li><span>»&#160;</span><a href="viewforum.php?id=<?php echo $cur_topic['forum_id'] ?>"><?php echo pun_htmlspecialchars($cur_topic['forum_name']) ?></a></li>
 			<li><span>»&#160;</span><strong><?php echo pun_htmlspecialchars($cur_topic['subject']) ?></strong></li>
 		</ul>

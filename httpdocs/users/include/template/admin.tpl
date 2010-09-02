@@ -26,6 +26,11 @@
 			</div>
 		</div>
 		<div id="content" class="span-23 last">
+			<div class="trim">
+				<div class="trim_pad">
+					<pun_navlinks>
+				</div>
+			</div>
 			<div class="full_buffer">
 				<div id="punadmin" class="pun">
 				<div class="top-box"><div><!-- Top Corners --></div></div>
@@ -33,7 +38,6 @@
 
 				<div id="brdheader" class="block">
 					<div class="box">
-						<pun_navlinks>
 						<pun_status>
 					</div>
 				</div>

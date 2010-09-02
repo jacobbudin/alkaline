@@ -159,12 +159,12 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 /* Section Spacing and Borders
 ----------------------------------------------------------------*/
 
-#brdmain {
+#brdfooter{
 	border-style: solid none;
-	border-width: 0 0 1px 0;
+	border-width: 1px 0 0 0;
 	border-color: #ddd;
-	margin-bottom: 12px;
-	padding: 0 0 6px 0;
+	margin-top: 6px;
+	padding-top: 12px;
 }
 
 #punindex #brdmain {
@@ -203,27 +203,11 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 /* Logo, Description and Main Menu
 ----------------------------------------------------------------*/
 
-#brdmenu ul {
-	padding: 0;
-}
-
-#brdmenu li {
-	float: left;
-}
-
-#brdmenu a:link, #brdmenu a:visited {
-	margin-right: 1.5em;
-}
-
-#brdmenu a:hover, #brmenu a:active, #brdmenu a:focus {
-	text-decoration: none;
-}
 
 /* Welcome Box
 ----------------------------------------------------------------*/
 
 #brdwelcome {
-	padding: 10px 0;
 	text-align: right;
 }
 
@@ -754,6 +738,22 @@ MAIN POSTS
 	margin-left: 8px;
 	line-height: normal;
 	background: url(Air/img/bull.png) center left no-repeat;
+}
+
+.pun .blockpost .postfootright li.postreport span{
+	background-image: url(Air/img/report.png);
+}
+
+.pun .blockpost .postfootright li.postdelete span{
+	background-image: url(Air/img/delete.png);
+}
+
+.pun .blockpost .postfootright li.postedit span{
+	background-image: url(Air/img/edit.png);
+}
+
+.pun .blockpost .postfootright li.postquote span{
+	background-image: url(Air/img/quote.png);
 }
 
 .pun .blockpost .usercontacts {
@@ -1383,6 +1383,11 @@ COLOUR SCHEME
 
 .pun .blockpost .postfootright li {
 	color: #fcfdfe;
+}
+
+.pun .blockpost .postfootright li a{
+	color: #555;
+	text-decoration: none;
 }
 
 .pun .postmsg, #punhelp code, #punhelp samp {
