@@ -188,13 +188,10 @@ else
 		<div class="inbox">
 			<dl class="conr">
 				<dt><strong><?php echo $lang_index['Board stats'] ?></strong></dt>
-				<dd><span><?php printf($lang_index['No of users'], '<strong>'.forum_number_format($stats['total_users']).'</strong>') ?></span></dd>
-				<dd><span><?php printf($lang_index['No of topics'], '<strong>'.forum_number_format($stats['total_topics']).'</strong>') ?></span></dd>
-				<dd><span><?php printf($lang_index['No of posts'], '<strong>'.forum_number_format($stats['total_posts']).'</strong>') ?></span></dd>
+				<dd><span><?php printf($lang_index['No of topics'], forum_number_format($stats['total_topics'])) ?></span></dd>,
+				<dd><span><?php printf($lang_index['No of posts'], forum_number_format($stats['total_posts'])) ?></span></dd>
 			</dl>
 			<dl class="conl">
-				<dt><strong><?php echo $lang_index['User info'] ?></strong></dt>
-				<dd><span><?php printf($lang_index['Newest user'], $stats['newest_user']) ?></span></dd>
 <?php
 
 if ($pun_config['o_users_online'] == '1')

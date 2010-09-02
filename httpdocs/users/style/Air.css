@@ -162,7 +162,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 	border-width: 0 0 1px 0;
 	border-color: #ddd;
 	margin-bottom: 12px;
-	padding: 0 0 12px 0;
+	padding: 0 0 6px 0;
 }
 
 #punindex #brdmain {
@@ -175,9 +175,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 #brdstats {
-	border-style: solid none none none;
-	border-width: 1px 0;
-	border-color: #ddd;
+	border: none;
 	margin-top: 24px;
 	padding-top: 12px;
 }
@@ -296,6 +294,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 .pun #brdfooter .conr {
+	line-height: 1em;
 	text-align: right;
 	float: right;
 }
@@ -330,6 +329,10 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 	display: inline-block;
 	padding-left: 18px;
 	white-space: nowrap;
+}
+
+.pun #brdfooter #feedlinks a{
+	color: #666;
 }
 
 .pun #debugtime {
@@ -510,6 +513,7 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 .pun .blocktable td .newtext, .pun .blocktable td .pagestext, .pun .blocktable td .byuser {
+	color: #666;
 	white-space: nowrap;
 }
 
@@ -1277,6 +1281,10 @@ PROFILES (+ ADMIN MENU)
 	padding: 7px 0 7px 13em;
 }
 
+.inbox dd{
+	display: inline;
+}
+
 /*****************************************************************
 COLOUR SCHEME
 *****************************************************************/
@@ -1320,8 +1328,7 @@ COLOUR SCHEME
 ----------------------------------------------------------------*/
 
 .pun .blocktable .box {
-	background: #fcfdfe;
-	border-color: #d4e5ed #d4e5ed;
+	border-color: #eee #eee;
 }
 
 #punindex .blocktable h2, .pun #vf h2 {
@@ -1338,13 +1345,13 @@ COLOUR SCHEME
 }
 
 .pun .blocktable td {
-	border-color: #dfe6ee;
+	border-color: #eee #eee;
 }
 
 .pun .blocktable th {
-	background: #ddeff8;
-	border-color: #d4e5ed;
-	color: #003a69;
+	background: #eee;
+	border-color: #eee;
+	color: #555;
 }
 
 .pun .blocktable td.tcl span.stickytext {
@@ -1491,6 +1498,14 @@ COLOUR SCHEME
 
 #adminconsole fieldset td.nodefault {
 	background: #d59b9b;
+}
+
+.pun .tcr a{
+	color: #222;
+}
+
+.punwrap .roweven{
+	background-color: #f8f8f8;
 }
 
 /* Status Indicators

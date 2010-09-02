@@ -9,7 +9,11 @@ body{
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
 }
 
-a, .link, .blue{
+.link, .blue{
+	color: #005abb;
+}
+
+a{
 	color: #005abb;
 	text-decoration: underline;
 }
@@ -77,7 +81,7 @@ hr{
 }
 
 .full_buffer{
-	padding: 1.5em 2em 2em 2em;
+	padding: 1.5em 2em 1.5em 2em;
 }
 
 #welcome{

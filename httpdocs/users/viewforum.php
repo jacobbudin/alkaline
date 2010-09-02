@@ -224,11 +224,9 @@ else
 ?>
 				<tr class="rowodd inone">
 					<td class="tcl" colspan="<?php echo $colspan ?>">
-						<div class="icon inone"><div class="nosize"><!-- --></div></div>
-						<div class="tclcon">
-							<div>
-								<strong><?php echo $lang_forum['Empty forum'] ?></strong>
-							</div>
+						<div class="inone"><div class="nosize"><!-- --></div></div>
+						<div class="tclcon quiet" style="text-align: center;">
+							<?php echo $lang_forum['Empty forum'] ?>
 						</div>
 					</td>
 				</tr>

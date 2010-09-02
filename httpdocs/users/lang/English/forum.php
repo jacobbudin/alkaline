@@ -8,7 +8,7 @@ $lang_forum = array(
 'Moved'			=>	'Moved:',
 'Sticky'		=>	'Sticky:',
 'Closed'		=>	'Closed:',
-'Empty forum'	=>	'Forum is empty.',
+'Empty forum'	=>	'This forum is empty.',
 'Mod controls'	=>	'Moderator controls'
 
 );
