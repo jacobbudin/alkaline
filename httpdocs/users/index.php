@@ -140,14 +140,21 @@ while ($cur_forum = $db->fetch_assoc($result))
 
 		$moderators = "\t\t\t\t\t\t\t\t".'<p class="modlist">(<em>'.$lang_common['Moderated by'].'</em> '.implode(', ', $moderators).')</p>'."\n";
 	}
+	
+	if($icon_type == 'icon'){
+		$icon_type = '<img src="/users/style/Air/img/forum.png" alt="" />';
+	}
+	else{
+		$icon_type = '<img src="/users/style/Air/img/forum-new.png" alt="" />';	
+	}
 
 ?>
 				<tr class="<?php echo $item_status ?>">
 					<td class="tcl">
-						<div class="<?php echo $icon_type ?>"><div class="nosize"><?php echo forum_number_format($forum_count) ?></div></div>
+						<div class="icon"><?php echo $icon_type ?><div class="nosize"><?php echo forum_number_format($forum_count) ?></div></div>
 						<div class="tclcon">
 							<div>
-								<?php echo $forum_field."\n".$moderators ?>
+							 	<?php echo $forum_field."\n".$moderators ?>
 							</div>
 						</div>
 					</td>

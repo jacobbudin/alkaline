@@ -593,12 +593,8 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 }
 
 .pun .icon {
-	border-style: solid;
-	border-width: 8px;
+	padding-top: 1px;
 	float: left;
-	height: 0;
-	overflow: hidden;
-	width: 0;
 }
 
 .pun .iposted .ipost {

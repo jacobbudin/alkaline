@@ -198,11 +198,18 @@ if ($db->num_rows($result))
 			$subject .= !empty($subject_new_posts) ? ' '.$subject_new_posts : '';
 			$subject .= !empty($subject_multipage) ? ' '.$subject_multipage : '';
 		}
+		
+		if($icon_type == 'icon'){
+			$icon_type = '<img src="/users/style/Air/img/topic.png" alt="" />';
+		}
+		else{
+			$icon_type = '<img src="/users/style/Air/img/topic-new.png" alt="" />';	
+		}
 
 ?>
 				<tr class="<?php echo $item_status ?>">
 					<td class="tcl">
-						<div class="<?php echo $icon_type ?>"><div class="nosize"><?php echo forum_number_format($topic_count + $start_from) ?></div></div>
+						<div class="icon"><?php echo $icon_type ?><div class="nosize"><?php echo forum_number_format($topic_count + $start_from) ?></div></div>
 						<div class="tclcon">
 							<div>
 								<?php echo $subject."\n" ?>
