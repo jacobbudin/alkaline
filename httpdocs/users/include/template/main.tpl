@@ -25,7 +25,7 @@
 				</ul>
 			</div>
 		</div>
-		<div id="content" class="span-23 last">
+		<div id="content_white" class="span-23 last">
 			<div class="trim">
 				<div class="trim_pad">
 					<pun_navlinks>

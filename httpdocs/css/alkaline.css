@@ -6,7 +6,16 @@
 body{
 	margin: 5em 0;
 	background-color: #0c2f47;
+	color: #333;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+table td{
+	vertical-align: top;
+}
+
+input[type=text], input[type=password], input.text, input.title, textarea {
+	width: 15em;
 }
 
 .link, .blue{
@@ -24,11 +33,19 @@ a:hover, a:visited{
 }
 
 h1, h2, h3, h4, h5, h6{
+	color: #222;
 	margin-bottom: .5em;
 }
 
 h4{
-	font-size: 1.3em;
+	font-size: 1.25em;
+	line-height: 2em;
+	margin-bottom: 1em;
+}
+
+#content hr{
+	color: #ddd;
+	background-color: #ddd;
 }
 
 hr{
@@ -70,10 +87,17 @@ hr{
 }
 
 #content{
+	border: solid #11507d;
+	border-width: 6px 0 0 0;
+	border-radius: 0 0 4px 4px;
+	background: #fff;
+}
+
+#content_white{
 	border: solid #fff;
 	border-width: 6px 0 0 0;
 	border-radius: 0 0 4px 4px;
-	background: #fff url(/images/content_bg.png) top center no-repeat;
+	background: #fff;
 }
 
 .trim{
@@ -237,4 +261,41 @@ hr{
 
 .box{
 	background: transparent;
+}
+
+.right{
+	text-align: right;
+	width: 30%;
+}
+
+.center{
+	text-align: center;
+}
+
+.middle{
+	vertical-align: middle;
+}
+
+.pad{
+	padding-top: .5em;
+}
+
+.buy input{
+	margin: 0 .25em;
+	font-size: 1.1em;
+}
+
+.large{
+	font-size: 1.15em;
+	line-height: 1.5em;
+}
+
+.large .pad{
+	padding-top: .4em;
+}
+
+.highlight{
+	padding: 1px 3px;
+	background-color: #c6e4f3;
+	color: #003a69;
 }

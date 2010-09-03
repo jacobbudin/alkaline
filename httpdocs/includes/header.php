@@ -24,7 +24,7 @@
 					<li><a href="/guide/">User Guide</a></li>
 					<li><a href="/support/">Support</a></li>
 					<li><a href="/users/">Lounge</a></li>
-					<li><a href="/buy"><img src="/images/buynow.png" alt="Buy Now" /></a></li>
+					<li><a href="/buy/"><img src="/images/buynow.png" alt="Buy Now" /></a></li>
 				</ul>
 			</div>
 		</div>
