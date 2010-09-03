@@ -8,6 +8,11 @@
 
 define('PUN_ROOT', './');
 require PUN_ROOT.'include/common.php';
+require PUN_ROOT.'include/common_admin.php';
+
+
+if (!$pun_user['is_admmod'])
+	message($lang_common['No permission']);
 
 
 if ($pun_user['g_read_board'] == '0')

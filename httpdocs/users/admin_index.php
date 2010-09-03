@@ -123,27 +123,9 @@ generate_admin_menu('index');
 
 ?>
 	<div class="block">
-		<h2><span><?php echo $lang_admin_index['Forum admin head'] ?></span></h2>
-		<div id="adintro" class="box">
-			<div class="inbox">
-				<p>
-					<?php echo $lang_admin_index['Welcome to admin'] ?><br /><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 1'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 2'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 3'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 4'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 5'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 6'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 7'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 8'] ?><br />
-					&#160;- <?php echo $lang_admin_index['Welcome 9'] ?>
-				</p>
-			</div>
-		</div>
 
 		<h2 class="block2"><span><?php echo $lang_admin_index['Statistics head'] ?></span></h2>
 		<div id="adstats" class="box">
-			<div class="inbox">
 				<dl>
 					<dt><?php echo $lang_admin_index['FluxBB version label'] ?></dt>
 					<dd>
@@ -166,7 +148,6 @@ generate_admin_menu('index');
 						<br /><?php printf($lang_admin_index['Database data size'], $total_size) ?>
 <?php endif; endif; ?>					</dd>
 				</dl>
-			</div>
 		</div>
 	</div>
 	<div class="clearer"></div>

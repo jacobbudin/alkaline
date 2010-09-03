@@ -49,8 +49,13 @@ html, body, .pun table, .pun div, .pun form, .pun p, .pun h1, .pun h2, .pun h3, 
 	padding: 7px 0;
 }
 
-.pun h2, .pun .hd h2 {
+.pun h3, .pun .hd h3 {
 	font-size: 1.4em;
+	padding: 7px 0;
+}
+
+.pun h2, .pun .hd h2 {
+	font-size: 1.2em;
 	padding: 7px 0;
 }
 
@@ -854,9 +859,9 @@ MAIN POSTS
 
 .pun .quotebox {
 	border-style: solid;
-	border-width: 1px 1px 1px 3px;
+	border-width: 0 0 0 3px;
 	margin: 0.75em 1em;
-	padding: 0 0.75em;
+	padding: 0 1.25em;
 }
 
 .pun .quotebox cite {
@@ -927,7 +932,7 @@ MAIN FORMS
 #punedit .blockform h2, #punpost .blockform h2, #postpreview h2, #posterror h2,
 .pun #quickpost h2, .pun #reportform h2, #pundelete .blockform h2 {
 	font-size: 1.2em;
-	padding: 10px 19px 0 10px;
+	padding: 10px 19px 10px 0;
 	border: 0;
 }
 
@@ -1334,8 +1339,8 @@ COLOUR SCHEME
 }
 
 #adminconsole fieldset th, #adminconsole fieldset td {
-	background: #f6f9fc;
-	border-color: #dfe6ee;
+	background: #fafafa;
+	border-color: #eee;
 }
 
 .pun #users1 h2 {
@@ -1399,13 +1404,12 @@ COLOUR SCHEME
 }
 
 .pun .quotebox {
-	background: #f8f9f0;
-	border-color: #7aadbd;
-	color: #566579;
+	border-color: #ddd;
+	color: #555;
 }
 
 .pun .quotebox cite {
-	color: #357082;
+	color: #444;
 }
 
 .pun .codebox, #punhelp .codebox code {
@@ -1528,4 +1532,9 @@ COLOUR SCHEME
 
 .pun .inew .icon {
 	border-color: #91b3d9 #87a8d1 #6c85bb #7292c3;
+}
+
+h2{
+	font-size: 1.2em;
+	margin-bottom: .75em;
 }
