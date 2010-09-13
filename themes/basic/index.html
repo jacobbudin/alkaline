@@ -2,7 +2,7 @@
 <!-- CANVAS_HELLO_WORLD -->
 <!-- LOOP(PHOTOS) -->
 <div class="photo">
-	<img src="<!-- PHOTO_SRC_MEDIUM -->" alt="" class="frame" /><br />
+	<a href="/photo/<!-- PHOTO_ID -->/"><img src="<!-- PHOTO_SRC_MEDIUM -->" alt="" class="frame" /></a><br />
 	<div class="float_right">
 		<div class="uploaded"><!-- PHOTO_UPLOADED --></div>
 		<div class="right"><!-- IF(RIGHT_TITLE) -->
@@ -31,6 +31,6 @@
 
 <p>
 	Page #<!-- PAGE_CURRENT --> of <!-- PAGE_COUNT -->
-	<!-- IF(PAGE_NEXT) --><br />Next page: Page #<!-- PAGE_NEXT --><!-- ENDIF(PAGE_NEXT) -->
-	<!-- IF(PAGE_PREVIOUS) --><br />Previous page: Page #<!-- PAGE_PREVIOUS --><!-- ENDIF(PAGE_PREVIOUS) -->
+	<!-- IF(PAGE_NEXT) --><br /><a href="/page<!-- PAGE_NEXT -->/">Next page</a>: Page #<!-- PAGE_NEXT --><!-- ENDIF(PAGE_NEXT) -->
+	<!-- IF(PAGE_PREVIOUS) --><br /><a href="/page<!-- PAGE_PREVIOUS -->/">Previous page</a>: Page #<!-- PAGE_PREVIOUS --><!-- ENDIF(PAGE_PREVIOUS) -->
 </p>

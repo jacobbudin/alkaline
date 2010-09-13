@@ -14,5 +14,6 @@
 	RewriteRule ^admin/([a-z0-9\-]+)/([a-z0-9\-]+)(/)?$ /admin/$1_$2.php [NC,QSA]
 	
 	RewriteRule ^photo/([a-z0-9\-]+)(/)?$ /photo.php?identifier=$1 [NC]
+	RewriteRule ^page([0-9]+)(/)?$ /index.php?page=$1 [NC]
 	
 </IfModule>

@@ -21,7 +21,11 @@ $photo_ids = new Find;
 // $photo_ids->views(1,2);
 // $photo_ids->sort('photos.photo_published', 'DESC');
 // $photo_ids->_tags('beach');
-$photo_ids->_page(8,1,2);
+
+if(!empty($_GET['page'])){ $page = intval($_GET['page']); if($page < 1){ $page = 1; } }
+else{ $page = 1; }
+
+$photo_ids->_page($page,5,3);
 // $photo_ids->with(201);
 // $photo_ids->offset(2);
 // $photo_ids->_published();
