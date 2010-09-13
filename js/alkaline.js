@@ -82,7 +82,7 @@ function appendPhoto(photo){
 	photo_ids = $("#shoebox_photo_ids").val();
 	photo_ids += photo.id + ',';
 	$("#shoebox_photo_ids").attr("value", photo_ids);
-	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id"><hr /><div class="span-3 center"><img src="' + BASE + PHOTOS + photo.id + '_sq.' + photo.ext + '" alt="" class="admin_thumb" /></div><div class="span-14 last"><p class="title"><input type="text" name="photo-' + photo.id + '-title" /></p><p class="description"><textarea name="photo-' + photo.id + '-description"></textarea></p><p class="tags"><img src="' + BASE + IMAGES + 'icons/tag.png" alt="" title="Tags" /><input type="text" id="photo-' + photo.id + '-tags" /></p><p class="publish"><img src="' + BASE + IMAGES + 'icons/publish.png" alt="" title="Publish date" /><input type="text" id="photo-' + photo.id + '-published" value="' + now + '" /></p><p class="geo"><img src="' + BASE + IMAGES + 'icons/geo.png" alt="" title="Geolocation" /><input type="text" id="photo-' + photo.id + '-geo" /></p><p class="delete"><a href="#" class="delete"><img src="' + BASE + IMAGES + 'icons/delete.png" alt="" title="Delete photo" /></a></p></div></div>');
+	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.id + '_admin.' + photo.ext + '" alt="" /><p><input type="text" id="photo-' + photo.id + '-title" name="photo-' + photo.id + '-title" value="" class="title bottom-border" /><textarea id="photo-' + photo.id + '-description" name="photo-' + photo.id + '-description"></textarea></p></div><div class="span-8 full last"><label for="photo-' + photo.id + '-tags">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" class="photo_tag_add" id="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><input type="hidden" name="photo_tags_input" id="photo_tags_input" class="photo_tags_input" value="" /><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.id + '-geo" name="photo-' + photo.id + '-geo" value="" /></p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.id + '-published" name="photo-' + photo.id + '-published" value="Now" /></p><p><label for="">Privacy level:</label><br /></p><p><label for="">Rights set:</label><br /></p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td><td><strong><label for="photo_delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 }
 
 function updateProgress(val){
@@ -118,28 +118,68 @@ $(document).ready(function(){
 	var page_re = /^(\w+).*/;
 	page = page.replace(page_re, "$1");
 	
-	var tags = $("#photo_tags").text();
-	if(empty(tags)){
-		tags = new Array();
+	$('.photo_tags_load').each(function(index) {
+		tags = $(this).text();
+		
+		if(empty(tags)){
+			tags = new Array();
+		}
+		else{
+			tags = $.evalJSON(tags);
+		}
+		
+		updateTags(this);
+	});
+	
+	function focusTags(that){
+		var container = $(that).parents('.photo_tag_container');
+		tags = container.children('.photo_tags_load').text();
+		
+		if(empty(tags)){
+			tags = new Array();
+		}
+		else{
+			tags = $.evalJSON(tags);
+		}
 	}
-	else{
-		tags = $.evalJSON(tags);
+	
+	function updateTags(that){
+		var container = $(that).parents('.photo_tag_container');		
+		var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a href="" class="tag">' + item + '</a>'; });
+		container.children('.photo_tags_input').val($.toJSON(tags));
+		container.children('.photo_tags_load').text($.toJSON(tags));
+		container.children('.photo_tags').html(tags_html.join(', '));
 	}
-	updateTags();
 	
 	// PHOTO
-	$("#photo_tag_add").click(function(){
-		var tag = $("#photo_tag").val();
+	$('.photo_tag_add').click(function(){
+		focusTags(this);
+		var tag = $(this).siblings('.photo_tag').val();
 		tag = jQuery.trim(tag);
 		if(tags.indexOf(tag) == -1){
 			tags.push(tag);
-			updateTags();
+			updateTags(this);
 		}
-		$("#photo_tag").val('');
+		$(this).siblings('.photo_tag').val('');
 		event.preventDefault();
 	});
 	
-	$("#photo_tags a.tag").live('click', function(){
+	$('.photo_tag').keydown(function(event){
+		focusTags(this);
+		if(event.keyCode == '13'){
+			var tag = $(this).val();
+			tag = jQuery.trim(tag);
+			if(tags.indexOf(tag) == -1){
+				tags.push(tag);
+				updateTags(this);
+			}
+			$(this).val('');
+			event.preventDefault();
+		}
+	});
+	
+	$(".photo_tags a.tag").live('click', function(){
+		focusTags(this);
 		var tag = $(this).contents().text();
 		tag = jQuery.trim(tag);
 		var index = tags.lastIndexOf(tag);
@@ -147,15 +187,9 @@ $(document).ready(function(){
 			tags.splice(index, 1);
 			$(this).fadeOut();
 		}
-		updateTags();
+		updateTags(this);
 		event.preventDefault();
 	});
-	
-	function updateTags(){
-		var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a href="" class="tag">' + item + '</a>'; });
-		$("#photo_tags_input").val($.toJSON(tags));
-		$("#photo_tags").html(tags_html.join(', '));
-	}
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
