@@ -16,9 +16,14 @@ if(!empty($_POST['photo_ids'])){
 	
 	foreach($photo_ids as $photo_id){
 		$photo = new Photo($photo_id);
-		$fields = array('photo_title' => $_POST['photo-' . $photo_id . '-title'],
-			'photo_description' => $_POST['photo-' . $photo_id . '-description']);
+		$fields = array('photo_title' => @$_POST['photo-' . $photo_id . '-title'],
+			'photo_description' => @$_POST['photo-' . $photo_id . '-description'],
+			'photo_geo' => @$_POST['photo-' . $photo_id . '-geo'],
+			'photo_published' => @$_POST['photo-' . $photo_id . '-published'],
+			'photo_privacy' => @$_POST['photo-' . $photo_id . '-privacy'],
+			'right_id' => @$_POST['photo-' . $photo_id . '-id']);
 		$photo->updateFields($fields);
+		$photo->updateTags(json_decode(@$_POST['photo-' . $photo_id . '-tags_input']));
 	}
 	
 	$alkaline->addNotification('Your shoebox has been successfully processed.', 'success');
@@ -45,6 +50,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <h1>Shoebox (<?php echo $photo_count; ?>)</h1>
 
 <form action="" method="post">
+	<div id="privacy_html" class="none">
+		<?php echo $alkaline->showPrivacy('photo--privacy'); ?>
+	</div>
+	
+	<div id="rights_html" class="none">
+		<?php echo $alkaline->showRights('right--id'); ?>
+	</div>
+	
 	<div id="shoebox_photos">
 		
 	</div>

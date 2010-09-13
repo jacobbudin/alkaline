@@ -513,7 +513,7 @@ class Alkaline{
 	}
 	
 	// SHOW PRIVACY
-	public function showPrivacy($name, $privacy_id){
+	public function showPrivacy($name, $privacy_id=1){
 		if(empty($name)){
 			return false;
 		}
