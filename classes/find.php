@@ -561,13 +561,19 @@ class Find extends Alkaline{
 	// PAGINATE RESULTS
 	public function page($page, $limit=null, $first=null){
 		// Error checking
-		if(empty($page)){ return false; }
-		if($page == 0){ return false; }
+		if(empty($page)){ 
+			if(!empty($_GET['page'])){ $page = intval($_GET['page']); }
+			else{ $page == 1; }
+		}
+		else{
+			$page = intval($page);
+		}
+		if($page < 1){ return false; }
 		if(empty($limit)){ $limit = LIMIT; }
 		if(empty($first)){ $first = $limit; }
 		
 		// Store data to object
-		$this->page = intval($page);
+		$this->page = $page;
 		$this->page_limit = intval($limit);
 		$this->page_first = intval($first);
 		
