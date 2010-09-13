@@ -83,13 +83,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<td>
 						<select id="color" name="color">
 							<option></option>
-							<option value="grey">grey</option>
-							<option value="blue">blue</option>
-							<option value="red">red</option>
-							<option value="yellow">yellow</option>
-							<option value="green">green</option>
-							<option value="purple">purple</option>
-							<option value="orange">orange</option>
+							<option value="blue">Blue</option>
+							<option value="red">Red</option>
+							<option value="yellow">Yellow</option>
+							<option value="green">Green</option>
+							<option value="purple">Purple</option>
+							<option value="orange">Orange</option>
+							<option value="brown">Brown</option>
+							<option value="pink">Pink</option>
 						</select>
 					</td>
 				</tr>

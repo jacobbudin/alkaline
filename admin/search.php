@@ -60,26 +60,29 @@ if(!empty($_POST['location'])){
 // Primary color
 if(!empty($_POST['color'])){
 	switch($_POST['color']){
-		case 'grey':
-			$photo_ids->_hsl(null, 0, null);
-			break;
 		case 'blue':
-			$photo_ids->_hsl(235, 50, 100);
+			$photo_ids->_hsl(170, 235, 1, 100, 1, 100);
 			break;
 		case 'red':
-			$photo_ids->_hsl(1, 50, 100);
+			$photo_ids->_hsl(345, 10, 1, 100, 1, 100);
 			break;
 		case 'yellow':
-			$photo_ids->_hsl(60, 50, 100);
+			$photo_ids->_hsl(50, 75, 1, 100, 1, 100);
 			break;
 		case 'green':
-			$photo_ids->_hsl(120, 50, 100);
+			$photo_ids->_hsl(75, 170, 1, 100, 1, 100);
 			break;
 		case 'purple':
-			$photo_ids->_hsl(300, 50, 100);
+			$photo_ids->_hsl(235, 300, 1, 100, 1, 100);
 			break;
 		case 'orange':
-			$photo_ids->_hsl(40, 50, 100);
+			$photo_ids->_hsl(10, 50, 1, 100, 1, 100);
+			break;
+		case 'brown':
+			$photo_ids->_hsl(null, null, null, null, 1, 20);
+			break;
+		case 'pink':
+			$photo_ids->_hsl(300, 345, 1, 100, 1, 100);
 			break;
 		default:
 			break;

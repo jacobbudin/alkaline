@@ -451,46 +451,32 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY COLOR (HSL)
-	public function hsl($h, $s, $l){
+	public function hsl($h_min, $h_max, $s_min, $s_max, $l_min, $l_max){
 		// Error checking
-		if(empty($h) and empty($s) and empty($l)){ return false; }
-		
-		$h_tolerance = 40;
-		$s_tolerance = 50;
-		$l_tolerance = 75;
+		if(!isset($h_min) and !isset($h_max) and !isset($s_min) and !isset($s_max) and !isset($l_min) and !isset($l_max)){ return false; }
 		
 		// H - Hue
-		if(!empty($h)){
-			$h = intval($h);
-			if(($h < $h_tolerance) or ($h > (360 - $h_tolerance))){
-				if($h < $h_tolerance){
-					$h_top = $h;
-					$h_bottom = 360 + ($h - $h_tolerance);
-				}
-				if($h > (360 - $h_tolerance)){
-					$h_top = ($h + $h_tolerance) - 360;
-					$h_bottom = $h;
-				}
-				$this->sql_conds[] = '(photos.photo_color_h <= ' . $h_top . ' OR photos.photo_color_h >= ' . $h_bottom . ')';
+		if(isset($h_min) and isset($h_max)){
+			
+			if($h_min > $h_max){
+				$this->sql_conds[] = '(photos.photo_color_h <= ' . $h_max . ' OR photos.photo_color_h >= ' . $h_min . ')';
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_color_h >= ' . ($h - $h_tolerance);
-				$this->sql_conds[] = 'photos.photo_color_h <= ' . ($h + $h_tolerance);
+				$this->sql_conds[] = 'photos.photo_color_h >= ' . intval($h_min);
+				$this->sql_conds[] = 'photos.photo_color_h <= ' . intval($h_max);
 			}
 		}
 		
 		// S - Saturation
-		if(!empty($s)){
-			$s = intval($s);
-			$this->sql_conds[] = 'photos.photo_color_s >= ' . ($s - $s_tolerance);
-			$this->sql_conds[] = 'photos.photo_color_s <= ' . ($s + $s_tolerance);
+		if(isset($s_min) and isset($s_max)){
+			$this->sql_conds[] = 'photos.photo_color_s >= ' . intval($s_min);
+			$this->sql_conds[] = 'photos.photo_color_s <= ' . intval($s_max);
 		}
 		
 		// L - Lightness
-		if(!empty($l)){
-			$l = intval($l);
-			$this->sql_conds[] = 'photos.photo_color_l >= ' . ($l - $l_tolerance);
-			$this->sql_conds[] = 'photos.photo_color_l <= ' . ($l + $l_tolerance);
+		if(isset($l_min) and isset($l_max)){
+			$this->sql_conds[] = 'photos.photo_color_l >= ' . intval($l_min);
+			$this->sql_conds[] = 'photos.photo_color_l <= ' . intval($l_max);
 		}
 		
 		return true;
