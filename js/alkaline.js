@@ -114,7 +114,7 @@ function updateAllTags(){
 			focusTags(this);
 			var tag = $(this).siblings('.photo_tag').val();
 			tag = jQuery.trim(tag);
-			if(tags.indexOf(tag) == -1){
+			if((tags.indexOf(tag) == -1) && tag != ''){
 				tags.push(tag);
 				updateTags(this);
 			}
@@ -127,7 +127,7 @@ function updateAllTags(){
 			if(event.keyCode == '13'){
 				var tag = $(this).val();
 				tag = jQuery.trim(tag);
-				if(tags.indexOf(tag) == -1){
+				if((tags.indexOf(tag) == -1) && tag != ''){
 					tags.push(tag);
 					updateTags(this);
 				}
