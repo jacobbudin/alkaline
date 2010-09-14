@@ -286,11 +286,13 @@ $(document).ready(function(){
 	if(page == 'Upload'){
 		var upload_count = 0;
 		var upload_count_text;
+		var no_of_files;
 		$("#progress").hide(0);
 		$("#upload").html5_upload({
 			url: BASE + ADMIN + 'upload/',
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
+				no_of_files = total;
 				if(total == 1){
 					return confirm("You are about to upload 1 file. Are you sure?");
 				}
@@ -302,9 +304,10 @@ $(document).ready(function(){
 				$("#progress").slideDown(500);
 			},
 			setProgress: function(val) {
-				$("#progress").progressbar({ value: Math.ceil(val*100) });
+				$("#progress").progressbar({ value: Math.ceil(((val*(1/no_of_files)) + (upload_count/no_of_files))*100) });
 			},
 			onFinishOne: function(event, response, name, number, total) {
+				file = number;
 				upload_count = upload_count + 1;
 				if(upload_count == 1){
 					upload_count_text = upload_count + ' file';
