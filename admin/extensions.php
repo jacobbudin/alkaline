@@ -110,7 +110,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="extension_id" value="<?php echo $extension['extension_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>extensions/">cancel</a></td>
+				<td><input type="hidden" name="extension_id" value="<?php echo $extension['extension_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

@@ -148,7 +148,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="page_id" value="<?php echo $page['page_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>pages/">cancel</a></td>
+				<td><input type="hidden" name="page_id" value="<?php echo $page['page_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

@@ -58,7 +58,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<p>
 				<input type="text" id="photo_title" name="photo_title" value="<?php echo $photo['photo_title']; ?>" class="title bottom-border" />
 				<textarea id="photo_description" name="photo_description"><?php echo $photo['photo_description']; ?></textarea>
-				<input type="hidden" name="photo_id" value="<?php echo $photo['photo_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>library/">cancel</a>
+				<input type="hidden" name="photo_id" value="<?php echo $photo['photo_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a>
 			</p>
 		</div>
 		<div class="span-8 full last">

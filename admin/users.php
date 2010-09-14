@@ -134,7 +134,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>users/">cancel</a></td>
+				<td><input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

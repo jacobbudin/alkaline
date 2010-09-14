@@ -48,7 +48,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
-	<p><input type="submit" name="preferences_save" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>customize/">cancel</a></p>
+	<p><input type="submit" name="preferences_save" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></p>
 </form>
 
 <?php
