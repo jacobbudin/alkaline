@@ -274,7 +274,7 @@ a.x:hover, a.x:active{
 }
 
 .statistics_holder .legend table tbody td{
-	background-color: rgba(255, 255, 255, .5);
+	text-shadow: 0 0 3px #fff;
 	padding-bottom: 0;
 	margin-bottom: 0;
 }
