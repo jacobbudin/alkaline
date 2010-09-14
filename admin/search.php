@@ -108,13 +108,13 @@ if(!empty($_POST['views'])){
 if(!empty($_POST['orientation'])){
 	switch($_POST['orientation']){
 		case 'portrait':
-			$photo_ids->_ratio(null, 1);
+			$photo_ids->_ratio(1, null, null);
 			break;
 		case 'landscape':
-			$photo_ids->_ratio(1, null);
+			$photo_ids->_ratio(null, 1, null);
 			break;
 		case 'square':
-			$photo_ids->_ratio(1, 1);
+			$photo_ids->_ratio(null, null, 1);
 			break;
 	}
 }

@@ -497,18 +497,22 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY IMAGE RATIO
-	public function ratio($min=null, $max=null){
-		if(empty($min) and empty($max)){
+	public function ratio($min=null, $max=null, $equal=null){
+		if(empty($min) and empty($max) and empty($equal)){
 			return false;
 		}
 		
 		if(!empty($min)){
-			$min = intval($min);
-			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) <= ' . $min;
+			$min = floatval($min);
+			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) < ' . $min;
 		}
 		if(!empty($max)){
-			$max = intval($max);
-			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) >= ' . $min;
+			$max = floatval($max);
+			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) >' . $max;
+		}
+		if(!empty($equal)){
+			$equal = floatval($equal);
+			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) = ' . $equal;
 		}
 		
 		return true;
