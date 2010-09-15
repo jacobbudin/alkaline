@@ -597,6 +597,23 @@ class Find extends Alkaline{
 		$this->photo_offset_length = $length;
 	}
 	
+	public function location($geo, $radius){
+		$place = new Geo($geo);
+		
+		$radius = floatval($radius);
+		
+		$lat = $place->city['city_lat'];
+		$long = $place->city['city_long'];
+		
+		$this->sql_conds[] = 'photo_geo_lat <= ' . ceil($lat + $radius);
+		$this->sql_conds[] = 'photo_geo_lat >= ' . ceil($lat - $radius);
+		$this->sql_conds[] = 'photo_geo_long <= ' . ceil($long + $radius);
+		$this->sql_conds[] = 'photo_geo_long >= ' . ceil($long - $radius);
+		$this->sql_conds[] = '3959 * acos(cos(radians(' . $lat . ')) * cos(radians(photo_geo_lat)) * cos(radians(photo_geo_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(photo_geo_lat))) <= ' . $radius;
+		
+		return true;
+	}
+	
 	// SORT RESULTS
 	public function sort($column, $sort='ASC'){
 		// Error checking
@@ -621,6 +638,8 @@ class Find extends Alkaline{
 		
 		$this->sql_conds[] = $field . ' IS NOT NULL';
 		$this->sql_conds[] = $field . ' != ""';
+		
+		return true;
 	}
 	
 	// EXECUTE QUERY

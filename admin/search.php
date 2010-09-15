@@ -53,7 +53,7 @@ if(!empty($_POST['uploaded_begin']) or !empty($_POST['uploaded_end'])){
 
 // Location
 if(!empty($_POST['location'])){
-	// NA
+	$photo_ids->_location($_POST['location'], $_POST['location_proximity']);
 }
 
 // Primary color

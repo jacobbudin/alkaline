@@ -282,7 +282,7 @@ $(document).ready(function(){
 	
 	// PIMRARY - GEO HINTING
 	
-	$("#photo_geo").autocomplete({
+	$(".photo_geo").autocomplete({
 		source: BASE + ADMIN + 'tasks/geo-hint.php',
 		delay: 200,
 		minLength: 3

@@ -1,10 +1,5 @@
 *.png
 *.jpg
 *.gif
-*/test.php
-Archives/
-Inspiration/
-Resources/
-Originals/
-Alkaline To Do.rtf
+test.php
 .*
