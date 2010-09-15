@@ -67,7 +67,7 @@ class Canvas extends Alkaline{
 				
 				// Wrap in <form> for commenting
 				if($match[1] == 'photos'){
-					$match[2] = '<form action="" id="photo_<!-- PHOTO_ID -->" class="photo" method="post">' . $match[2] . '</form>';
+					//$match[2] = '<form action="" id="photo_<!-- PHOTO_ID -->" class="photo" method="post">' . $match[2] . '</form>';
 				}
 				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
 			}
