@@ -240,7 +240,7 @@ class Geo extends Alkaline{
 	public function hint($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code';
+		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code ORDER BY cities.city_name_raw ASC';
 		
 		$query = $this->db->prepare($sql);
 		$query->execute();

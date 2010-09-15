@@ -12,6 +12,7 @@ $hint = strip_tags($_GET['term']);
 
 $geo = new Geo();
 $places = $geo->hint($hint);
+
 echo json_encode($places);
 
 ?>

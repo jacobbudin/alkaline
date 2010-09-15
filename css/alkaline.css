@@ -335,3 +335,19 @@ img.ui-datepicker-trigger{
 #footer, #footer a{
 	color: #777;
 }
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+li.ui-menu-item{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: .8em;
+}
