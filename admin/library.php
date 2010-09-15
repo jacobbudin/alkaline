@@ -142,8 +142,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<td>
 						<select name="sort">
 							<option value="taken">Date taken</option>
-							<option value="uploaded">Date uploaded</option>
 							<option value="updated">Date last updated</option>
+							<option value="published">Date published</option>
+							<option value="uploaded">Date uploaded</option>
 							<option value="title">Photo title</option>
 							<option value="views">Views</option>
 						</select>

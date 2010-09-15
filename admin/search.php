@@ -11,7 +11,6 @@ $user->perm(true);
 $alkaline->setCallback();
 
 $photo_ids = new Find();
-
 $photo_ids->page(1, 100);
 
 // SANITIZE SEARCH QUERY
@@ -150,14 +149,26 @@ if(!empty($_POST['published'])){
 if(!empty($_POST['sort'])){
 	switch($_POST['sort']){
 		case 'taken':
+			$photo_ids->_sort('photos.photo_taken', $_POST['sort_direction']);
+			$photo_ids->_notnull('photos.photo_taken');
+			break;
+		case 'published':
+			$photo_ids->_sort('photos.photo_published', $_POST['sort_direction']);
+			$photo_ids->_notnull('photos.photo_published');
 			break;
 		case 'uploaded':
+			$photo_ids->_sort('photos.photo_uploaded', $_POST['sort_direction']);
 			break;
 		case 'updated':
+			$photo_ids->_sort('photos.photo_updated', $_POST['sort_direction']);
+			$photo_ids->_notnull('photos.photo_updated');
 			break;
 		case 'title':
+			$photo_ids->_sort('photos.photo_title', $_POST['sort_direction']);
+			$photo_ids->_notnull('photos.photo_title');
 			break;
 		case 'views':
+			$photo_ids->_sort('photos.photo_views', $_POST['sort_direction']);
 			break;
 	}
 }

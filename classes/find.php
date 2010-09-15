@@ -616,6 +616,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	public function notnull($field){
+		if(empty($field)){ return false; }
+		
+		$this->sql_conds[] = $field . ' IS NOT NULL';
+		$this->sql_conds[] = $field . ' != ""';
+	}
+	
 	// EXECUTE QUERY
 	public function exec(){
 		// Prepare SQL
