@@ -280,6 +280,13 @@ $(document).ready(function(){
 		showAnim: null
 	});
 	
+	// PIMRARY - GEO HINTING
+	
+	$("#photo_geo").autocomplete({
+		source: BASE + ADMIN + 'tasks/geo-hint.php',
+		delay: 200,
+		minLength: 3
+	});
 	
 	// UPLOAD
 	

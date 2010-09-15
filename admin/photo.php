@@ -73,7 +73,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			<p>
 				<label for="">Location:</label><br />
-				<input type="text" id="photo_geo" name="photo_geo" value="<?php echo $photo['photo_geo']; ?>" />
+				<input type="text" id="photo_geo" name="photo_geo" class="photo_geo" value="<?php echo $photo['photo_geo']; ?>" />
 				<?php
 				
 				if(!empty($photo['photo_geo_lat'])){

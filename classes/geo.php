@@ -15,7 +15,7 @@ class Geo extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
-	public function __construct($geo, $radius=1){
+	public function __construct($geo=null, $radius=1){
 		parent::__construct();
 		
 		// Store data to object
@@ -87,6 +87,10 @@ class Geo extends Alkaline{
 		$this->sql_tables = array('cities', 'countries');
 		$this->sql_order_by = '';
 		$this->sql_where = '';
+		
+		if(empty($geo)){
+			return false;
+		}
 		
 		// Remove parenthetical coordinates
 		$geo = trim(preg_replace('#\(.*\)#si', '', $geo));
@@ -232,6 +236,34 @@ class Geo extends Alkaline{
 		$str .= $this->city['country_name'];
 		return $str;
     }
+
+	public function hint($hint){
+		$hint_lower = strtolower($hint);
+		
+		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code';
+		
+		$query = $this->db->prepare($sql);
+		$query->execute();
+		$cities = $query->fetchAll();
+		
+		$cities_list = array();
+		
+		foreach($cities as &$city){
+			if(!array_key_exists(strtoupper($city['city_state']), $this->states)){
+				$city['city_state'] = '';
+			}
+			
+			$string = $city['city_name'] . ', ';
+			if(!empty($city['city_state'])){
+				$string .= $city['city_state'] . ', ';
+			}
+			$string .= $city['country_name'];
+			
+			$cities_list[] = $string;
+		}
+		
+		return $cities_list;
+	}
 	
 	protected function convertAbbrev($var){
 		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland');
