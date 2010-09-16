@@ -288,8 +288,6 @@ $(document).ready(function(){
 		minLength: 3
 	});
 	
-	$('#slider').nivoSlider();
-	
 	// UPLOAD
 	
 	if(page == 'Upload'){
