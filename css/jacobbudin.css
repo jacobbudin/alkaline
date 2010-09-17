@@ -121,10 +121,16 @@ a#prev{
 	text-align: center;
 }
 
-.copyright, .copyright a{
-	color: #777;
+.center{
+	text-align: center;
 }
 
-ul#superview{
-	display: none;
+#gallery{
+	position: relative;
+	margin-top: -30%;
+	top: 50%;
+}
+
+.copyright, .copyright a{
+	color: #777;
 }
