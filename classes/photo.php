@@ -688,6 +688,12 @@ class Photo extends Alkaline{
 				$inserts = array();
 				foreach(@$exif as $key => $section){
 				    foreach($section as $name => $value){
+						// Check for empty EXIF data entries
+						$value = trim($value);
+						if(empty($value)){
+							continue;
+						}
+						
 						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '");';
 						$this->db->exec($query);
 						
@@ -848,7 +854,7 @@ class Photo extends Alkaline{
 	
 	// Generate EXIF for images
 	public function getExif(){
-		$query = $this->db->prepare('SELECT * FROM exifs' . $this->sql . ';');
+		$query = $this->db->prepare('SELECT exifs.* FROM exifs, photos ' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
 		$query->execute();
 		$exifs = $query->fetchAll();
 		
@@ -859,6 +865,8 @@ class Photo extends Alkaline{
 				@$this->photos[$key]['photo_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
 			}
 		}
+		
+		return $exifs;
 	}
 	
 	// Retrieve image tags
@@ -880,6 +888,8 @@ class Photo extends Alkaline{
 				}
 			}
 		}
+		
+		return $tags;
 	}
 	
 	// Retrieve image rights

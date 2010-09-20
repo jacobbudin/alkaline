@@ -62,6 +62,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 full last">
+			<div class="right"><a href="<?php echo BASE; ?>photo/<?php echo $photo['photo_id']; ?>/" class="button">Go to photo</a></div>
+			
 			<div class="photo_tag_container">
 				<label for="photo_tag">Tags:</label><br />
 				<input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /> <input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br />
@@ -99,6 +101,24 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<label for="">Rights set:</label><br />
 				<?php echo $alkaline->showRights('right_id', $photo['right_id']); ?>
 			</p>
+			
+			<?php
+			
+			$exifs = $photos->getEXIF();
+			
+			if(count($exifs) > 0){
+				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';
+				echo '<table class="reveal">' . "\n";
+				foreach($exifs as $exif){
+					$value = unserialize($exif['exif_value']);
+					if(!is_array($value)){
+						echo '<tr><td class="right">' . $exif['exif_name'] . ':</td><td>' . $value . '</td></tr>' . "\n";
+					}
+				}
+				echo '</table>';
+			}
+			
+			?>
 			
 			<hr />
 			
