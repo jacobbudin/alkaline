@@ -185,7 +185,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div style="float: right;"><a href="<?php echo BASE . ADMIN; ?>piles/build/" class="nu"><span class="button">&#0131;</span>Build pile</a> &#160; <a href="<?php echo BASE . ADMIN; ?>library/" class="nu"><span class="button">&#0131;</span>New search</a></div>
+<div style="float: right;"><a href="<?php echo BASE . ADMIN; ?>piles/build/" class="button">Build pile</a> &#160; <a href="<?php echo BASE . ADMIN; ?>library/" class="button">New search</a></div>
 
 <h1>Search Results (<?php echo $photo_ids->photo_count_result; ?>)</h1>
 

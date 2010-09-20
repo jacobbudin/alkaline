@@ -22,7 +22,7 @@ if(!empty($_POST['size_id'])){
 	
 	// Update size
 	else{
-		$fields = array('size_title' => $_POST['size_title'],
+		$fields = array('size_title' => $alkaline->makeUnicode($_POST['size_title']),
 			'size_height' => $_POST['size_height'],
 			'size_width' => $_POST['size_width'],
 			'size_type' => $_POST['size_type'],

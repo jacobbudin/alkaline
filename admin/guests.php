@@ -18,7 +18,7 @@ if(!empty($_POST['guest_id'])){
 		$alkaline->deleteRow('guests', $guest_id);
 	}
 	else{
-		$fields = array('guest_title' => @$_POST['guest_title'],
+		$fields = array('guest_title' => $alkaline->makeUnicode(@$_POST['guest_title']),
 			'guest_key' => @$_POST['guest_key']);
 		if(@$_POST['guest_reset_view_count'] == 'reset_view_count'){
 			$fields['guest_views'] = 0;
@@ -91,9 +91,9 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/guests/<?php echo $guest['guest_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/guests/<?php echo $guest['guest_id']; ?>/" class="button">View photos</a></div>
 	
-	<h1>guest</h1>
+	<h1>Guest</h1>
 	
 	<form id="guest" action="<?php echo BASE . ADMIN; ?>guests/" method="post">
 		<table>

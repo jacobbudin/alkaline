@@ -16,9 +16,9 @@ if(!empty($_POST['photo_ids'])){
 	
 	foreach($photo_ids as $photo_id){
 		$photo = new Photo($photo_id);
-		$fields = array('photo_title' => @$_POST['photo-' . $photo_id . '-title'],
-			'photo_description' => @$_POST['photo-' . $photo_id . '-description'],
-			'photo_geo' => @$_POST['photo-' . $photo_id . '-geo'],
+		$fields = array('photo_title' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-title']),
+			'photo_description' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-description']),
+			'photo_geo' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-geo']),
 			'photo_published' => @$_POST['photo-' . $photo_id . '-published'],
 			'photo_privacy' => @$_POST['photo-' . $photo_id . '-privacy'],
 			'right_id' => @$_POST['photo-' . $photo_id . '-id']);

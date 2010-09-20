@@ -41,9 +41,9 @@ if(!empty($_POST['page_id'])){
 		
 		$fields = array('page_title' => $page_title,
 			'page_title_url' => $page_title_url,
-			'page_text_raw' => $page_text_raw,
+			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
 			'page_markup' => $page_markup,
-			'page_text' => $page_text,
+			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_words' => $page_words);
 		$alkaline->updateRow($fields, 'pages', $page_id);
 	}
@@ -117,7 +117,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View page</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="button">View photos</a> &#0160; <a href="" class="button">Go to page</a></div>
 	
 	<h1>Page</h1>
 

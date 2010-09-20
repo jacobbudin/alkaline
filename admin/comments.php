@@ -112,7 +112,7 @@ else{
 	
 	?>
 	
-			<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>photo/<?php echo $comment['photo_idx']; ?>/" class="nu"><span class="button">&#0187;</span>View photo</a></div>
+			<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>photo/<?php echo $comment['photo_idx']; ?>/" class="button">Go to photo</a></div>
 	
 	<h1>Comment</h1>
 

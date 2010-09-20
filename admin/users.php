@@ -18,7 +18,7 @@ if(!empty($_POST['user_id'])){
 		$alkaline->deleteRow('users', $user_id);
 	}
 	else{
-		$fields = array('user_name' => $_POST['user_name'],
+		$fields = array('user_name' => $alkaline->makeUnicode($_POST['user_name']),
 			'user_user' => $_POST['user_user'],
 			'user_email' => $_POST['user_email']);
 		if(!empty($_POST['user_pass'])){
@@ -102,7 +102,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/users/<?php echo $user['user_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/users/<?php echo $user['user_id']; ?>/" class="button">View photos</a></div>
 	
 	<h1>User</h1>
 	

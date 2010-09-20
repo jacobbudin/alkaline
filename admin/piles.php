@@ -18,8 +18,8 @@ if(!empty($_POST['pile_id'])){
 		$alkaline->deleteRow('piles', $pile_id);
 	}
 	else{
-		$fields = array('pile_title' => $_POST['pile_title'],
-			'pile_description' => $_POST['pile_description']);
+		$fields = array('pile_title' => $alkaline->makeUnicode($_POST['pile_title']),
+			'pile_description' => $alkaline->makeUnicode($_POST['pile_description']));
 		$alkaline->updateRow($fields, 'piles', $pile_id);
 	}
 	unset($pile_id);
@@ -100,7 +100,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a> &#0160; <a href="" class="nu"><span class="button">&#0187;</span>View pile</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="button">View photos</a> &#0160; <a href="" class="button">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	

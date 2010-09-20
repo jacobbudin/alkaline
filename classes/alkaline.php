@@ -381,6 +381,12 @@ class Alkaline{
 		}
 	}
 	
+	// FORMAT STRINGS
+	// Convert to Unicode (UTF-8)
+	public function makeUnicode($string){
+		return (mb_detect_encoding($string, 'UTF-8') == 'UTF-8' ? $string : utf8_encode($string));
+	}
+	
 	// SHOW TAGS
 	// Display all tags
 	public function getTags(){
@@ -443,8 +449,8 @@ class Alkaline{
 		$id = self::findID($_POST['comment_id']);
 		
 		$fields = array('photo_id' => $id,
-			'comment_text' => strip_tags($_POST['comment_' . $id .'_text']),
-			'comment_author_name' => strip_tags($_POST['comment_' . $id .'_author_name']),
+			'comment_text' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_text'])),
+			'comment_author_name' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_author_name'])),
 			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
 			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
 			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);

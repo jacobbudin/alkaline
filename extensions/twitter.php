@@ -44,7 +44,7 @@ class Twitter extends Orbit{
 			<table>
 				<tr>
 					<td class="right">Username:</td>
-					<td><a href="http://twitter.com/<?php echo $this->twitter_screen_name; ?>/"><strong><?php echo $this->twitter_screen_name; ?></strong></a> &#0160; <a href="?unlink=twitter" class="nu"><span class="button">&#0150;</span>Unlink from Twitter</a></td>
+					<td><a href="http://twitter.com/<?php echo $this->twitter_screen_name; ?>/"><strong><?php echo $this->twitter_screen_name; ?></strong></a> &#0160; <a href="?unlink=twitter" class="button">Unlink from Twitter</a></td>
 				</tr>
 				<tr>
 					<td class="right" style="padding-top: 1em;">Format:</td>
@@ -63,7 +63,7 @@ class Twitter extends Orbit{
 				<tr>
 					<td class="right">Username:</td>
 					<td>
-						<a href="?link=twitter" class="nu"><span class="button">&#0064;</span>Link to Twitter</a><br /><br />
+						<a href="?link=twitter" class="button">Link to Twitter</a><br /><br />
 						<span class="quiet">Note: Alkaline will be linked to whichever Twitter account you are currently logged into.</span>
 					</td>
 				</tr>

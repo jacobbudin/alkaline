@@ -22,8 +22,8 @@ if(!empty($_POST['right_id'])){
 	
 	// Update rights set
 	else{
-		$fields = array('right_title' => $_POST['right_title'],
-			'right_description' => $_POST['right_description']);
+		$fields = array('right_title' => $alkaline->makeUnicode($_POST['right_title']),
+			'right_description' => $alkaline->makeUnicode($_POST['right_description']));
 		
 		// Check default rights set
 		if(@$_POST['right_default'] == 'default'){
@@ -105,7 +105,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="nu"><span class="button">&#0187;</span>View photos</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="button">View photos</a></div>
 	
 	<h1>Rights Set</h1>
 	

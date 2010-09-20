@@ -90,7 +90,7 @@ else{
 	
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE; ?>?theme=<?php echo $theme['theme_id']; ?>/" class="nu"><span class="button">&#0187;</span>Preview theme</a></div>
+	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE; ?>?theme=<?php echo $theme['theme_id']; ?>/" class="button">Preview theme</a></div>
 	
 	<h1><?php echo $theme['theme_title']; ?></h1>
 	
