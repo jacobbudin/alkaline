@@ -4,6 +4,8 @@ var ADMIN = 'admin/';
 var IMAGES = 'images/';
 var PHOTOS = 'photos/';
 
+var working = 0;
+
 function process(){
 	gallery = $('#gallery').html();
 	photo_count = photos.length;
@@ -56,27 +58,31 @@ function reset(){
 }
 
 function update(id){
-	photo_id = id;
-	var field_regex = new RegExp('{(.*?)}', 'gi');
-	// var title = new RegExp('\<\!\-\- PHOTO_TITLE \-\-\>', 'gi');
+	if(working == 0){
+		working = 1;
+		photo_id = id;
 	
-	function field(field){
-		field = field.replace(field_regex, "$1").toLowerCase();
-		field = photos[photo_id][field];
-		if(field == null){ field = ''; }
-		return field;
+		var field_regex = new RegExp('{(.*?)}', 'gi');
+		// var title = new RegExp('\<\!\-\- PHOTO_TITLE \-\-\>', 'gi');
+	
+		function field(field){
+			field = field.replace(field_regex, "$1").toLowerCase();
+			field = photos[photo_id][field];
+			if(field == null){ field = ''; }
+			return field;
+		}
+	
+		gallery_copy = gallery;
+	
+		while((matchArray = field_regex.exec(gallery_copy)) != null) {
+			replacement = field(matchArray[0]);
+			gallery_copy = gallery_copy.replace(matchArray[0], replacement);
+		}
+	
+		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; });
+	
+		// $('#gallery').html(gallery_copy);
 	}
-	
-	gallery_copy = gallery;
-	
-	while((matchArray = field_regex.exec(gallery_copy)) != null) {
-		replacement = field(matchArray[0]);
-		gallery_copy = gallery_copy.replace(matchArray[0], replacement);
-	}
-	
-	$('#gallery').fadeOut('fast', function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn('fast');
-	
-	// $('#gallery').html(gallery_copy);
 }
 
 $(document).ready(function(){

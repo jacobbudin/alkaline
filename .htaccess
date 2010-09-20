@@ -13,6 +13,7 @@
 	RewriteRule ^admin/([a-z0-9\-]+)/(add|create|build)(/)?$ /admin/$1.php?add=1 [NC,QSA]
 	RewriteRule ^admin/([a-z0-9\-]+)/([a-z0-9\-]+)(/)?$ /admin/$1_$2.php [NC,QSA]
 	
+	RewriteRule ^slideshow(/)?$ /slideshow.php [NC]
 	RewriteRule ^photo/([a-z0-9\-]+)(/)?$ /photo.php?identifier=$1 [NC]
 	RewriteRule ^page([0-9]+)(/)?$ /index.php?page=$1 [NC]
 	
