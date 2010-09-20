@@ -121,14 +121,14 @@ a#prev{
 	text-align: center;
 }
 
-.center{
-	text-align: center;
+#gallery{
+	display: block;
+	position: relative;
+	top: 5%;
 }
 
-#gallery{
-	position: relative;
-	margin-top: -30%;
-	top: 50%;
+.center{
+	text-align: center;
 }
 
 .copyright, .copyright a{

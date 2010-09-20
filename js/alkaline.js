@@ -43,8 +43,16 @@ function prev(){
 }
 
 function reset(){
-	$('#gallery').css('top', '50%');
-	$('#gallery').css('margin-top', '-30%');
+	photo = $('#gallery').find('img');
+	height = photo.innerHeight();
+    width = photo.innerWidth();
+	if(height < width){
+		padding = (640 - height) / 2;
+		$('#gallery').css('padding-top', padding + 'px');
+	}
+	else{
+		$('#gallery').css('padding-top', '0');
+	}
 }
 
 function update(id){
@@ -66,7 +74,7 @@ function update(id){
 		gallery_copy = gallery_copy.replace(matchArray[0], replacement);
 	}
 	
-	$('#gallery').fadeOut('fast', function(){ $('#gallery').html(gallery_copy); reset(); }).delay(0).fadeIn('fast');
+	$('#gallery').fadeOut('fast', function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn('fast');
 	
 	// $('#gallery').html(gallery_copy);
 }
