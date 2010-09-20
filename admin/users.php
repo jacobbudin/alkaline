@@ -49,6 +49,8 @@ if(empty($user_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="add/">Add user</a></div>
 
 	<h1>Users (<?php echo $user_count; ?>)</h1>
 	
@@ -102,7 +104,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/users/<?php echo $user['user_id']; ?>/" class="button">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/users/<?php echo $user['user_id']; ?>/">View photos</a></div>
 	
 	<h1>User</h1>
 	

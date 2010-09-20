@@ -48,6 +48,8 @@ if(empty($guest_id)){
 	require_once(PATH . ADMIN . 'includes/settings.php');
 
 	?>
+	
+	<div class="actions"><a href="add/">Add guest</a></div>
 
 	<h1>Guests (<?php echo $guest_count; ?>)</h1>
 	
@@ -91,7 +93,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/guests/<?php echo $guest['guest_id']; ?>/" class="button">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/guests/<?php echo $guest['guest_id']; ?>/">View photos</a></div>
 	
 	<h1>Guest</h1>
 	

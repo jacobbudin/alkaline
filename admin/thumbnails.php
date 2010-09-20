@@ -54,6 +54,8 @@ if(empty($size_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="build/">Build thumbnial</a></div>
 
 	<h1>Thumbnails (<?php echo $size_count; ?>)</h1>
 
@@ -129,7 +131,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="size_id" value="<?php echo $size['size_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
+				<td><input type="hidden" name="size_id" value="<?php echo $size['size_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>thumbnails/">cancel</a></td>
 			</tr>
 		</table>
 	</form>

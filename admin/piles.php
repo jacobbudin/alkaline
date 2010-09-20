@@ -100,7 +100,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/" class="button">View photos</a> &#0160; <a href="" class="button">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/">View photos</a> <a href="<?php echo BASE; ?>piles/<?php echo $pile['pile_id']; ?>/">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	

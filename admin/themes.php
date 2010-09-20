@@ -36,6 +36,8 @@ if(empty($theme_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="install/">Install theme</a></div>
 
 	<h1>Themes (<?php echo $theme_count; ?>)</h1>
 

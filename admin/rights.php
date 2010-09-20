@@ -57,6 +57,8 @@ if(empty($right_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="add/">Add rights set</a></div>
 
 	<h1>Rights (<?php echo $right_count; ?>)</h1>
 
@@ -105,7 +107,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/" class="button">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View photos</a></div>
 	
 	<h1>Rights Set</h1>
 	

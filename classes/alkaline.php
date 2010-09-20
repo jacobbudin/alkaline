@@ -664,8 +664,13 @@ class Alkaline{
 		$columns = array_keys($fields);
 		$values = array_values($fields);
 		
+		$values_sql = '';
+		if(count($values) > 0){
+			$values_sql = '"' . implode('", "', $values) . '"';
+		}
+		
 		// Add row to database
-		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES ("' . implode('", "', $values) . '");';
+		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . $values_sql . ');';
 		
 		if(!$this->db->exec($query)){
 			return false;

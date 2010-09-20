@@ -352,7 +352,12 @@ li.ui-menu-item{
 	font-size: .8em;
 }
 
-a.button{
+.actions{
+	float: right;
+}
+
+.actions a{
+	margin-left: .5em;
 	padding: .4em .6em;
 	background-color: #eee;
 	color: #666;
@@ -363,7 +368,7 @@ a.button{
 	border-radius: 2px;
 }
 
-a.button:hover, a.button:active{
+.actions a:hover, .actions a:active{
 	background-color: #ccc;
 	color: #444;
 }

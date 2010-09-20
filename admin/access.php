@@ -22,10 +22,11 @@ define('TITLE', 'Alkaline Access');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
-	
 <h1>Access</h1>
 
 <table>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>guests/">View guests</a> <a href="<?php echo BASE . ADMIN; ?>guests/add/">Add guest</a></div>
+	
 	<h2><a href="<?php echo BASE . ADMIN . 'guests/'; ?>">Guests</a></h2>
 	<tr>
 		<th>Title</th>
@@ -48,6 +49,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <?php if($guest_count > 10){ echo '<p><a href="' . BASE . ADMIN . 'guests/">View all ' . $guest_count . ' guests.</a></p>'; } ?>
 
 <table>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>users/">View users</a> <a href="<?php echo BASE . ADMIN; ?>users/add/">Add user</a></div>
+	
 	<h2><a href="<?php echo BASE . ADMIN . 'users/'; ?>">Users</h2>
 	<tr>
 		<th>Username</th>

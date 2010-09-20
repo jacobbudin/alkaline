@@ -39,6 +39,8 @@ if(empty($extension_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="install/">Install extension</a></div>
 
 	<h1>Extensions (<?php echo @$orbit->extension_count; ?>)</h1>
 

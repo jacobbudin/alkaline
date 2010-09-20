@@ -70,6 +70,8 @@ if(empty($page_id)){
 
 	?>
 	
+	<div class="actions"><a href="add/">Add page</a></div>
+	
 	<h1>Pages (<?php echo $pages->count(); ?>)</h1>
 
 	<?php
@@ -117,7 +119,7 @@ else{
 
 	?>
 	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="button">View photos</a> &#0160; <a href="" class="button">Go to page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/pages/<?php echo $page['page_id']; ?>/" class="button">View photos</a> <a href="<?php echo BASE; ?>pages/<?php echo $page['page_title_url']; ?>/">Go to page</a></div>
 	
 	<h1>Page</h1>
 
