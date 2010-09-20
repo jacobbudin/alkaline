@@ -565,9 +565,9 @@ class Find extends Alkaline{
 	// PAGINATE RESULTS
 	public function page($page, $limit=null, $first=null){
 		// Error checking
-		if(empty($page)){ 
+		if(empty($page)){
 			if(!empty($_GET['page'])){ $page = intval($_GET['page']); }
-			else{ $page == 1; }
+			else{ $page = 1; }
 		}
 		else{
 			$page = intval($page);
