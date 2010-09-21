@@ -27,7 +27,7 @@ if(!empty($username) or !empty($password)){
 	}
 }
 
-
+define('TAB', 'Login');
 define('TITLE', 'Alkaline Login');
 require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -41,7 +41,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_user">Username:</label>
 				</td>
 				<td>
-					<input type="text" name="login_user" id="login_user" />
+					<input type="text" name="login_user" id="login_user" class="short" />
 				</td>
 			</tr>
 			<tr>
@@ -49,7 +49,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_pass">Password:</label>
 				</td>
 				<td>
-					<input type="password" name="login_pass" id="login_pass" />
+					<input type="password" name="login_pass" id="login_pass" class="short" />
 				</td>
 			</tr>
 			<tr>

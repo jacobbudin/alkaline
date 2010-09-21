@@ -27,7 +27,13 @@
 					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/alkaline.png" alt="Alkaline" /></a>
 				</div>
 				<div id="user_panel" class="span-13 last">
-					<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences/" class="user">Jacob Budin</a>, Administrator <a href="<?php echo BASE . ADMIN; ?>logout/" class="logout">Log out</a>
+					<?php
+					if($user->perm()){
+						?>
+						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences/" class="user"><?php echo $user->user['user_name']; ?></a> <a href="<?php echo BASE . ADMIN; ?>logout/" class="logout">Log out</a>
+						<?php
+					}
+					?>
 				</div>
 			</div>
 		</div>
@@ -35,11 +41,24 @@
 	<div class="container">
 		<div id="navigation" class="span-24 last">
 			<ul>
-				<li><a href="<?php echo BASE . ADMIN; ?>dashboard/"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>library/"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>features/"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Features</a></li>
-				<li><a href="<?php echo BASE . ADMIN; ?>settings/"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
-				<li><a href="http://www.alkalineapp.com/help/" target="_new">Help</a></li>
+				<?php
+				
+				if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'features') or (@TAB == 'settings')){
+					?>
+					<li><a href="<?php echo BASE . ADMIN; ?>dashboard/"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>library/"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>features/"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Features</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>settings/"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
+					<li><a href="http://www.alkalineapp.com/help/" target="_new">Help</a></li>
+					<?php
+				}
+				else{
+					?>
+					<li><a href="" class="selected"><?php echo TAB; ?></a></li>
+					<?php
+				}
+				
+				?>
 			</ul>
 		</div>
 		<div id="content" class="span-24 last">

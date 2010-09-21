@@ -27,6 +27,8 @@ foreach($stats->stats as $stat){
 
 $visitors = json_encode($visitors);
 
+// $alkaline->addNotification('This copy of Alkaline is out of date. A free software update is available. To learn more, go to <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
+
 define('TAB', 'dashboard');
 define('TITLE', 'Alkaline Dashboard');
 require_once(PATH . ADMIN . 'includes/header.php');

@@ -24,7 +24,7 @@ if(!empty($_POST['configuration_save'])){
 	
 	$alkaline->addNotification('The configuration have been saved.', 'success');
 	
-	header('Location: ' . BASE . ADMIN . '/settings/');
+	header('Location: ' . BASE . ADMIN . 'settings/');
 	exit();
 }
 

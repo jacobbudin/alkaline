@@ -22,6 +22,7 @@ textarea{
 
 input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
 input[type=text], input.text {padding:.35em; width: 60%;}
+input.short{padding:.35em;width: 30%;}
 
 input.title{
 	font-size: 1.2em;
