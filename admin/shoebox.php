@@ -8,6 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
+// PROCESS SUBMITTED PHOTOS
 if(!empty($_POST['photo_ids'])){
 	$photo_ids = explode(',', $_POST['photo_ids']);
 	array_pop($photo_ids);
@@ -32,6 +33,7 @@ if(!empty($_POST['photo_ids'])){
 	exit();
 }
 
+// DETERMINE IF PHOTOS IN SHOEBOX
 $photos = $alkaline->seekDirectory(PATH . SHOEBOX);
 $photo_count = count($photos);
 
@@ -39,6 +41,11 @@ if(!($photo_count > 0)){
 	$alkaline->addNotification('There are no photos in your shoebox.', 'notice');
 	header('Location: ' . BASE . ADMIN . 'library/');
 	exit();
+}
+
+// GET PREFERENCES
+if($user->returnPref('shoe_pub') === true){
+	$alkaline->pushAddendum('alkaline_pref_shoe_pub = "Now"');
 }
 
 define('TAB', 'library');

@@ -30,9 +30,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="on" /></td>
+			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_pub">Set all photos to be published after processing by default</label>
+				<label for="shoe_pub">Set all photos to be published immediately after processing by default</label>
 			</td>
 		</tr>
 	</table>
@@ -41,9 +41,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="comm_email_photo" name="comm_email_photo" <?php echo $user->readPref('comm_email_photo'); ?> value="on" /></td>
+			<td class="input"><input type="checkbox" id="comm_email_photo" name="comm_email_photo" <?php echo $user->readPref('comm_email_photo'); ?> value="true" /></td>
 			<td class="description">
-				<label for="comm_email_photo">Email new comments to photographer</label>
+				<label for="comm_email_photo">Email me new comments on my photographs</label>
 			</td>
 		</tr>
 	</table>

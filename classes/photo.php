@@ -689,7 +689,9 @@ class Photo extends Alkaline{
 				foreach(@$exif as $key => $section){
 				    foreach($section as $name => $value){
 						// Check for empty EXIF data entries
-						$value = trim($value);
+						if(is_string($value)){
+							$value = trim($value);
+						}
 						if(empty($value)){
 							continue;
 						}

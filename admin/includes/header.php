@@ -17,7 +17,7 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>dashboard.js" type="text/javascript"></script>
-	<?php echo (defined('EMBED_CSS') ? '<style type="text/css">' . EMBED_CSS . '</style>' : ''); ?>
+	<?php $alkaline->echoAddendum(); ?>
 </head>
 <body>
 	<div id="header_holder">

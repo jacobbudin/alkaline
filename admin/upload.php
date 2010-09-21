@@ -33,14 +33,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</form>
 	</div>
 	<div class="span-7 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox/"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
-		
-		<hr />
+		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox/"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
 		
 		<div id="progress">
 		</div>
 		
-		<p><em>Tip: Please wait until your photos have finished uploading before proceeding to your shoebox.</em></p>
+		<hr />
 		
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 	</div>

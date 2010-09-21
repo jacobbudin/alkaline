@@ -8,6 +8,8 @@ var task;
 var progress;
 var progress_step;
 
+var alkaline_pref_shoe_pub = '';
+
 // SHOEBOX
 
 function static_html(div_id, photo_id){
@@ -168,7 +170,7 @@ function appendPhoto(photo){
 	$("#shoebox_photo_ids").attr("value", photo_ids);
 	var privacy = static_html('privacy_html', photo.id);
 	var rights = static_html('rights_html', photo.id);
-	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.id + '_admin.' + photo.ext + '" alt="" /><p><input type="text" id="photo-' + photo.id + '-title" name="photo-' + photo.id + '-title" value="" class="title bottom-border" /><textarea id="photo-' + photo.id + '-description" name="photo-' + photo.id + '-description"></textarea></p></div><div class="span-8 full last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none"></div><input type="hidden" name="photo-' + photo.id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.id + '-geo" name="photo-' + photo.id + '-geo" value="" /></p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.id + '-published" name="photo-' + photo.id + '-published" value="Now" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td><td><strong><label for="photo_delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
+	$("#shoebox_photos").append('<div id="photo-' + photo.id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.id + '_admin.' + photo.ext + '" alt="" /><p><input type="text" id="photo-' + photo.id + '-title" name="photo-' + photo.id + '-title" value="" class="title bottom-border" /><textarea id="photo-' + photo.id + '-description" name="photo-' + photo.id + '-description"></textarea></p></div><div class="span-8 full last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none"></div><input type="hidden" name="photo-' + photo.id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.id + '-geo" name="photo-' + photo.id + '-geo" value="" /></p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.id + '-published" name="photo-' + photo.id + '-published" value="' + alkaline_pref_shoe_pub + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td><td><strong><label for="photo_delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 	updateAllTags();
 }
 
@@ -308,7 +310,8 @@ $(document).ready(function(){
 				}
 			},
 			setName: function(text) {
-				$("#progress").slideDown(500);
+				$("#shoebox_link").slideUp(500);
+				$("#progress").delay(500).slideDown(500);
 			},
 			setProgress: function(val) {
 				$("#progress").progressbar({ value: Math.ceil(((val*(1/no_of_files)) + (upload_count/no_of_files))*100) });
@@ -325,6 +328,7 @@ $(document).ready(function(){
 				$("#upload_count_text").text(upload_count_text);
 				if(number == (total - 1)){
 					$("#progress").slideUp(500);
+					$("#shoebox_link").delay(500).slideDown(500);
 				}
 			}
 		});

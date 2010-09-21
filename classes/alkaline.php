@@ -17,9 +17,10 @@ class Alkaline{
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
+	public $db;
 	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
-	public $db;
+	protected $addendum;
 	protected $guest;
 	protected $notifications;
 	
@@ -52,6 +53,22 @@ class Alkaline{
 		// Close database connection
 		$this->db = null;
 	}
+	
+	// ADDENDUM (for Javascript)
+	public function pushAddendum($string){
+		if(empty($this->addendum)){
+			$this->addendum = array();
+		}
+		$this->addendum[] = $string;
+	}
+	
+	public function echoAddendum(){
+		if(empty($this->addendum)){
+			return;
+		}
+		echo '<script type="text/javascript">' . "\n" . implode($this->addendum, "\n") . "\n" .  '</script>';
+	}
+		
 	
 	// GUESTS
 	// Authenticate guest
@@ -842,15 +859,15 @@ class Alkaline{
 		elseif(empty($value)){
 			$array[$name] = '';
 		}
-		elseif($value == 'on'){
-			$array[$name] = 1;
+		elseif($value == 'true'){
+			$array[$name] = true;
 		}
 		else{
 			$array[$name] = $value;
 		}
 	}
 	
-	// Retrieve form option
+	// Retrieve form option (HTML)
 	public function readForm($array, $name, $check=true){
 		@$value = $array[$name];
 		if(!isset($value)){
@@ -864,6 +881,15 @@ class Alkaline{
 		else{
 			return 'value="' . $value . '"';
 		}
+	}
+	
+	// Return form option
+	public function returnForm($array, $name){
+		@$value = $array[$name];
+		if(!isset($value)){
+			return false;
+		}
+		return $value;
 	}
 	
 	// URL HANDLING

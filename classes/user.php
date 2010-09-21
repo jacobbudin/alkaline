@@ -146,9 +146,14 @@ class User extends Alkaline{
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
 	}
 	
-	// Read preference key and return value
+	// Read preference key and return value in HTML
 	public function readPref($name, $check=true){
 		return parent::readForm($this->user['user_preferences'], $name, $check);
+	}
+	
+	// Read preference key and return value
+	public function returnPref($name){
+		return parent::returnForm($this->user['user_preferences'], $name);
 	}
 	
 	// UPDATE USER
