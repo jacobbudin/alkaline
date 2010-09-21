@@ -356,8 +356,8 @@ li.ui-menu-item{
 	float: right;
 }
 
-.actions a{
-	margin-left: .5em;
+.actions a, a.button{
+	margin-left:.5em;
 	padding: .4em .6em;
 	background-color: #eee;
 	color: #666;
@@ -368,7 +368,7 @@ li.ui-menu-item{
 	border-radius: 2px;
 }
 
-.actions a:hover, .actions a:active{
+.actions a:hover, .actions a:active, a.button:hover, a.button:active{
 	background-color: #ccc;
 	color: #444;
 }

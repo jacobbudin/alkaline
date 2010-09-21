@@ -12,9 +12,11 @@ if(!empty($_POST['preferences_save'])){
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
 	$user->setPref('comm_email_photo', @$_POST['comm_email_photo']);
 	
-	$fields = array('user_preferences' => serialize($user->user['user_preferences']));
 	
-	$user->updateFields($fields);
+	$alkaline->addNotification('Your prefences have been saved.', 'success');
+	
+	header('Location: ' . BASE . ADMIN . '/');
+	exit();
 }
 
 define('TAB', 'settings');
@@ -25,7 +27,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <h1>Preferences</h1>
 
-<form id="preferences"  action="" method="post">	
+<form id="preferences" action="" method="post">
 	<h3>Shoebox</h3>
 	
 	<table>

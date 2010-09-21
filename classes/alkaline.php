@@ -13,11 +13,12 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 224;
+	const build = 309;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
 	public $db;
+	public $configuration;
 	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
 	protected $addendum;
@@ -43,6 +44,13 @@ class Alkaline{
 		
 		if(!in_array(get_class($this), $nodb_classes)){
 			$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
+		}
+		
+		// Get configuration
+		$this->configuration = json_decode(@file_get_contents('./../assets/configuration.json'), true);
+		
+		if(empty($this->configuration)){
+			$this->configuration = array();
 		}
 	}
 	
@@ -874,7 +882,7 @@ class Alkaline{
 			return false;
 		}
 		elseif($check === true){
-			if($value == 1){
+			if($value === true){
 				return 'checked="checked"';
 			}
 		}
@@ -890,6 +898,27 @@ class Alkaline{
 			return false;
 		}
 		return $value;
+	}
+	
+	// CONFIGURATION HANDLING
+	// Set configuration key
+	public function setConf($name, $unset=''){
+		return self::setForm($this->configuration, $name, $unset);
+	}
+	
+	// Read configuration key and return value in HTML
+	public function readConf($name, $check=true){
+		return self::readForm($this->configuration, $name, $check);
+	}
+	
+	// Read configuration key and return value
+	public function returnConf($name){
+		return self::returnForm($this->configuration, $name);
+	}
+	
+	// Save configuration
+	public function saveConf(){
+		file_put_contents('./../assets/configuration.json', json_encode($this->configuration));
 	}
 	
 	// URL HANDLING

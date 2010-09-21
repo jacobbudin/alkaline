@@ -27,7 +27,7 @@ if(!empty($_POST['photo_ids'])){
 		$photo->updateTags(json_decode(@$_POST['photo-' . $photo_id . '-tags_input']));
 	}
 	
-	$alkaline->addNotification('Your shoebox has been successfully processed.', 'success');
+	$alkaline->addNotification('Your shoebox has been processed.', 'success');
 	
 	header('Location: ' . BASE . ADMIN . 'library/');
 	exit();

@@ -156,6 +156,12 @@ class User extends Alkaline{
 		return parent::returnForm($this->user['user_preferences'], $name);
 	}
 	
+	// Read preferences
+	public function savePref(){
+		$fields = array('user_preferences' => serialize($user->user['user_preferences']));
+		$user->updateFields($fields);
+	}
+	
 	// UPDATE USER
 	public function updateFields($array, $overwrite=true){
 		// Verify each key has changed; if not, unset the key

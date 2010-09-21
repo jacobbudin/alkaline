@@ -40,11 +40,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<div id="statistics_views" title="<?php echo $views; ?>"></div>
 		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 		
+		<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library/">Go to library</a></div>
 		<h1>Recent</h1>
 		<p>
 			<?php
 			$photo_ids = new Find;
-			$photo_ids->page(1,20);
+			$photo_ids->page(1,18);
+			$photo_ids->sort('photos.photo_uploaded', 'DESC');
 			$photo_ids->exec();
 			$photos = new Photo($photo_ids);
 			$photos->getImgUrl('square');
