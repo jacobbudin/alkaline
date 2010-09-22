@@ -174,7 +174,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php				
 			foreach($stats->pages as $page){
 				echo '<tr>';
-				echo '<td class="right">' . $page['stat_count'] . '</td>';
+				echo '<td class="right">' . number_format($page['stat_count']) . '</td>';
 				echo '<td><a href="' . BASE . substr($page['stat_page'], 1) . '">' . $alkaline->fitString($page['stat_page'], 30) . '</a></td>';
 				echo '</tr>';
 			}
@@ -190,7 +190,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php				
 			foreach($stats->page_types as $page_type){
 				echo '<tr>';
-				echo '<td class="right">' . $page_type['stat_count'] . '</td>';
+				echo '<td class="right">' . number_format($page_type['stat_count']) . '</td>';
 				echo '<td>' . ucwords($page_type['stat_page_type']) . '</td>';
 				echo '</tr>';
 			}
@@ -206,7 +206,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php				
 			foreach($stats->referrers_popular as $referrer){
 				echo '<tr>';
-				echo '<td class="right">' . $referrer['stat_referrer_count'] . '</td>';
+				echo '<td class="right">' . number_format($referrer['stat_referrer_count']) . '</td>';
 				echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->fitString($referrer['stat_referrer_display'], 30) . '</a></td>';
 				echo '</tr>';
 			}
@@ -223,7 +223,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			foreach($stats->referrers_recent as $referrer){
 				echo '<tr>';
 				echo '<td class="right quiet">' . $alkaline->formatRelTime($referrer['stat_date'], 'M j, g:i a') . '</td>';
-				echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $referrer['stat_referrer_display'] . '</a></td>';
+				echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $alkaline->fitString($referrer['stat_referrer_display'], 30) . '</a></td>';
 				echo '</tr>';
 			}
 			?>

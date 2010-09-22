@@ -39,7 +39,7 @@ if(!empty($_POST['page_id'])){
 		
 		$page_words = str_word_count($_POST['page_text_raw'], 0);
 		
-		$fields = array('page_title' => $page_title,
+		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,
 			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
 			'page_markup' => $page_markup,
@@ -141,11 +141,11 @@ else{
 				<td><textarea id="page_description" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo $page['page_text_raw']; ?></textarea></td>
 			</tr>
 			<tr id="tr_page_markup">
-				<td class="right"><input type="checkbox" id="page_markup" value="delete" /></td>
+				<td class="right pad"><input type="checkbox" id="page_markup" value="delete" /></td>
 				<td><strong><label for="page_markup">Markup this page using <select name="page_markup" title="<?php echo $page['page_markup']; ?>"><option value=""></option><?php $orbit->hook('page_markup_html'); ?></select>.</label></strong></td>
 			</tr>
 			<tr>
-				<td class="right"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
+				<td class="right center"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
 				<td><strong><label for="page_delete">Delete this page.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>

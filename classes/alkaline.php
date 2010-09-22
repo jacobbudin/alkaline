@@ -76,7 +76,14 @@ class Alkaline{
 		}
 		echo '<script type="text/javascript">' . "\n" . implode($this->addendum, "\n") . "\n" .  '</script>';
 	}
-		
+	
+	
+	// BOOMERANG
+	// Receive updates from alkalineapp.com
+	public function boomerang($request){
+		$reply = json_decode(file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/'), true);
+		return $reply;
+	}	
 	
 	// GUESTS
 	// Authenticate guest
