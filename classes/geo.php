@@ -240,7 +240,7 @@ class Geo extends Alkaline{
 	public function hint($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code ORDER BY cities.city_name_raw ASC';
+		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code ORDER BY cities.city_pop DESC';
 		
 		$query = $this->db->prepare($sql);
 		$query->execute();
@@ -266,8 +266,8 @@ class Geo extends Alkaline{
 	}
 	
 	protected function convertAbbrev($var){
-		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland');
-		$countries = array('United States', 'United States', 'United States', 'United Kingdom', 'United Arab Emirates', 'Netherlands');
+		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland', 'The');
+		$countries = array('United States', 'United States', 'United States', 'United Kingdom', 'United Arab Emirates', 'Netherlands', '');
 		$var = str_ireplace($countries_abbrev, $countries, $var);
 		return $var;
 	}
