@@ -97,7 +97,11 @@ class Photo extends Alkaline{
 		
 		// Process imported photos
 		$this->findColors();
-		$this->readEXIF();
+		
+		if($this->returnConf('shoe_exif')){
+			$this->readEXIF();
+		}
+		
 		$this->readIPTC();
 		$this->sizePhoto();
 		
@@ -777,6 +781,104 @@ class Photo extends Alkaline{
 				}
 			}
 			
+			$fields = array('photo_title' => @$title,
+				'photo_description' => @$description);
+			
+			$photo = new Photo($photos[$i]['photo_id']);
+			$photo->updateFields($fields, false);
+		}
+		
+		return true;
+	}
+	
+	// Find location from EXIF, IPTC
+	public function readGeo($photos=null){
+		if(empty($photos)){
+			$photos = $this->photos;
+			$photo_count = $this->photo_count;
+		}
+		else{
+			$photo_count = count($photos);
+		}
+		
+		for($i = 0; $i < $photo_count; ++$i){
+			// Read EXIF data
+			$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
+			
+			$found_exif = 0;
+			
+			// If EXIF data exists, add each key (group), name, value to database
+			if((count($exif) > 0) and is_array($exif)){
+				$inserts = array();
+				foreach(@$exif as $key => $section){
+				    foreach($section as $name => $value){
+						// Check for geo data
+						if(($key == 'GPS') and ($name == 'GPSLatitude')){
+							$lat_d = $value[0];
+							
+							$lat_m = $value[1];
+							$lat_m = explode('/', $lat_m);
+							$lat_m = $lat_m[0] / $lat_m[1];
+							
+							$lat_s = $value[2];
+							$lat_s = explode('/', $lat_s);
+							$lat_s = $lat_s[0] / $lat_s[1];
+							
+							$found_exif++;
+						}
+						if(($key == 'GPS') and ($name == 'GPSLatitudeRef')){
+							if(strtolower($value) == 's'){
+								$lat_d = 0 - $lat_d;
+								$lat_m = 0 - $lat_m;
+								$lat_s = 0 - $lat_s;
+							}
+							$found_exif++;
+						}
+						if(($key == 'GPS') and ($name == 'GPSLongitude')){
+							$long_d = $value[0];
+							
+							$long_m = $value[1];
+							$long_m = explode('/', $long_m);
+							$long_m = $long_m[0] / $long_m[1];
+							
+							$long_s = $value[2];
+							$long_s = explode('/', $long_s);
+							$long_s = $long_s[0] / $long_s[1];
+							
+							$found_exif++;
+						}
+						if(($key == 'GPS') and ($name == 'GPSLongitudeRef')){
+							if(strtolower($value) == 'w'){
+								$long_d = 0 - $long_d;
+								$long_m = 0 - $long_m;
+								$long_s = 0 - $long_s;
+							}
+							$found_exif++;
+						}
+				    }
+				}
+			}
+			
+			// Did it find all 4 EXIF GPS tags?
+			if($found_exif == 4){
+				$geo_lat = $lat_d + ($lat_m / 60) + ($lat_s / 3600);
+				$geo_long = $long_d + ($long_m / 60) + ($long_s / 3600);
+			}
+			
+			// Read IPTC data
+			$size = getimagesize($photos[$i]['photo_file'], $info);
+			
+			if(isset($info['APP13']))
+			{
+				// Parse IPTC data
+			    $iptc = iptcparse($info['APP13']);
+				
+				$city = (!empty($iptc["2#090"][0])) ? $iptc["2#090"][0] : '';
+				$state = (!empty($iptc["2#095"][0])) ? $iptc["2#095"][0] : '';
+				$country = (!empty($iptc["2#101"][0])) ? $iptc["2#101"][0] : '';
+			}
+			
+			// Determine if there's geo data in IPTC
 			if(!empty($city)){
 				// Require geography class
 				require_once('geo.php');
@@ -798,22 +900,32 @@ class Photo extends Alkaline{
 						$geo .= ', ' . $place->city['city_state'];
 					}
 					$geo .= ', ' . $place->city['country_name'];
-					$geo_lat = $place->city['city_lat'];
-					$geo_long = $place->city['city_long'];
+					if($found_exif != 4){
+						$geo_lat = $place->city['city_lat'];
+						$geo_long = $place->city['city_long'];
+					}
+				}
+			}
+			elseif($found_exif == 4){
+				// Require geography class
+				require_once('geo.php');
+				
+				if($place = new Geo(strval($geo_lat) . ', ' . strval($geo_long))){
+					$geo = $place->city['city_name'];
+					if(!empty($place->city['city_state'])){
+						$geo .= ', ' . $place->city['city_state'];
+					}
+					$geo .= ', ' . $place->city['country_name'];
 				}
 			}
 			
-			$fields = array('photo_title' => @$title,
-				'photo_description' => @$description,
-				'photo_geo' => @$geo,
+			$fields = array('photo_geo' => @$geo,
 				'photo_geo_lat' => @$geo_lat,
 				'photo_geo_long' => @$geo_long);
 			
 			$photo = new Photo($photos[$i]['photo_id']);
 			$photo->updateFields($fields, false);
 		}
-		
-		return true;
 	}
 	
 	// Increase photos.photo_views by 1
