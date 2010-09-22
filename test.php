@@ -4,8 +4,7 @@ require_once('./config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $geo = new Geo('');
-$hint = $geo->hint('back');
-var_dump($hint);
+
 
 // $alkaline = new Alkaline;
 // var_dump($alkaline->emptyDirectory(PATH . SHOEBOX));

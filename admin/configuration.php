@@ -20,9 +20,12 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
 	
-	$alkaline->saveConf();
-	
-	$alkaline->addNotification('The configuration have been saved.', 'success');
+	if($alkaline->saveConf()){
+		$alkaline->addNotification('The configuration have been saved.', 'success');
+	}
+	else{
+		$alkaline->addNotification('Your configuration could not be saved.', 'error');
+	}
 	
 	header('Location: ' . BASE . ADMIN . 'settings/');
 	exit();

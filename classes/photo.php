@@ -102,7 +102,14 @@ class Photo extends Alkaline{
 			$this->readEXIF();
 		}
 		
-		$this->readIPTC();
+		if($this->returnConf('shoe_iptc')){
+			$this->readIPTC();
+		}
+		
+		if($this->returnConf('shoe_geo')){
+			$this->readGeo();
+		}
+		
 		$this->sizePhoto();
 		
 		// Combine existing and imported photo_ids arrays

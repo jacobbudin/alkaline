@@ -47,7 +47,7 @@ class Alkaline{
 		}
 		
 		// Get configuration
-		$this->configuration = json_decode(@file_get_contents('./../assets/configuration.json'), true);
+		$this->configuration = json_decode(@file_get_contents(PATH . 'assets/configuration.json'), true);
 		
 		if(empty($this->configuration)){
 			$this->configuration = array();
@@ -927,7 +927,7 @@ class Alkaline{
 	
 	// Save configuration
 	public function saveConf(){
-		file_put_contents('./../assets/configuration.json', json_encode($this->configuration));
+		return file_put_contents(PATH . 'assets/configuration.json', json_encode($this->configuration));
 	}
 	
 	// URL HANDLING
