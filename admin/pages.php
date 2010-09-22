@@ -133,7 +133,7 @@ else{
 				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
 				<td class="quiet">
 					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo $page['page_title_url']; ?>" style="width: 300px;" /><br />
-					Optional. Use only lowercase letters, numbers, underscores, and hyphens.
+					Optional. Use only letters, numbers, underscores, and hyphens.
 				</td>
 			</tr>
 			<tr>

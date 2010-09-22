@@ -662,12 +662,14 @@ class Alkaline{
 				$fields['comment_created'] = date('Y-m-d H:i:s');
 				break;
 			case 'guests':
+				$fields['guest_views'] = 0;
 				$fields['guest_created'] = date('Y-m-d H:i:s');
 				break;
 			case 'rights':
 				$fields['right_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'pages':
+				$fields['page_views'] = 0;
 				$fields['page_created'] = date('Y-m-d H:i:s');
 				$fields['page_modified'] = date('Y-m-d H:i:s');
 				break;

@@ -107,7 +107,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View photos (<?php echo $photo_ids->photo_count; ?>)</a></div>
 	
 	<h1>Rights Set</h1>
 	

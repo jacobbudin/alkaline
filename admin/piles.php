@@ -18,7 +18,18 @@ if(!empty($_POST['pile_id'])){
 		$alkaline->deleteRow('piles', $pile_id);
 	}
 	else{
-		$fields = array('pile_title' => $alkaline->makeUnicode($_POST['pile_title']),
+		$pile_title = trim($_POST['pile_title']);
+		
+		if(!empty($_POST['pile_title_url'])){
+			$pile_title_url = $alkaline->makeURL($_POST['pile_title_url']);
+		}
+		else{
+			$pile_title_url = $alkaline->makeURL($pile_title);
+		}
+		
+		$fields = array('pile_title' => $alkaline->makeUnicode($pile_title),
+			'pile_title_url' => $pile_title_url,
+			'pile_type' => $_POST['pile_type'],
 			'pile_description' => $alkaline->makeUnicode($_POST['pile_description']));
 		$alkaline->updateRow($fields, 'piles', $pile_id);
 	}
@@ -31,7 +42,7 @@ else{
 // CREATE PILE
 if($pile_add == 1){
 	$pile_call = Find::recentMemory();
-	$fields = array('pile_call' => $pile_call);
+	$fields = array('pile_call' => $pile_call, );
 	$pile_id = $alkaline->addRow($fields, 'piles');
 }
 
@@ -77,19 +88,15 @@ if(empty($pile_id)){
 	
 }
 else{
+	// Get pile
+	$piles = $alkaline->getTable('piles', $pile_id);
+	$pile = $piles[0];
 	
-	// Update photo count on pile
+	// Update  pile
 	$photo_ids = new Find;
 	$photo_ids->pile($pile_id);
 	$photo_ids->exec();
 	
-	$fields = array('pile_photo_count' => $photo_ids->photo_count);
-	$alkaline->updateRow($fields, 'piles', $pile_id, false);
-	
-	// Get pile
-	$piles = $alkaline->getTable('piles', $pile_id);
-	$pile = $piles[0];
-
 	if(!empty($pile['pile_title'])){	
 		define('TITLE', 'Alkaline Pile: &#8220;' . $pile['pile_title']  . '&#8221;');
 	}
@@ -100,7 +107,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/">View photos</a> <a href="<?php echo BASE; ?>piles/<?php echo $pile['pile_id']; ?>/">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE; ?>piles/<?php echo $pile['pile_id']; ?>/">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	
@@ -111,8 +118,22 @@ else{
 				<td><input type="text" id="pile_title" name="pile_title" value="<?php echo $pile['pile_title']; ?>" class="title" /></td>
 			</tr>
 			<tr>
+				<td class="right pad"><label for="pile_title_url">Custom URL:</label></td>
+				<td class="quiet">
+					<input type="text" id="pile_title_url" name="pile_title_url" value="<?php echo $pile['pile_title_url']; ?>" style="width: 300px;" /><br />
+					Optional. Use only letters, numbers, underscores, and hyphens.
+				</td>
+			</tr>
+			<tr>
 				<td class="right pad"><label for="pile_description">Description:</label></td>
 				<td><textarea id="pile_description" name="pile_description"><?php echo $pile['pile_description']; ?></textarea></td>
+			</tr>
+			<tr>
+				<td class="right"><label for="pile_type">Type:</label></td>
+				<td>
+					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new photos that meet the pile&#8217;s criteria<br />
+					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the photos originally selected<br /><br />
+				</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="pile_delete" name="pile_delete" value="delete" /></td>

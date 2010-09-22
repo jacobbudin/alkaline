@@ -322,16 +322,16 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY PILE
-	public function pile($pile=null){
+	public function pile($pile=null, $update=true){
 		// Error checking
 		if(empty($pile)){ return false; }
 		
 		// Determine input type
 		if(is_string($pile)){
-			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
+			$query = $this->db->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
 		}
 		elseif(is_int($pile)){
-			$query = $this->db->prepare('SELECT pile_call FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
+			$query = $this->db->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
 		}
 		else{
 			return false;
@@ -339,10 +339,32 @@ class Find extends Alkaline{
 		
 		$query->execute();
 		$piles = $query->fetchAll();
+		$pile = $piles[0];
 		
-		// Call stored functions
-		if(!eval($piles[0]['pile_call'])){
-			return false;
+		// If auto, apply stored functions
+		if($pile['pile_type'] == 'auto'){
+			if(eval($pile['pile_call']) === false){
+				return false;
+			}
+		}
+		
+		// If static, use stored photo IDs
+		elseif($pile['pile_type'] == 'static'){
+			$this->sql_conds[] = 'photos.photo_id IN (' . $pile['pile_photos'] . ')';
+		}
+		
+		if((($pile['pile_type'] == 'auto') or empty($pile['pile_photo_count'])) and ($update === true)){
+			$photo_ids = new Find;
+			$photo_ids->pile(intval($pile['pile_id']), false);
+			$photo_ids->exec();
+			$fields = array('pile_photo_count' => $photo_ids->photo_count);
+
+			// Check to see if automatic
+			if($pile['pile_type'] == 'auto'){
+				$fields['pile_photos'] = implode(', ', $photo_ids->photo_ids);
+			}
+
+			$this->updateRow($fields, 'piles', $pile['pile_id'], false);
 		}
 		
 		return true;
@@ -650,12 +672,18 @@ class Find extends Alkaline{
 		if(count($this->sql_conds) > 0){
 			$this->sql_where = ' WHERE ' . implode(' AND ', $this->sql_conds);
 		}
+		
 		if(count($this->sql_sorts) > 0){
 			$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
 		}
+		else{
+			$this->sql_order_by = ' ORDER BY photos.photo_uploaded DESC';
+		}
+		
 		if((count($this->sql_join_on) > 0) and (count($this->sql_join_tables) > 0) and (!empty($this->sql_join_type))){
 			$this->sql_join = ' ' . $this->sql_join_type . ' ' . implode(', ', $this->sql_join_tables) . ' ON ' . implode(', ', $this->sql_join_on);
 		}
+		
 		if(count($this->sql_having_fields) > 0){
 			$this->sql_having = ' HAVING ' . implode(', ', $this->sql_having_fields);
 		}
