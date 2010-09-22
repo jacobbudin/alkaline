@@ -43,11 +43,6 @@ if(!($photo_count > 0)){
 	exit();
 }
 
-// GET PREFERENCES
-if($user->returnPref('shoe_pub') === true){
-	$alkaline->pushAddendum('alkaline_pref_shoe_pub = "Now"');
-}
-
 define('TAB', 'library');
 define('TITLE', 'Alkaline Shoebox');
 require_once(PATH . ADMIN . 'includes/header.php');

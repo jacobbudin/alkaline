@@ -62,21 +62,10 @@ class Alkaline{
 		$this->db = null;
 	}
 	
-	// ADDENDUM (for Javascript)
-	public function pushAddendum($string){
-		if(empty($this->addendum)){
-			$this->addendum = array();
-		}
-		$this->addendum[] = $string;
+	// REMOVE NULL FROM JSON
+	public function removeNull($input){
+		return str_replace(':null', ':""', $input);
 	}
-	
-	public function echoAddendum(){
-		if(empty($this->addendum)){
-			return;
-		}
-		echo '<script type="text/javascript">' . "\n" . implode($this->addendum, "\n") . "\n" .  '</script>';
-	}
-	
 	
 	// BOOMERANG
 	// Receive updates from alkalineapp.com

@@ -16,8 +16,19 @@ if(empty($_POST['photo_file'])){
 else{
 	$photo = new Photo();
 	$photo->import(base64_decode($_POST['photo_file']));
-	$photo = array('id' => $photo->photo_ids[0], 'ext' => $photo->photos[0]['photo_ext']);
-	echo json_encode($photo);
+	$tags = $photo->getTags();
+	$photo = $photo->photos[0];
+	$tag_names = array();
+	foreach($tags as $tag){
+		$tag_names[] = $tag['tag_name'];
+	}
+	
+	if($user->returnPref('shoe_pub') === true){
+		$photo['photo_published'] = 'Now';
+	}
+	
+	$photo['photo_tags'] = $tag_names;
+	echo $alkaline->removeNull(json_encode($photo));
 }
 
 ?>

@@ -15,6 +15,9 @@ class Photo extends Alkaline{
 	public function __construct($photo_ids=null){
 		parent::__construct();
 		
+		// Reset photo array
+		$this->photos = array();
+		
 		// User attribution
 		$this->user['user_id'] = DEFAULT_USER_ID;
 		
@@ -90,7 +93,7 @@ class Photo extends Alkaline{
 		}
 		
 		// Store initial photo_ids array
-		$exisiting_photo_ids = $this->photo_ids;
+		$existing_photo_ids = $this->photo_ids;
 		
 		// Construct object anew
 		self::__construct($photo_ids);
@@ -113,8 +116,8 @@ class Photo extends Alkaline{
 		$this->sizePhoto();
 		
 		// Combine existing and imported photo_ids arrays
-		if(!empty($exisiting_photo_ids)){
-			$this->photo_ids = array_merge($exisiting_photo_ids, $this->photo_ids);
+		if(!empty($existing_photo_ids)){
+			$this->photo_ids = array_merge($existing_photo_ids, $this->photo_ids);
 		}
 		
 		// Merge with previous photo_ids
