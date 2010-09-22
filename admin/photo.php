@@ -19,7 +19,10 @@ if(!empty($_POST['photo_id'])){
 	$photos = new Photo($photo_id);
 	$photo_id = $alkaline->findID($_POST['photo_id']);
 	if(@$_POST['photo_delete'] == 'delete'){
-		$photos->delete();
+		if($photos->delete()){
+			$alkaline->addNotification('Your photo has been deleted.', 'success');
+		}
+
 	}
 	else{
 		$fields = array('photo_title' => @$_POST['photo_title'],
@@ -39,7 +42,10 @@ $photos = new Photo($photo_id);
 $photos->getImgUrl('admin');
 $photos->getTags();
 
-$photo = $photos->photos[0];
+if(!$photo = @$photos->photos[0]){
+	$alkaline->addNotification('The photo you requested could not be found.', 'error');
+	$alkaline->callback();
+}
 
 define('TAB', 'library');
 if(!empty($photo['photo_title'])){	

@@ -991,13 +991,17 @@ class Alkaline{
 		$_SESSION['callback'] = self::location();
 	}
 	
-	public function callback(){
+	public function callback($url=null){
 		if(!empty($_SESSION['callback'])){
 			header('Location: ' . $_SESSION['callback']);
-			exit();
 		}
-		
-		return false;
+		elseif(!empty($url)){
+			header('Location: ' . $url);
+		}
+		else{
+			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+		}
+		exit();
 	}
 }
 
