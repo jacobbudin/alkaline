@@ -15,7 +15,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div id="overview" class="span-16 colborder">
+	<div class="span-5 colborderr">
+		<h2><a href="<?php echo BASE . ADMIN; ?>access/"><img src="/images/icons/access.png" alt="" /> Users &amp; Guests &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>themes/"><img src="/images/icons/themes.png" alt="" /> Themes &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>extensions/"><img src="/images/icons/extensions.png" alt="" /> Extensions &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>thumbnails/"><img src="/images/icons/thumbnails.png" alt="" /> Thumbnails &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>maintenance/"><img src="/images/icons/maintenance.png" alt="" /> Maintenance &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>configuration/"><img src="/images/icons/configuration.png" alt="" /> Configuration &#9656;</a></h2>
+	</div>
+	<div id="overview" class="span-18 colborderl last">
 		<h1>Overview</h1>
 	
 		<h2>Alkaline</h2>
@@ -53,14 +61,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td><?php $gd_info = gd_info(); echo ucfirst($gd_info['GD Version']); ?></td>
 			</tr>
 		</table>
-	</div>
-	<div class="span-7 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>access/"><img src="/images/icons/access.png" alt="" /> Users &amp; Guests &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>themes/"><img src="/images/icons/themes.png" alt="" /> Themes &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>extensions/"><img src="/images/icons/extensions.png" alt="" /> Extensions &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>thumbnails/"><img src="/images/icons/thumbnails.png" alt="" /> Thumbnails &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>maintenance/"><img src="/images/icons/maintenance.png" alt="" /> Maintenance &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>configuration/"><img src="/images/icons/configuration.png" alt="" /> Configuration &#9656;</a></h2>
 	</div>
 </div>
 

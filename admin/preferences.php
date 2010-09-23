@@ -19,7 +19,7 @@ if(!empty($_POST['preferences_save'])){
 	exit();
 }
 
-define('TAB', 'settings');
+define('TAB', 'dashboard');
 define('TITLE', 'Alkaline Preferences');
 require_once(PATH . ADMIN . 'includes/header.php');
 

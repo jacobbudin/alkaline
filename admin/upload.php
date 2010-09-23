@@ -23,16 +23,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="span-16 append-1">
-		<h1>Upload</h1>
-		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<p>
-				<img src="/images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
-			</p>
-		</form>
-	</div>
-	<div class="span-7 last">
+	<div class="span-5 colborderr">
 		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox/"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
 		
 		<div id="progress">
@@ -40,7 +31,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<hr />
 		
+		<h3>Status</h3>
+		
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
+	</div>
+	<div class="span-18 colborderl last">
+		<h1>Upload</h1>
+		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
+			<p>
+				<img src="/images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
+			</p>
+		</form>
 	</div>
 </div>
 

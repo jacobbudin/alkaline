@@ -22,15 +22,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div id="overview" class="span-16 colborder">
-		<h1>Actions</h1>
-	</div>
-	<div class="span-7 last">
+	<div class="span-5 colborderr">
 		<h2><a href="<?php echo BASE . ADMIN; ?>tags/"><img src="/images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>piles/"><img src="/images/icons/piles.png" alt="" /> Piles &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>comments/"><img src="/images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>pages/"><img src="/images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>rights/"><img src="/images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>
+	</div>
+	<div class="span-18 colborderl last">
+		<h1>Actions</h1>
 	</div>
 </div>
 

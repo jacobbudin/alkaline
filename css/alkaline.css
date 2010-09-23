@@ -2,6 +2,9 @@
 	width: 950px;
 }
 
+.colborderl {padding-left:24px;margin-left:25px;border-left: 1px solid #eee;}
+.colborderr {padding-right:0;margin-right:0;}
+
 body{
 	font-size: .75em;
 	text-rendering: optimizeLegibility;
@@ -18,6 +21,11 @@ a:hover, a:active{
 textarea{
 	width: 100%;
 	height: 10em;
+}
+
+ul{
+	padding-left: 0;
+	list-style-type: square;
 }
 
 input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
