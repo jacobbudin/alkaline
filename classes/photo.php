@@ -948,7 +948,7 @@ class Photo extends Alkaline{
 	
 	// Delete photos
 	public function delete(){
-		$this->deSizePhoto();
+		$this->deSizePhoto(true);
 		for($i = 0; $i < $this->photo_count; ++$i){
 			@$this->db->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 			@$this->db->exec('DELETE FROM exifs WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
@@ -1060,7 +1060,8 @@ class Photo extends Alkaline{
 	}
 	
 	// Delete photo thumbnails
-	public function deSizePhoto(){
+	// Param: delete: delete original photos too?
+	public function deSizePhoto($original=false){
 		// Open photo directory
 		$dir = PATH . PHOTOS;
 		$handle = opendir($dir);
@@ -1071,6 +1072,11 @@ class Photo extends Alkaline{
 				// Find photo thumnails
 				if(preg_match('/^((.*[\D]+' . $this->photos[$i]['photo_id'] . '|' . $this->photos[$i]['photo_id'] . '[\D]+.*|.*[\D]+' . $this->photos[$i]['photo_id'] . '[\D]+.*)\..+)$/', $filename)){
 					$photos[] = $dir . $filename;
+				}
+				if($original === true){
+					if(preg_match('/^' . $this->photos[$i]['photo_id'] . '\..+$/', $filename)){
+						$photos[] = $dir . $filename;
+					}
 				}
 			}
 	    }
