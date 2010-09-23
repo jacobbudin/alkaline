@@ -464,7 +464,7 @@ class Alkaline{
 	// PROCESS COMMENTS
 	public function addComments(){
 		// Configuration: comm_enabled
-		if(!$alkaline->returnConf('comm_enabled')){
+		if(!$this->returnConf('comm_enabled')){
 			return false;
 		}
 		
@@ -474,7 +474,7 @@ class Alkaline{
 		
 		$id = self::findID($_POST['comment_id']);
 		
-		if($alkaline->returnConf('comm_mod')){
+		if($this->returnConf('comm_mod')){
 			$comment_status = 0;
 		}
 		else{

@@ -465,6 +465,11 @@ class Photo extends Alkaline{
 		switch($ext){
 			case 'jpg':
 				list($width_orig, $height_orig) = getimagesize($src);
+				
+				if(($width_orig <= $width) and ($height_orig <= $height)){
+					copy($src, $dest);
+					return true;	
+				}
 
 				$ratio_orig = $width_orig / $height_orig;
 				$ratio = $width / $height;
@@ -483,6 +488,11 @@ class Photo extends Alkaline{
 				break;
 			case 'png':
 				list($width_orig, $height_orig) = getimagesize($src);
+				
+				if(($width_orig <= $width) and ($height_orig <= $height)){
+					copy($src, $dest);
+					return true;	
+				}
 
 				$ratio_orig = $width_orig / $height_orig;
 				$ratio = $width / $height;
@@ -502,6 +512,11 @@ class Photo extends Alkaline{
 				break;
 			case 'gif':
 				list($width_orig, $height_orig) = getimagesize($src);
+				
+				if(($width_orig <= $width) and ($height_orig <= $height)){
+					copy($src, $dest);
+					return true;	
+				}
 
 				$ratio_orig = $width_orig / $height_orig;
 				$ratio = $width / $height;
