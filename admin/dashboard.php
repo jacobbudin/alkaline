@@ -94,8 +94,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h1>Recent</h1>
 		<p>
 			<?php
+			
+			// Preference: recent_photos
+			if(!$max = $user->returnPref('recent_photos')){
+				$max = 10;
+			}
+			
 			$photo_ids = new Find;
-			$photo_ids->page(1,18);
+			$photo_ids->page(1,$max);
 			$photo_ids->sort('photos.photo_uploaded', 'DESC');
 			$photo_ids->exec();
 			$photos = new Photo($photo_ids);

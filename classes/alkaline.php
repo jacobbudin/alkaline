@@ -901,6 +901,11 @@ class Alkaline{
 				return 'checked="checked"';
 			}
 		}
+		elseif(!empty($check)){
+			if($value == $check){
+				return 'selected="selected"';
+			}
+		}
 		else{
 			return 'value="' . $value . '"';
 		}

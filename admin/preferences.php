@@ -9,9 +9,9 @@ $user = new User;
 $user->perm(true);
 
 if(!empty($_POST['preferences_save'])){
+	$user->setPref('recent_photos', @$_POST['recent_photos']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
 	$user->setPref('comm_email_photo', @$_POST['comm_email_photo']);
-	
 	
 	$alkaline->addNotification('Your prefences have been saved.', 'success');
 	
@@ -28,6 +28,24 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <h1>Preferences</h1>
 
 <form id="preferences" action="" method="post">
+	<h3>Shoebox</h3>
+	
+	<table>
+		<tr>
+			<td class="input middle"><input type="checkbox" checked="checked" disabled="disabled" /></td>
+			<td class="description">
+				Show the
+				<select name="recent_photos">
+					<option value="10" <?php echo $user->readPref('recent_photos', 10); ?>>10</option>
+					<option value="25" <?php echo $user->readPref('recent_photos', 25); ?>>25</option>
+					<option value="50" <?php echo $user->readPref('recent_photos', 50); ?>>50</option>
+					<option value="100" <?php echo $user->readPref('recent_photos', 100); ?>>100</option>
+				</select>
+				most recent photos on my dashboard.
+			</td>
+		</tr>
+	</table>
+	
 	<h3>Shoebox</h3>
 	
 	<table>
