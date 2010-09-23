@@ -30,6 +30,11 @@ if(!empty($_POST['comment_id'])){
 	unset($comment_id);
 }
 
+// Configuration: comm_enabled
+if(!$alkaline->returnConf('comm_enabled')){
+	$alkaline->addNotification('New comments have been disabled.', 'notice');
+}
+
 define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT

@@ -30,9 +30,14 @@ if(!empty($_POST['extension_id'])){
 	unset($extension_id);
 }
 
+// Configuration: maint_disable
+if($alkaline->returnConf('maint_disable')){
+	$alkaline->addNotification('All extensions have been disabled.', 'notice');
+}
+
 define('TAB', 'settings');
 
-if(empty($extension_id)){	
+if(empty($extension_id)){
 	$orbit = new Orbit();
 	
 	define('TITLE', 'Alkaline Extensions');

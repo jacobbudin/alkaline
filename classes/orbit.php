@@ -124,6 +124,14 @@ class Orbit extends Alkaline{
 	
 	// Execute extensions at hook
 	public function hook($hook){
+		// Configuration: maint_disable
+		$safe_hooks = array('config', 'config_load', 'config_save');
+		if(!in_array($hook, $safe_hooks)){
+			if($this->returnConf('maint_disable')){
+				return false;
+			}
+		}
+		
 		// Find arguments
 		$arguments = func_get_args();
 		

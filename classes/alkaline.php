@@ -70,7 +70,7 @@ class Alkaline{
 	// BOOMERANG
 	// Receive updates from alkalineapp.com
 	public function boomerang($request){
-		$reply = json_decode(file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/'), true);
+		$reply = self::removeNull(json_decode(file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/'), true));
 		return $reply;
 	}	
 	
@@ -463,13 +463,26 @@ class Alkaline{
 	
 	// PROCESS COMMENTS
 	public function addComments(){
+		// Configuration: comm_enabled
+		if(!$alkaline->returnConf('comm_enabled')){
+			return false;
+		}
+		
 		if(empty($_POST['comment_id'])){
 			return false;
 		}
 		
 		$id = self::findID($_POST['comment_id']);
 		
+		if($alkaline->returnConf('comm_mod')){
+			$comment_status = 0;
+		}
+		else{
+			$comment_status = 1;
+		}
+		
 		$fields = array('photo_id' => $id,
+			'comment_status' => $comment_status,
 			'comment_text' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_text'])),
 			'comment_author_name' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_author_name'])),
 			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
@@ -837,6 +850,10 @@ class Alkaline{
 	// RECORD STATISTIC
 	// Record a visitor to statistics
 	public function recordStat($page_type=null){
+		if(!$this->returnConf('stat_enabled')){
+			return false;
+		}
+		
 		if(empty($_SESSION['duration_start']) or ((time() - @$_SESSION['duration_recent']) > 3600)){
 			$duration = 0;
 			$_SESSION['duration_start'] = time();
@@ -852,7 +869,7 @@ class Alkaline{
 		$local = (stripos($referrer, LOCATION)) ? 1 : 0;
 		
 		$query = 'INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES ("' . session_id() . '", "' . date('Y-m-d H:i:s') . '", "' . $duration . '", "' . $referrer . '", "' . $page . '", "' . $page_type . '", ' . $local . ');';
-		$this->db->exec($query);
+		return $this->db->exec($query);
 	}
 	
 	// FORM HANDLING
