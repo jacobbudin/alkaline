@@ -9,7 +9,7 @@ $alkaline->recordStat('slideshow');
 $photo_ids = new Find;
 $photo_ids->sort('photos.photo_published', 'DESC');
 $photo_ids->privacy('protected', true);
-$photo_ids->exec();
+$photo_ids->find();
 
 $photos = new Photo($photo_ids);
 $photos->formatTime();

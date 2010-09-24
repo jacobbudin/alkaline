@@ -9,7 +9,7 @@ $photo_ids = new Find();
 $photo_ids->sort('photos.photo_published', 'DESC');
 $photo_ids->page(1,20);
 $photo_ids->published();
-$photo_ids->exec();
+$photo_ids->find();
 
 $photos = new Photo($photo_ids);
 $photos->getImgUrl('medium');

@@ -103,7 +103,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			$photo_ids = new Find;
 			$photo_ids->page(1,$max);
 			$photo_ids->sort('photos.photo_uploaded', 'DESC');
-			$photo_ids->exec();
+			$photo_ids->find();
 			$photos = new Photo($photo_ids);
 			$photos->getImgUrl('square');
 

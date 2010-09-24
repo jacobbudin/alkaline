@@ -173,7 +173,7 @@ if(!empty($_POST['sort'])){
 	}
 }
 
-$photo_ids->exec();
+$photo_ids->find();
 $photo_ids->saveMemory();
 
 $photos = new Photo($photo_ids->photo_ids);

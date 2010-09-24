@@ -10,7 +10,7 @@ $user->perm(true);
 
 if(empty($_POST['photo_id'])){
 	$photo_ids = new Find();
-	$photo_ids->exec();
+	$photo_ids->find();
 	echo json_encode($photo_ids->photo_ids);
 }
 else{

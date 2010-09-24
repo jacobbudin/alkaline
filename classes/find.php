@@ -356,7 +356,7 @@ class Find extends Alkaline{
 		if((($pile['pile_type'] == 'auto') or empty($pile['pile_photo_count'])) and ($update === true)){
 			$photo_ids = new Find;
 			$photo_ids->pile(intval($pile['pile_id']), false);
-			$photo_ids->exec();
+			$photo_ids->find();
 			$fields = array('pile_photo_count' => $photo_ids->photo_count);
 
 			// Check to see if automatic
@@ -665,7 +665,7 @@ class Find extends Alkaline{
 	}
 	
 	// EXECUTE QUERY
-	public function exec(){
+	public function find(){
 		// Prepare SQL
 		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
 

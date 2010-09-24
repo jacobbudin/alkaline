@@ -91,7 +91,7 @@ else{
 	// Update photo count on rights set
 	$photo_ids = new Find;
 	$photo_ids->rights($right_id);
-	$photo_ids->exec();
+	$photo_ids->find();
 	
 	$fields = array('right_photo_count' => $photo_ids->photo_count);
 	$alkaline->updateRow($fields, 'rights', $right_id, false);

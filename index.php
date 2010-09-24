@@ -28,7 +28,7 @@ $photo_ids->_page(null,5,3);
 // $photo_ids->_published();
 $photo_ids->privacy('protected', true);
 // $photo_ids->pile('fun');
-$photo_ids->exec();
+$photo_ids->find();
 
 // var_dump($photo_ids->photo_ids_before);
 // var_dump($photo_ids->photo_ids_after);

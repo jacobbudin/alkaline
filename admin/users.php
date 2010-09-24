@@ -85,7 +85,7 @@ else{
 	// Update photo count on user
 	$photo_ids = new Find;
 	$photo_ids->user($user_id);
-	$photo_ids->exec();
+	$photo_ids->find();
 	
 	$fields = array('user_photo_count' => $photo_ids->photo_count);
 	$alkaline->updateRow($fields, 'users', $user_id, false);

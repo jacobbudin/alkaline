@@ -95,7 +95,7 @@ else{
 	// Update  pile
 	$photo_ids = new Find;
 	$photo_ids->pile($pile_id);
-	$photo_ids->exec();
+	$photo_ids->find();
 	
 	if(!empty($pile['pile_title'])){	
 		define('TITLE', 'Alkaline Pile: &#8220;' . $pile['pile_title']  . '&#8221;');

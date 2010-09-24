@@ -7,7 +7,7 @@ $alkaline = new Alkaline;
 
 $photo_ids = new Find;
 $photo_ids->privacy('public', true);
-$photo_ids->exec();
+$photo_ids->find();
 
 $photos = new Photo($photo_ids);
 $photos->getImgUrl('medium');
