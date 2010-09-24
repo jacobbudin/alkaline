@@ -141,14 +141,13 @@ class Alkaline{
 			// Produce HTML for display
 			foreach($types as $type){
 				echo '<p class="' . $type . '">';
-				$messages = '';
+				$messages = array();
 				foreach($this->notifications as $notification){
-					if($notifications['type'] == $type){
-						$messages = $messages . ' ' . $notification['message'];
+					if($notification['type'] == $type){
+						$messages[] = $notification['message'];
 					}
 				}
-				$messages = ltrim($messages);
-				echo $messages . '</p>';
+				echo implode(' ', $messages) . '</p>';
 			}
 			
 			echo '<br />';

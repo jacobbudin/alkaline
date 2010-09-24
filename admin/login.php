@@ -19,6 +19,12 @@ if($user->perm()){
 
 if(!empty($username) or !empty($password)){
 	if($user->auth($username, $password, $remember)){
+		// Check for updates
+		$latest = @$alkaline->boomerang('latest');
+		if($latest['build'] > Alkaline::build){
+			$alkaline->addNotification('A new version of Alkaline is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
+		}
+		
 		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 		exit();
 	}
