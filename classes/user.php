@@ -2,15 +2,13 @@
 
 class User extends Alkaline{
 	public $user;
-	public $view_type;
 	
 	public function __construct(){
 		parent::__construct();
 		
 		// Login user by session data
-		if(!empty($_SESSION['user'])){
-			$this->user = $_SESSION['user'];
-			$this->view_type = $_SESSION['user_view_type'];
+		if(!empty($_SESSION['alkaline']['user'])){
+			$this->user = $_SESSION['alkaline']['user'];
 		}
 		// Login user by ID, key
 		elseif(!empty($_COOKIE['id']) and !empty($_COOKIE['key'])){
@@ -23,8 +21,7 @@ class User extends Alkaline{
 	public function __destruct(){
 		// Store user to session data
 		if(self::perm() == true){
-			$_SESSION['user'] = $this->user;
-			$_SESSION['user_view_type'] = $this->view_type;
+			$_SESSION['alkaline']['user'] = $this->user;
 		}
 		
 		parent::__destruct();
@@ -91,9 +88,6 @@ class User extends Alkaline{
 		// Create arrays
 		$this->user['user_permissions'] = unserialize($this->user['user_permissions']);
 		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
-		
-		// Set default view type
-		$this->view_type = DEFAULT_VIEW_TYPE;
 		
 		// Update database
 		$this->exec('UPDATE users SET user_last_login = "' . date('Y-m-d H:i:s') . '", user_key = "' . $key . '" WHERE user_id = "' . $this->user['user_id'] . '"');

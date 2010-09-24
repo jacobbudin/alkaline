@@ -33,13 +33,13 @@ class Alkaline{
 		if(session_id() == ''){ session_start(); }
 		
 		// Load notifications variable from session
-		if(!empty($_SESSION['notifications'])){ $this->notifications = $_SESSION['notifications']; }
+		if(!empty($_SESSION['alkaline']['notifications'])){ $this->notifications = $_SESSION['alkaline']['notifications']; }
 		else{ $this->notifications = array(); }
 		
 		// Debug info
 		if(get_class($this) == 'Alkaline'){
-			$_SESSION['debug_script_start'] = microtime(true);
-			$_SESSION['debug_queries'] = 0;
+			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
+			$_SESSION['alkaline']['debug']['queries'] = 0;
 		}
 		
 		// Initiate database connection, if necessary
@@ -59,7 +59,7 @@ class Alkaline{
 	
 	public function __destruct(){
 		// Save notifications variable to session
-		$_SESSION['notifications'] = $this->notifications;
+		$_SESSION['alkaline']['notifications'] = $this->notifications;
 		
 		// Close database connection
 		$this->db = null;
@@ -67,12 +67,12 @@ class Alkaline{
 	
 	// DATABASE
 	public function exec($query){
-		$_SESSION['debug_queries']++;
+		$_SESSION['alkaline']['debug']['queries']++;
 		return $this->db->exec($query);
 	}
 	
 	public function prepare($query){
-		$_SESSION['debug_queries']++;
+		$_SESSION['alkaline']['debug']['queries']++;
 		return $this->db->prepare($query);
 	}
 	
@@ -104,7 +104,7 @@ class Alkaline{
 		}
 		
 		$this->guest = $guest;
-		$_SESSION['guest'] = $this->guest;
+		$_SESSION['alkaline']['guest'] = $this->guest;
 		
 		return true;
 	}
@@ -154,7 +154,7 @@ class Alkaline{
 			echo '<br />';
 
 			// Dispose of messages
-			unset($_SESSION['notifications']);
+			unset($_SESSION['alkaline']['notifications']);
 			unset($this->notifications);
 			$this->notifications = array();
 			
@@ -868,15 +868,15 @@ class Alkaline{
 			return false;
 		}
 		
-		if(empty($_SESSION['duration_start']) or ((time() - @$_SESSION['duration_recent']) > 3600)){
+		if(empty($_SESSION['alkaline']['duration_start']) or ((time() - @$_SESSION['alkaline']['duration_recent']) > 3600)){
 			$duration = 0;
-			$_SESSION['duration_start'] = time();
+			$_SESSION['alkaline']['duration_start'] = time();
 		}
 		else{
-			$duration = time() - $_SESSION['duration_start'];
+			$duration = time() - $_SESSION['alkaline']['duration_start'];
 		}
 		
-		$_SESSION['duration_recent'] = time();
+		$_SESSION['alkaline']['duration_recent'] = time();
 		
 		$referrer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
 		$page = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
@@ -1024,12 +1024,12 @@ class Alkaline{
 	}
 	
 	public function setCallback(){
-		$_SESSION['callback'] = self::location();
+		$_SESSION['alkaline']['callback'] = self::location();
 	}
 	
 	public function callback($url=null){
-		if(!empty($_SESSION['callback'])){
-			header('Location: ' . $_SESSION['callback']);
+		if(!empty($_SESSION['alkaline']['callback'])){
+			header('Location: ' . $_SESSION['alkaline']['callback']);
 		}
 		elseif(!empty($url)){
 			header('Location: ' . $url);
@@ -1042,10 +1042,8 @@ class Alkaline{
 	
 	// DEBUG
 	public function debug(){
-		$debug = array();
-		$debug['execution_time'] = microtime(true) - $_SESSION['debug_script_start'];
-		$debug['queries'] = $_SESSION['debug_queries'];
-		return $debug;
+		$_SESSION['alkaline']['debug']['execution_time'] = microtime(true) - $_SESSION['alkaline']['debug']['start_time'];
+		return $_SESSION['alkaline']['debug'];
 	}
 }
 

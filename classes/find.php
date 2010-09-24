@@ -802,23 +802,23 @@ class Find extends Alkaline{
 			return false;
 		}
 		
-		$_SESSION['recent_memory'] = $this->memory;
+		$_SESSION['alkaline']['recent_memory'] = $this->memory;
 		
 		return true;
 	}
 	
 	// Most recent saved memory
 	public function recentMemory(){
-		if(empty($_SESSION['recent_memory'])){
+		if(empty($_SESSION['alkaline']['recent_memory'])){
 			return false;
 		}
 		
-		return implode(' ', $_SESSION['recent_memory']);
+		return implode(' ', $_SESSION['alkaline']['recent_memory']);
 	}
 	
 	// Clear memory
 	public function clearMemory(){
-		unset($_SESSION['recent_memory']);
+		unset($_SESSION['alkaline']['recent_memory']);
 		
 		return true;
 	}
