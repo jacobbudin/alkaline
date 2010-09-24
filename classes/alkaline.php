@@ -66,6 +66,15 @@ class Alkaline{
 	}
 	
 	// DATABASE
+	public function exec($query){
+		$_SESSION['debug_queries']++;
+		return $this->db->exec($query);
+	}
+	
+	public function prepare($query){
+		$_SESSION['debug_queries']++;
+		return $this->db->prepare($query);
+	}
 	
 	// REMOVE NULL FROM JSON
 	public function removeNull($input){
@@ -86,7 +95,7 @@ class Alkaline{
 		if(empty($key)){ return false; }
 		
 		$key = strip_tags($key);
-		$query = $this->db->prepare('SELECT * FROM guests WHERE guest_key = "' . $key . '" LIMIT 0, 1;');
+		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = "' . $key . '" LIMIT 0, 1;');
 		$query->execute();
 		$guest = $query->fetch();
 		
@@ -416,7 +425,7 @@ class Alkaline{
 	// SHOW TAGS
 	// Display all tags
 	public function getTags(){
-		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
 		
@@ -513,7 +522,7 @@ class Alkaline{
 		$result_id_field = $this->tables[$result_table];
 		
 		// Get count
-		$query = $this->db->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field . ' = ' . $result_id .';');
+		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field . ' = ' . $result_id .';');
 		
 		if(!$query->execute()){
 			return false;
@@ -525,7 +534,7 @@ class Alkaline{
 		// Update row
 		$query = 'UPDATE ' . $result_table . ' SET ' . $result_field . ' = ' . $count . ' WHERE ' . $result_id_field . ' = ' . $result_id . ';';
 		
-		if(!$this->db->exec($query)){
+		if(!$this->exec($query)){
 			return false;
 		}
 		
@@ -538,7 +547,7 @@ class Alkaline{
 			return false;
 		}
 		
-		$query = $this->db->prepare('SELECT right_id, right_title FROM rights;');
+		$query = $this->prepare('SELECT right_id, right_title FROM rights;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		
@@ -602,13 +611,13 @@ class Alkaline{
 		}
 		
 		if(empty($ids)){
-			$query = $this->db->prepare('SELECT * FROM ' . $table . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . $order_by_sql . $limit_sql . ';');
 		}
 		else{
 			$ids = self::convertToIntegerArray($ids);
 			$field = $this->tables[$table];
 			
-			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
 		}
 		
 		$query->execute();
@@ -639,13 +648,13 @@ class Alkaline{
 		}
 		
 		if(empty($ids)){
-			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 ' . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 ' . $order_by_sql . $limit_sql . ';');
 		}
 		else{
 			$ids = self::convertToIntegerArray($ids);
 			$field = $this->tables[$table];
 			echo 'SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';';
-			$query = $this->db->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
 		}
 		
 		$query->execute();
@@ -713,7 +722,7 @@ class Alkaline{
 		// Add row to database
 		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . $values_sql . ');';
 		
-		if(!$this->db->exec($query)){
+		if(!$this->exec($query)){
 			return false;
 		}
 		
@@ -755,7 +764,7 @@ class Alkaline{
 		// Update row
 		$query = 'UPDATE ' . $table . ' SET ' . $fields_sql . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
 		
-		if(!$this->db->exec($query)){
+		if(!$this->exec($query)){
 			return false;
 		}
 		
@@ -773,7 +782,7 @@ class Alkaline{
 		// Delete row
 		$query = 'DELETE FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
 		
-		if(!$this->db->exec($query)){
+		if(!$this->exec($query)){
 			return false;
 		}
 		
@@ -794,7 +803,7 @@ class Alkaline{
 		
 		$query = 'DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';';
 		
-		if(!$this->db->exec($query)){
+		if(!$this->exec($query)){
 			return false;
 		}
 		
@@ -834,7 +843,7 @@ class Alkaline{
 	
 	function countTable($table){
 		$field = $this->tables[$table];
-		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
+		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
 		$query->execute();
 		$count = $query->fetch();
 		
@@ -844,7 +853,7 @@ class Alkaline{
 	
 	function countTableNew($table){
 		$field = $this->tables[$table];
-		$query = $this->db->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0;');
+		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0;');
 		$query->execute();
 		$count = $query->fetch();
 		
@@ -874,7 +883,7 @@ class Alkaline{
 		$local = (stripos($referrer, LOCATION)) ? 1 : 0;
 		
 		$query = 'INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES ("' . session_id() . '", "' . date('Y-m-d H:i:s') . '", "' . $duration . '", "' . $referrer . '", "' . $page . '", "' . $page_type . '", ' . $local . ');';
-		return $this->db->exec($query);
+		return $this->exec($query);
 	}
 	
 	// FORM HANDLING

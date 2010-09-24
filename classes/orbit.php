@@ -79,7 +79,7 @@ class Orbit extends Alkaline{
 	}
 	
 	// Safe PDO->prepare()
-	protected function prepare($sql){
+	public function prepare($sql){
 		// Check for malicious SQL
 		
 		

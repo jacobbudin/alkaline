@@ -10,15 +10,15 @@ class Page extends Alkaline{
 		if(!empty($page)){	
 			if(is_int($page)){
 				$page_id = $page;
-				$query = $this->db->prepare('SELECT * FROM pages WHERE page_id = ' . $page_id . ';');
+				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . $page_id . ';');
 			}
 			elseif(is_string($page)){
 				$page_title = $page;
-				$query = $this->db->prepare('SELECT * FROM pages WHERE LOWER(page_title) LIKE "%' . strtolower($page_title) . '%;');
+				$query = $this->prepare('SELECT * FROM pages WHERE LOWER(page_title) LIKE "%' . strtolower($page_title) . '%;');
 			}
 			elseif(is_array($page)){
 				$page_ids = convertToIntegerArray($page);
-				$query = $this->db->prepare('SELECT * FROM pages WHERE page_id = ' . implode(' OR page_id = ', $page_ids) . ';');
+				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . implode(' OR page_id = ', $page_ids) . ';');
 			}
 			
 			if(!empty($query)){
@@ -43,7 +43,7 @@ class Page extends Alkaline{
 	}
 	
 	public function fetchAll(){
-		$query = $this->db->prepare('SELECT * FROM pages;');
+		$query = $this->prepare('SELECT * FROM pages;');
 		$query->execute();
 		$this->pages = $query->fetchAll();
 	}

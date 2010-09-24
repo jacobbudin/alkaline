@@ -198,7 +198,7 @@ class Geo extends Alkaline{
 		$this->sql .= $this->sql_from . $this->sql_where . $this->sql_order_by . $this->sql_limit;
 		
 		// Execute query
-		$query = $this->db->prepare($this->sql);
+		$query = $this->prepare($this->sql);
 		$query->execute();
 		$cities = $query->fetchAll();
 		
@@ -242,7 +242,7 @@ class Geo extends Alkaline{
 		
 		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code ORDER BY cities.city_pop DESC';
 		
-		$query = $this->db->prepare($sql);
+		$query = $this->prepare($sql);
 		$query->execute();
 		$cities = $query->fetchAll();
 		

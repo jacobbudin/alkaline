@@ -222,10 +222,10 @@ class Find extends Alkaline{
 		// Find tags in database
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->db->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
+			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
 		}
 		else{
-			$query = $this->db->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
 		}
 		
 		$query->execute();
@@ -260,10 +260,10 @@ class Find extends Alkaline{
 		// Find photos with these tags in database
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 		}
 		else{
-			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
 		}
 		$query->execute();
 		$this->photos = $query->fetchAll();
@@ -300,10 +300,10 @@ class Find extends Alkaline{
 		// Find photos with these tags in database
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 		}
 		else{
-			$query = $this->db->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
 		}
 		$query->execute();
 		$this->photos = $query->fetchAll();
@@ -328,10 +328,10 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($pile)){
-			$query = $this->db->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
+			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
 		}
 		elseif(is_int($pile)){
-			$query = $this->db->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
+			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
 		}
 		else{
 			return false;
@@ -386,10 +386,10 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($right)){
-			$query = $this->db->prepare('SELECT right_id FROM rights WHERE LOWER(right_title) LIKE "' . strtolower($right) . '" LIMIT 0, 1;');
+			$query = $this->prepare('SELECT right_id FROM rights WHERE LOWER(right_title) LIKE "' . strtolower($right) . '" LIMIT 0, 1;');
 		}
 		elseif(is_int($right)){
-			$query = $this->db->prepare('SELECT right_id FROM rights WHERE right_id = ' . $right . ' LIMIT 0, 1;');
+			$query = $this->prepare('SELECT right_id FROM rights WHERE right_id = ' . $right . ' LIMIT 0, 1;');
 		}
 		else{
 			return false;
@@ -692,7 +692,7 @@ class Find extends Alkaline{
 		$this->sql .= $this->sql_from . $this->sql_join . $this->sql_where . $this->sql_group_by . $this->sql_having . $this->sql_order_by;
 		
 		// Execute query without limit
-		$query = $this->db->prepare($this->sql);
+		$query = $this->prepare($this->sql);
 		$query->execute();
 		$photos = $query->fetchAll();
 		
@@ -740,7 +740,7 @@ class Find extends Alkaline{
 		$this->sql .= $this->sql_limit;
 		
 		// Execute query with order, limit
-		$query = $this->db->prepare($this->sql);
+		$query = $this->prepare($this->sql);
 		$query->execute();
 		$photos = $query->fetchAll();
 		

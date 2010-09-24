@@ -36,7 +36,7 @@ class Photo extends Alkaline{
 		// Retrieve photos from database
 		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
 		
-		$query = $this->db->prepare('SELECT * FROM photos' . $this->sql . ';');
+		$query = $this->prepare('SELECT * FROM photos' . $this->sql . ';');
 		$query->execute();
 		$photos = $query->fetchAll();
 		
@@ -82,7 +82,7 @@ class Photo extends Alkaline{
 			$photo_size = $this->getSize($file);
 			
 			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded, photo_height, photo_width) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '", ' . $photo_size['height'] . ', ' . $photo_size['width'] . ');';
-			$this->db->exec($query);
+			$this->exec($query);
 			
 			$photo_id = intval($this->db->lastInsertId());
 			$photo_ids[] = $photo_id;
@@ -140,7 +140,7 @@ class Photo extends Alkaline{
 		}
 		
 		// Look up sizes in database
-		$query = $this->db->prepare('SELECT * FROM sizes');
+		$query = $this->prepare('SELECT * FROM sizes');
 		$query->execute();
 		$sizes = $query->fetchAll();
 		
@@ -229,7 +229,7 @@ class Photo extends Alkaline{
 			$sql = implode(', ', $fields);
 			
 			// Update table
-			$this->db->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			$this->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
 	
@@ -258,16 +258,16 @@ class Photo extends Alkaline{
 					}
 					else{
 						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
-						$this->db->exec($query);
+						$this->exec($query);
 						
-						$query = $this->db->prepare('SELECT COUNT(*) as count FROM links WHERE tag_id = ' . $tag['tag_id'] . ';');
+						$query = $this->prepare('SELECT COUNT(*) as count FROM links WHERE tag_id = ' . $tag['tag_id'] . ';');
 						$query->execute();
 						$tag_exists = $query->fetchAll();
 						$tag_count = $tag_exists[0]['count'];
 						
 						if($tag_count < 1){
 							$query = 'DELETE FROM tags WHERE tag_id = ' . $tag['tag_id'] . ';';
-							$this->db->exec($query);
+							$this->exec($query);
 						}
 					}
 				}
@@ -281,7 +281,7 @@ class Photo extends Alkaline{
 			// Grab tag IDs
 			$tags = array_map('addslashes', $tags);
 			
-			$query = $this->db->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
 			$query->execute();
 			$tags_db = $query->fetchAll();
 			
@@ -293,22 +293,22 @@ class Photo extends Alkaline{
 					if($tag == $tag_db['tag_name']){
 						$found = true;
 						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_db['tag_id'] . ');';
-						$this->db->exec($query);
+						$this->exec($query);
 						continue;
 					}
 				}
 				if($found === false){
 					$query = 'INSERT INTO tags (tag_name) VALUES ("' . addslashes($tag) . '");';
-					$this->db->exec($query);
+					$this->exec($query);
 					$tag_id = intval($this->db->lastInsertId());
 					
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
-					$this->db->exec($query);	
+					$this->exec($query);	
 				}
 			}
 			
 			// Update table
-			$this->db->exec('UPDATE photos SET photo_updated = "' . date('Y-m-d H:i:s') . '" WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			$this->exec('UPDATE photos SET photo_updated = "' . date('Y-m-d H:i:s') . '" WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
 	
@@ -693,7 +693,7 @@ class Photo extends Alkaline{
 			$hsl_dom_l = round($V * 100);
 		
 			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ', photo_color_h = ' . $hsl_dom_h . ', photo_color_s = ' . $hsl_dom_s . ', photo_color_l = ' . $hsl_dom_l . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
-			$this->db->exec($query);
+			$this->exec($query);
 			
 			return true;
 		}
@@ -726,12 +726,12 @@ class Photo extends Alkaline{
 						}
 						
 						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '");';
-						$this->db->exec($query);
+						$this->exec($query);
 						
 						// Check for date taken, insert to photos table
 						if(($key == 'IFD0') and ($name == 'DateTime')){
 							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
-							$this->db->exec($query);
+							$this->exec($query);
 						}
 				    }
 				}
@@ -774,7 +774,7 @@ class Photo extends Alkaline{
 			if(@count($tags) > 0){
 				
 				// Find tags that already exist, add links
-				$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE "' . implode('" OR LOWER(tags.tag_name) LIKE "', $tags) . '";');
+				$query = $this->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE "' . implode('" OR LOWER(tags.tag_name) LIKE "', $tags) . '";');
 				$query->execute();
 				$tags_db = $query->fetchAll();
 				
@@ -785,7 +785,7 @@ class Photo extends Alkaline{
 					
 					// Add link
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag['tag_id'] . ');';
-					$this->db->exec($query);
+					$this->exec($query);
 				}
 				
 				// For tags that don't exist, add tags and links
@@ -796,12 +796,12 @@ class Photo extends Alkaline{
 						
 						// Add tag
 						$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
-						$this->db->exec($query);
+						$this->exec($query);
 						$tag_id = $this->db->lastInsertId();
 					
 						// Add link
 						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag_id . ');';
-						$this->db->exec($query);
+						$this->exec($query);
 					}
 				}
 			}
@@ -957,7 +957,7 @@ class Photo extends Alkaline{
 	public function updateViews(){
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_views']++;
-			$this->db->exec('UPDATE photos SET photo_views = ' . $this->photos[$i]['photo_views'] . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			$this->exec('UPDATE photos SET photo_views = ' . $this->photos[$i]['photo_views'] . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
 	
@@ -965,9 +965,9 @@ class Photo extends Alkaline{
 	public function delete(){
 		$this->deSizePhoto(true);
 		for($i = 0; $i < $this->photo_count; ++$i){
-			@$this->db->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			@$this->db->exec('DELETE FROM exifs WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			@$this->db->exec('DELETE FROM links WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->exec('DELETE FROM exifs WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->exec('DELETE FROM links WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
 	}
 	
@@ -976,7 +976,7 @@ class Photo extends Alkaline{
 		$photo_src = 'photo_src_' . $size;
 		
 		// Find size's prefix and suffix
-		$query = $this->db->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = "' . $size . '"');
+		$query = $this->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = "' . $size . '"');
 		$query->execute();
 		$sizes = $query->fetchAll();
 				
@@ -993,7 +993,7 @@ class Photo extends Alkaline{
 	
 	// Generate EXIF for images
 	public function getExif(){
-		$query = $this->db->prepare('SELECT exifs.* FROM exifs, photos ' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
+		$query = $this->prepare('SELECT exifs.* FROM exifs, photos ' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
 		$query->execute();
 		$exifs = $query->fetchAll();
 		
@@ -1010,7 +1010,7 @@ class Photo extends Alkaline{
 	
 	// Retrieve image tags
 	public function getTags(){
-		$query = $this->db->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
 		$query->execute();
 		$tags = $query->fetchAll();
 		$this->tags = $tags;
@@ -1033,7 +1033,7 @@ class Photo extends Alkaline{
 	
 	// Retrieve image rights
 	public function getRights(){
-		$query = $this->db->prepare('SELECT rights.*, photos.photo_id FROM rights, photos' . $this->sql . ' AND rights.right_id = photos.right_id;');
+		$query = $this->prepare('SELECT rights.*, photos.photo_id FROM rights, photos' . $this->sql . ' AND rights.right_id = photos.right_id;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		
@@ -1050,7 +1050,7 @@ class Photo extends Alkaline{
 	
 	// Retrieve image comments
 	public function getComments(){
-		$query = $this->db->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
+		$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
 		$query->execute();
 		$this->comments = $query->fetchAll();
 		

@@ -39,7 +39,7 @@ class User extends Alkaline{
 		} 
 		
 		// Check database
-		$query = $this->db->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');
+		$query = $this->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
 		
@@ -52,7 +52,7 @@ class User extends Alkaline{
 	
 	// Login user by ID, key
 	protected function authByCookie($user_id, $user_key, $remember=true){
-		$query = $this->db->prepare('SELECT * FROM users WHERE user_id = "' . $user_id . '" AND user_key = "' . $user_key . '";');
+		$query = $this->prepare('SELECT * FROM users WHERE user_id = "' . $user_id . '" AND user_key = "' . $user_key . '";');
 		$query->execute();
 		$this->user = $query->fetchAll();
 		
@@ -96,7 +96,7 @@ class User extends Alkaline{
 		$this->view_type = DEFAULT_VIEW_TYPE;
 		
 		// Update database
-		$this->db->exec('UPDATE users SET user_last_login = "' . date('Y-m-d H:i:s') . '", user_key = "' . $key . '" WHERE user_id = "' . $this->user['user_id'] . '"');
+		$this->exec('UPDATE users SET user_last_login = "' . date('Y-m-d H:i:s') . '", user_key = "' . $key . '" WHERE user_id = "' . $this->user['user_id'] . '"');
 		
 		return true;
 	}
@@ -187,7 +187,7 @@ class User extends Alkaline{
 		$sql = implode(', ', $fields);
 		
 		// Update table
-		$this->db->exec('UPDATE users SET ' . $sql . ' WHERE user_id = ' . $this->user['user_id'] . ';');
+		$this->exec('UPDATE users SET ' . $sql . ' WHERE user_id = ' . $this->user['user_id'] . ';');
 	}
 }
 
