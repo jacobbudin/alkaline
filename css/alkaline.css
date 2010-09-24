@@ -87,6 +87,7 @@ h3{
 .right{ text-align: right; }
 .none{ display: none; }
 .quiet a{ color: #666; }
+.full {width:100%;}
 
 ul{
 	margin: .3em 2.1em 1.5em 1.75em;

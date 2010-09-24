@@ -12,6 +12,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
+	$alkaline->setConf('shoe_watermark', @$_POST['shoe_watermark']);
+	$alkaline->setConf('shoe_watermark_pos', @$_POST['shoe_watermark_pos']);
 	$alkaline->setConf('photo_original', @$_POST['photo_original']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
@@ -40,6 +42,63 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <form action="" id="configuration" method="post">
 	<h1>Configuration</h1>
+	
+	<h3>Web Site</h3>
+	
+	<table style="width: 50%">
+		<tr>
+			<td class="right middle"><label for="web_title">Title:</label></td>
+			<td><input type="text" id="web_title" name="web_title" value="" style="width: 100%;" /></td>
+		</tr>
+		<tr>
+			<td class="right"><label for="web_description">Description:</label></td>
+			<td><textarea id="web_description" name="web_text_raw" style="height: 70px; line-height: 1.5em;"></textarea></td>
+		</tr>
+		<tr>
+			<td class="right middle"><label for="web_time_zone">Time zone:</label></td>
+			<td>
+				<?php
+
+				$timezones = timezone_abbreviations_list();
+				$continents = array('Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific');
+				$places = array();
+
+				foreach($timezones as $unknown){
+					foreach($unknown as $timezone){
+						$cities = array();
+						$timezone_id = $timezone['timezone_id'];
+						$parts = explode('/', $timezone_id);
+						$continent = $parts[0];
+						if(in_array($continent, $continents)){
+							$city = str_replace('_', ' ', $parts[1]);
+							$district = @str_replace('_', ' ', $parts[2]);
+							if(empty($district)){
+								$places[$continent][$timezone_id] = $city;
+							}
+							else{
+								$places[$continent][$timezone_id] = $city . ' (' . $district . ')';
+							}
+						}
+					}
+				}
+
+				echo '<select name="web_time_zone">';
+
+				foreach($places as $continent => $cities){
+					echo '<optgroup label="' . $continent . '">';
+						natsort($cities);
+						foreach($cities as $abbr => $city){
+							echo '<option value="' . $abbr . '">' . $city . '</option>';
+						}
+					echo '</optgroup>';
+				}
+
+				echo '</select>';
+
+				?>
+			</td>
+		</tr>
+	</table>
 	
 	<h3>Shoebox</h3>
 	
@@ -72,6 +131,39 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="description">
 				<label for="photo_original">Protect original files</label><br />
 				Save your high-resolution originals in a password-protected folder
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Thumbnails</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="thumb_compress" name="thumb_compress" <?php echo $alkaline->readConf('thumb_compress'); ?> value="true" /></td>
+			<td class="description">
+				<label for="thumb_compress">Compress thumbnails to reduce file size</label><br />
+				Use
+				<select name="thumb_compress_tol">
+					<option value="95" <?php echo $user->readConf('thumb_compress_tol', '95'); ?>>very low</option>
+					<option value="90" <?php echo $user->readConf('thumb_compress_tol', '90'); ?>>low</option>
+					<option value="85" <?php echo $user->readConf('thumb_compress_tol', '85'); ?>>medium</option>
+					<option value="70" <?php echo $user->readConf('thumb_compress_tol', '70'); ?>>high</option>
+				</select>
+				compression when producing thumbnails
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="shoe_watermark" name="shoe_watermark" <?php echo $alkaline->readConf('shoe_watermark'); ?> value="true" /></td>
+			<td class="description">
+				<label for="shoe_watermark">Apply watermark</label><br />
+				Apply the alpha-transparent PNG image (/assets/watermark.png) to the
+				<select name="shoe_watermark_pos">
+					<option value="nw" <?php echo $user->readConf('shoe_watermark_pos', 'nw'); ?>>upper left</option>
+					<option value="ne" <?php echo $user->readConf('shoe_watermark_pos', 'ne'); ?>>upper right</option>
+					<option value="sw" <?php echo $user->readConf('shoe_watermark_pos', 'sw'); ?>>lower left</option>
+					<option value="se" <?php echo $user->readConf('shoe_watermark_pos', 'se'); ?>>lower right</option>
+				</select>
+				corner of thumbnails
 			</td>
 		</tr>
 	</table>
