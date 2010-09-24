@@ -36,8 +36,11 @@ class Alkaline{
 		if(!empty($_SESSION['notifications'])){ $this->notifications = $_SESSION['notifications']; }
 		else{ $this->notifications = array(); }
 		
-		// Begin new JS injection
-		$this->js = array();
+		// Debug info
+		if(get_class($this) == 'Alkaline'){
+			$_SESSION['debug_script_start'] = microtime(true);
+			$_SESSION['debug_queries'] = 0;
+		}
 		
 		// Initiate database connection, if necessary
 		$nodb_classes = array('Canvas');
@@ -61,6 +64,8 @@ class Alkaline{
 		// Close database connection
 		$this->db = null;
 	}
+	
+	// DATABASE
 	
 	// REMOVE NULL FROM JSON
 	public function removeNull($input){
@@ -1024,6 +1029,14 @@ class Alkaline{
 			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 		}
 		exit();
+	}
+	
+	// DEBUG
+	public function debug(){
+		$debug = array();
+		$debug['execution_time'] = microtime(true) - $_SESSION['debug_script_start'];
+		$debug['queries'] = $_SESSION['debug_queries'];
+		return $debug;
 	}
 }
 
