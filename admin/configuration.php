@@ -17,14 +17,15 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
+	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
 	
 	if($alkaline->saveConf()){
-		$alkaline->addNotification('The configuration have been saved.', 'success');
+		$alkaline->addNotification('The configuration has been saved.', 'success');
 	}
 	else{
-		$alkaline->addNotification('Your configuration could not be saved.', 'error');
+		$alkaline->addNotification('The configuration could not be saved.', 'error');
 	}
 	
 	header('Location: ' . BASE . ADMIN . 'settings/');
@@ -113,6 +114,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Diagnostics</h3>
 	
 	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="maint_reports" name="maint_reports" <?php echo $alkaline->readConf('maint_reports'); ?> value="true" /></td>
+			<td class="description">
+				<label for="maint_reports">Send anonymous system profile and usage data</label><br />
+				Transparently transmits nonidentifiable data to help improve Alkaline
+			</td>
+		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="maint_debug" name="maint_debug" <?php echo $alkaline->readConf('maint_debug'); ?> value="true" /></td>
 			<td class="description">
