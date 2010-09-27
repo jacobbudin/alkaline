@@ -67,7 +67,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<input type="hidden" name="photo_id" value="<?php echo $photo['photo_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a>
 			</p>
 		</div>
-		<div class="span-8 full last">
+		<div class="span-8 last">
 			<div class="actions"><a href="<?php echo BASE; ?>photo/<?php echo $photo['photo_id']; ?>/">Go to photo</a></div>
 			
 			<div class="photo_tag_container">

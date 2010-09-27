@@ -171,15 +171,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="input"><input type="checkbox" id="shoe_watermark" name="shoe_watermark" <?php echo $alkaline->readConf('shoe_watermark'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="thumb_watermark" name="thumb_watermark" <?php echo $alkaline->readConf('thumb_watermark'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_watermark">Apply watermark</label><br />
-				Apply the alpha-transparent PNG image (/assets/watermark.png) to the
-				<select name="shoe_watermark_pos">
-					<option value="nw" <?php echo $user->readConf('shoe_watermark_pos', 'nw'); ?>>upper left</option>
-					<option value="ne" <?php echo $user->readConf('shoe_watermark_pos', 'ne'); ?>>upper right</option>
-					<option value="sw" <?php echo $user->readConf('shoe_watermark_pos', 'sw'); ?>>lower left</option>
-					<option value="se" <?php echo $user->readConf('shoe_watermark_pos', 'se'); ?>>lower right</option>
+				<label for="thumb_watermark">Apply watermark</label><br />
+				Apply the <a href="<?php echo BASE . ASSETS; ?>watermark.png">alpha-transparent PNG image</a> to the
+				<select name="thumb_watermark_pos">
+					<option value="nw" <?php echo $user->readConf('thumb_watermark_pos', 'nw'); ?>>upper left</option>
+					<option value="ne" <?php echo $user->readConf('thumb_watermark_pos', 'ne'); ?>>upper right</option>
+					<option value="sw" <?php echo $user->readConf('thumb_watermark_pos', 'sw'); ?>>lower left</option>
+					<option value="se" <?php echo $user->readConf('thumb_watermark_pos', 'se'); ?>>lower right</option>
 				</select>
 				corner of thumbnails
 			</td>

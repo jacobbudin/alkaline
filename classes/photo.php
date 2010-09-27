@@ -152,15 +152,21 @@ class Photo extends Alkaline{
 				$size_type = $size['size_type'];
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
+				$size_dest = PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'];
 				switch($size_type){
 					case 'fill':
-						$this->imageFill($photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'], $size_height, $size_width, null, $photos[$i]['photo_ext']);
+						$this->imageFill($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
 						break;
 					case 'scale':
-						$this->imageScale($photos[$i]['photo_file'], PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'], $size_height, $size_width, null, $photos[$i]['photo_ext']);
+						$this->imageScale($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
 						break;
 					default:
 						return false; break;
+				}
+				
+				if($this->returnConf('thumb_watermark')){
+					$watermark = PATH . ASSETS . 'watermark.png';
+					$this->watermark($size_dest, $size_dest, $watermark, null, $photos[$i]['photo_ext']);
 				}
 			}
 		}
@@ -371,7 +377,7 @@ class Photo extends Alkaline{
 	
 	// Fill image
 	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
-		if(empty($quality)){ $quality = IMG_QUAL; }
+		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		switch($ext){
 			case 'jpg':
@@ -459,7 +465,7 @@ class Photo extends Alkaline{
 	
 	// Scale image
 	private function imageScale($src, $dest, $height, $width, $quality=null, $ext=null){
-		if(empty($quality)){ $quality = IMG_QUAL; }
+		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
 		switch($ext){
@@ -1113,8 +1119,8 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	public function watermark($src, $dest, $watermark, $quality=null, $ext=null){
-		if(empty($quality)){ $quality = IMG_QUAL; }
+	private function watermark($src, $dest, $watermark, $quality=null, $ext=null){
+		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
 		$watermark = imagecreatefrompng($watermark);
