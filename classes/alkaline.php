@@ -40,6 +40,18 @@ class Alkaline{
 		if(get_class($this) == 'Alkaline'){
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
+			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents(PATH . 'assets/config.json'), true);
+			
+			if(empty($_SESSION['alkaline']['config'])){
+				$_SESSION['alkaline']['config'] = array();
+			}
+			
+			if($timezone = $this->returnConf('web_timezone')){
+				date_default_timezone_set($timezone);
+			}
+			else{
+				date_default_timezone_set('GMT');
+			}
 		}
 		
 		// Initiate database connection, if necessary
@@ -47,13 +59,6 @@ class Alkaline{
 		
 		if(!in_array(get_class($this), $nodb_classes)){
 			$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
-		}
-		
-		// Get configuration
-		$this->configuration = json_decode(@file_get_contents(PATH . 'assets/configuration.json'), true);
-		
-		if(empty($this->configuration)){
-			$this->configuration = array();
 		}
 	}
 	
@@ -936,22 +941,22 @@ class Alkaline{
 	// CONFIGURATION HANDLING
 	// Set configuration key
 	public function setConf($name, $unset=''){
-		return self::setForm($this->configuration, $name, $unset);
+		return self::setForm($_SESSION['alkaline']['config'], $name, $unset);
 	}
 	
 	// Read configuration key and return value in HTML
 	public function readConf($name, $check=true){
-		return self::readForm($this->configuration, $name, $check);
+		return self::readForm($_SESSION['alkaline']['config'], $name, $check);
 	}
 	
 	// Read configuration key and return value
 	public function returnConf($name){
-		return self::returnForm($this->configuration, $name);
+		return self::returnForm($_SESSION['alkaline']['config'], $name);
 	}
 	
 	// Save configuration
 	public function saveConf(){
-		return file_put_contents(PATH . 'assets/configuration.json', json_encode($this->configuration));
+		return file_put_contents(PATH . 'assets/config.json', json_encode($_SESSION['alkaline']['config']));
 	}
 	
 	// URL HANDLING

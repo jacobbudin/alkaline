@@ -9,11 +9,18 @@ $user = new User;
 $user->perm(true);
 
 if(!empty($_POST['configuration_save'])){
+	$alkaline->setConf('web_name', @$_POST['web_name']);
+	$alkaline->setConf('web_title', @$_POST['web_title']);
+	$alkaline->setConf('web_description', @$_POST['web_description']);
+	$alkaline->setConf('web_timezone', @$_POST['web_timezone']);
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
-	$alkaline->setConf('shoe_watermark', @$_POST['shoe_watermark']);
-	$alkaline->setConf('shoe_watermark_pos', @$_POST['shoe_watermark_pos']);
+	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
+	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
+	$alkaline->setConf('thumb_compress_tol', @$_POST['thumb_compress_tol']);
+	$alkaline->setConf('thumb_watermark', @$_POST['thumb_watermark']);
+	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
 	$alkaline->setConf('photo_original', @$_POST['photo_original']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
@@ -47,15 +54,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table style="width: 50%">
 		<tr>
+			<td class="right middle"><label for="web_title">Name:</label></td>
+			<td><input type="text" id="web_name" name="web_name" value="<?php echo $alkaline->returnConf('web_name'); ?>" style="width: 100%;" /></td>
+		</tr>
+		<tr>
 			<td class="right middle"><label for="web_title">Title:</label></td>
-			<td><input type="text" id="web_title" name="web_title" value="" style="width: 100%;" /></td>
+			<td><input type="text" id="web_title" name="web_title" value="<?php echo $alkaline->returnConf('web_title'); ?>" style="width: 100%;" /></td>
 		</tr>
 		<tr>
-			<td class="right"><label for="web_description">Description:</label></td>
-			<td><textarea id="web_description" name="web_text_raw" style="height: 70px; line-height: 1.5em;"></textarea></td>
+			<td class="right pad"><label for="web_description">Description:</label></td>
+			<td><textarea id="web_description" name="web_description" style="height: 70px; line-height: 1.5em;"><?php echo $alkaline->returnConf('web_description'); ?></textarea></td>
 		</tr>
 		<tr>
-			<td class="right middle"><label for="web_time_zone">Time zone:</label></td>
+			<td class="right pad"><label for="web_timezone">Time zone:</label></td>
 			<td>
 				<?php
 
@@ -81,21 +92,28 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						}
 					}
 				}
-
-				echo '<select name="web_time_zone">';
+				
+				$web_timezone = $alkaline->returnConf('web_timezone');
+				
+				echo '<select id="web_timezone" name="web_timezone">';
 
 				foreach($places as $continent => $cities){
 					echo '<optgroup label="' . $continent . '">';
 						natsort($cities);
 						foreach($cities as $abbr => $city){
-							echo '<option value="' . $abbr . '">' . $city . '</option>';
+							echo '<option value="' . $abbr . '"';
+							if($abbr == $web_timezone){
+								echo 'selected="selected"';
+							}
+							echo '>' . $city . '</option>';
 						}
 					echo '</optgroup>';
 				}
 
 				echo '</select>';
 
-				?>
+				?><br />
+				The time and date will change (and reflect DST if need be) based on the city you select
 			</td>
 		</tr>
 	</table>
