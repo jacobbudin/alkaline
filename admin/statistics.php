@@ -26,7 +26,6 @@ foreach($stats->stats as $stat){
 $h_views = json_encode($views);
 $h_visitors = json_encode($visitors);
 
-
 // PAST 30 DAYS
 
 $then = strtotime('-30 days');

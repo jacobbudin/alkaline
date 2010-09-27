@@ -42,7 +42,7 @@ class Find extends Alkaline{
 		$this->photo_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
-		$this->sql = 'SELECT photos.photo_id';
+		$this->sql = 'SELECT photos.photo_id AS photo_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
 		$this->sql_sorts = array();

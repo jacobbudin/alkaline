@@ -40,7 +40,7 @@ class Orbit extends Alkaline{
 			foreach($extensions as &$extension){
 				$extension['extension_uid'] = strval($extension['extension_uid']);
 				$extension['extension_file'] = PATH . EXTENSIONS . $extension['extension_file'] . '.php';
-				$extension['extension_hooks'] = unserialize($extension['extension_hooks']);
+				$extension['extension_hooks'] = unserialize(stripslashes($extension['extension_hooks']));
 			}
 			
 			$this->extensions = $extensions;
@@ -69,8 +69,8 @@ class Orbit extends Alkaline{
 			
 			$this->uid = strval($this->uid);
 			$this->file = PATH . EXTENSIONS . strtolower($this->file) . '.php';
-			$this->hooks = unserialize($this->hooks);
-			$this->preferences = unserialize($this->preferences);
+			$this->hooks = unserialize(stripslashes($this->hooks));
+			$this->preferences = unserialize(stripslashes($this->preferences));
 		}
 		return true;
 	}

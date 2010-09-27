@@ -116,7 +116,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';
 				echo '<table class="reveal">' . "\n";
 				foreach($exifs as $exif){
-					$value = unserialize($exif['exif_value']);
+					$value = unserialize(stripslashes($exif['exif_value']));
 					if(!is_array($value)){
 						echo '<tr><td class="right">' . $exif['exif_name'] . ':</td><td>' . $value . '</td></tr>' . "\n";
 					}

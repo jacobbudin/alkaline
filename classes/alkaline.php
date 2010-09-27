@@ -60,6 +60,14 @@ class Alkaline{
 		if(!in_array(get_class($this), $nodb_classes)){
 			$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
 		}
+		
+		// Add SQLite functions
+		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+			$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+			$this->db->sqliteCreateFunction('COS', 'cos', 1);
+			$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+			$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+		}
 	}
 	
 	public function __destruct(){
@@ -73,11 +81,23 @@ class Alkaline{
 	// DATABASE
 	public function exec($query){
 		$_SESSION['alkaline']['debug']['queries']++;
+		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+			$query = str_replace('HOUR(', 'strftime("%H",', $query);
+			$query = str_replace('DAY(', 'strftime("%d",', $query);
+			$query = str_replace('MONTH(', 'strftime("%m",', $query);
+			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
+		}
 		return $this->db->exec($query);
 	}
 	
 	public function prepare($query){
 		$_SESSION['alkaline']['debug']['queries']++;
+		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+			$query = str_replace('HOUR(', 'strftime("%H",', $query);
+			$query = str_replace('DAY(', 'strftime("%d",', $query);
+			$query = str_replace('MONTH(', 'strftime("%m",', $query);
+			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
+		}
 		return $this->db->prepare($query);
 	}
 	
