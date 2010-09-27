@@ -1131,8 +1131,6 @@ class Photo extends Alkaline{
 		$width_watermark = imagesx($watermark);
 		$height_watermark = imagesy($watermark);
 		
-		// 
-		
 		switch($ext){
 			case 'jpg':
 				$image = imagecreatefromjpeg($src);
@@ -1140,6 +1138,8 @@ class Photo extends Alkaline{
 				
 				$width = imagesx($image);
 				$height = imagesy($image);
+				
+				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
 				
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
@@ -1157,6 +1157,8 @@ class Photo extends Alkaline{
 				$width = imagesx($image);
 				$height = imagesy($image);
 				
+				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
+				
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
 				
@@ -1172,6 +1174,8 @@ class Photo extends Alkaline{
 				
 				$width = imagesx($image);
 				$height = imagesy($image);
+				
+				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
 				
 				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
 				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
