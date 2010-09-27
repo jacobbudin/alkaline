@@ -166,7 +166,7 @@ class Photo extends Alkaline{
 				
 				if($this->returnConf('thumb_watermark')){
 					$watermark = PATH . ASSETS . 'watermark.png';
-					$this->watermark($size_dest, $size_dest, $watermark, null, null, $photos[$i]['photo_ext']);
+					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $photos[$i]['photo_ext']);
 				}
 			}
 		}
@@ -1119,7 +1119,8 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	private function watermark($src, $dest, $watermark, $position=null, $quality=null, $ext=null){
+	private function watermark($src, $dest, $watermark, $margin=null, $position=null, $quality=null, $ext=null){
+		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
 		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
@@ -1140,9 +1141,9 @@ class Photo extends Alkaline{
 				$width = imagesx($image);
 				$height = imagesy($image);
 				
-				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
+				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
 				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
 				imagedestroy($watermark);
@@ -1157,9 +1158,9 @@ class Photo extends Alkaline{
 				$width = imagesx($image);
 				$height = imagesy($image);
 				
-				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
+				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
 				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
 				imagedestroy($watermark);
@@ -1174,9 +1175,9 @@ class Photo extends Alkaline{
 				$width = imagesx($image);
 				$height = imagesy($image);
 				
-				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
+				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
 				$image_tamp = imagecreatetruecolor($width, $height);
 				imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
@@ -1195,24 +1196,25 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	private function watermarkPosition($photo_height, $photo_width, $water_height, $water_width, $position=null){
-		if(empty($position)){ $position = $this->returnConf('thumb_position'); }
+	private function watermarkPosition($photo_height, $photo_width, $water_height, $water_width, $margin=null, $position=null){
+		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
+		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
 		switch($position){
 			case 'nw':
-				$pos_x = WATERMARK_MARGIN;
-				$pos_y = WATERMARK_MARGIN;
+				$pos_x = $margin;
+				$pos_y = $margin;
 				break;
 			case 'ne':
-				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
-				$pos_y = WATERMARK_MARGIN;
+				$pos_x = $photo_width - $water_width - $margin;
+				$pos_y = $margin;
 				break;
 			case 'sw':
-				$pos_x = WATERMARK_MARGIN;
-				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				$pos_x = $margin;
+				$pos_y = $photo_height - $water_height - $margin;
 				break;
 			case 'se':
-				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
-				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				$pos_x = $photo_width - $water_width - $margin;
+				$pos_y = $photo_height - $water_height - $margin;
 				break;
 			case '00':
 				$pos_x = ($photo_width / 2) - ($water_width / 2);
@@ -1220,18 +1222,18 @@ class Photo extends Alkaline{
 				break;
 			case 'n0':
 				$pos_x = ($photo_width / 2) - ($water_width / 2);
-				$pos_y = WATERMARK_MARGIN;
+				$pos_y = $margin;
 				break;
 			case 's0':
 				$pos_x = ($photo_width / 2) - ($water_width / 2);
-				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				$pos_y = $photo_height - $water_height - $margin;
 				break;
 			case '0e':
-				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
+				$pos_x = $photo_width - $water_width - $margin;
 				$pos_y = ($photo_height / 2) - ($water_height / 2);
 				break;
 			case '0w':
-				$pos_x = WATERMARK_MARGIN;
+				$pos_x = $margin;
 				$pos_y = ($photo_height / 2) - ($water_height / 2);
 				break;
 			default:

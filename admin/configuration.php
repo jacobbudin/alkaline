@@ -18,9 +18,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
-	$alkaline->setConf('thumb_compress_tol', @$_POST['thumb_compress_tol']);
+	$alkaline->setConf('thumb_compress_tol', intval(@$_POST['thumb_compress_tol']));
 	$alkaline->setConf('thumb_watermark', @$_POST['thumb_watermark']);
 	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
+	$alkaline->setConf('thumb_watermark_margin', intval(@$_POST['thumb_watermark_margin']));
 	$alkaline->setConf('photo_original', @$_POST['photo_original']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
@@ -186,7 +187,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="0e" <?php echo $user->readConf('thumb_watermark_pos', '0e'); ?>>middle east</option>
 					<option value="0w" <?php echo $user->readConf('thumb_watermark_pos', '0w'); ?>>middle west</option>
 				</select>
-				of thumbnails
+				of thumbnails with a
+				<select name="thumb_watermark_margin">
+					<option value="0" <?php echo $user->readConf('thumb_watermark_margin', '0'); ?>>0</option>
+					<option value="5" <?php echo $user->readConf('thumb_watermark_margin', '5'); ?>>5</option>
+					<option value="10" <?php echo $user->readConf('thumb_watermark_margin', '10'); ?>>10</option>
+					<option value="25" <?php echo $user->readConf('thumb_watermark_margin', '25'); ?>>25</option>
+					<option value="50" <?php echo $user->readConf('thumb_watermark_margin', '50'); ?>>50</option>
+					<option value="100" <?php echo $user->readConf('thumb_watermark_margin', '100'); ?>>100</option>
+				</select>
+				pixel margin
 			</td>
 		</tr>
 	</table>
