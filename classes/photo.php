@@ -166,7 +166,7 @@ class Photo extends Alkaline{
 				
 				if($this->returnConf('thumb_watermark')){
 					$watermark = PATH . ASSETS . 'watermark.png';
-					$this->watermark($size_dest, $size_dest, $watermark, null, $photos[$i]['photo_ext']);
+					$this->watermark($size_dest, $size_dest, $watermark, null, null, $photos[$i]['photo_ext']);
 				}
 			}
 		}
@@ -1119,7 +1119,8 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	private function watermark($src, $dest, $watermark, $quality=null, $ext=null){
+	private function watermark($src, $dest, $watermark, $position=null, $quality=null, $ext=null){
+		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
@@ -1141,8 +1142,7 @@ class Photo extends Alkaline{
 				
 				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
 				
-				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
-				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
 				
 				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
 				imagedestroy($watermark);
@@ -1159,8 +1159,7 @@ class Photo extends Alkaline{
 				
 				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
 				
-				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
-				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
 				
 				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
 				imagedestroy($watermark);
@@ -1177,8 +1176,7 @@ class Photo extends Alkaline{
 				
 				if((($height_watermark + (WATERMARK_MARGIN * 2)) > $height) or (($width_watermark + (WATERMARK_MARGIN * 2)) > $width)){ return false; break; }
 				
-				$pos_x = $width - $width_watermark - WATERMARK_MARGIN;
-				$pos_y = $height - $height_watermark - WATERMARK_MARGIN;
+				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $position);
 				
 				$image_tamp = imagecreatetruecolor($width, $height);
 				imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
@@ -1195,6 +1193,52 @@ class Photo extends Alkaline{
 				return false;
 				break;
 		}
+	}
+	
+	private function watermarkPosition($photo_height, $photo_width, $water_height, $water_width, $position=null){
+		if(empty($position)){ $position = $this->returnConf('thumb_position'); }
+		switch($position){
+			case 'nw':
+				$pos_x = WATERMARK_MARGIN;
+				$pos_y = WATERMARK_MARGIN;
+				break;
+			case 'ne':
+				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
+				$pos_y = WATERMARK_MARGIN;
+				break;
+			case 'sw':
+				$pos_x = WATERMARK_MARGIN;
+				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				break;
+			case 'se':
+				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
+				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				break;
+			case '00':
+				$pos_x = ($photo_width / 2) - ($water_width / 2);
+				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				break;
+			case 'n0':
+				$pos_x = ($photo_width / 2) - ($water_width / 2);
+				$pos_y = WATERMARK_MARGIN;
+				break;
+			case 's0':
+				$pos_x = ($photo_width / 2) - ($water_width / 2);
+				$pos_y = $photo_height - $water_height - WATERMARK_MARGIN;
+				break;
+			case '0e':
+				$pos_x = $photo_width - $water_width - WATERMARK_MARGIN;
+				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				break;
+			case '0w':
+				$pos_x = WATERMARK_MARGIN;
+				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				break;
+			default:
+				return false;
+				break;
+		}
+		return array($pos_x, $pos_y);
 	}
 }
 

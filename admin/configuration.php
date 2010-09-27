@@ -176,12 +176,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<label for="thumb_watermark">Apply watermark</label><br />
 				Apply the <a href="<?php echo BASE . ASSETS; ?>watermark.png">alpha-transparent PNG image</a> to the
 				<select name="thumb_watermark_pos">
-					<option value="nw" <?php echo $user->readConf('thumb_watermark_pos', 'nw'); ?>>upper left</option>
-					<option value="ne" <?php echo $user->readConf('thumb_watermark_pos', 'ne'); ?>>upper right</option>
-					<option value="sw" <?php echo $user->readConf('thumb_watermark_pos', 'sw'); ?>>lower left</option>
-					<option value="se" <?php echo $user->readConf('thumb_watermark_pos', 'se'); ?>>lower right</option>
+					<option value="nw" <?php echo $user->readConf('thumb_watermark_pos', 'nw'); ?>>NW corner</option>
+					<option value="ne" <?php echo $user->readConf('thumb_watermark_pos', 'ne'); ?>>NE corner</option>
+					<option value="sw" <?php echo $user->readConf('thumb_watermark_pos', 'sw'); ?>>SW corner</option>
+					<option value="se" <?php echo $user->readConf('thumb_watermark_pos', 'se'); ?>>SE corner</option>
+					<option value="00" <?php echo $user->readConf('thumb_watermark_pos', '00'); ?>>centroid</option>
+					<option value="n0" <?php echo $user->readConf('thumb_watermark_pos', 'n0'); ?>>north center</option>
+					<option value="s0" <?php echo $user->readConf('thumb_watermark_pos', 's0'); ?>>south center</option>
+					<option value="0e" <?php echo $user->readConf('thumb_watermark_pos', '0e'); ?>>middle east</option>
+					<option value="0w" <?php echo $user->readConf('thumb_watermark_pos', '0w'); ?>>middle west</option>
 				</select>
-				corner of thumbnails
+				of thumbnails
 			</td>
 		</tr>
 	</table>
