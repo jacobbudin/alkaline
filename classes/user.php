@@ -90,10 +90,8 @@ class User extends Alkaline{
 		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
 		
 		// Update database
-		$query = $this->prepare('UPDATE users SET user_last_login = :user_last_login, user_key = :user_key WHERE user_id = :user_id');
-		$query->execute(array(':user_last_login' => date('Y-m-d H:i:s'), ':user_key' => $key, ':user_id' => $this->user['user_id']));
-		
-		return true;
+		$fields = array('user_last_login' => date('Y-m-d H:i:s'), 'user_key' => $key);
+		return $this->updateRow($fields, 'users', $this->user['user_id']);
 	}
 	
 	// DEAUTHENTICATE (LOGOUT)
@@ -152,6 +150,8 @@ class User extends Alkaline{
 	// Save preferences
 	public function savePref(){
 		$fields = array('user_preferences' => serialize($this->user['user_preferences']));
+		
+		// Update database
 		return $this->updateFields($fields);
 	}
 	
@@ -170,6 +170,7 @@ class User extends Alkaline{
 		// If no keys have changed, break
 		if(count($fields) == 0){ return false; }
 		
+		// Update database
 		return $this->updateRow($fields, 'users', $this->user['user_id']);
 	}
 }
