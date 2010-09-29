@@ -90,7 +90,8 @@ class User extends Alkaline{
 		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
 		
 		// Update database
-		$this->exec('UPDATE users SET user_last_login = "' . date('Y-m-d H:i:s') . '", user_key = "' . $key . '" WHERE user_id = "' . $this->user['user_id'] . '"');
+		$query = $this->prepare('UPDATE users SET user_last_login = :user_last_login, user_key = :user_key WHERE user_id = :user_id');
+		$query->execute(array(':user_last_login' => date('Y-m-d H:i:s'), ':user_key' => $key, ':user_id' => $this->user['user_id']));
 		
 		return true;
 	}
@@ -148,40 +149,28 @@ class User extends Alkaline{
 		return parent::returnForm($this->user['user_preferences'], $name);
 	}
 	
-	// Read preferences
+	// Save preferences
 	public function savePref(){
-		$fields = array('user_preferences' => serialize($user->user['user_preferences']));
-		$user->updateFields($fields);
+		$fields = array('user_preferences' => serialize($this->user['user_preferences']));
+		return $this->updateFields($fields);
 	}
 	
 	// UPDATE USER
-	public function updateFields($array, $overwrite=true){
+	public function updateFields($fields, $overwrite=true){
 		// Verify each key has changed; if not, unset the key
-		foreach($array as $key => $value){
-			if($array[$key] == $this->user[$key]){
-				unset($array[$key]);
+		foreach($fields as $key => $value){
+			if($fields[$key] == $this->user[$key]){
+				unset($fields[$key]);
 			}
 			if(!empty($this->user[$key]) and ($overwrite === false)){
-				unset($array[$key]);
+				unset($fields[$key]);
 			}
 		}
 		
 		// If no keys have changed, break
-		if(count($array) == 0){
-			continue;
-		}
+		if(count($fields) == 0){ return false; }
 		
-		$fields = array();
-		
-		// Prepare input
-		foreach($array as $key => $value){
-			$fields[] = $key . ' = "' . addslashes($value) . '"';
-		}
-		
-		$sql = implode(', ', $fields);
-		
-		// Update table
-		$this->exec('UPDATE users SET ' . $sql . ' WHERE user_id = ' . $this->user['user_id'] . ';');
+		return $this->updateRow($fields, 'users', $this->user['user_id']);
 	}
 }
 

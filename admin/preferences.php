@@ -12,6 +12,7 @@ if(!empty($_POST['preferences_save'])){
 	$user->setPref('recent_photos', @$_POST['recent_photos']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
 	$user->setPref('comm_email_photo', @$_POST['comm_email_photo']);
+	$user->savePref();
 	
 	$alkaline->addNotification('Your prefences have been saved.', 'success');
 	
