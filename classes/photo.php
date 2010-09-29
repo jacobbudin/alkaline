@@ -284,11 +284,19 @@ class Photo extends Alkaline{
 				continue;
 			}
 			
-			// Grab tag IDs
-			$tags = array_map('addslashes', $tags);
+			$sql_params = array();
+			$tag_count = count($tags);
 			
-			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
-			$query->execute();
+			// Grab tag IDs
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
+			
+			$sql_param_keys = array_keys($sql_params);
+			
+			echo 'SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';';
+			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+			$query->execute($sql_params);
 			$tags_db = $query->fetchAll();
 			
 			$tags = array_map('stripslashes', $tags);
@@ -304,8 +312,8 @@ class Photo extends Alkaline{
 					}
 				}
 				if($found === false){
-					$query = 'INSERT INTO tags (tag_name) VALUES ("' . addslashes($tag) . '");';
-					$this->exec($query);
+					$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
+					$query->execute(array(':tag' => $tag));
 					$tag_id = intval($this->db->lastInsertId());
 					
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
@@ -779,9 +787,19 @@ class Photo extends Alkaline{
 			// If there are tags, add them (IPTC keywords)
 			if(@count($tags) > 0){
 				
+				$sql_params = array();
+				$tag_count = count($tags);
+
+				// Grab tag IDs
+				for($j=0; $j<$tag_count; ++$j){
+					$sql_params[':tag' . $j] = $tags[$j];
+				}
+
+				$sql_param_keys = array_keys($sql_params);
+				
 				// Find tags that already exist, add links
-				$query = $this->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE "' . implode('" OR LOWER(tags.tag_name) LIKE "', $tags) . '";');
-				$query->execute();
+				$query = $this->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
+				$query->execute($sql_params);
 				$tags_db = $query->fetchAll();
 				
 				foreach($tags_db as $tag){
@@ -801,8 +819,8 @@ class Photo extends Alkaline{
 						if(empty($tag)){ continue; }
 						
 						// Add tag
-						$query = 'INSERT INTO tags (tag_name) VALUES ("' . $tag . '");';
-						$this->exec($query);
+						$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
+						$query->execute(array(':tag' => $tag));
 						$tag_id = $this->db->lastInsertId();
 					
 						// Add link
@@ -982,8 +1000,8 @@ class Photo extends Alkaline{
 		$photo_src = 'photo_src_' . $size;
 		
 		// Find size's prefix and suffix
-		$query = $this->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = "' . $size . '"');
-		$query->execute();
+		$query = $this->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = :size_title');
+		$query->execute(array(':size_title' => $size));
 		$sizes = $query->fetchAll();
 				
 		foreach($sizes as $size){
@@ -999,7 +1017,7 @@ class Photo extends Alkaline{
 	
 	// Generate EXIF for images
 	public function getExif(){
-		$query = $this->prepare('SELECT exifs.* FROM exifs, photos ' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
+		$query = $this->prepare('SELECT exifs.* FROM exifs, photos' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
 		$query->execute();
 		$exifs = $query->fetchAll();
 		
