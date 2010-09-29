@@ -36,8 +36,8 @@ class User extends Alkaline{
 		} 
 		
 		// Check database
-		$query = $this->prepare('SELECT * FROM users WHERE user_user = "' . $username . '" AND user_pass = "' . sha1($password) . '";');
-		$query->execute();
+		$query = $this->prepare('SELECT * FROM users WHERE user_user = :username AND user_pass = :password;');
+		$query->execute(array(':username' => $username, ':password' => sha1($password)));
 		$this->user = $query->fetchAll();
 		
 		if(!self::prep($remember)){
@@ -49,8 +49,8 @@ class User extends Alkaline{
 	
 	// Login user by ID, key
 	protected function authByCookie($user_id, $user_key, $remember=true){
-		$query = $this->prepare('SELECT * FROM users WHERE user_id = "' . $user_id . '" AND user_key = "' . $user_key . '";');
-		$query->execute();
+		$query = $this->prepare('SELECT * FROM users WHERE user_id = :user_id AND user_key = :user_key;');
+		$query->execute(array(':user_id' => $user_id, ':user_key' => $user_key));
 		$this->user = $query->fetchAll();
 		
 		if(!self::prep($remember)){
