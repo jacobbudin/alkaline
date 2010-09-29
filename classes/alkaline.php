@@ -62,7 +62,7 @@ class Alkaline{
 		}
 		
 		// Add SQLite functions
-		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+		if((substr(DB_DSN, 0, 7) == 'sqlite:') and $this->db){
 			$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
 			$this->db->sqliteCreateFunction('COS', 'cos', 1);
 			$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
@@ -98,7 +98,7 @@ class Alkaline{
 			$query = str_replace('MONTH(', 'strftime("%m",', $query);
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
-		return $this->db->prepare($query);
+		return $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	}
 	
 	// REMOVE NULL FROM JSON
