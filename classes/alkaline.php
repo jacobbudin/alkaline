@@ -120,8 +120,8 @@ class Alkaline{
 		if(empty($key)){ return false; }
 		
 		$key = strip_tags($key);
-		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = "' . $key . '" LIMIT 0, 1;');
-		$query->execute();
+		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key LIMIT 0, 1;');
+		$query->execute(array(':guest_key' => $key));
 		$guest = $query->fetch();
 		
 		if(!$guest){
@@ -446,6 +446,11 @@ class Alkaline{
 		return (mb_detect_encoding($string, 'UTF-8') == 'UTF-8' ? $string : utf8_encode($string));
 	}
 	
+	// Sanitize table, column names, other data
+	public function sanitize($string){
+		return preg_replace('#(?:(?![a-z0-9_-]).)*#si', '', $string);
+	}
+	
 	// SHOW TAGS
 	// Display all tags
 	public function getTags(){
@@ -546,9 +551,9 @@ class Alkaline{
 		$result_id_field = $this->tables[$result_table];
 		
 		// Get count
-		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field . ' = ' . $result_id .';');
+		$query = $this->prepare('SELECT COUNT(:count_id_field) AS count FROM :count_table WHERE :result_id_field = :result_id;');
 		
-		if(!$query->execute()){
+		if(!$query->execute(array(':count_id_field' => $count_id_field, ':count_table' => $count_table, ':result_id_field' => $result_id_field, ':result_id' => $result_id))){
 			return false;
 		}
 		
@@ -556,9 +561,9 @@ class Alkaline{
 		$count = $counts[0]['count'];
 		
 		// Update row
-		$query = 'UPDATE ' . $result_table . ' SET ' . $result_field . ' = ' . $count . ' WHERE ' . $result_id_field . ' = ' . $result_id . ';';
+		$query = $this->prepare('UPDATE :result_table SET :result_field = :count WHERE :result_id_field = :result_id;');
 		
-		if(!$this->exec($query)){
+		if(!$query->execute(array(':result_table' => $result_table, ':result_field' => $result_field, ':count' => $count, ':result_id_field' => $result_id_field, ':result_id' => $result_id))){
 			return false;
 		}
 		
@@ -621,11 +626,16 @@ class Alkaline{
 			$page = 1;
 		}
 		
+		$table = strip_tags($table);
+		
+		$sql_params = array();
+		
 		$order_by_sql = '';
 		$limit_sql = '';
 		
 		if(!empty($order_by)){
-			$order_by_sql = ' ORDER BY ' . $order_by;
+			$order_by_sql = ' ORDER BY :order_by';
+			$sql_params[':order_by'] = $order_by;
 		}
 		
 		if(!empty($limit)){
@@ -644,9 +654,8 @@ class Alkaline{
 			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
 		}
 		
-		$query->execute();
+		$query->execute($sql_params);
 		$table = $query->fetchAll();
-		
 		return $table;
 	}
 	
@@ -658,11 +667,16 @@ class Alkaline{
 			$page = 1;
 		}
 		
+		$table = $this->sanitize($table);
+		
+		$sql_params = array();
+		
 		$order_by_sql = '';
 		$limit_sql = '';
 		
 		if(!empty($order_by)){
 			$order_by_sql = ' ORDER BY ' . $order_by;
+			$sql_params[':order_by'] = $order_by;
 		}
 		
 		if(!empty($limit)){
@@ -681,7 +695,7 @@ class Alkaline{
 			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
 		}
 		
-		$query->execute();
+		$query->execute($sql_params);
 		$table = $query->fetchAll();
 		
 		return $table;
@@ -698,10 +712,7 @@ class Alkaline{
 			$fields = array();
 		}
 		
-		// Clean up input for database insertion
-		foreach($fields as $key => &$value){
-			$value = addslashes($value);
-		}
+		$table = $this->sanitize($table);
 		
 		// Add default fields
 		switch($table){
@@ -738,15 +749,12 @@ class Alkaline{
 		$columns = array_keys($fields);
 		$values = array_values($fields);
 		
-		$values_sql = '';
-		if(count($values) > 0){
-			$values_sql = '"' . implode('", "', $values) . '"';
-		}
+		$value_slots = array_fill(0, count($values), '?');
 		
 		// Add row to database
-		$query = 'INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . $values_sql . ');';
+		$query = $this->prepare('INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $value_slots) . ');');
 		
-		if(!$this->exec($query)){
+		if(!$query->execute($values)){
 			return false;
 		}
 		
@@ -760,6 +768,8 @@ class Alkaline{
 		if(empty($fields) or empty($table) or !is_array($fields)){
 			return false;
 		}
+		
+		$table = $this->sanitize($table);
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
@@ -776,19 +786,12 @@ class Alkaline{
 			}
 		}
 		
-		// Convert array of database fields to SQL-friendly string
-		$fields_combined = array();
-		
-		foreach($fields as $key => $value){
-			$fields_combined[] = $key . ' = "' . addslashes($value) . '"';
-		}
-		
-		$fields_sql = implode(', ', $fields_combined);
-		
-		// Update row
-		$query = 'UPDATE ' . $table . ' SET ' . $fields_sql . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';';
-		
-		if(!$this->exec($query)){
+		$columns = array_keys($fields);
+		$values = array_values($fields);
+
+		// Add row to database
+		$query = $this->prepare('UPDATE ' . $table . ' SET ' . implode(' = ?, ', $columns) . ' = ? WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . ';');
+		if(!$query->execute($values)){
 			return false;
 		}
 		
@@ -799,6 +802,8 @@ class Alkaline{
 		if(empty($table) or empty($ids)){
 			return false;
 		}
+		
+		$table = $this->sanitize($table);
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
@@ -817,6 +822,8 @@ class Alkaline{
 		if(empty($table) or empty($fields)){
 			return false;
 		}
+		
+		$table = $this->sanitize($table);
 		
 		$fields = self::convertToArray($fields);
 		
@@ -876,6 +883,9 @@ class Alkaline{
 	}
 	
 	function countTableNew($table){
+		$table = $this->sanitize($table);
+		if(empty($table)){ return false; }
+		
 		$field = $this->tables[$table];
 		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0;');
 		$query->execute();
@@ -906,8 +916,9 @@ class Alkaline{
 		$page = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
 		$local = (stripos($referrer, LOCATION)) ? 1 : 0;
 		
-		$query = 'INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES ("' . session_id() . '", "' . date('Y-m-d H:i:s') . '", "' . $duration . '", "' . $referrer . '", "' . $page . '", "' . $page_type . '", ' . $local . ');';
-		return $this->exec($query);
+		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
+		
+		return $query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
 	}
 	
 	// FORM HANDLING

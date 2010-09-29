@@ -81,10 +81,15 @@ class Photo extends Alkaline{
 			$photo_mime = $this->getMIME($file);
 			$photo_size = $this->getSize($file);
 			
-			$query = 'INSERT INTO photos (user_id, photo_ext, photo_mime, photo_name, photo_uploaded, photo_height, photo_width) VALUES (' . $this->user['user_id'] . ', "' . $photo_ext . '", "' . $photo_mime . '", "' . addslashes($filename) . '", "' . date('Y-m-d H:i:s') . '", ' . $photo_size['height'] . ', ' . $photo_size['width'] . ');';
-			$this->exec($query);
+			$fields = array('user_id' => $this->user['user_id'],
+				'photo_ext' => $photo_ext,
+				'photo_mime' => $photo_mime,
+				'photo_name' => $filename,
+				'photo_uploaded' => date('Y-m-d H:i:s'),
+				'photo_height' => $photo_size['height'],
+				'photo_width' => $photo_size['width']);
 			
-			$photo_id = intval($this->db->lastInsertId());
+			$photo_id = $this->addRow($fields, 'photos');
 			$photo_ids[] = $photo_id;
 
 			// Copy photo to archive, delete original from shoebox
@@ -201,41 +206,46 @@ class Photo extends Alkaline{
 			foreach($array as $key => $value){
 				if($key == 'photo_published'){
 					if(empty($value)){
-						$fields[] = $key . ' = NULL';
+						$fields[$key] = null;
 					}
 					elseif(strtolower($value) == 'now'){
 						$value = date('Y-m-d H:i:s');
-						$fields[] = $key . ' = "' . $value . '"';
+						$fields[$key] = $value;
 					}
 					else{
 						$value = str_ireplace(' at ', ', ', $value);
 						$value = date('Y-m-d H:i:s', strtotime($value));
-						$fields[] = $key . ' = "' . $value . '"';
+						$fields[$key] = $value;
 					}
 				}
 				elseif($key == 'photo_geo'){
 					$geo = new Geo($value);
 					if($geo->city['country_name'] == 'United States'){
-						$fields[] = $key . ' = "' . $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'] . '"';
+						$fields[$key] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
 					}
 					else{
-						$fields[] = $key . ' = "' . $geo->city['city_name'] . ', ' . $geo->city['country_name'] . '"';
+						$fields[$key] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
 					}
-					$fields[] = 'photo_geo_lat = ' . $geo->city['city_lat'];
-					$fields[] = 'photo_geo_long = '. $geo->city['city_long'];
+					$fields['photo_geo_lat'] = $geo->city['city_lat'];
+					$fields['photo_geo_long'] = $geo->city['city_long'];
 					
 				}
 				else{
-					$fields[] = $key . ' = "' . addslashes($value) . '"';
+					$fields[$key] = $value;
 				}
 			}
 			
 			// Set photo_updated field to now
-			$fields[] = 'photo_updated = "' . date('Y-m-d H:i:s') . '"';
-			$sql = implode(', ', $fields);
+			$fields['photo_updated'] = date('Y-m-d H:i:s');
 			
-			// Update table
-			$this->exec('UPDATE photos SET ' . $sql . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			$columns = array_keys($fields);
+			$values = array_values($fields);
+
+			// Add row to database
+			$query = $this->prepare('UPDATE photos SET ' . implode(' = ?, ', $columns) . ' = ? WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			if(!$query->execute($values)){
+				return false;
+			}
 		}
 	}
 	
@@ -705,11 +715,17 @@ class Photo extends Alkaline{
 			$hsl_dom_h = round($H * 360);
 			$hsl_dom_s = round($S * 100);
 			$hsl_dom_l = round($V * 100);
-		
-			$query = 'UPDATE photos SET photo_colors = "' . addslashes(serialize($rgbs)) . '", photo_color_r = ' . $rgb_dom_r . ', photo_color_g = ' . $rgb_dom_g . ', photo_color_b = ' . $rgb_dom_b . ', photo_color_h = ' . $hsl_dom_h . ', photo_color_s = ' . $hsl_dom_s . ', photo_color_l = ' . $hsl_dom_l . ' WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
-			$this->exec($query);
 			
-			return true;
+			$fields = array(':photo_colors' => serialize($rgbs),
+				':photo_color_r' => $rgb_dom_r,
+				':photo_color_g' => $rgb_dom_g,
+				':photo_color_b' => $rgb_dom_b,
+				':photo_color_h' => $hsl_dom_h,
+				':photo_color_s' => $hsl_dom_s,
+				':photo_color_l' => $hsl_dom_l);
+		
+			$query = $this->prepare('UPDATE photos SET photo_colors = :photo_colors, photo_color_r = :photo_color_r, photo_color_g = :photo_color_g, photo_color_b = :photo_color_b, photo_color_h = :photo_color_h, photo_color_s = :photo_color_s, photo_color_l = :photo_color_l WHERE photo_id = ' . $photos[$i]['photo_id'] . ';');
+			return $query->execute($fields);
 		}
 	}
 	
@@ -739,13 +755,17 @@ class Photo extends Alkaline{
 							continue;
 						}
 						
-						$query = 'INSERT INTO exifs (photo_id, exif_key, exif_name, exif_value) VALUES (' . $photos[$i]['photo_id'] . ', "' . addslashes($key) . '", "' . addslashes($name) . '", "' . addslashes(serialize($value)) . '");';
-						$this->exec($query);
+						$fields = array('photo_id' => $photos[$i]['photo_id'],
+							'exif_key' => $key,
+							'exif_name' => $name,
+							'exif_value' => serialize($value));
+						
+						$this->addRow($fields, 'exifs');
 						
 						// Check for date taken, insert to photos table
 						if(($key == 'IFD0') and ($name == 'DateTime')){
-							$query = 'UPDATE photos SET photo_taken = "' . date('Y-m-d H:i:s', strtotime($value)) . '" WHERE photo_id = ' . $photos[$i]['photo_id'] . ';';
-							$this->exec($query);
+							$query = $this->prepare('UPDATE photos SET photo_taken = :photo_taken WHERE photo_id = ' . $photos[$i]['photo_id'] . ';');
+							$query->execute(array(':photo_taken' => date('Y-m-d H:i:s', strtotime($value))));
 						}
 				    }
 				}

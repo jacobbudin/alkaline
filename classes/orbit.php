@@ -113,7 +113,8 @@ class Orbit extends Alkaline{
 	
 	// Set preference key
 	public function savePref(){
-		return $this->exec('UPDATE extensions SET extension_preferences = "' . addslashes(serialize($this->preferences)) . '" WHERE extension_uid = "' . $this->uid . '";');
+		$query = $this->prepare('UPDATE extensions SET extension_preferences = :extension_preferences WHERE extension_uid = :extension_uid;');
+		return $this->execute(array(':extension_preferences' => serialize($this->preferences), ':extension_uid' => $this->uid));
 	}
 	
 	// Current page for redirects
@@ -123,7 +124,8 @@ class Orbit extends Alkaline{
 	
 	// Set preference key
 	public function reset(){
-		return $this->exec('UPDATE extensions SET extension_preferences = "" WHERE extension_uid = "' . $this->uid . '";');
+		$query = $this->prepare('UPDATE extensions SET extension_preferences = "" WHERE extension_uid = :extension_uid;');
+		return $this->execute(array(':extension_uid' => $this->uid));
 	}
 	
 	// Execute extensions at hook
