@@ -990,6 +990,7 @@ class Photo extends Alkaline{
 		$this->deSizePhoto(true);
 		for($i = 0; $i < $this->photo_count; ++$i){
 			@$this->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			@$this->exec('DELETE FROM comments WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 			@$this->exec('DELETE FROM exifs WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 			@$this->exec('DELETE FROM links WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
 		}
