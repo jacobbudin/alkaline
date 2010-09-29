@@ -11,6 +11,7 @@ class Geo extends Alkaline{
 	protected $sql_limit;
 	protected $sql_sort;
 	protected $sql_from;
+	protected $sql_params;
 	protected $sql_tables;
 	protected $sql_order_by;
 	protected $sql_where;
@@ -84,6 +85,7 @@ class Geo extends Alkaline{
 		$this->sql_limit = '';
 		$this->sql_sort = array();
 		$this->sql_from = '';
+		$this->sql_params = array();
 		$this->sql_tables = array('cities', 'countries');
 		$this->sql_order_by = '';
 		$this->sql_where = '';
@@ -103,15 +105,16 @@ class Geo extends Alkaline{
 		// Lookup integer in cities table, city_id field
 		if(is_int($geo)){
 			$type = 'id';
-			$this->sql_conds[] = '(cities.city_id = ' . $geo . ')';
+			$this->sql_conds[] = '(cities.city_id = :city_id)';
+			$this->sql_params[':city_id'] = $geo;
 		}
 		
 		// Are these coordinates?
 		elseif(preg_match('/^[^A-Z]+$/i', $geo)){
 			$type = 'coord';
 			$coord = explode(',', $geo);
-			$lat = trim($coord[0]);
-			$long = trim($coord[1]);
+			$lat = floatval(trim($coord[0]));
+			$long = floatval(trim($coord[1]));
 			
 			// Haversine formula
 			$this->sql .= ', (3959 * acos(cos(radians(' . $lat . ')) * cos(radians(city_lat)) * cos(radians(city_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(city_lat)))) AS distance';
@@ -159,15 +162,18 @@ class Geo extends Alkaline{
 			// Set fields to search
 			if(!empty($geo_city)){
 				$geo_city_lower = strtolower($geo_city);
-				$this->sql_conds[] = '(LOWER(cities.city_name) LIKE "%' . $geo_city_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $geo_city_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $geo_city_lower . '%")';
+				$this->sql_conds[] = '(LOWER(cities.city_name) LIKE :city_lower OR LOWER(cities.city_name_raw) LIKE :city_lower OR LOWER(cities.city_name_alt) = :city_lower)';
+				$this->sql_params[':city_lower'] = '%' . $geo_city_lower . '%';
 			}
 			if(!empty($geo_state)){
 				$geo_state_lower = strtolower($geo_state);
-				$this->sql_conds[] = '(LOWER(cities.city_state) LIKE "%' . $geo_state_lower . '%")';
+				$this->sql_conds[] = '(LOWER(cities.city_state) LIKE :state_lower)';
+				$this->sql_params[':state_lower'] = '%' . $geo_state_lower . '%';
 			}
 			if(!empty($geo_country)){
 				$geo_country_lower = strtolower($geo_country);
-				$this->sql_conds[] = '(LOWER(countries.country_name) LIKE "%' . $geo_country_lower . '%")';
+				$this->sql_conds[] = '(LOWER(countries.country_name) LIKE :country_lower)';
+				$this->sql_params[':country_lower'] = '%' . $geo_country_lower . '%';
 			}
 		}
 		
@@ -199,7 +205,7 @@ class Geo extends Alkaline{
 		
 		// Execute query
 		$query = $this->prepare($this->sql);
-		$query->execute();
+		$query->execute($this->sql_params);
 		$cities = $query->fetchAll();
 		
 		// If no results
@@ -240,10 +246,10 @@ class Geo extends Alkaline{
 	public function hint($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_raw) LIKE "%' . $hint_lower . '%" OR LOWER(cities.city_name_alt) = "%' . $hint_lower . '%")) AND cities.country_code = countries.country_code ORDER BY cities.city_pop DESC';
+		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE :hint_lower OR LOWER(cities.city_name_raw) LIKE :hint_lower OR LOWER(cities.city_name_alt) = :hint_lower)) AND cities.country_code = countries.country_code ORDER BY cities.city_pop DESC';
 		
 		$query = $this->prepare($sql);
-		$query->execute();
+		$query->execute(array(':hint_lower' => '%' . $hint_lower . '%'));
 		$cities = $query->fetchAll();
 		
 		$cities_list = array();
