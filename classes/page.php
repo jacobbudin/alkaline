@@ -7,14 +7,16 @@ class Page extends Alkaline{
 	public function __construct($page=null){
 		parent::__construct();
 		
-		if(!empty($page)){	
+		if(!empty($page)){
+			$sql_params = array();
 			if(is_int($page)){
 				$page_id = $page;
 				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . $page_id . ';');
 			}
 			elseif(is_string($page)){
 				$page_title = $page;
-				$query = $this->prepare('SELECT * FROM pages WHERE LOWER(page_title) LIKE "%' . strtolower($page_title) . '%;');
+				$query = $this->prepare('SELECT * FROM pages WHERE LOWER(page_title) LIKE :page_title;');
+				$sql_params[':page_title'] = '%' . strtolower($page_title) . '%';
 			}
 			elseif(is_array($page)){
 				$page_ids = convertToIntegerArray($page);
@@ -22,7 +24,7 @@ class Page extends Alkaline{
 			}
 			
 			if(!empty($query)){
-				$query->execute();
+				$query->execute($sql_params);
 				$this->pages = $query->fetchAll();
 			}
 		}
