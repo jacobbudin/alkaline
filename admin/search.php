@@ -170,6 +170,8 @@ if(!empty($_POST['sort'])){
 		case 'views':
 			$photo_ids->_sort('photos.photo_views', $_POST['sort_direction']);
 			break;
+		default:
+			break;
 	}
 }
 
