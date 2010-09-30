@@ -82,6 +82,7 @@ else{
 	// Get guest
 	$guests = $alkaline->getTable('guests', $guest_id);
 	$guest = $guests[0];
+	$guest = $alkaline->makeHTMLSafe($guest);
 	
 	if(!empty($guest['guest_title'])){	
 		define('TITLE', 'Alkaline Guest: ' . $guest['guest_title']);

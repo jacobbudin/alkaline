@@ -99,6 +99,7 @@ else{
 	// Get rights set
 	$rights = $alkaline->getTable('rights', $right_id);
 	$right = $rights[0];
+	$right = $alkaline->makeHTMLSafe($right);
 
 	if(!empty($right['right_title'])){	
 		define('TITLE', 'Alkaline Rights Set: &#8220;' . $right['right_title']  . '&#8221;');

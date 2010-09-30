@@ -106,6 +106,7 @@ else{
 	
 	$comments = $alkaline->getTable('comments', $comment_id);
 	$comment = $comments[0];
+	$comment = $alkaline->makeHTMLSafe($comment);
 	
 	if(!empty($comment['pile_title'])){	
 		define('TITLE', 'Alkaline Comment: &#8220;' . $comment['pile_title']  . '&#8221;');

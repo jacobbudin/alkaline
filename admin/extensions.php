@@ -90,6 +90,7 @@ if(empty($extension_id)){
 else{
 	$extensions = new Orbit($extension_id);
 	$extension = $extensions->extensions[0];
+	$extension = $alkaline->makeHTMLSafe($extension);
 	
 	$extensions->hook('config_load');
 	

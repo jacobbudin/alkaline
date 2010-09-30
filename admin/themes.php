@@ -80,6 +80,7 @@ else{
 	// Get pile
 	$themes = $alkaline->getTable('themes', $theme_id);
 	$theme = $themes[0];
+	$theme = $alkaline->makeHTMLSafe($theme);
 
 	if(!empty($theme['theme_title'])){	
 		define('TITLE', 'Alkaline Theme: &#8220;' . $theme['theme_title']  . '&#8221;');

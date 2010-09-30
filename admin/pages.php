@@ -108,6 +108,7 @@ if(empty($page_id)){
 else{
 	$pages = new Page($page_id);
 	$page = $pages->pages[0];
+	$page = $alkaline->makeHTMLSafe($page);
 	
 	if(!empty($page['page_title'])){	
 		define('TITLE', 'Alkaline Page: &#8220;' . $page['page_title']  . '&#8221;');

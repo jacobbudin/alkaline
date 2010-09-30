@@ -91,6 +91,7 @@ else{
 	// Get pile
 	$piles = $alkaline->getTable('piles', $pile_id);
 	$pile = $piles[0];
+	$pile = $alkaline->makeHTMLSafe($pile);
 	
 	// Update  pile
 	$photo_ids = new Find;

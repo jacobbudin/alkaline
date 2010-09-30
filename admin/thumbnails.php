@@ -89,6 +89,7 @@ else{
 	// Get sizes set
 	$sizes = $alkaline->getTable('sizes', $size_id);
 	$size = $sizes[0];
+	$size = $alkaline->makeHTMLSafe($size);
 
 	if(!empty($size['size_title'])){	
 		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');

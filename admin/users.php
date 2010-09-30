@@ -93,6 +93,7 @@ else{
 	// Get user
 	$users = $alkaline->getTable('users', $user_id);
 	$user = $users[0];
+	$user = $alkaline->makeHTMLSafe($user);
 
 	if(!empty($user['user_name'])){
 		define('TITLE', 'Alkaline User: ' . $user['user_name']);

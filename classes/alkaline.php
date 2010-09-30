@@ -451,7 +451,7 @@ class Alkaline{
 		return preg_replace('#(?:(?![a-z0-9_\.-]).)*#si', '', $string);
 	}
 	
-	// Echo HTML-safe
+	// Make HTML-safe quotations
 	public function makeHTMLSafe($input){
 		if(is_string($input)){
 			$input = self::makeHTMLSafeHelper($input);
@@ -465,9 +465,29 @@ class Alkaline{
 		return $input;
 	}
 	
-	public function makeHTMLSafeHelper($string){
+	private function makeHTMLSafeHelper($string){
 		$string = preg_replace('#\'#s', '&#0039;', $string);	
 		$string = preg_replace('#\"#s', '&#0034;', $string);
+		return $string;
+	}
+	
+	// Reverse HTML-safe quotations
+	public function reverseHTMLSafe($input){
+		if(is_string($input)){
+			$input = self::reverseHTMLSafeHelper($input);
+		}
+		if(is_array($input)){
+			foreach($input as &$value){
+				$value = self::reverseHTMLSafe($value);
+			}
+		}
+		
+		return $input;
+	}
+	
+	private function reverseHTMLSafeHelper($string){
+		$string = preg_replace('#\&\#0039\;#s', '\'', $string);	
+		$string = preg_replace('#\&\#0034\;#s', '"', $string);
 		return $string;
 	}
 	
@@ -1002,12 +1022,12 @@ class Alkaline{
 	
 	// Read configuration key and return value
 	public function returnConf($name){
-		return self::returnForm($_SESSION['alkaline']['config'], $name);
+		return self::makeHTMLSafe(self::returnForm($_SESSION['alkaline']['config'], $name));
 	}
 	
 	// Save configuration
 	public function saveConf(){
-		return file_put_contents(PATH . 'assets/config.json', json_encode($_SESSION['alkaline']['config']));
+		return file_put_contents(PATH . 'assets/config.json', json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
 	}
 	
 	// URL HANDLING
