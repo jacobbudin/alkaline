@@ -304,7 +304,6 @@ class Photo extends Alkaline{
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			echo 'SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';';
 			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
 			$tags_db = $query->fetchAll();
