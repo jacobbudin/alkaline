@@ -448,7 +448,7 @@ class Alkaline{
 	
 	// Sanitize table, column names, other data
 	public function sanitize($string){
-		return preg_replace('#(?:(?![a-z0-9_-]).)*#si', '', $string);
+		return preg_replace('#(?:(?![a-z0-9_\.-]).)*#si', '', $string);
 	}
 	
 	// SHOW TAGS
