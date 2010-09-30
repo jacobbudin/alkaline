@@ -443,12 +443,32 @@ class Alkaline{
 	// FORMAT STRINGS
 	// Convert to Unicode (UTF-8)
 	public function makeUnicode($string){
-		return (mb_detect_encoding($string, 'UTF-8') == 'UTF-8' ? $string : utf8_encode($string));
+		return mb_detect_encoding($string, 'UTF-8') == 'UTF-8' ? $string : utf8_encode($string);
 	}
 	
 	// Sanitize table, column names, other data
 	public function sanitize($string){
 		return preg_replace('#(?:(?![a-z0-9_\.-]).)*#si', '', $string);
+	}
+	
+	// Echo HTML-safe
+	public function makeHTMLSafe($input){
+		if(is_string($input)){
+			$input = self::makeHTMLSafeHelper($input);
+		}
+		if(is_array($input)){
+			foreach($input as &$value){
+				$value = self::makeHTMLSafe($value);
+			}
+		}
+		
+		return $input;
+	}
+	
+	public function makeHTMLSafeHelper($string){
+		$string = preg_replace('#\'#s', '&#0039;', $string);	
+		$string = preg_replace('#\"#s', '&#0034;', $string);
+		return $string;
 	}
 	
 	// SHOW TAGS

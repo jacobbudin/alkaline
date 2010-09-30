@@ -47,6 +47,8 @@ if(!$photo = @$photos->photos[0]){
 	$alkaline->callback();
 }
 
+$photo = $alkaline->makeHTMLSafe($photo);
+
 define('TAB', 'library');
 if(!empty($photo['photo_title'])){	
 	define('TITLE', 'Alkaline Photo: &#8220;' . $photo['photo_title']  . '&#8221;');
