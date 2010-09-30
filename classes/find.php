@@ -223,12 +223,23 @@ class Find extends Alkaline{
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
+			$query->execute();
 		}
 		else{
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '";');
+			$sql_params = array();
+			$tag_count = count($tags);
+			
+			// Grab tag IDs
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
+			
+			$sql_param_keys = array_keys($sql_params);
+			
+			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+			$query->execute($sql_params);
 		}
 		
-		$query->execute();
 		$this->tags = $query->fetchAll();
 		
 		$tag_ids = array();	
@@ -261,11 +272,23 @@ class Find extends Alkaline{
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query->execute();
 		}
 		else{
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+			$sql_params = array();
+			$tag_count = count($tags);
+			
+			// Grab tag IDs
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
+			
+			$sql_param_keys = array_keys($sql_params);
+			
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ');');
+			$query->execute($sql_params);
 		}
-		$query->execute();
+		
 		$this->photos = $query->fetchAll();
 		
 		// Compile photo IDs
@@ -301,11 +324,22 @@ class Find extends Alkaline{
 		if(is_int($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query->execute();
 		}
 		else{
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = "' . implode('" OR tags.tag_name = "', $tags) . '");');
+			$sql_params = array();
+			$tag_count = count($tags);
+			
+			// Grab tag IDs
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
+			
+			$sql_param_keys = array_keys($sql_params);
+			
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ');');
+			$query->execute($sql_params);
 		}
-		$query->execute();
 		$this->photos = $query->fetchAll();
 		
 		// Compile photo IDs
@@ -328,17 +362,23 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($pile)){
-			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE "' . strtolower($pile) . '" LIMIT 0, 1;');
+			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE :pile_title_lower LIMIT 0, 1;');
+			$query->execute(array(':pile_title_lower' => strtolower($pile)));
 		}
 		elseif(is_int($pile)){
 			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
+			$query->execute();
 		}
 		else{
 			return false;
 		}
 		
-		$query->execute();
 		$piles = $query->fetchAll();
+		
+		if(@count($piles) != 1){
+			return false;
+		}
+		
 		$pile = $piles[0];
 		
 		// If auto, apply stored functions
@@ -386,16 +426,17 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($right)){
-			$query = $this->prepare('SELECT right_id FROM rights WHERE LOWER(right_title) LIKE "' . strtolower($right) . '" LIMIT 0, 1;');
+			$query = $this->prepare('SELECT right_id FROM rights WHERE LOWER(right_title) LIKE :lower_right_title LIMIT 0, 1;');
+			$query->execute(array(':lower_right_title' => strtolower($right)));
 		}
 		elseif(is_int($right)){
 			$query = $this->prepare('SELECT right_id FROM rights WHERE right_id = ' . $right . ' LIMIT 0, 1;');
+			$query->execute();
 		}
 		else{
 			return false;
 		}
 		
-		$query->execute();
 		$rights = $query->fetchAll();
 		
 		if(@count($rights) != 1){
@@ -435,12 +476,25 @@ class Find extends Alkaline{
 		// Prepare input
 		$search_lower = strtolower($search);
 		
-		// Set fields to search
-		$sql = '(';
-		$sql .= 'LOWER(photos.photo_title) LIKE "%' . $search_lower . '%" OR ';
-		$sql .= 'LOWER(photos.photo_description) LIKE "%' . $search_lower . '%"';
-		$sql .= ')';
-		$this->sql_conds[] = $sql;
+		// Set fields to search (security)
+		// $sql = '(';
+		// $sql .= 'LOWER(photos.photo_title) LIKE "%' . $search_lower . '%" OR ';
+		// $sql .= 'LOWER(photos.photo_description) LIKE "%' . $search_lower . '%"';
+		// $sql .= ')';
+		// $this->sql_conds[] = $sql;
+		
+		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower)');
+		$query->execute(array(':photo_title_lower' => '%' . $search_lower . '%', ':photo_description_lower' => '%' . $search_lower . '%'));
+		
+		$this->photos = $query->fetchAll();
+		
+		$photo_ids = array();
+		
+		foreach($this->photos as $photo){
+			$photo_ids[] = $photo['photo_id'];
+		}
+		
+		$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
 		
 		return true;
 	}
@@ -481,7 +535,7 @@ class Find extends Alkaline{
 		if(isset($h_min) and isset($h_max)){
 			
 			if($h_min > $h_max){
-				$this->sql_conds[] = '(photos.photo_color_h <= ' . $h_max . ' OR photos.photo_color_h >= ' . $h_min . ')';
+				$this->sql_conds[] = '(photos.photo_color_h <= ' . intval($h_max) . ' OR photos.photo_color_h >= ' . intval($h_min) . ')';
 			}
 			else{
 				$this->sql_conds[] = 'photos.photo_color_h >= ' . intval($h_min);
@@ -619,10 +673,11 @@ class Find extends Alkaline{
 		$this->photo_offset_length = $length;
 	}
 	
+	// NEARBY LOCATOIN
 	public function location($geo, $radius){
 		$place = new Geo($geo);
 		
-		$radius = floatval($radius);
+		if(!($radius = floatval($radius))){ return false; }
 		
 		$lat = $place->city['city_lat'];
 		$long = $place->city['city_long'];
@@ -641,6 +696,8 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($column)){ return false; }
 		
+		$column = $this->sanitize($column);
+		
 		$column = strtolower($column);
 		$sort = strtoupper($sort);
 		
@@ -657,6 +714,8 @@ class Find extends Alkaline{
 	
 	public function notnull($field){
 		if(empty($field)){ return false; }
+		
+		$field = $this->sanitize($field);
 		
 		$this->sql_conds[] = $field . ' IS NOT NULL';
 		$this->sql_conds[] = $field . ' != ""';
