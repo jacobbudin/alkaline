@@ -5,7 +5,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $alkaline->recordStat('home');
-$alkaline->access('adskajsk');
+// $alkaline->access('adskajsk');
 
 $orbit = new Orbit;
 // $orbit->hook('photo_upload', 1, 2);

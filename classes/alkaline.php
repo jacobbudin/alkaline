@@ -18,6 +18,7 @@ class Alkaline{
 	const version = '1.0';
 	
 	public $db;
+	public $db_type;
 	public $configuration;
 	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
@@ -58,15 +59,23 @@ class Alkaline{
 		$nodb_classes = array('Canvas');
 		
 		if(!in_array(get_class($this), $nodb_classes)){
-			$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
-		}
-		
-		// Add SQLite functions
-		if((substr(DB_DSN, 0, 7) == 'sqlite:') and $this->db){
-			$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
-			$this->db->sqliteCreateFunction('COS', 'cos', 1);
-			$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
-			$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+			// Determine database type
+			$this->db_type = substr(DB_DSN, 0, strpos(DB_DSN, ':'));
+			
+			if($this->db_type == 'mysql'){
+				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
+			}
+			elseif($this->db_type == 'pgsql'){
+				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+			}
+			elseif($this->db_type == 'sqlite'){
+				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true));
+				
+				$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+				$this->db->sqliteCreateFunction('COS', 'cos', 1);
+				$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+				$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+			}
 		}
 	}
 	
@@ -81,23 +90,41 @@ class Alkaline{
 	// DATABASE
 	public function exec($query){
 		$_SESSION['alkaline']['debug']['queries']++;
-		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+		
+		if($this->db_type == 'pgsql'){
+			$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', 'LIMIT \2 OFFSET \1', $query);
+			$query = str_replace('HOUR(', 'EXTRACT(HOUR FROM ', $query);
+			$query = str_replace('DAY(', 'EXTRACT(DAY FROM ', $query);
+			$query = str_replace('MONTH(', 'EXTRACT(MONTH FROM ', $query);
+			$query = str_replace('YEAR(', 'EXTRACT(YEAR FROM ', $query);
+		}
+		elseif($this->db_type == 'sqlite'){
 			$query = str_replace('HOUR(', 'strftime("%H",', $query);
 			$query = str_replace('DAY(', 'strftime("%d",', $query);
 			$query = str_replace('MONTH(', 'strftime("%m",', $query);
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
+		
 		return $this->db->exec($query);
 	}
 	
 	public function prepare($query){
 		$_SESSION['alkaline']['debug']['queries']++;
-		if(substr(DB_DSN, 0, 7) == 'sqlite:'){
+		
+		if($this->db_type == 'pgsql'){
+			$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', 'LIMIT \2 OFFSET \1', $query);
+			$query = str_replace('HOUR(', 'EXTRACT(HOUR FROM ', $query);
+			$query = str_replace('DAY(', 'EXTRACT(DAY FROM ', $query);
+			$query = str_replace('MONTH(', 'EXTRACT(MONTH FROM ', $query);
+			$query = str_replace('YEAR(', 'EXTRACT(YEAR FROM ', $query);
+		}
+		elseif($this->db_type == 'sqlite'){
 			$query = str_replace('HOUR(', 'strftime("%H",', $query);
 			$query = str_replace('DAY(', 'strftime("%d",', $query);
 			$query = str_replace('MONTH(', 'strftime("%m",', $query);
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
+		
 		return $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	}
 	

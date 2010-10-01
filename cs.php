@@ -14,22 +14,39 @@ class AlkalineCS{
 	
 	public $compatible;
 	
-	public $phpversion;
-	public $phpextensions;
+	public $php_version;
+	public $php_extensions;
 	public $phpinfo;
+	Public $php_pdo_drivers;
 	
 	function __construct(){
 		$this->compatible = true;
-		$this->phpversion = phpversion();
-		$this->phpextensions = get_loaded_extensions();
+		$this->php_version = phpversion();
+		$this->php_extensions = get_loaded_extensions();
 		ob_start();
 		phpinfo();
 		$this->phpinfo = ob_get_contents(); 
 		ob_end_clean();
+		$php_pdo_drivers = @PDO::getAvailableDrivers();
+		foreach($php_pdo_drivers as $driver){
+			switch($driver){
+				case 'mysql':
+					$this->php_pdo_drivers[] = 'MySQL';
+					break;
+				case 'pgsql':
+					$this->php_pdo_drivers[] = 'PostgreSQL';
+					break;
+				case 'sqlite':
+					$this->php_pdo_drivers[] = 'SQLite';
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
 	public function isExt($ext, $req=true){
-		if(in_array($ext, $this->phpextensions)){
+		if(in_array($ext, $this->php_extensions)){
 			return true;
 		}
 		else{
@@ -72,7 +89,7 @@ class AlkalineCS{
 			$positive = 'Installed';
 		}
 		if(empty($negative)){
-			$negative = 'Not ' . strtolower($positive);
+			$negative = 'Not installed';
 		}
 		
 		if($bool === true){
@@ -115,6 +132,7 @@ class AlkalineCS{
 		.test_result.positive { background-color: #c0ddea; color: #021e2f; }
 		.test_result.negative { color: #555; }
 		.test_result.unknown { color: #555; }
+		.light { text-align: center; font-size: .9em; font-weight: normal; text-transform: none; }
 		.result_icon { margin-bottom: 10px; }
 	</style>
 </head>
@@ -138,21 +156,21 @@ class AlkalineCS{
 						<h5>Internet connectivity</h5>
 						<span class="small quiet">An Internet connection is required to activate Alkaline.</span>
 					</td>
-					<?php echo $test->boolToHTML($test->isNet(), 'Connected'); ?>
+					<?php echo $test->boolToHTML($test->isNet(), 'Connected', 'Disconnected'); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP 5.2+</h5>
 						<span class="small quiet">PHP allows Alkaline to produce dynamic Web pages.</span>
 					</td>
-					<?php echo $test->boolToHTML($test->isVer('/^(5\.2|5\.3).+/is', $test->phpversion), $test->phpversion, $test->phpversion); ?>
+					<?php echo $test->boolToHTML($test->isVer('/^(5\.2|5\.3).+/is', $test->php_version), $test->php_version, $test->php_version); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP PDO support</h5>
 						<span class="small quiet">PHP PDO allows Alkaline to connect to various database types.</span>
 					</td>
-					<?php echo $test->boolToHTML($test->isExt('PDO')); ?>
+					<?php echo $test->boolToHTML(($test->isExt('PDO') and (count($test->php_pdo_drivers) > 0)), 'Installed<br /><span class="light">(' . implode(', ', $test->php_pdo_drivers) . ')</span>'); ?>
 				</tr>
 				<tr>
 					<td>
@@ -192,7 +210,7 @@ class AlkalineCS{
 						<h5>PHP SQLite support</h5>
 						<span class="small quiet">PHP SQLite allows Alkaline to operate without a traditional database.</span>
 					</td>
-					<?php echo $test->boolToHTML($test->isExt('sqlite', false)); ?>
+					<?php echo $test->boolToHTML($test->isThere('PDO Driver for SQLite 3.x')); ?>
 				</tr>
 			</table>
 			
