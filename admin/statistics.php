@@ -94,8 +94,10 @@ foreach($stats->durations as $duration){
 	}
 }
 
-foreach($durations as $text => &$duration){
-	$duration = round(($duration / $durations_count) * 100, 1);
+if($durations_count > 0){
+	foreach($durations as $text => &$duration){
+		$duration = round(($duration / $durations_count) * 100, 1);
+	}
 }
 
 // PAGES

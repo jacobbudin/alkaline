@@ -117,7 +117,7 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_taken >= "' . $begin . '"';
+			$this->sql_conds[] = 'photos.photo_taken >= "' . $begin . ' 00:00:00"';
 		}
 		
 		// Set end date
@@ -141,7 +141,7 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_uploaded >= "' . $begin . '"';
+			$this->sql_conds[] = 'photos.photo_uploaded >= "' . $begin . ' 00:00:00"';
 		}
 		
 		// Set end date
@@ -802,6 +802,8 @@ class Find extends Alkaline{
 				$this->page_previous = $this->page - 1;
 			}
 		}
+		
+		// echo $this->sql;
 		
 		// Add order, limit
 		$this->sql .= $this->sql_limit;
