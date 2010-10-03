@@ -33,10 +33,6 @@ class Alkaline{
 		// Begin a session, if one does not yet exist
 		if(session_id() == ''){ session_start(); }
 		
-		// Load notifications variable from session
-		if(!empty($_SESSION['alkaline']['notifications'])){ $this->notifications = $_SESSION['alkaline']['notifications']; }
-		else{ $this->notifications = array(); }
-		
 		// Debug info
 		if(get_class($this) == 'Alkaline'){
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
@@ -164,12 +160,13 @@ class Alkaline{
 	// NOTIFICATIONS
 	// Add notification
 	public function addNotification($message, $type=null){
-		$this->notifications[] = array('type' => $type, 'message' => $message);
+		$_SESSION['alkaline']['notifications'][] = array('type' => $type, 'message' => $message);
+		return true;
 	}
 	
 	// Check notifications
 	public function isNotification(){
-		$count = count($this->notifications);
+		$count = count($_SESSION['alkaline']['notifications']);
 		if($count > 0){
 			// Determine unique types
 			return $count;
@@ -181,11 +178,12 @@ class Alkaline{
 	
 	// View notification
 	public function viewNotification($type=null){
-		$count = count($this->notifications);
+		$count = count($_SESSION['alkaline']['notifications']);
+		
 		if($count > 0){
 			// Determine unique types
 			$types = array();
-			foreach($this->notifications as $notifications){
+			foreach($_SESSION['alkaline']['notifications'] as $notifications){
 				$types[] = $notifications['type'];
 			}
 			$types = array_unique($types);
@@ -194,7 +192,7 @@ class Alkaline{
 			foreach($types as $type){
 				echo '<p class="' . $type . '">';
 				$messages = array();
-				foreach($this->notifications as $notification){
+				foreach($_SESSION['alkaline']['notifications'] as $notification){
 					if($notification['type'] == $type){
 						$messages[] = $notification['message'];
 					}
@@ -206,8 +204,6 @@ class Alkaline{
 
 			// Dispose of messages
 			unset($_SESSION['alkaline']['notifications']);
-			unset($this->notifications);
-			$this->notifications = array();
 			
 			return $count;
 		}
