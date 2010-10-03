@@ -59,13 +59,13 @@ class Alkaline{
 			$this->db_type = substr(DB_DSN, 0, strpos(DB_DSN, ':'));
 			
 			if($this->db_type == 'mysql'){
-				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
+				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ERRMODE_SILENT => true));
 			}
 			elseif($this->db_type == 'pgsql'){
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
 			}
 			elseif($this->db_type == 'sqlite'){
-				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true));
+				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ERRMODE_SILENT => true));
 				
 				$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
 				$this->db->sqliteCreateFunction('COS', 'cos', 1);
@@ -101,7 +101,15 @@ class Alkaline{
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
 		
-		return $this->db->exec($query);
+		$response = $this->db->exec($query);
+		$error = $this->db->errorInfo();
+		
+		if(isset($error[2])){
+			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
+			$this->addNotification($error . '.', 'error');
+		}
+		
+		return $response;
 	}
 	
 	public function prepare($query){
@@ -121,7 +129,15 @@ class Alkaline{
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
 		
-		return $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$error = $this->db->errorInfo();
+		
+		if(isset($error[2])){
+			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
+			$this->addNotification($error . '.', 'error');
+		}
+		
+		return $response;
 	}
 	
 	// REMOVE NULL FROM JSON
