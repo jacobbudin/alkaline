@@ -77,9 +77,6 @@ class Alkaline{
 	}
 	
 	public function __destruct(){
-		// Save notifications variable to session
-		$_SESSION['alkaline']['notifications'] = $this->notifications;
-		
 		// Close database connection
 		$this->db = null;
 	}
@@ -604,9 +601,11 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
+		$comment_text = $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		
 		$fields = array('photo_id' => $id,
 			'comment_status' => $comment_status,
-			'comment_text' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_text'])),
+			'comment_text' => $comment_text,
 			'comment_author_name' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_author_name'])),
 			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
 			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
@@ -615,8 +614,12 @@ class Alkaline{
 		$orbit = new Orbit;
 		$fields = $orbit->hook('comment_add', $fields, $fields);
 		
-		if($this->addRow($fields, 'comments')){
+		if(!$this->addRow($fields, 'comments')){
 			return false;
+		}
+		
+		if($this->returnConf('comm_email')){
+			$this->mail('New comment', 'A new comment has been submitted:' . "\r\n" . $comment_text);
 		}
 		
 		$this->updateCount('comments', 'photos', 'photo_comment_count', $id);
@@ -1156,6 +1159,30 @@ class Alkaline{
 			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 		}
 		exit();
+	}
+	
+	// MAIL	
+	protected function email($to=0, $subject, $message){
+		if(empty($subject) or empty($message)){ return false; }
+		
+		if($to == 0){
+			$to = $this->returnConf('web_email');
+		}
+		
+		if(is_int($to) or preg_match('#[0-9]+#s', $to)){
+			$query = $this->prepare('SELECT user_email FROM users WHERE user_id = ' . $to);
+			$query->execute();
+			$user = $query->fetch();
+			$to = $user['user_email'];
+		}
+		
+		$subject = 'Alkaline: ' . $subject;
+		$message = $message . "\r\n\n" . '-- Alkaline';
+		$headers = 'From: ' . $this->returnConf('web_email') . "\r\n" .
+			'Reply-To: ' . $this->returnConf('web_email') . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
+		
+		return mail($to, $subject, $message, $headers);
 	}
 	
 	// DEBUG

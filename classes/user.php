@@ -185,17 +185,10 @@ class User extends Alkaline{
 	}
 	
 	// MAIL	
-	public function mail($subject, $message){
+	public function email($subject, $message){
 		if(!$this->perm(true)){ return false; }
 		
-		$to = $this->user['user_email'];
-		$subject = 'Alkaline: ' . $subject;
-		$message = 'hello';
-		$headers = 'From: webmaster@example.com' . "\r\n" .
-			'Reply-To: webmaster@example.com' . "\r\n" .
-			'X-Mailer: PHP/' . phpversion();
-		
-		return mail($to, $subject, $message, $headers);
+		return parent::email($this->user['user_email'], $subject, $message);
 	}
 }
 

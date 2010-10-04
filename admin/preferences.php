@@ -58,17 +58,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
-	<h3>Comments</h3>
-	
-	<table>
-		<tr>
-			<td class="input"><input type="checkbox" id="comm_email_photo" name="comm_email_photo" <?php echo $user->readPref('comm_email_photo'); ?> value="true" /></td>
-			<td class="description">
-				<label for="comm_email_photo">Email me new comments on my photographs</label>
-			</td>
-		</tr>
-	</table>
-	
 	<p><input type="submit" name="preferences_save" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></p>
 </form>
 
