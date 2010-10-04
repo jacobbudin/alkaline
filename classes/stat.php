@@ -46,8 +46,8 @@ class Stat extends Alkaline{
 	// STAT-TO-ARRAY FUNCTIONS
 	
 	public function getMonthly(){
-		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -87,8 +87,8 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -107,8 +107,8 @@ class Stat extends Alkaline{
 	}
 	
 	public function getDaily(){
-		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');		
-		$query->execute();
+		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');		
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -162,8 +162,8 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');
-		$query->execute();		
+		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -182,8 +182,8 @@ class Stat extends Alkaline{
 	}
 	
 	public function getHourly(){
-		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) AS stat_day, MONTH(stat_date) AS stat_month, YEAR(stat_date) as stat_year, COUNT(*) AS stat_views FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) AS stat_day, MONTH(stat_date) AS stat_month, YEAR(stat_date) as stat_year, COUNT(*) AS stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -239,8 +239,8 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
@@ -259,34 +259,34 @@ class Stat extends Alkaline{
 	}
 	
 	public function getDurations(){
-		$query = $this->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_session');
-		$query->execute();
+		$query = $this->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_session');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->durations = $query->fetchAll();
 	}
 	
 	public function getPages(){
-		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
-		$query->execute();
+		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->pages = $query->fetchAll();
 	}
 	
 	public function getPageTypes(){
-		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
-		$query->execute();
+		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
+		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->page_types = $query->fetchAll();
 	}
 	
 	public function getRecentReferrers($limit=20){
 		$limit = intval($limit);
-		$query = $this->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
+		$query->execute(array(':stat_referrer' => '', ':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->referrers_recent = $query->fetchAll();
 	}
 	
 	public function getPopularReferrers($limit=20){
 		$limit = intval($limit);
-		$query = $this->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != "" AND stat_date >= "' . $this->stat_begin . '" AND stat_date <= "' . $this->stat_end . '" GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
-		$query->execute();
+		$query = $this->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
+		$query->execute(array(':stat_referrer' => '', ':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->referrers_popular = $query->fetchAll();
 	}
 }

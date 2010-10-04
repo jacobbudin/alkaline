@@ -134,7 +134,7 @@ class Alkaline{
 		
 		if(isset($error[2])){
 			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
-			$this->addNotification($error . '.', 'error');
+			$this->addNotification($query . '; ' . $error . '.', 'error');
 		}
 		
 		return $response;
@@ -194,7 +194,7 @@ class Alkaline{
 	
 	// View notification
 	public function viewNotification($type=null){
-		$count = count($_SESSION['alkaline']['notifications']);
+		$count = @count($_SESSION['alkaline']['notifications']);
 		
 		if($count > 0){
 			// Determine unique types
