@@ -83,34 +83,22 @@ class Alkaline{
 	
 	// DATABASE
 	public function exec($query){
-		$_SESSION['alkaline']['debug']['queries']++;
-		
-		if($this->db_type == 'pgsql'){
-			$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', 'LIMIT \2 OFFSET \1', $query);
-			$query = str_replace('HOUR(', 'EXTRACT(HOUR FROM ', $query);
-			$query = str_replace('DAY(', 'EXTRACT(DAY FROM ', $query);
-			$query = str_replace('MONTH(', 'EXTRACT(MONTH FROM ', $query);
-			$query = str_replace('YEAR(', 'EXTRACT(YEAR FROM ', $query);
-		}
-		elseif($this->db_type == 'sqlite'){
-			$query = str_replace('HOUR(', 'strftime("%H",', $query);
-			$query = str_replace('DAY(', 'strftime("%d",', $query);
-			$query = str_replace('MONTH(', 'strftime("%m",', $query);
-			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
-		}
-		
+		$this->prequery($query);
 		$response = $this->db->exec($query);
-		$error = $this->db->errorInfo();
-		
-		if(isset($error[2])){
-			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
-			$this->addNotification($error . '.', 'error');
-		}
+		$this->postquery($query);
 		
 		return $response;
 	}
 	
 	public function prepare($query){
+		$this->prequery($query);
+		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$this->postquery($query);
+		
+		return $response;
+	}
+	
+	public function prequery($query){
 		$_SESSION['alkaline']['debug']['queries']++;
 		
 		if($this->db_type == 'pgsql'){
@@ -126,16 +114,17 @@ class Alkaline{
 			$query = str_replace('MONTH(', 'strftime("%m",', $query);
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
+	}
+	
+	public function postquery($query, $db=null){
+		if(empty($db)){ $db = $this->db; }
 		
-		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$error = $this->db->errorInfo();
+		$error = $db->errorInfo();
 		
 		if(isset($error[2])){
 			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
 			$this->addNotification($query . '; ' . $error . '.', 'error');
 		}
-		
-		return $response;
 	}
 	
 	// REMOVE NULL FROM JSON
@@ -601,12 +590,12 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
-		$comment_text = $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		$comment_text = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
 		
 		$fields = array('photo_id' => $id,
 			'comment_status' => $comment_status,
 			'comment_text' => $comment_text,
-			'comment_author_name' => $alkaline->makeUnicode(strip_tags($_POST['comment_' . $id .'_author_name'])),
+			'comment_author_name' => $comment_text,
 			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
 			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
 			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);
@@ -619,7 +608,7 @@ class Alkaline{
 		}
 		
 		if($this->returnConf('comm_email')){
-			$this->mail('New comment', 'A new comment has been submitted:' . "\r\n" . $comment_text);
+			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . $comment_text);
 		}
 		
 		$this->updateCount('comments', 'photos', 'photo_comment_count', $id);
@@ -630,13 +619,15 @@ class Alkaline{
 	public function updateCount($count_table, $result_table, $result_field, $result_id){
 		$result_id = intval($result_id);
 		
+		$count_table = $this->sanitize($count_table);
+		
 		$count_id_field = $this->tables[$count_table];
 		$result_id_field = $this->tables[$result_table];
 		
 		// Get count
-		$query = $this->prepare('SELECT COUNT(:count_id_field) AS count FROM :count_table WHERE :result_id_field = :result_id;');
+		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
 		
-		if(!$query->execute(array(':count_id_field' => $count_id_field, ':count_table' => $count_table, ':result_id_field' => $result_id_field, ':result_id' => $result_id))){
+		if(!$query->execute(array(':result_id' => $result_id))){
 			return false;
 		}
 		
@@ -644,9 +635,9 @@ class Alkaline{
 		$count = $counts[0]['count'];
 		
 		// Update row
-		$query = $this->prepare('UPDATE :result_table SET :result_field = :count WHERE :result_id_field = :result_id;');
+		$query = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = ' . $result_id . ';');
 		
-		if(!$query->execute(array(':result_table' => $result_table, ':result_field' => $result_field, ':count' => $count, ':result_id_field' => $result_id_field, ':result_id' => $result_id))){
+		if(!$query->execute(array(':count' => $count))){
 			return false;
 		}
 		

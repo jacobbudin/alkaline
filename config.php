@@ -9,9 +9,9 @@ $site = 'Jacob Budin';
 $owner = 'Jacob Budin';
 
 // Database data source name (DSN)
-// $db_dsn = 'mysql:host=localhost;dbname=alkaline';
+$db_dsn = 'mysql:host=localhost;dbname=alkaline';
 // $db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline5.db';
-$db_dsn = 'pgsql:dbname=alkaline';
+// $db_dsn = 'pgsql:dbname=alkaline';
 
 // Database user username
 $db_user = 'alkaline';

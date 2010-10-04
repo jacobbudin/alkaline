@@ -49,13 +49,14 @@ class Orbit extends Alkaline{
 		// Prepare Orbit-powered extension
 		else{
 			if(empty($id)){
-				$query = $this->prepare('SELECT * FROM extensions WHERE extension_class = "' . get_class($this) . '" AND extension_status > 0;');
+				$query = $this->prepare('SELECT * FROM extensions WHERE extension_class = :extension_class AND extension_status > 0;');
+				$query->execute(array(':extension_class' => get_class($this)));
 			}
 			else{
 				$id = intval($id);
 				$query = $this->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
+				$query->execute();
 			}
-			$query->execute();
 			$extensions = $query->fetchAll();
 			
 			if(count($extensions) != 1){
@@ -81,13 +82,19 @@ class Orbit extends Alkaline{
 	
 	// DATABASE
 	public function exec($query){
-		$_SESSION['alkaline']['debug']['queries']++;
-		return $this->db_safe->exec($query);
+		$this->prequery($query);
+		$response = $this->db_safe->exec($query);
+		$this->postquery($query, $this->db_safe);
+		
+		return $response;
 	}
 	
 	public function prepare($query){
-		$_SESSION['alkaline']['debug']['queries']++;
-		return $this->db_safe->prepare($query);
+		$this->prequery($query);
+		$response = $this->db_safe->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$this->postquery($query, $this->db_safe);
+		
+		return $response;
 	}
 	
 	// Local require_once()
@@ -114,7 +121,7 @@ class Orbit extends Alkaline{
 	// Set preference key
 	public function savePref(){
 		$query = $this->prepare('UPDATE extensions SET extension_preferences = :extension_preferences WHERE extension_uid = :extension_uid;');
-		return $this->execute(array(':extension_preferences' => serialize($this->preferences), ':extension_uid' => $this->uid));
+		return $query->execute(array(':extension_preferences' => serialize($this->preferences), ':extension_uid' => $this->uid));
 	}
 	
 	// Current page for redirects
