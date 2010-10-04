@@ -59,13 +59,14 @@ class Alkaline{
 			$this->db_type = substr(DB_DSN, 0, strpos(DB_DSN, ':'));
 			
 			if($this->db_type == 'mysql'){
-				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ERRMODE_SILENT => true));
+				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 			}
 			elseif($this->db_type == 'pgsql'){
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+				$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 			}
 			elseif($this->db_type == 'sqlite'){
-				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true));
+				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 				
 				$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
 				$this->db->sqliteCreateFunction('COS', 'cos', 1);
@@ -911,7 +912,7 @@ class Alkaline{
 			$conditions[] = '(' . $field . ' = ? OR ' . $field . ' IS NULL)';
 		}
 		
-		$sql_params = array_fill(0, count($fields), '');
+		$sql_params = array_fill(0, count($fields), null);
 		
 		// Delete empty rows
 		$query = $this->prepare('DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';');
