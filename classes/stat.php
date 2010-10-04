@@ -46,12 +46,12 @@ class Stat extends Alkaline{
 	// STAT-TO-ARRAY FUNCTIONS
 	
 	public function getMonthly(){
-		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
+		$query = $this->prepare('SELECT MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_date']) * 1000;
+			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-15') * 1000;
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
@@ -87,7 +87,7 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
+		$query = $this->prepare('SELECT MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
@@ -107,12 +107,12 @@ class Stat extends Alkaline{
 	}
 	
 	public function getDaily(){
-		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');		
+		$query = $this->prepare('SELECT DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');		
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_date']) * 1000;
+			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-' . $stat['stat_day']) * 1000;
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
@@ -162,7 +162,7 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');
+		$query = $this->prepare('SELECT DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
@@ -182,12 +182,12 @@ class Stat extends Alkaline{
 	}
 	
 	public function getHourly(){
-		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) AS stat_day, MONTH(stat_date) AS stat_month, YEAR(stat_date) as stat_year, COUNT(*) AS stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
+		$query = $this->prepare('SELECT HOUR(stat_date) AS stat_hour, DAY(stat_date) AS stat_day, MONTH(stat_date) AS stat_month, YEAR(stat_date) as stat_year, COUNT(*) AS stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
 		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_date']) * 1000;
+			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-' . $stat['stat_day'] . ' ' . $stat['stat_hour'] . ':30:00') * 1000;
 			$stat['stat_views'] = intval($stat['stat_views']);
 		}
 		
@@ -239,7 +239,7 @@ class Stat extends Alkaline{
 			}
 		}
 		
-		$query = $this->prepare('SELECT stat_date, HOUR(stat_date) AS stat_hour, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
+		$query = $this->prepare('SELECT HOUR(stat_date) AS stat_hour, DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_visitors FROM stats WHERE stat_duration = 0 AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
