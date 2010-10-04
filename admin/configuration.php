@@ -12,6 +12,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('web_name', @$_POST['web_name']);
 	$alkaline->setConf('web_title', @$_POST['web_title']);
 	$alkaline->setConf('web_description', @$_POST['web_description']);
+	$alkaline->setConf('web_email', @$_POST['web_email']);
 	$alkaline->setConf('web_timezone', @$_POST['web_timezone']);
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
@@ -65,6 +66,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="right pad"><label for="web_description">Description:</label></td>
 			<td><textarea id="web_description" name="web_description" style="height: 70px; line-height: 1.5em;"><?php echo $alkaline->returnConf('web_description'); ?></textarea></td>
+		</tr>
+		<tr>
+			<td class="right pad"><label for="web_email">Email:</label></td>
+			<td>
+				<input type="text" id="web_email" name="web_email" value="<?php echo $alkaline->returnConf('web_email'); ?>" style="width: 100%;" /><br />
+				Notifications will be sent from this email address
+			</td>
 		</tr>
 		<tr>
 			<td class="right pad"><label for="web_timezone">Time zone:</label></td>
