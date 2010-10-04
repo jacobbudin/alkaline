@@ -65,6 +65,20 @@ class Gravatar extends Orbit{
 			$this->setPref('gravatar_default', $_POST['gravatar_default']);
 			$this->setPref('gravatar_max_rating', $_POST['gravatar_max_rating']);
 			$this->savePref();
+			
+			if($_POST['gravatar_default'] != $this->gravatar_default){
+				$query = $this->prepare('SELECT comment_id, comment_author_avatar FROM comments WHERE LOWER(comment_author_avatar) LIKE :comment_author_avatar;');
+				$query->execute(array(':comment_author_avatar' => '%www.gravatar.com%'));
+				$comments = $query->fetchAll();
+				
+				if(@count($comments) > 0){
+					$query = $this->prepare('UPDATE comments SET comment_author_avatar = :comment_author_avatar WHERE comment_id = :comment_id;');
+					foreach($comments as $comment){
+						$comment_author_avatar = preg_replace('#\?d=(.*?)&#si', '?d=' . urlencode($_POST['gravatar_default']) . '&', $comment['comment_author_avatar']);
+						$query->execute(array(':comment_author_avatar' => $comment_author_avatar, ':comment_id' => $comment['comment_id']));
+					}
+				}
+			}
 		}
 	}
 }
