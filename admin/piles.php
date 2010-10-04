@@ -36,7 +36,7 @@ if(!empty($_POST['pile_id'])){
 	unset($pile_id);
 }
 else{
-	$alkaline->deleteEmptyRow('piles', array('page_title', 'pile_call'));
+	$alkaline->deleteEmptyRow('piles', array('pile_title', 'pile_call'));
 }
 
 // CREATE PILE
