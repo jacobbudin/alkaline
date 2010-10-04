@@ -42,7 +42,7 @@ class Canvas extends Alkaline{
 		}
 		
 		// Set variable, scrub to remove conditionals
-		$this->template = str_ireplace('<!-- ' . $var . ' -->', $value, $this->template);
+		$this->template = str_ireplace('{' . $var . '}', $value, $this->template);
 		$this->template = self::scrub($var, $this->template);
 		return true;
 	}
@@ -57,7 +57,7 @@ class Canvas extends Alkaline{
 		
 		$matches = array();
 		
-		preg_match_all('/\<!-- LOOP\((' . $table_regex . ')\) --\>(.*?)\<!-- ENDLOOP\(\1\) --\>/s', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$loops = array();
@@ -67,7 +67,7 @@ class Canvas extends Alkaline{
 				
 				// Wrap in <form> for commenting
 				if($match[1] == 'photos'){
-					//$match[2] = '<form action="" id="photo_<!-- PHOTO_ID -->" class="photo" method="post">' . $match[2] . '</form>';
+					//$match[2] = '<form action="" id="photo_{PHOTO_ID}" class="photo" method="post">' . $match[2] . '</form>';
 				}
 				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
 			}
@@ -87,7 +87,7 @@ class Canvas extends Alkaline{
 					if(is_array($value)){
 						$value = var_export($value, true);
 					}
-					$loop_template = str_ireplace('<!-- ' . $key . ' -->', $value, $loop_template);
+					$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
 					if(!empty($value)){
 						$loop_template = self::scrub($key, $loop_template);
 					}
@@ -118,7 +118,7 @@ class Canvas extends Alkaline{
 		
 		$matches = array();
 		
-		preg_match_all('/\<!-- LOOP\((' . $table_regex . ')\) --\>(.*?)\<!-- ENDLOOP\(\1\) --\>/s', $template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$loops = array();
@@ -147,7 +147,7 @@ class Canvas extends Alkaline{
 						if(is_array($value)){
 							$value = var_export($value, true);
 						}
-						$loop_template = str_ireplace('<!-- ' . $key . ' -->', $value, $loop_template);
+						$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
 						if(!empty($value)){
 							$loop_template = self::scrub($key, $loop_template);
 						}
@@ -173,12 +173,12 @@ class Canvas extends Alkaline{
 	// PREPROCESS
 	// Remove conditionals after successful variable, loop placement
 	public function scrub($var, $template){
-		$template = str_ireplace('<!-- IF(' . $var . ') -->', '', $template);
-		if(stripos($template, '<!-- ELSEIF(' . $var . ') -->')){
-			$template = preg_replace('/\<\!-- ELSEIF\(' . $var . '\) --\>(.*?)\<\!-- ENDIF\(' . $var . '\) --\>/is', '', $template);
+		$template = str_ireplace('{if:' . $var . '}', '', $template);
+		if(stripos($template, '{else:' . $var . '}')){
+			$template = preg_replace('#{else:' . $var . '}(.*?){/if:' . $var . '}#is', '', $template);
 		}
 		else{
-			$template = str_ireplace('<!-- ENDIF(' . $var . ') -->', '', $template);
+			$template = str_ireplace('{/if:' . $var . '}', '', $template);
 		}
 		return $template;
 	}
@@ -189,7 +189,7 @@ class Canvas extends Alkaline{
 		$orbit = new Orbit();
 		
 		$matches = array();
-		preg_match_all('#\<!-- ORBIT\_([A-Z0-9_]*) --\>#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{orbit:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$hooks = array();
@@ -220,7 +220,7 @@ class Canvas extends Alkaline{
 	// Find Canvas blocks and process them
 	protected function initBlocks(){
 		$matches = array();
-		preg_match_all('#\<!-- CANVAS\_([A-Z0-9_]*) --\>#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{canvas:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$blocks = array();
@@ -261,8 +261,8 @@ class Canvas extends Alkaline{
 		$this->initBlocks();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
-		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ELSEIF\(\1\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '$3', $this->template);
-		$this->template = preg_replace('/\<!-- IF\(([A-Z0-9_]*)\) --\>(.*?)\<!-- ENDIF\(\1\) --\>/is', '', $this->template);
+		$this->template = preg_replace('#{if:([A-Z0-9_]*)}(.*?)\{else:\1}(.*?)\{/if:\1}#is', '$3', $this->template);
+		$this->template = preg_replace('#{if:([A-Z0-9_]*)}(.*?)\{/if:\1}#is', '', $this->template);
 		
 		return true;
 	}

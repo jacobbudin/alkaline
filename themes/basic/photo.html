@@ -1,35 +1,36 @@
-<!-- LOOP(PHOTOS) -->
-<p>
-	<img src="<!-- PHOTO_SRC_MEDIUM -->" alt="" class="frame" /><br />
-	<div class="float_right">
-		<div class="uploaded"><!-- PHOTO_UPLOADED --></div>
-		<div class="right"><!-- IF(RIGHT_TITLE) -->
-			<!-- RIGHT_TITLE -->
-			<!-- ELSEIF(RIGHT_TITLE) -->
-			No rights set.
-			<!-- ENDIF(RIGHT_TITLE) --></div>
+{block:Photos}
+	<div class="photo">
+		<a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a><br />
+		<div class="float_right">
+			<div class="uploaded">{Photo_Uploaded}</div>
+			<div class="right">{if:Right_Title}
+				{Right_Title}
+				{else:Right_Title}
+				No rights set.
+				{/if:Right_Title}</div>
+		</div>
+		<div class="title">
+			{Photo_Title}
+		</div>
+		<p>
+			{if:Tags}{block:Tags}<span class="tag">#{Tag_Name}</span>{/block:Tags}<br />{/if:Tags}
+			<strong>Comments:</strong>
+			{if:Comments}
+				{block:Comments}
+					{COMMENT_AUTHOR_AVATAR}{COMMENT_TEXT}...
+				{/block:Comments}
+			{else:Comments}
+				<p><strong>No comments.</strong></p>
+			{/if:Comments}
+			<p>
+				Author: {PHOTO_COMMENT_AUTHOR_NAME}<br />
+				Email: {PHOTO_COMMENT_AUTHOR_EMAIL}<br />
+				URL: {PHOTO_COMMENT_AUTHOR_URL}<br />
+				Comment: {PHOTO_COMMENT_TEXT}<br />
+				{PHOTO_COMMENT_SUBMIT}
+			</p>
+		</p>
 	</div>
-	<div class="title">
-		<!-- PHOTO_TITLE -->
-	</div>
-</p>
-<p>
-	<!-- IF(TAGS) --><!-- LOOP(TAGS) --><span class="tag">#<!-- TAG_NAME --></span><!-- ENDLOOP(TAGS) --><br /><!-- ENDIF(TAGS) -->
-</p>
-	<!-- IF(COMMENTS) -->
-	<!-- LOOP(COMMENTS) -->
-			<!-- COMMENT_AUTHOR_AVATAR --> <!-- COMMENT_TEXT --> ... 
-	<!-- ENDLOOP(COMMENTS) -->
-	<!-- ELSEIF(COMMENTS) -->
-	<p><strong>No comments.</strong></p>
-	<!-- ENDIF(COMMENTS) -->
-	<p>
-		Author: <!-- PHOTO_COMMENT_AUTHOR_NAME --><br />
-		Email: <!-- PHOTO_COMMENT_AUTHOR_EMAIL --><br />
-		URL: <!-- PHOTO_COMMENT_AUTHOR_URL --><br />
-		Comment: <!-- PHOTO_COMMENT_TEXT --><br />
-		<!-- PHOTO_COMMENT_SUBMIT -->
-	</p>
-<br />
-<hr />
-<!-- ENDLOOP(PHOTOS) -->
+	
+	<hr />
+{/block:Photos}
