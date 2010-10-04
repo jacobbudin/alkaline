@@ -134,21 +134,29 @@ class User extends Alkaline{
 	// PREFERENCES
 	// Set preference key
 	public function setPref($name, $unset=''){
+		if(!$this->perm(true)){ return false; }
+		
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
 	}
 	
 	// Read preference key and return value in HTML
 	public function readPref($name, $check=true){
+		if(!$this->perm(true)){ return false; }
+		
 		return parent::readForm($this->user['user_preferences'], $name, $check);
 	}
 	
 	// Read preference key and return value
 	public function returnPref($name){
+		if(!$this->perm(true)){ return false; }
+		
 		return parent::returnForm($this->user['user_preferences'], $name);
 	}
 	
 	// Save preferences
 	public function savePref(){
+		if(!$this->perm(true)){ return false; }
+		
 		$fields = array('user_preferences' => serialize($this->user['user_preferences']));
 		
 		// Update database
@@ -157,6 +165,8 @@ class User extends Alkaline{
 	
 	// UPDATE USER
 	public function updateFields($fields, $overwrite=true){
+		if(!$this->perm(true)){ return false; }
+		
 		// Verify each key has changed; if not, unset the key
 		foreach($fields as $key => $value){
 			if($fields[$key] == $this->user[$key]){
@@ -172,6 +182,20 @@ class User extends Alkaline{
 		
 		// Update database
 		return $this->updateRow($fields, 'users', $this->user['user_id']);
+	}
+	
+	// MAIL	
+	public function mail($subject, $message){
+		if(!$this->perm(true)){ return false; }
+		
+		$to = $this->user['user_email'];
+		$subject = 'Alkaline: ' . $subject;
+		$message = 'hello';
+		$headers = 'From: webmaster@example.com' . "\r\n" .
+			'Reply-To: webmaster@example.com' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
+		
+		return mail($to, $subject, $message, $headers);
 	}
 }
 
