@@ -803,8 +803,6 @@ class Find extends Alkaline{
 			}
 		}
 		
-		// echo $this->sql;
-		
 		// Add order, limit
 		$this->sql .= $this->sql_limit;
 		

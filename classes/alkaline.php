@@ -65,7 +65,7 @@ class Alkaline{
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
 			}
 			elseif($this->db_type == 'sqlite'){
-				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ERRMODE_SILENT => true));
+				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true));
 				
 				$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
 				$this->db->sqliteCreateFunction('COS', 'cos', 1);
@@ -908,12 +908,15 @@ class Alkaline{
 		
 		$conditions = array();
 		foreach($fields as $field){
-			$conditions[] = '(' . $field . ' = "" OR ' . $field . ' IS NULL)';
+			$conditions[] = '(' . $field . ' = ? OR ' . $field . ' IS NULL)';
 		}
 		
-		$query = 'DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';';
+		$sql_params = array_fill(0, count($fields), '');
 		
-		if(!$this->exec($query)){
+		// Delete empty rows
+		$query = $this->prepare('DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';');
+		
+		if(!$query->execute($sql_params)){
 			return false;
 		}
 		
@@ -997,7 +1000,7 @@ class Alkaline{
 		
 		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
 		
-		return $query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
+		$query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
 	}
 	
 	// FORM HANDLING
