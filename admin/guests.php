@@ -45,7 +45,7 @@ if(empty($guest_id)){
 	$guest_count = @count($guests);
 	
 	define('TITLE', 'Alkaline Guests');
-	require_once(PATH . ADMIN . 'includes/settings.php');
+	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
 	
