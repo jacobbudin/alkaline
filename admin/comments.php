@@ -55,7 +55,8 @@ if(empty($comment_id)){
 		$photo_ids[] = $comment['photo_id'];
 	}
 	
-	$photo_ids = array_unique($photo_ids);
+	$photo_ids = array_unique($photo_ids, SORT_NUMERIC);
+	$photo_ids = array_values($photo_ids);
 	
 	$photos = new Photo($photo_ids);
 	$photos->getImgUrl('square');
@@ -78,7 +79,7 @@ if(empty($comment_id)){
 		foreach($comments as $comment){
 			echo '<tr>';
 				echo '<td>';
-				$key = array_search($comment['photo_id'], $photos->photo_ids);
+				$key = array_search($comment['photo_id'], $photo_ids);
 				if(is_int($key)){
 					echo '<a href="' . BASE . ADMIN . 'photo/' . $photos->photos[$key]['photo_id'] . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
 				}
