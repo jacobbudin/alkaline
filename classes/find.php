@@ -31,6 +31,7 @@ class Find extends Alkaline{
 	protected $sql_group_by;
 	protected $sql_having;
 	protected $sql_having_fields;
+	protected $sql_params;
 	protected $sql_order_by;
 	protected $sql_where;
 	
@@ -56,6 +57,7 @@ class Find extends Alkaline{
 		$this->sql_having = '';
 		$this->sql_injection = '';
 		$this->sql_having_fields = array();
+		$this->sql_params = array();
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 	}
@@ -117,7 +119,8 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_taken >= "' . $begin . ' 00:00:00"';
+			$this->sql_conds[] = 'photos.photo_taken >= :photo_taken_begin';
+			$this->sql_params[':photo_taken_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
@@ -125,7 +128,8 @@ class Find extends Alkaline{
 			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
-			$this->sql_conds[] = 'photos.photo_taken <= "' . $end . ' 23:59:59"';
+			$this->sql_conds[] = 'photos.photo_taken <= :photo_taken_end';
+			$this->sql_params[':photo_taken_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
@@ -141,7 +145,8 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_uploaded >= "' . $begin . ' 00:00:00"';
+			$this->sql_conds[] = 'photos.photo_uploaded >= :photo_uploaded_begin';
+			$this->sql_params[':photo_uploaded_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
@@ -149,7 +154,8 @@ class Find extends Alkaline{
 			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
-			$this->sql_conds[] = 'photos.photo_uploaded <= "' . $end . ' 23:59:59"';
+			$this->sql_conds[] = 'photos.photo_uploaded <= :photo_uploaded_end';
+			$this->sql_params[':photo_uploaded_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
@@ -309,7 +315,12 @@ class Find extends Alkaline{
 		$include_photo_ids = array_keys($include_photo_ids);
 		
 		// Set fields to search
-		$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $include_photo_ids) . ')';
+		if(count($include_photo_ids) > 0){
+			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $include_photo_ids) . ')';
+		}
+		else{
+			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+		}
 		
 		return true;
 	}
@@ -349,8 +360,9 @@ class Find extends Alkaline{
 		}
 		$exclude_photo_ids = array_unique($exclude_photo_ids);
 		
-		// Set fields to search
-		$this->sql_conds[] = 'photos.photo_id NOT IN (' . implode(', ', $exclude_photo_ids) . ')';
+		if(count($exclude_photo_ids) > 0){
+			$this->sql_conds[] = 'photos.photo_id NOT IN (' . implode(', ', $exclude_photo_ids) . ')';
+		}
 		
 		return true;
 	}
@@ -390,7 +402,12 @@ class Find extends Alkaline{
 		
 		// If static, use stored photo IDs
 		elseif($pile['pile_type'] == 'static'){
-			$this->sql_conds[] = 'photos.photo_id IN (' . $pile['pile_photos'] . ')';
+			if(!empty($pile['pile_photos'])){
+				$this->sql_conds[] = 'photos.photo_id IN (' . $pile['pile_photos'] . ')';
+			}
+			else{
+				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+			}
 		}
 		
 		if((($pile['pile_type'] == 'auto') or empty($pile['pile_photo_count'])) and ($update === true)){
@@ -475,6 +492,7 @@ class Find extends Alkaline{
 		
 		// Prepare input
 		$search_lower = strtolower($search);
+		$search_lower = preg_replace('#\s#', '%', $search_lower);
 		
 		// Set fields to search (security)
 		// $sql = '(';
@@ -494,7 +512,12 @@ class Find extends Alkaline{
 			$photo_ids[] = $photo['photo_id'];
 		}
 		
-		$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		if(count($photo_ids)){
+			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		}
+		else{
+			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+		}
 		
 		return true;
 	}
@@ -582,10 +605,12 @@ class Find extends Alkaline{
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
-			$this->sql_conds[] = 'photos.photo_published < "' . $now . '"';
+			$this->sql_conds[] = 'photos.photo_published < :photo_published';
+			$this->sql_params[':photo_published'] = $now;
 		}
 		if($published == false){
-			$this->sql_conds[] = '(photos.photo_published > "' . $now . '" OR photo_published IS NULL OR photo_published = "")';
+			$this->sql_conds[] = '(photos.photo_published > :photo_published OR photo_published IS NULL)';
+			$this->sql_params[':photo_published'] = $now;
 		}
 		
 		return true;
@@ -756,7 +781,6 @@ class Find extends Alkaline{
 		$field = $this->sanitize($field);
 		
 		$this->sql_conds[] = $field . ' IS NOT NULL';
-		$this->sql_conds[] = $field . ' != ""';
 		
 		return true;
 	}
@@ -798,7 +822,7 @@ class Find extends Alkaline{
 		
 		// Execute query without limit
 		$query = $this->prepare($this->sql);
-		$query->execute();
+		$query->execute($this->sql_params);
 		$photos = $query->fetchAll();
 		
 		// Grab photos.photo_ids of results
@@ -846,7 +870,7 @@ class Find extends Alkaline{
 		
 		// Execute query with order, limit
 		$query = $this->prepare($this->sql);
-		$query->execute();
+		$query->execute($this->sql_params);
 		$photos = $query->fetchAll();
 		
 		// Grab photos.photo_ids of results

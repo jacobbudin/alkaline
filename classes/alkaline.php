@@ -98,7 +98,7 @@ class Alkaline{
 		return $response;
 	}
 	
-	public function prequery($query){
+	public function prequery(&$query){
 		$_SESSION['alkaline']['debug']['queries']++;
 		
 		if($this->db_type == 'pgsql'){
@@ -116,7 +116,7 @@ class Alkaline{
 		}
 	}
 	
-	public function postquery($query, $db=null){
+	public function postquery(&$query, $db=null){
 		if(empty($db)){ $db = $this->db; }
 		
 		$error = $db->errorInfo();
