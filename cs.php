@@ -30,6 +30,9 @@ class AlkalineCS{
 		$php_pdo_drivers = @PDO::getAvailableDrivers();
 		foreach($php_pdo_drivers as $driver){
 			switch($driver){
+				case 'mssql':
+					$this->php_pdo_drivers[] = 'Microsoft SQL Server';
+					break;
 				case 'mysql':
 					$this->php_pdo_drivers[] = 'MySQL';
 					break;
@@ -197,6 +200,13 @@ class AlkalineCS{
 						<span class="small quiet">Apache mod_rewite allows Alkaline to use clean, semantic URLs.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isThere('mod_rewrite')); ?>
+				</tr>
+				<tr>
+					<td>
+						<h5>ImageMagick library</h5>
+						<span class="small quiet">ImageMagick allows Alkaline to create higher-quality image files.</span>
+					</td>
+					<?php echo $test->boolToHTML($test->isExt('imagick', false)); ?>
 				</tr>
 				<tr>
 					<td>

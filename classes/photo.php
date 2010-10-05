@@ -396,87 +396,102 @@ class Photo extends Alkaline{
 	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
-		switch($ext){
-			case 'jpg':
-				list($width_orig, $height_orig) = getimagesize($src);
+		
+		// ImageMagick version
+		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+			$image = new Imagick($src);
+			
+			switch($ext){
+				case 'jpg':
+					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
+					$image->setImageCompressionQuality($quality);
+					break;
+				case 'png':
+					break;
+				case 'gif':
+					break;
+			}
+			
+			$image->cropThumbnailImage($width, $height);
+			$image->writeImage($dest);
+			$image->clear();
+			$image->destroy();
+			return true;
+		}
+		// GD version
+		else{
+			list($width_orig, $height_orig) = getimagesize($src);
 
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
+			$ratio_orig = $width_orig / $height_orig;
+			$ratio = $width / $height;
+			
+			switch($ext){
+				case 'jpg':
+					if($ratio_orig > $ratio){
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefromjpeg($src);
+						$pixel = ($width_orig - $height_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
+						imagejpeg($image_p, $dest, $quality);
+					}
+					else{
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefromjpeg($src);
+						$pixel = ($height_orig - $width_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
+						imagejpeg($image_p, $dest, $quality);
+					}
 
-				if($ratio_orig > $ratio){
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromjpeg($src);
-					$pixel = ($width_orig - $height_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-					imagejpeg($image_p, $dest, $quality);
-				}
-				else{
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromjpeg($src);
-					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-					imagejpeg($image_p, $dest, $quality);
-				}
-
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			case 'png':
-				list($width_orig, $height_orig) = getimagesize($src);
-
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
+					imagedestroy($image);
+					imagedestroy($image_p);
+					return true;
+					break;
+				case 'png':
+					$quality_tmp = floor((1 / $quality) * 95);
 				
-				$quality_tmp = floor((1 / $quality) * 95);
-				
-				if($ratio_orig > $ratio){
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefrompng($src);
-					$pixel = ($width_orig - $height_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-					imagepng($image_p, $dest, $quality_tmp);
-				}
-				else{
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefrompng($src);
-					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-					imagepng($image_p, $dest, $quality_tmp);
-				}
+					if($ratio_orig > $ratio){
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefrompng($src);
+						$pixel = ($width_orig - $height_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
+						imagepng($image_p, $dest, $quality_tmp);
+					}
+					else{
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefrompng($src);
+						$pixel = ($height_orig - $width_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
+						imagepng($image_p, $dest, $quality_tmp);
+					}
 
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			case 'gif':
-				list($width_orig, $height_orig) = getimagesize($src);
+					imagedestroy($image);
+					imagedestroy($image_p);
+					return true;
+					break;
+				case 'gif':
+					if($ratio_orig > $ratio){
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefromgif($src);
+						$pixel = ($width_orig - $height_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
+						imagegif($image_p, $dest);
+					}
+					else{
+						$image_p = imagecreatetruecolor($width, $height);
+						$image = imagecreatefromgif($src);
+						$pixel = ($height_orig - $width_orig) / 2;
+						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
+						imagegif($image_p, $dest);
+					}
 
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
-
-				if($ratio_orig > $ratio){
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromgif($src);
-					$pixel = ($width_orig - $height_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-					imagegif($image_p, $dest);
-				}
-				else{
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromgif($src);
-					$pixel = ($height_orig - $width_orig) / 2;
-					imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-					imagegif($image_p, $dest);
-				}
-
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			default:
-				return false;
-				break;
+					imagedestroy($image);
+					imagedestroy($image_p);
+					return true;
+					break;
+				default:
+					return false;
+					break;
+			}
 		}
 	}
 	
@@ -485,80 +500,98 @@ class Photo extends Alkaline{
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
-		switch($ext){
-			case 'jpg':
-				list($width_orig, $height_orig) = getimagesize($src);
+		// ImageMagick version
+		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+			$image = new Imagick($src);
+			
+			list($width_orig, $height_orig) = getimagesize($src);
+			
+			if(($width_orig <= $width) and ($height_orig <= $height)){
+				copy($src, $dest);
+				return true;	
+			}
+
+			$ratio_orig = $width_orig / $height_orig;
+			$ratio = $width / $height;
+
+			if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
+			else{ $width = $height * $ratio_orig; }
+			
+			switch($ext){
+				case 'jpg':
+					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
+					$image->setImageCompressionQuality($quality);
+					break;
+				case 'png':
+					break;
+				case 'gif':
+					break;
+			}
+			
+			$image->thumbnailImage($width, $height);
+			$image->writeImage($dest);
+			$image->clear();
+			$image->destroy();
+			return true;
+		}
+		// GD version
+		else{
+			list($width_orig, $height_orig) = getimagesize($src);
+		
+			if(($width_orig <= $width) and ($height_orig <= $height)){
+				copy($src, $dest);
+				return true;	
+			}
+
+			$ratio_orig = $width_orig / $height_orig;
+			$ratio = $width / $height;
+
+			if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
+			else{ $width = $height * $ratio_orig; }
+			
+			switch($ext){
+				case 'jpg':
+					$image_p = imagecreatetruecolor($width, $height);
+					$image = imagecreatefromjpeg($src);
+					
+					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+					imagejpeg($image_p, $dest, $quality);
 				
-				if(($width_orig <= $width) and ($height_orig <= $height)){
-					copy($src, $dest);
-					return true;	
-				}
+					imagedestroy($image);
+					imagedestroy($image_p);
+					
+					return true;
+					break;
+				case 'png':
+					$quality_tmp = floor((1 / $quality) * 95);
+					
+					$image_p = imagecreatetruecolor($width, $height);
+					$image = imagecreatefrompng($src);
+					
+					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+					imagepng($image_p, $dest, $quality_tmp);
 
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
+					imagedestroy($image);
+					imagedestroy($image_p);
+					
+					return true;
+					break;
+				case 'gif':
+					$image_p = imagecreatetruecolor($width, $height);
+					$image = imagecreatefromgif($src);
+					
+					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+					imagegif($image_p, $dest);
 
-				if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
-				else{ $width = $height * $ratio_orig; }
-
-				$image_p = imagecreatetruecolor($width, $height);
-				$image = imagecreatefromjpeg($src);
-				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-				imagejpeg($image_p, $dest, $quality);
-				
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			case 'png':
-				list($width_orig, $height_orig) = getimagesize($src);
-				
-				if(($width_orig <= $width) and ($height_orig <= $height)){
-					copy($src, $dest);
-					return true;	
-				}
-
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
-
-				if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
-				else{ $width = $height * $ratio_orig; }
-
-				$image_p = imagecreatetruecolor($width, $height);
-				$image = imagecreatefrompng($src);
-				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-				$quality_tmp = floor((1 / $quality) * 95);
-				imagepng($image_p, $dest, $quality_tmp);
-
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			case 'gif':
-				list($width_orig, $height_orig) = getimagesize($src);
-				
-				if(($width_orig <= $width) and ($height_orig <= $height)){
-					copy($src, $dest);
-					return true;	
-				}
-
-				$ratio_orig = $width_orig / $height_orig;
-				$ratio = $width / $height;
-
-				if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
-				else{ $width = $height * $ratio_orig; }
-
-				$image_p = imagecreatetruecolor($width, $height);
-				$image = imagecreatefromgif($src);
-				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-				imagegif($image_p, $dest);
-
-				imagedestroy($image);
-				imagedestroy($image_p);
-				return true;
-				break;
-			default:
-				return false;
-				break;
+					imagedestroy($image);
+					imagedestroy($image_p);
+					
+					return true;
+					break;
+				default:
+					return false;
+					break;
+			}
 		}
 	}
 	

@@ -17,6 +17,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
+	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
 	$alkaline->setConf('thumb_compress_tol', intval(@$_POST['thumb_compress_tol']));
@@ -165,6 +166,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Thumbnails</h3>
 	
 	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); ?> value="true" /></td>
+			<td class="description">
+				<label for="thumb_imagick">Use ImageMagick library</label> (if installed)<br />
+				Create higher-quality thumbnails at the cost of increased system resources
+			</td>
+		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="thumb_compress" name="thumb_compress" <?php echo $alkaline->readConf('thumb_compress'); ?> value="true" /></td>
 			<td class="description">

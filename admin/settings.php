@@ -41,6 +41,32 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td><?php echo Alkaline::version; ?> <span class="small">(<?php echo Alkaline::build; ?>)</span></td>
 			</tr>
 			<tr>
+				<td class="right">Database type:</td>
+				<td>
+					<?php
+					
+					switch($alkaline->db_type){
+						case 'mssql':
+							echo 'Microsoft SQL Server';
+							break;
+						case 'mysql':
+							echo 'MySQL';
+							break;
+						case 'pgsql':
+							echo 'PostgreSQL';
+							break;
+						case 'sqlite':
+							echo 'SQLite';
+							break;
+						default:
+							echo 'Unknown';
+							break;
+					}
+					
+					?>
+				</td>
+			</tr>
+			<tr>
 				<td class="right">Theme:</td>
 				<td><?php $themes = $alkaline->getTable('themes', null, 1, null, 'theme_default DESC'); if(!empty($themes)){ $theme = $themes[0]; echo $theme['theme_title'] . ' <span class="small">(' . $theme['theme_build'] . ')</span>'; } else { echo '&#8212;'; } ?></td>
 			</tr>
@@ -58,7 +84,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 			<tr>
 				<td class="right">GD Version:</td>
-				<td><?php $gd_info = gd_info(); echo ucfirst($gd_info['GD Version']); ?></td>
+				<td><?php if($gd_info = gd_info()){ preg_match('#[0-9.]+#s', $gd_info['GD Version'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
+			</tr>
+			<tr>
+				<td class="right">ImageMagick Version:</td>
+				<td><?php if($im_info = Imagick::getVersion()){ preg_match('#[0-9.]+#s', $im_info['versionString'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 			</tr>
 		</table>
 	</div>
