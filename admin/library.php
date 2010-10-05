@@ -33,6 +33,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h3>Find</h3>
 		
 		<ul>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/displayed/">Displayed photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/updated/">Recently updated photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/views/">Most viewed photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/nonpublic/">Nonpublic photos</a></li>
+		</ul>
+		<ul>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/unpublished/">Unpublished photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search/untitled/">Untitled photos</a></li>
 			<li><a href="<?php echo BASE . ADMIN; ?>search/untagged/">Untagged photos</a></li>
 		</ul>
 	</div>

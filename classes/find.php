@@ -513,14 +513,33 @@ class Find extends Alkaline{
 			else{
 				return false;
 			}
+			
+			// Set fields to search
+			if($all == true){
+				$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+			}
+			else{
+				$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+			}
 		}
-		
-		// Set fields to search
-		if($all == true){
-			$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+		elseif(is_integer($privacy)){
+			// Set fields to search
+			if($all == true){
+				$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+			}
+			else{
+				$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+			}
+			
+		}
+		elseif(is_array($privacy)){
+			parent::convertToIntegerArray($privacy);
+			
+			// Set fields to search
+			$this->sql_conds[] = 'photos.photo_privacy IN (' . implode(', ', $privacy) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+			return false;
 		}
 		
 		return true;
@@ -609,6 +628,25 @@ class Find extends Alkaline{
 				
 				// Set tags to find
 				$this->sql_conds[] = 'links.link_id IS NULL';
+				break;
+			case 'unpublished':
+				$this->_published(false);
+				break;
+			case 'displayed':
+				$this->_published(true);
+				$this->_privacy('public');
+				break;
+			case 'updated':
+				$this->_sort('photo_updated', 'DESC');
+				break;
+			case 'nonpublic':
+				$this->_privacy(array(2, 3));
+				break;
+			case 'untitled':
+				$this->sql_conds[] = 'photos.photo_title IS NULL';
+				break;
+			case 'views':
+				$this->_sort('photo_views', 'DESC');
 				break;
 			case 'tags':
 				$this->_allTags(@intval($_GET['id']));

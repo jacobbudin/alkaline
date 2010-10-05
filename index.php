@@ -25,8 +25,8 @@ $photo_ids = new Find;
 $photo_ids->_page(null,5,3);
 // $photo_ids->with(201);
 // $photo_ids->offset(2);
-// $photo_ids->_published();
-$photo_ids->privacy('protected', true);
+$photo_ids->_published();
+$photo_ids->privacy('public');
 // $photo_ids->pile('fun');
 $photo_ids->find();
 
