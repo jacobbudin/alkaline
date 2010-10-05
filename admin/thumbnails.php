@@ -73,7 +73,7 @@ if(empty($size_id)){
 				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails/' . $size['size_id'] . '">' . $size['size_title'] . '</a></strong></td>';
 				echo '<td class="center">' . $size['size_width'] . ' &#0215; ' . $size['size_height'] . '</td>';
 				echo '<td class="center">' . ucwords($size['size_type']) . '</a></td>';
-				echo '<td class="center">&#0060;&#0033;&#0045;&#0045; PHOTO_SRC_' . strtoupper($size['size_title']) . ' &#0045;&#0045;&#0062;</td>';
+				echo '<td class="center">{Photo_Src_' . ucwords($size['size_title']) . '}</td>';
 			echo '</tr>';
 		}
 	

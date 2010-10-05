@@ -29,7 +29,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	foreach($blocks as $block){
 		echo '<tr>';
 		echo '<td><strong>' . $block . '</strong></td>';
-		echo '<td class="center">&#0060;&#0033;&#0045;&#0045; CANVAS_' . strtoupper(preg_replace('#\..+#si', '', $block)) . ' &#0045;&#0045;&#0062;</td>';
+		echo '<td class="center">{canvas:' . preg_replace('#\..+#si', '', ucwords($block)) . '}</td>';
 		echo '</tr>';
 	}
 
