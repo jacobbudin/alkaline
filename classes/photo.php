@@ -1196,74 +1196,110 @@ class Photo extends Alkaline{
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
-		$watermark = imagecreatefrompng($watermark);
-	
-		imagealphablending($watermark, false);
-	    imagesavealpha($watermark, true);
-	
-		$width_watermark = imagesx($watermark);
-		$height_watermark = imagesy($watermark);
-		
-		switch($ext){
-			case 'jpg':
-				$image = imagecreatefromjpeg($src);
-				imagealphablending($image, true);
+		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+			$image = new Imagick($src);
+			$image_watermark = new Imagick($watermark);
+			
+			list($width, $height) = getimagesize($src);
+			list($width_watermark, $height_watermark) = getimagesize($watermark);
+			
+			switch($ext){
+				case 'jpg':
+					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
+					$image->setImageCompressionQuality($quality);
+					break;
+				case 'png':
+					break;
+				case 'gif':
+					break;
+			}
+			
+			if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
+			
+			list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
+			
+			$image->compositeImage($image_watermark, Imagick::COMPOSITE_DEFAULT, $pos_x, $pos_y);
+			$image->flattenImages();
+			
+			$image->writeImage($dest);
+			$image->clear();
+			$image->destroy();
+			return true;
+		}
+		else{
+			$watermark = imagecreatefrompng($watermark);
+
+			imagealphablending($watermark, false);
+		    imagesavealpha($watermark, true);
+
+			$width_watermark = imagesx($watermark);
+			$height_watermark = imagesy($watermark);
+			
+			switch($ext){
+				case 'jpg':
+					$image = imagecreatefromjpeg($src);
+					imagealphablending($image, true);
 				
-				$width = imagesx($image);
-				$height = imagesy($image);
+					$width = imagesx($image);
+					$height = imagesy($image);
 				
-				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
+					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
+					
+					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
+					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+					imagedestroy($watermark);
+					imagejpeg($image, $dest, $quality);
+					imagedestroy($image);
 				
-				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-				imagedestroy($watermark);
-				imagejpeg($image, $dest, $quality);
-				imagedestroy($image);
+					return true;
+					break;
+				case 'png':
+					$image = imagecreatefrompng($src);
+					imagealphablending($image, true);
+					
+					$quality_tmp = floor((1 / $quality) * 95);
+					
+					$width = imagesx($image);
+					$height = imagesy($image);
 				
-				return true;
-				break;
-			case 'png':
-				$image = imagecreatefrompng($src);
+					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
 				
-				$width = imagesx($image);
-				$height = imagesy($image);
+					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
-				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
+					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+					imagedestroy($watermark);
+					imagepng($image, $dest, $quality_tmp);
+					imagedestroy($image);
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
+					return true;
+					break;
+				case 'gif':
+					$image = imagecreatefromgif($src);
+					
+					$width = imagesx($image);
+					$height = imagesy($image);
 				
-				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-				imagedestroy($watermark);
-				imagepng($image, $dest, $quality);
-				imagedestroy($image);
+					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
 				
-				return true;
-				break;
-			case 'gif':
-				$image = imagecreatefromgif($src);
+					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
 				
-				$width = imagesx($image);
-				$height = imagesy($image);
+					$image_temp = imagecreatetruecolor($width, $height);
+					imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
+					$image = $image_temp;
+					imagealphablending($image, true);
 				
-				if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
+					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
+					imagedestroy($watermark);
+					imagegif($image, $dest, $quality);
+					imagedestroy($image);
 				
-				list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
-				
-				$image_tamp = imagecreatetruecolor($width, $height);
-				imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
-				$image = $image_tamp;
-				
-				imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-				imagedestroy($watermark);
-				imagegif($image, $dest, $quality);
-				imagedestroy($image);
-				
-				return true;
-				break;
-			default:
-				return false;
-				break;
+					return true;
+					break;
+				default:
+					return false;
+					break;
+			}
 		}
 	}
 	
