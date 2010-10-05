@@ -474,7 +474,7 @@ class Alkaline{
 	
 	// Sanitize table, column names, other data
 	public function sanitize($string){
-		return preg_replace('#(?:(?![a-z0-9_\.-]).)*#si', '', $string);
+		return preg_replace('#(?:(?![a-z0-9_\.-\s]).)*#si', '', $string);
 	}
 	
 	// Make HTML-safe quotations
@@ -700,7 +700,7 @@ class Alkaline{
 			$page = 1;
 		}
 		
-		$table = strip_tags($table);
+		$table = $this->sanitize($table);
 		
 		$sql_params = array();
 		
@@ -708,8 +708,8 @@ class Alkaline{
 		$limit_sql = '';
 		
 		if(!empty($order_by)){
-			$order_by_sql = ' ORDER BY :order_by';
-			$sql_params[':order_by'] = $order_by;
+			$order_by = $this->sanitize($order_by);
+			$order_by_sql = ' ORDER BY ' . $order_by;
 		}
 		
 		if(!empty($limit)){
