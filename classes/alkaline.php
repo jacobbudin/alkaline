@@ -20,7 +20,7 @@ class Alkaline{
 	public $db;
 	public $db_type;
 	public $configuration;
-	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
+	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
 	protected $addendum;
 	protected $guest;
@@ -927,6 +927,7 @@ class Alkaline{
 		
 		// Exclude tables
 		unset($tables['rights']);
+		unset($tables['exifs']);
 		unset($tables['extensions']);
 		unset($tables['themes']);
 		unset($tables['sizes']);
