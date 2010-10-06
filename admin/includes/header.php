@@ -29,7 +29,7 @@
 					<?php
 					if($user->perm()){
 						?>
-						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences/" class="user"><?php echo $user->user['user_name']; ?></a> <a href="<?php echo BASE . ADMIN; ?>logout/" class="logout">Log out</a>
+						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>" class="user"><?php echo $user->user['user_name']; ?></a> <a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>" class="logout">Log out</a>
 						<?php
 					}
 					?>
@@ -44,10 +44,10 @@
 				
 				if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'features') or (@TAB == 'settings')){
 					?>
-					<li><a href="<?php echo BASE . ADMIN; ?>dashboard/"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>library/"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>features/"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Features</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>settings/"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>dashboard<?php echo URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>features<?php echo URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Features</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>settings<?php echo URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
 					<li><a href="http://www.alkalineapp.com/help/" target="_new">Help</a></li>
 					<?php
 				}

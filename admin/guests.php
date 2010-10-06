@@ -63,7 +63,7 @@ if(empty($guest_id)){
 	
 		foreach($guests as $guest){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'guests/' . $guest['guest_id'] . '">' . $guest['guest_title'] . '</a></strong></td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'guests' . URL_ID . $guest['guest_id'] . URL_RW . '">' . $guest['guest_title'] . '</a></strong></td>';
 				echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
 				echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>(Never)</em>') . '</td>';
 			echo '</tr>';
@@ -94,11 +94,9 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/guests/<?php echo $guest['guest_id']; ?>/">View photos</a></div>
-	
 	<h1>Guest</h1>
 	
-	<form id="guest" action="<?php echo BASE . ADMIN; ?>guests/" method="post">
+	<form id="guest" action="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="guest_title">Title:</label></td>

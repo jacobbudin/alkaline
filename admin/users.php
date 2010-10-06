@@ -65,7 +65,7 @@ if(empty($user_db_id)){
 	
 		foreach($user_dbs as $user_db){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user_db['user_id'] . '">' . $user_db['user_user'] . '</a></strong></td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user_db['user_name'] . '</td>';
 				echo '<td class="center">' . number_format($user_db['user_photo_count']) . '</td>';
 				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>(Never)</em>') . '</td>';
@@ -105,11 +105,11 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/users/<?php echo $user_db['user_id']; ?>/">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>users<?php echo URL_AID . $user_db['user_id'] . URL_RW; ?>">View photos</a></div>
 	
 	<h1>User</h1>
 	
-	<form id="user" action="<?php echo BASE . ADMIN; ?>users/" method="post">
+	<form id="user" action="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="user_name">Name:</label></td>

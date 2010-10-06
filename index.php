@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config.php');
+require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
@@ -12,7 +12,7 @@ $orbit = new Orbit;
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('TITLE', 'Welcome &#8212; ' . SITE);
+$header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
 $header->display();
 
 $photo_ids = new Find;

@@ -7,11 +7,11 @@ $alkaline = new Alkaline;
 $user = new User;
 
 if($user->perm()){
-	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
 	exit();
 }
 else{
-	header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'login' . URL_CAP);
 	exit();
 }
 

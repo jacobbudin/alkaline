@@ -112,7 +112,7 @@ else{
 	
 	<h1>Rights Set</h1>
 	
-	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights/" method="post">
+	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="right_title">Title:</label></td>

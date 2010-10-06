@@ -16,7 +16,7 @@ if(!empty($_POST['preferences_save'])){
 	
 	$alkaline->addNotification('Your prefences have been saved.', 'success');
 	
-	header('Location: ' . BASE . ADMIN . '/');
+	header('Location: ' . BASE . ADMIN . 'dashboard' . URL_CAP);
 	exit();
 }
 

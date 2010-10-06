@@ -81,10 +81,10 @@ if(empty($comment_id)){
 				echo '<td>';
 				$key = array_search($comment['photo_id'], $photo_ids);
 				if(is_int($key)){
-					echo '<a href="' . BASE . ADMIN . 'photo/' . $photos->photos[$key]['photo_id'] . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
+					echo '<a href="' . BASE . ADMIN . 'photo' . URL_ID . $photos->photos[$key]['photo_id'] . URL_RW . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
 				}
 				echo '</td>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'comments/' . $comment['comment_id'] . '">';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '">';
 				if(!empty($comment['comment_author_name'])){
 					echo $comment['comment_author_name'];
 				}
@@ -123,7 +123,7 @@ else{
 	
 	<h1>Comment</h1>
 
-	<form action="<?php echo BASE . ADMIN; ?>comments/" method="post">
+	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right"><label for="comment_text">Author:</label></td>

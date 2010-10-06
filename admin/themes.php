@@ -37,7 +37,7 @@ if(empty($theme_id)){
 
 	?>
 	
-	<div class="actions"><a href="install/">Install theme</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install theme</a></div>
 
 	<h1>Themes (<?php echo $theme_count; ?>)</h1>
 
@@ -51,7 +51,7 @@ if(empty($theme_id)){
 
 		foreach($themes as $theme){
 			echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'themes/' . $theme['theme_id'] . '">' . $theme['theme_title'] . '</a></strong>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'themes' . URL_ID . $theme['theme_id'] . URL_RW . '">' . $theme['theme_title'] . '</a></strong>';
 			if(!empty($theme['theme_creator'])){
 				echo ' \ ';
 				if(!empty($theme['theme_creator_url'])){
@@ -97,7 +97,7 @@ else{
 	
 	<h1><?php echo $theme['theme_title']; ?></h1>
 	
-	<form id="theme" action="<?php echo BASE . ADMIN; ?>themes/" method="post">
+	<form id="theme" action="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right"><input type="checkbox" id="theme_default" name="theme_default" value="default" <?php if($theme['theme_default'] == 1){ echo 'checked="checked" disabled="disabled"'; } ?> /></td>

@@ -72,7 +72,7 @@ if(empty($pile_id)){
 	
 		foreach($piles as $pile){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'piles/' . $pile['pile_id'] . '">' . $pile['pile_title'] . '</a></strong><br />' . $alkaline->fitString($pile['pile_description'], 150) . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'piles' . URL_ID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a></strong><br />' . $alkaline->fitString($pile['pile_description'], 150) . '</td>';
 				echo '<td class="center">' . $pile['pile_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
@@ -108,11 +108,11 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/piles/<?php echo $pile['pile_id']; ?>/">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE; ?>piles/<?php echo $pile['pile_id']; ?>/">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>piles<?php echo URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE; ?>piles<?php echo URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	
-	<form id="pile" action="<?php echo BASE . ADMIN; ?>piles/" method="post">
+	<form id="pile" action="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="pile_title">Title:</label></td>

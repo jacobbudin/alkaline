@@ -22,8 +22,8 @@ if(empty($_GET) and empty($_POST)){
 }
 
 // Smart search
-if(!empty($_GET['smart'])){
-	$photo_ids->_smart($_GET['smart']);
+if(!empty($_GET['act'])){
+	$photo_ids->_smart($_GET['act']);
 }
 
 // Title and description
@@ -187,7 +187,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div class="actions"><a href="<?php echo BASE . ADMIN; ?>piles/build/">Build pile</a> <a href="<?php echo BASE . ADMIN; ?>library/">New search</a></div>
+<div class="actions"><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build pile</a> <a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">New search</a></div>
 
 <h1>Search Results (<?php echo $photo_ids->photo_count_result; ?>)</h1>
 
@@ -199,7 +199,7 @@ if($photo_ids->photo_count_result > 0){
 	<?php
 	for($i = 0; $i < $photos->photo_count; ++$i){
 		?>
-		<a href="<?php echo BASE . ADMIN . 'photo/' . $photos->photos[$i]['photo_id']; ?>/"><img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" class="frame" /></a>
+		<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photos->photos[$i]['photo_id'] . URL_RW; ?>"><img src="<?php echo $photos->photos[$i]['photo_src_square']; ?>" alt="" title="<?php echo $photos->photos[$i]['photo_title']; ?>" class="frame" /></a>
 		<?php
 	}
 	?>

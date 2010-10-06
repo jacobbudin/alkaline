@@ -37,7 +37,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	foreach($guests as $guest){
 		echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'guests/' . $guest['guest_id'] . '">' . $guest['guest_title'] . '</a></strong></td>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'guests' . URL_ID . $guest['guest_id'] . URL_RW . '">' . $guest['guest_title'] . '</a></strong></td>';
 			echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
 			echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>(Never)</em>') . '</td>';
 		echo '</tr>';
@@ -61,7 +61,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	foreach($users as $user){
 		echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'users/' . $user['user_id'] . '">' . $user['user_user'] . '</a></strong></td>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user['user_id'] . URL_RW . '">' . $user['user_user'] . '</a></strong></td>';
 			echo '<td class="center">' . number_format($user['user_photo_count']) . '</td>';
 			echo '<td>' . $alkaline->formatTime($user['user_last_login'], null, '<em>(Never)</em>') . '</td>';
 		echo '</tr>';

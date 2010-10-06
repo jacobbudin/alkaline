@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config.php');
+require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 header('Content-Type: application/xml');

@@ -13,7 +13,7 @@ $user = new User;
 if($remember == 1){ $remember = true; }
 
 if($user->perm()){
-	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
 	exit();
 }
 
@@ -25,7 +25,7 @@ if(!empty($username) or !empty($password)){
 			$alkaline->addNotification('A new version of Alkaline is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
 		}
 		
-		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
 		exit();
 	}
 	else{

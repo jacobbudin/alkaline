@@ -45,7 +45,7 @@ if(empty($extension_id)){
 
 	?>
 	
-	<div class="actions"><a href="install/">Install extension</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install extension</a></div>
 
 	<h1>Extensions (<?php echo @$orbit->extension_count; ?>)</h1>
 
@@ -61,7 +61,7 @@ if(empty($extension_id)){
 	
 		foreach($orbit->extensions as $extension){
 			echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions/' . $extension['extension_id'] . '">' . $extension['extension_title'] . '</a></strong>';
+			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
 			if(!empty($extension['extension_creator'])){
 				echo ' \ ';
 				if(!empty($extension['extension_creator_url'])){
@@ -102,7 +102,7 @@ else{
 	<h1><?php echo $extension['extension_title']; ?></h1>
 	<p><?php echo $extension['extension_description']; ?></p>
 	
-	<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions/" method="post">
+	<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 		<div>
 			<?php $has_config = $extensions->hook('config', true); ?>
 		</div>

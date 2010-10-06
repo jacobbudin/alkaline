@@ -35,8 +35,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-5 colborderr">
-		<h2><a href="<?php echo BASE . ADMIN; ?>statistics/"><img src="/images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>preferences/"><img src="/images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="/images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="/images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
 		
 		<hr />
 		
@@ -57,13 +57,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php if($shoebox_count > 0){ ?>
 					<tr>
 						<td class="right"><?php echo $shoebox_count; ?></td>
-						<td><a href="<?php echo BASE . ADMIN; ?>shoebox/">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
 					</tr>
 				<?php } ?>
 				<?php if($comment_count > 0){ ?>
 					<tr>
 						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN; ?>comments/unpublished/">new <?php $alkaline->echoCount($comment_count, 'comment'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php $alkaline->echoCount($comment_count, 'comment'); ?></a></td>
 					</tr>
 				<?php } ?>
 			</table>
@@ -76,7 +76,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php
 			$tables = $alkaline->getInfo();
 			foreach($tables as $table){
-				echo '<tr><td class="right">' . number_format($table['count']) . '</td><td><a href="' . BASE . ADMIN . $table['table'] . '/">' . $table['display'] . '</a></td></tr>';
+				echo '<tr><td class="right">' . number_format($table['count']) . '</td><td><a href="' . BASE . ADMIN . $table['table'] . URL_CAP . '">' . $table['display'] . '</a></td></tr>';
 			}
 			?>
 		</table>
@@ -90,7 +90,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<div id="statistics_views" title="<?php echo $views; ?>"></div>
 		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 		
-		<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library/">Go to library</a></div>
+		<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
 		<h1>Recent</h1>
 		<p>
 			<?php
@@ -109,7 +109,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 			foreach($photos->photos as $photo){
 				?>
-				<a href="<?php echo BASE . ADMIN . 'photo/' . $photo['photo_id']; ?>/">
+				<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
 					<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
 				</a>
 				<?php

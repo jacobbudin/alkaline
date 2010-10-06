@@ -1,6 +1,6 @@
 <?php
 
-require_once('./config.php');
+require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
@@ -9,7 +9,7 @@ $orbit = new Orbit;
 $alkaline->recordStat('photo');
 $alkaline->addComments();
 
-$id = $alkaline->findID($_GET['identifier']);
+$id = $alkaline->findID($_GET['id']);
 
 $photos = new Photo($id);
 $photos->updateViews();

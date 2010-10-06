@@ -40,7 +40,7 @@ if(!empty($_POST['configuration_save'])){
 		$alkaline->addNotification('The configuration could not be saved.', 'error');
 	}
 	
-	header('Location: ' . BASE . ADMIN . 'settings/');
+	header('Location: ' . BASE . ADMIN . 'settings' . URL_CAP);
 	exit();
 }
 

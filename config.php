@@ -1,17 +1,13 @@
 <?php
 
+//
 // MODIFY THE DEFINITIONS BELOW
-
-// Web site name
-$site = 'Jacob Budin';
-
-// Owner's name
-$owner = 'Jacob Budin';
+//
 
 // Database data source name (DSN)
-// $db_dsn = 'mysql:host=localhost;dbname=alkaline';
+$db_dsn = 'mysql:host=localhost;dbname=alkaline';
 // $db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline5.db';
-$db_dsn = 'pgsql:dbname=alkaline';
+// $db_dsn = 'pgsql:dbname=alkaline';
 
 // Database user username
 $db_user = 'alkaline';
@@ -19,7 +15,12 @@ $db_user = 'alkaline';
 // Database user password
 $db_pass = 'm902j2JK91kaO';
 
-// Image extensions, separate by |
+
+//
+// DO NOT MODIFY BELOW THIS LINE
+//
+
+// Valid extensions, separate by |
 $img_ext = 'gif|GIF|jpg|JPG|jpeg|JPEG|png|PNG';
 
 // Length, an integer in seconds, to remember a user's previous login
@@ -46,21 +47,30 @@ $palette_size = 8;
 // Color tolerance (higher numbers varies colors more)
 $color_tolerance = 60;
 
-// Watermark margin (pixels)
-$watermark_margin = 10;
+// URL rewriting (Apache mod_rewrite or comatible)
+$url_rewrite = false;
 
-// Watermark transparency (percentage)
-$watermark_transparency = 100;
 
-// DO NOT MODIFY BELOW THIS LINE
+if($url_rewrite){
+	define('URL_CAP', '/');
+	define('URL_ID', '/');
+	define('URL_ACT', '/');
+	define('URL_AID', '/');
+	define('URL_RW', '/');
+}
+else{
+	define('URL_CAP', '.php');
+	define('URL_ID', '.php?id=');
+	define('URL_ACT', '.php?act=');
+	define('URL_AID', '&id=');
+	define('URL_RW', '');
+}
 
 define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 define('BASE', '/');
 define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 
-define('SITE', $site);
-define('OWNER', $owner);
 define('DB_DSN', $db_dsn);
 define('DB_USER', $db_user);
 define('DB_PASS', $db_pass);
@@ -73,8 +83,6 @@ define('DEFAULT_USER_ID', $default_user_id);
 define('DATE_FORMAT', $date_format);
 define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
-define('WATERMARK_MARGIN', $watermark_margin);
-define('WATERMARK_TRANSPARENCY', $watermark_transparency);
 
 define('ADMIN', 'admin/');
 define('ASSETS', 'assets/');

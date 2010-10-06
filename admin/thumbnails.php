@@ -70,7 +70,7 @@ if(empty($size_id)){
 	
 		foreach($sizes as $size){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails/' . $size['size_id'] . '">' . $size['size_title'] . '</a></strong></td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails' . URL_ID . $size['size_id'] . URL_RW . '">' . $size['size_title'] . '</a></strong></td>';
 				echo '<td class="center">' . $size['size_width'] . ' &#0215; ' . $size['size_height'] . '</td>';
 				echo '<td class="center">' . ucwords($size['size_type']) . '</a></td>';
 				echo '<td class="center">{Photo_Src_' . ucwords($size['size_title']) . '}</td>';
@@ -100,7 +100,7 @@ else{
 	
 	<h1>Thumbnail</h1>
 	
-	<form action="<?php echo BASE . ADMIN; ?>thumbnails/" method="post">
+	<form action="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="size_title">Title:</label></td>
@@ -132,7 +132,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="size_id" value="<?php echo $size['size_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo BASE . ADMIN; ?>thumbnails/">cancel</a></td>
+				<td><input type="hidden" name="size_id" value="<?php echo $size['size_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

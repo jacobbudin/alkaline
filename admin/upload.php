@@ -24,7 +24,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-5 colborderr">
-		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox/"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
+		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
 		
 		<div id="progress">
 		</div>

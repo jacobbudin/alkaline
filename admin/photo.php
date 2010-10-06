@@ -10,7 +10,7 @@ $user->perm(true);
 
 // GET PHOTO
 if(!$photo_id = $alkaline->findID($_GET['id'])){
-	header('Location: ' . LOCATION . BASE . ADMIN . 'library/');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'library' . URL_CAP);
 	exit();
 }
 
@@ -70,7 +70,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 last">
-			<div class="actions"><a href="<?php echo BASE; ?>photo/<?php echo $photo['photo_id']; ?>/">Go to photo</a></div>
+			<div class="actions"><a href="<?php echo BASE; ?>photo<?php echo URL_ID . $photo['photo_id'] . URL_RW; ?>">Go to photo</a></div>
 			
 			<div class="photo_tag_container">
 				<label for="photo_tag">Tags:</label><br />
