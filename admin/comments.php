@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $comment_id = @$alkaline->findID($_GET['id']);
-$comment_unpublished = @$alkaline->findID($_GET['unpublished']);
+$comment_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['comment_id'])){
@@ -40,11 +40,14 @@ define('TAB', 'features');
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
 	
-	if($comment_unpublished != 1){
-		$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');	
+	if($comment_act == 'search'){
+		$comments = $alkaline->getComments(@$_POST['search'], @$_POST['published'], @$_POST['created_begin'], @$_POST['created_end']);
+	}
+	elseif($comment_act == 'unpublished'){
+		$comments = $alkaline->getTableNew('comments', null, null, null, 'comment_created DESC');
 	}
 	else{
-		$comments = $alkaline->getTableNew('comments', null, null, null, 'comment_created DESC');
+		$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');	
 	}
 	
 	$comment_count = @count($comments);
@@ -65,6 +68,39 @@ if(empty($comment_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<h1>Search</h1>
+	
+	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
+		<p style="margin-bottom: 0;">
+			<input type="search" name="search" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
+		</p>
+
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
+		</p>
+
+		<table class="reveal">
+			<tr>
+				<td class="right middle"><label for="published">Publication status:</label></td>
+				<td class="quiet">
+					<select id="published" name="published">
+						<option value="">All</option>
+						<option value="published">Published</option>
+						<option value="unpublished">Unpublished</option>
+						<option value="spam">Spam</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="right middle"><label>Date created:</label></td>
+				<td class="quiet">
+					between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+					and <input type="text" class="date" name="created_end" style="width: 10em;" />
+				</td>
+			</tr>
+		</table>
+	</form>
 	
 	<h1>Comments (<?php echo $comment_count; ?>)</h1>
 	
