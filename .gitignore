@@ -1,5 +1,58 @@
 *.png
 *.jpg
 *.gif
-test.php
 .*
+test.php
+
+# the following patterns will be ignored for revision control purposes
+
+# temporary backups
+*~
+*.orig
+*.bak
+*.bak1
+*.new
+*.tmp
+*KEEP
+*.old
+\#*#
+*.default
+
+# desktop crap
+.DS_Store
+Desktop.ini
+
+# caches
+thumbs.db
+*.swp
+
+# logs
+*.log
+*_log
+
+
+# images
+*.png
+*.gif
+*.jpg
+
+*.db
+# databases
+*.csv
+*.sqlite
+
+# binaries
+*.so
+*.bin
+*.obj
+*.exe
+*.zip
+*.pdf
+*.dmg
+
+# ssl certs
+*.key
+*.pem
+*.csr
+*.cert
+*.crt
