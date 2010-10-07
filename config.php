@@ -48,7 +48,7 @@ $palette_size = 8;
 $color_tolerance = 60;
 
 // URL rewriting (Apache mod_rewrite or compatible)
-$url_rewrite = false;
+$url_rewrite = true;
 
 
 if($url_rewrite){
