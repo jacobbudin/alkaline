@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $user_db_id = @$alkaline->findID($_GET['id']);
-$user_db_add = @$alkaline->findID($_GET['add']);
+$user_db_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['user_id'])){
@@ -33,7 +33,7 @@ else{
 }
 
 // CREATE User
-if($user_db_add == 1){
+if($user_db_act == 'add'){
 	$user_db_id = $alkaline->addRow(null, 'users');
 }
 

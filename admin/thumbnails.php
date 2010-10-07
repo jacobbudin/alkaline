@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $size_id = @$alkaline->findID($_GET['id']);
-$size_add = @$alkaline->findID($_GET['add']);
+$size_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['size_id'])){
@@ -39,7 +39,7 @@ else{
 }
 
 // CREATE SIZE
-if($size_add == 1){
+if($size_act == 'build'){
 	$size_id = $alkaline->addRow(null, 'sizes');
 }
 

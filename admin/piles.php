@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $pile_id = @$alkaline->findID($_GET['id']);
-$pile_add = @$alkaline->findID($_GET['add']);
+$pile_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['pile_id'])){
@@ -40,7 +40,7 @@ else{
 }
 
 // CREATE PILE
-if($pile_add == 1){
+if($pile_act == 'build'){
 	$pile_call = Find::recentMemory();
 	$fields = array('pile_call' => $pile_call, );
 	$pile_id = $alkaline->addRow($fields, 'piles');

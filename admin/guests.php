@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $guest_id = @$alkaline->findID($_GET['id']);
-$guest_add = @$alkaline->findID($_GET['add']);
+$guest_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['guest_id'])){
@@ -32,7 +32,7 @@ else{
 }
 
 // CREATE GUEST
-if($guest_add == 1){
+if($guest_act == 'add'){
 	$guest_id = $alkaline->addRow(null, 'guests');
 }
 

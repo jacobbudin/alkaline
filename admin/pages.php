@@ -10,7 +10,7 @@ $user = new User;
 $user->perm(true);
 
 $page_id = @$alkaline->findID($_GET['id']);
-$page_add = @$alkaline->findID($_GET['add']);
+$page_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['page_id'])){
@@ -54,7 +54,7 @@ else{
 }
 
 // CREATE PAGE
-if($page_add == 1){
+if($page_act == 'add'){
 	$page_id = $alkaline->addRow(null, 'pages');
 }
 

@@ -9,7 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $right_id = @$alkaline->findID($_GET['id']);
-$right_add = @$alkaline->findID($_GET['add']);
+$right_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['right_id'])){
@@ -42,7 +42,7 @@ else{
 }
 
 // CREATE RIGHTS SET
-if($right_add == 1){
+if($right_act == 'add'){
 	$right_id = $alkaline->addRow(null, 'rights');
 }
 
