@@ -194,13 +194,15 @@ class AlkalineCS{
 			
 			<h4>Optional</h4>
 			<table>
-				<tr>
-					<td>
-						<h5>Apache mod_rewrite module</h5>
-						<span class="small quiet">Apache mod_rewite allows Alkaline to use clean, semantic URLs.</span>
-					</td>
-					<?php echo $test->boolToHTML($test->isThere('mod_rewrite')); ?>
-				</tr>
+				<?php if($test->isThere('Apache/')){ ?>
+					<tr>
+						<td>
+							<h5>Apache mod_rewrite module</h5>
+							<span class="small quiet">Apache mod_rewite allows Alkaline to use clean, semantic URLs.</span>
+						</td>
+						<?php echo $test->boolToHTML($test->isThere('mod_rewrite')); ?>
+					</tr>
+				<?php } ?>
 				<tr>
 					<td>
 						<h5>ImageMagick library</h5>
@@ -230,7 +232,7 @@ class AlkalineCS{
 					?>
 					<img src="http://www.alkalineapp.com/remote/cs/images/check.png" alt="" class="result_icon" /><br />
 					Good news, you can install Alkaline here!<br />
-					<span style="font-size: .7em;">(What are you waiting for? <a href="http://www.alkalineapp.com/">Purchase and download Alkaline today.</a>)</span>
+					<span style="font-size: .7em;">(What are you waiting for? <a href="http://www.alkalineapp.com/buy/">Purchase and download Alkaline today.</a>)</span>
 					<?php
 				}
 				else{

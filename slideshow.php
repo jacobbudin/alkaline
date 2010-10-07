@@ -21,7 +21,7 @@ $photos->getComments();
 
 $slideshow = new Canvas;
 $slideshow->load('slideshow');
-$slideshow->assign('TITLE', 'Slideshow &#8212; ' . SITE);
+$slideshow->assign('TITLE', 'Slideshow &#8212; ' . $alkaline->returnConf('web_title'));
 $slideshow->loop($photos);
 $slideshow->display();
 
