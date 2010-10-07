@@ -49,7 +49,7 @@ if(empty($guest_id)){
 
 	?>
 	
-	<div class="actions"><a href="add/">Add guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'guests' . URL_ACT . 'add' . URL_RW; ?>">Add guest</a></div>
 
 	<h1>Guests (<?php echo $guest_count; ?>)</h1>
 	
@@ -96,7 +96,7 @@ else{
 	
 	<h1>Guest</h1>
 	
-	<form id="guest" action="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>" method="post">
+	<form id="guest" action="<?php echo BASE . ADMIN . 'guests' . URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="guest_title">Title:</label></td>

@@ -84,11 +84,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 			<tr>
 				<td class="right">GD Version:</td>
-				<td><?php if($gd_info = gd_info()){ preg_match('#[0-9.]+#s', $gd_info['GD Version'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
+				<td><?php if($gd_info = @gd_info()){ preg_match('#[0-9.]+#s', $gd_info['GD Version'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 			</tr>
 			<tr>
 				<td class="right">ImageMagick Version:</td>
-				<td><?php if($im_info = Imagick::getVersion()){ preg_match('#[0-9.]+#s', $im_info['versionString'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
+				<td><?php if(class_exists('Imagick')){ $im_info = Imagick::getVersion(); preg_match('#[0-9.]+#s', $im_info['versionString'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 			</tr>
 		</table>
 	</div>

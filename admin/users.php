@@ -50,7 +50,7 @@ if(empty($user_db_id)){
 
 	?>
 	
-	<div class="actions"><a href="add/">Add user</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>">Add user</a></div>
 
 	<h1>Users (<?php echo $user_db_count; ?>)</h1>
 	
@@ -105,11 +105,11 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>users<?php echo URL_AID . $user_db['user_id'] . URL_RW; ?>">View photos</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View photos</a></div>
 	
 	<h1>User</h1>
 	
-	<form id="user" action="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>" method="post">
+	<form id="user" action="<?php echo BASE . ADMIN . 'users' . URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="user_name">Name:</label></td>

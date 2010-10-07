@@ -58,7 +58,7 @@ if(empty($right_id)){
 
 	?>
 	
-	<div class="actions"><a href="add/">Add rights set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>">Add rights set</a></div>
 
 	<h1>Rights (<?php echo $right_count; ?>)</h1>
 
