@@ -61,6 +61,9 @@ class Alkaline{
 			if($this->db_type == 'mysql'){
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 			}
+			elseif($this->db_type == 'odbc'){
+				$this->db = new PDO(DB_DSN);
+			}
 			elseif($this->db_type == 'pgsql'){
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
 				$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
@@ -1241,6 +1244,13 @@ class Alkaline{
 	}
 	
 	// DEBUG
+	public function error($message, $number=null){
+		$_SESSION['alkaline']['error']['message'] = $message;
+		$_SESSION['alkaline']['error']['number'] = $number;
+		header('Location: ' . LOCATION . BASE . 'fault' . URL_CAP);
+		exit();
+	}
+	
 	public function debug(){
 		$_SESSION['alkaline']['debug']['execution_time'] = microtime(true) - $_SESSION['alkaline']['debug']['start_time'];
 		return $_SESSION['alkaline']['debug'];
