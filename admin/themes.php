@@ -15,6 +15,10 @@ if(!empty($_POST['theme_id'])){
 	$theme_id = $alkaline->findID($_POST['theme_id']);
 	
 	if(@$_POST['theme_default'] == 'default'){
+		$alkaline->setConf('theme_id', @$_POST['theme_id']);
+		$alkaline->setConf('theme_folder', @$_POST['theme_folder']);
+		$alkaline->saveConf();
+		
 		$fields = array('theme_default' => '1');
 		$alkaline->updateRow($fields, 'themes', $theme_id);
 	}
@@ -105,11 +109,11 @@ else{
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="theme_remove" name="theme_remove" value="remove" <?php if($theme['theme_default'] == 1){ echo 'disabled="disabled"'; } ?> /></td>
-				<td><strong><label for="theme_remove">Remove this extension.</label></strong></td>
+				<td><strong><label for="theme_remove">Remove this theme.</label></strong></td>
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="theme_id" value="<?php echo $theme['theme_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
+				<td><?php if($theme['theme_default'] == 1){ echo '<input type="hidden" name="theme_default" value="default" />'; } ?><input type="hidden" name="theme_id" value="<?php echo $theme['theme_id']; ?>" /><input type="hidden" name="theme_folder" value="<?php echo $theme['theme_folder']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

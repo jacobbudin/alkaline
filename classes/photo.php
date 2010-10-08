@@ -18,9 +18,6 @@ class Photo extends Alkaline{
 		// Reset photo array
 		$this->photos = array();
 		
-		// User attribution
-		$this->user['user_id'] = DEFAULT_USER_ID;
-		
 		// Input handling
 		if(is_object($photo_ids)){
 			$photo_ids = $photo_ids->photo_ids;
@@ -81,7 +78,7 @@ class Photo extends Alkaline{
 			$photo_mime = $this->getMIME($file);
 			$photo_size = $this->getSize($file);
 			
-			$fields = array('user_id' => $this->user['user_id'],
+			$fields = array('user_id' => @$this->user['user_id'],
 				'photo_ext' => $photo_ext,
 				'photo_mime' => $photo_mime,
 				'photo_name' => $filename,

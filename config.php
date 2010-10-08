@@ -8,11 +8,13 @@
 $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 // $db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline5.db';
 // $db_dsn = 'pgsql:dbname=alkaline';
+// $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
+// $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
 
-// Database user username
+// Database user username (not needed for SQLite or ODBC connections)
 $db_user = 'alkaline';
 
-// Database user password
+// Database user password (not needed for SQLite or ODBC connections)
 $db_pass = 'm902j2JK91kaO';
 
 
@@ -34,9 +36,6 @@ $limit = 20;
 
 // Current theme
 $theme = 'basic';
-
-// Default user ID for shoebox uploads
-$default_user_id = 1;
 
 // Date formatting
 $date_format = 'M j, Y \a\t g:i a';
@@ -72,14 +71,13 @@ define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 
 define('DB_DSN', $db_dsn);
-define('DB_USER', $db_user);
-define('DB_PASS', $db_pass);
+@define('DB_USER', $db_user);
+@define('DB_PASS', $db_pass);
 define('IMG_EXT', $img_ext);
 define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
 define('LIMIT', $limit);
 define('THEME', $theme);
-define('DEFAULT_USER_ID', $default_user_id);
 define('DATE_FORMAT', $date_format);
 define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);

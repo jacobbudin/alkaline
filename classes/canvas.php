@@ -31,7 +31,13 @@ class Canvas extends Alkaline{
 	// APPEND LOAD
 	// Append a file to the template
 	public function load($file){
-		 $this->template .= file_get_contents(PATH . THEMES . THEME . '/' . $file . TEMP_EXT) . "\n";
+		$theme_folder = $this->returnConf('theme_folder');
+		
+		if(empty($theme_folder)){
+			$this->error('No default theme selected.');
+		}
+		
+		$this->template .= file_get_contents(PATH . THEMES . $theme_folder . '/' . $file . TEMP_EXT) . "\n";
 	}
 	
 	// VARIABLES
