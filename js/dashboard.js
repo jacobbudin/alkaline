@@ -102,7 +102,7 @@ function focusTags(that){
 
 function updateTags(that){
 	var container = $(that).closest('.photo_tag_container');		
-	var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a href="" class="tag">' + item + '</a>'; });
+	var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a class="tag">' + item + '</a>'; });
 	container.children('.photo_tags_input').val($.toJSON(tags));
 	container.children('.photo_tags_load').text($.toJSON(tags));
 	container.children('.photo_tags').html(tags_html.join(', '));

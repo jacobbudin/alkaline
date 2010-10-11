@@ -12,6 +12,8 @@ body{
 
 a{
 	color: #222;
+	cursor: pointer;
+	cursor: hand;
 }
 
 a:hover, a:active{
@@ -97,6 +99,7 @@ ul{
 img.frame{
 	border: solid 3px #fff;
 	margin: .2em .4em .2em 0;
+	-moz-box-shadow: 0 0 3px #ddd;
 	-webkit-box-shadow: 0 0 3px #ddd;
 }
 
@@ -150,6 +153,7 @@ table.census a{
 	padding: .4em .5em;
 	background-color: #5eb0e5;
 	border-radius: 3px;
+	-moz-border-radius: 3px;
 	color: #021e2f;
 	font-size: .9em;
 	text-decoration: none;
@@ -170,15 +174,15 @@ table.census a{
 }
 
 #navigation ul{
-	position: block;
-	margin: 0;
+	display: block;
+	margin: .41em 0 0 0;
 	padding: 0;
 	font-size: 1.2em;
 	font-weight: 500;
-	line-height: 2.2em;
 }
 
 #navigation ul li{
+	margin: 0;
 	display: inline;
 }
 
@@ -187,9 +191,11 @@ table.census a{
 }
 
 #navigation ul li a{
+	margin: 0;
 	padding: .5em 1em .6em 1em;
 	background-color: transparent;
 	border-radius:  0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
 	color: #11507d;
 	text-decoration: none;
 }
@@ -245,11 +251,13 @@ a.wrapper{
 	padding: .6em;
 	background-color: #CFE1FF;
 	border-radius: 3px;
+	-moz-border-radius: 3px;
 }
 
 a.x{
 	padding: 0 .3em .2em .3em;
 	border-radius: 3px;
+	-moz-border-radius: 3px;
 	color: #ccc;
 	font-family: Verdana, sans-serif;
 	font-weight: bold;
@@ -376,6 +384,7 @@ li.ui-menu-item{
 	text-decoration: none;
 	text-transform: uppercase;
 	border-radius: 2px;
+	-moz-border-radius: 2px;
 }
 
 .actions a:hover, .actions a:active, a.button:hover, a.button:active{
