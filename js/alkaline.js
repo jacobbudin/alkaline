@@ -8,12 +8,9 @@ var working = 0;
 
 function process(){
 	gallery = $('#gallery').html();
+	gallery = gallery.replace(/%7B/g, "{");
+	gallery = gallery.replace(/%7D/g, "}");
 	photo_count = photos.length;
-	
-	for(var i = 0; i < photos.length; i++){
-		// photos[i].photo_src_medium = '<img src="' + photos[i].photo_src_medium + '" />';
-	}
-	
 	first();
 }
 
@@ -62,8 +59,7 @@ function update(id){
 		working = 1;
 		photo_id = id;
 	
-		var field_regex = new RegExp('{(.*?)}', 'gi');
-		// var title = new RegExp('\<\!\-\- PHOTO_TITLE \-\-\>', 'gi');
+		var field_regex = new RegExp('\{(.*?)\}', 'gi');
 	
 		function field(field){
 			field = field.replace(field_regex, "$1").toLowerCase();
