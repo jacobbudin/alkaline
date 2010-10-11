@@ -56,13 +56,13 @@ class Alkaline{
 		
 		if(!in_array(get_class($this), $nodb_classes)){
 			// Determine database type
-			$this->db_type = substr(DB_DSN, 0, strpos(DB_DSN, ':'));
+			$this->db_type = DB_TYPE;
 			
-			if($this->db_type == 'mysql'){
-				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-			}
-			elseif($this->db_type == 'odbc'){
+			if($this->db_type == 'mssql'){
 				$this->db = new PDO(DB_DSN);
+			}
+			elseif($this->db_type == 'mysql'){
+				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 			}
 			elseif($this->db_type == 'pgsql'){
 				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
@@ -75,6 +75,13 @@ class Alkaline{
 				$this->db->sqliteCreateFunction('COS', 'cos', 1);
 				$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
 				$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+			}
+			else{
+				$this->error('You must specify a database type in your configuration.');
+			}
+			
+			if(!$this->db){
+				$this->error('No database connection.');
 			}
 		}
 	}
@@ -104,7 +111,28 @@ class Alkaline{
 	public function prequery(&$query){
 		$_SESSION['alkaline']['debug']['queries']++;
 		
-		if($this->db_type == 'pgsql'){
+		if($this->db_type == 'mssql'){
+			preg_match('#GROUP BY (.*) ORDER BY#si', $query, $match);
+			$find = @$match[0];
+			if(!empty($find)){
+				$replace = $find;
+				$replace = str_replace('stat_day', 'DAY(stat_date)', $replace);
+				$replace = str_replace('stat_month', 'MONTH(stat_date)', $replace);
+				$replace = str_replace('stat_year', 'YEAR(stat_date)', $replace);
+				$query = str_replace($find, $replace, $query);
+			}
+			
+			if(preg_match('#SELECT (?:.*) LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', $query, $match)){
+				$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', '', $query);
+				$offset = @$match[1];
+				$limit = @$match[2];
+				preg_match('#FROM (.+?)(?:\s|,)#si', $query, $match);
+				$table = @$match[1];
+				$query = str_replace('SELECT ', 'SELECT TOP 999999999999999999 ROW_NUMBER() OVER (ORDER BY ' . $this->tables[$table]  . ' ASC) AS row_number,', $query);
+				$query = 'SELECT * FROM (' . $query . ') AS temp WHERE temp.row_number > ' . $offset . ' AND temp.row_number <= ' . ($offset + $limit);
+			}
+		}
+		elseif($this->db_type == 'pgsql'){
 			$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', 'LIMIT \2 OFFSET \1', $query);
 			$query = str_replace('HOUR(', 'EXTRACT(HOUR FROM ', $query);
 			$query = str_replace('DAY(', 'EXTRACT(DAY FROM ', $query);
@@ -1017,7 +1045,9 @@ class Alkaline{
 	}
 	
 	function countTable($table){
-		$field = $this->tables[$table];
+		$field = @$this->tables[$table];
+		if(empty($field)){ return false; }
+		
 		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
 		$query->execute();
 		$count = $query->fetch();

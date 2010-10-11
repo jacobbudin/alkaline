@@ -11,6 +11,9 @@ $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 // $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
 // $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
 
+// If Microsoft SQL Server, use value "mssql"
+$db_type = 'mysql';
+
 // Database user username (not needed for SQLite or ODBC connections)
 $db_user = 'alkaline';
 
@@ -50,6 +53,10 @@ $color_tolerance = 60;
 $url_rewrite = true;
 
 
+if(empty($db_type)){
+	$db_type = substr(DB_DSN, 0, strpos(DB_DSN, ':'));
+}
+
 if($url_rewrite){
 	define('URL_CAP', '/');
 	define('URL_ID', '/');
@@ -71,6 +78,7 @@ define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 
 define('DB_DSN', $db_dsn);
+@define('DB_TYPE', $db_type);
 @define('DB_USER', $db_user);
 @define('DB_PASS', $db_pass);
 define('IMG_EXT', $img_ext);

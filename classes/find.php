@@ -796,7 +796,7 @@ class Find extends Alkaline{
 		
 		if(count($this->sql_sorts) > 0){
 			$this->sql_order_by = ' ORDER BY ' . implode(', ', $this->sql_sorts);
-			if($this->db_type == 'pgsql'){
+			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
 				$sql_sorts = str_ireplace(' ASC', '', $this->sql_sorts);
 				$sql_sorts = str_ireplace(' DESC', '', $this->sql_sorts);
 				$this->sql_group_by .= ', ' . implode(', ', $sql_sorts);
@@ -804,7 +804,7 @@ class Find extends Alkaline{
 		}
 		else{
 			$this->sql_order_by = ' ORDER BY photos.photo_uploaded DESC';
-			if($this->db_type == 'pgsql'){
+			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
 				$this->sql_group_by .= ', photos.photo_uploaded';
 			}
 		}
