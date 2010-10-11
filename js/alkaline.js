@@ -75,9 +75,7 @@ function update(id){
 			gallery_copy = gallery_copy.replace(matchArray[0], replacement);
 		}
 	
-		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; });
-	
-		// $('#gallery').html(gallery_copy);
+		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; reset(); });
 	}
 }
 
@@ -89,7 +87,6 @@ $(document).ready(function(){
 	
 	if(gallery == true){
 		$.get(BASE + ADMIN + "tasks/build-slideshow.php", function(data){ photos = $.evalJSON(data).photos; process(); } );
-		
 		$(document).keydown(function(event){
 			if(event.keyCode == '37'){
 				prev();
