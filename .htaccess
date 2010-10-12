@@ -5,6 +5,9 @@
 	RewriteEngine on
 	RewriteBase /
 	
+	RewriteCond %{REMOTE_ADDR} !108\.27\.107\.219
+	RewriteRule ^$ http://www.alkalineapp.com/ [R=301,L]
+	
 	RewriteRule ^admin/search/([a-z0-9-_]+)(/)?$ admin/search.php?act=$1 [NC]
 	RewriteRule ^admin/search/([a-z0-9-_]+)/([0-9]+)(/)?$ admin/search.php?act=$1&id=$2 [NC]
 	RewriteRule ^admin/([a-z0-9-_]+)(/)?$ admin/$1.php [NC]

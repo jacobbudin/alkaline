@@ -27,7 +27,7 @@
 				</div>
 				<div id="user_panel" class="span-13 last">
 					<?php
-					if($user->perm()){
+					if(!empty($user) and $user->perm()){
 						?>
 						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>" class="user"><?php echo $user->user['user_name']; ?></a> <a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>" class="logout">Log out</a>
 						<?php
@@ -61,5 +61,5 @@
 			</ul>
 		</div>
 		<div id="content" class="span-24 last">
-			<?php $alkaline->viewNotification(); ?>
+			<?php if(!empty($alkaline)){ $alkaline->viewNotification(); } ?>
 			

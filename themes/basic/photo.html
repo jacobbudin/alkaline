@@ -1,6 +1,6 @@
 {block:Photos}
 	<div class="photo">
-		<a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a><br />
+		<img src="{Photo_Src_Medium}" alt="" class="frame" /><br />
 		<div class="float_right">
 			<div class="uploaded">{Photo_Uploaded}</div>
 			<div class="right">{if:Right_Title}
@@ -22,14 +22,29 @@
 			{else:Comments}
 				<p><strong>No comments.</strong></p>
 			{/if:Comments}
-			<p>
-				Author: {PHOTO_COMMENT_AUTHOR_NAME}<br />
-				Email: {PHOTO_COMMENT_AUTHOR_EMAIL}<br />
-				URL: {PHOTO_COMMENT_AUTHOR_URL}<br />
-				Comment: {PHOTO_COMMENT_TEXT}<br />
-				{PHOTO_COMMENT_SUBMIT}
-			</p>
 		</p>
+		<table>
+			<tr>
+				<td>Author:</td>
+				<td>{PHOTO_COMMENT_AUTHOR_NAME}</td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td>{PHOTO_COMMENT_AUTHOR_EMAIL}</td>
+			</tr>
+			<tr>
+				<td>URL:</td>
+				<td>{PHOTO_COMMENT_AUTHOR_URL}</td>
+			</tr>
+			<tr>
+				<td>Comment:</td>
+				<td>{PHOTO_COMMENT_TEXT}</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>{PHOTO_COMMENT_SUBMIT}</td>
+			</tr>
+		</table>
 	</div>
 	
 	<hr />

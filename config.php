@@ -37,9 +37,6 @@ $temp_ext = '.html';
 // Default query limit (can be overwritten)
 $limit = 20;
 
-// Current theme
-$theme = 'basic';
-
 // Date formatting
 $date_format = 'M j, Y \a\t g:i a';
 
@@ -49,7 +46,7 @@ $palette_size = 8;
 // Color tolerance (higher numbers varies colors more)
 $color_tolerance = 60;
 
-// URL rewriting (Apache mod_rewrite or compatible)
+// URL rewriting (Apache mod_rewrite, Microsoft URL Rewrite 2, or compatible)
 $url_rewrite = true;
 
 
@@ -85,7 +82,6 @@ define('IMG_EXT', $img_ext);
 define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
 define('LIMIT', $limit);
-define('THEME', $theme);
 define('DATE_FORMAT', $date_format);
 define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
