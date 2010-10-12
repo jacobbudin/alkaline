@@ -1,6 +1,7 @@
 <?php
 
 class Canvas extends Alkaline{
+	public $form_wrap;
 	public $tables;
 	public $template;
 	
@@ -72,7 +73,7 @@ class Canvas extends Alkaline{
 				$match[1] = strtolower($match[1]);
 				
 				// Wrap in <form> for commenting
-				if($match[1] == 'photos'){
+				if(($match[1] == 'photos') and ($this->form_wrap === true)){
 					$match[2] = '<form action="" id="photo_{PHOTO_ID}" class="photo" method="post">' . $match[2] . '</form>';
 				}
 				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
@@ -112,6 +113,13 @@ class Canvas extends Alkaline{
 			$this->template = self::scrub($loop['reel'], $this->template);
 		}
 		
+		return true;
+	}
+	
+	public function wrapForm($bool=true){
+		if(!is_bool($bool)){ return false; }
+		
+		$this->form_wrap = $bool;
 		return true;
 	}
 	
@@ -260,11 +268,11 @@ class Canvas extends Alkaline{
 	// PROCESS
 	public function generate(){
 		// Add copyright information
-		$this->assign('COPYRIGHT', parent::copyright);
+		$this->assign('Copyright', parent::copyright);
 		
-		// Process Orbit and Blocks
-		$this->initOrbit();
+		// Process Blocks, Orbit
 		$this->initBlocks();
+		$this->initOrbit();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
 		$this->template = preg_replace('#{if:([A-Z0-9_]*)}(.*?)\{else:\1}(.*?)\{/if:\1}#is', '$3', $this->template);
