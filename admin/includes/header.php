@@ -29,7 +29,16 @@
 					<?php
 					if(!empty($user) and $user->perm()){
 						?>
-						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>" class="user"><?php echo $user->user['user_name']; ?></a> <a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>" class="logout">Log out</a>
+						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>" class="user"><?php echo $user->user['user_name']; ?></a>
+						<?php
+						
+						$web_title = $alkaline->returnConf('web_title');
+						if(!empty($web_title)){
+							echo 'for <a href="' . BASE . '" target="_new">' . $web_title . '</a>';
+						}
+						
+						?>
+						<a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>" class="logout">Log out</a>
 						<?php
 					}
 					?>
