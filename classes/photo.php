@@ -1181,10 +1181,11 @@ class Photo extends Alkaline{
 	
 	public function formatTime($format=null){
 		for($i = 0; $i < $this->photo_count; ++$i){
-			parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
-			parent::formatTime($this->photos[$i]['photo_published'], $format);
-			parent::formatTime($this->photos[$i]['photo_updated'], $format);
+			$this->photos[$i]['photo_uploaded'] = parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
+			$this->photos[$i]['photo_published'] = parent::formatTime($this->photos[$i]['photo_published'], $format);
+			$this->photos[$i]['photo_updated'] = parent::formatTime($this->photos[$i]['photo_updated'], $format);
 		}
+		return true;
 	}
 	
 	private function watermark($src, $dest, $watermark, $margin=null, $position=null, $quality=null, $ext=null){
