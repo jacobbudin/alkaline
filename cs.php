@@ -31,7 +31,7 @@ class AlkalineCS{
 		foreach($php_pdo_drivers as $driver){
 			switch($driver){
 				case 'odbc':
-					$this->php_pdo_drivers[] = 'Microsoft SQL Server';
+					// $this->php_pdo_drivers[] = 'Microsoft SQL Server';
 					break;
 				case 'mysql':
 					$this->php_pdo_drivers[] = 'MySQL';
