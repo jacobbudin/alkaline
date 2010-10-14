@@ -65,6 +65,7 @@ class Photo extends Alkaline{
 		}
 		
 		$files = $this->convertToArray($files);
+		$photo_ids = array();
 		
 		foreach($files as $file){
 			if(!file_exists($file)){
@@ -339,7 +340,15 @@ class Photo extends Alkaline{
 			return false;
 		}
 		
-		$type = exif_imagetype($file);
+		if(function_exists('exif_imagetype')){
+			$type = exif_imagetype($file);
+		}
+		else{
+			preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
+			$type = $matches[1];
+			if($type == 'jpeg'){ return 'jpg'; }
+			else{ return $type; }
+		}
 		
 		switch($type){
 			case 1:
@@ -360,7 +369,15 @@ class Photo extends Alkaline{
 			return false;
 		}
 		
-		$type = exif_imagetype($file);
+		if(function_exists('exif_imagetype')){
+			$type = exif_imagetype($file);
+		}
+		else{
+			preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
+			$type = $matches[1];
+			if($type == 'jpg'){ return 'image/jpeg'; }
+			else{ return 'image/' . $type; }
+		}
 		
 		switch($type){
 			case 1:
@@ -759,6 +776,8 @@ class Photo extends Alkaline{
 	}
 	
 	public function readEXIF($photos=null){
+		if(!function_exists('exif_read_data')){ return false; }
+		
 		if(empty($photos)){
 			$photos = $this->photos;
 			$photo_count = $this->photo_count;
