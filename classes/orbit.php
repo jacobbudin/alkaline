@@ -39,7 +39,7 @@ class Orbit extends Alkaline{
 
 			foreach($extensions as &$extension){
 				$extension['extension_uid'] = strval($extension['extension_uid']);
-				$extension['extension_file'] = PATH . EXTENSIONS . $extension['extension_file'] . '.php';
+				$extension['extension_file'] = parent::correctWinPath(PATH . EXTENSIONS . $extension['extension_file'] . '.php');
 				$extension['extension_hooks'] = unserialize(stripslashes($extension['extension_hooks']));
 			}
 			
@@ -69,7 +69,7 @@ class Orbit extends Alkaline{
 			}
 			
 			$this->uid = strval($this->uid);
-			$this->file = PATH . EXTENSIONS . strtolower($this->file) . '.php';
+			$this->file = parent::correctWinPath(PATH . EXTENSIONS . strtolower($this->file) . '.php');
 			$this->hooks = unserialize(stripslashes($this->hooks));
 			$this->preferences = unserialize(stripslashes($this->preferences));
 		}
@@ -99,7 +99,7 @@ class Orbit extends Alkaline{
 	
 	// Local require_once()
 	protected function load($file){
-		require_once(PATH . EXTENSIONS . $this->folder . '/' . $file);
+		require_once(parent::correctWinPath(PATH . EXTENSIONS . $this->folder . '/' . $file));
 	}
 	
 	// Set preference key

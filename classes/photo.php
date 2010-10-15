@@ -51,7 +51,7 @@ class Photo extends Alkaline{
 		
 		// Store photo_file
 		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_file'] = PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
+			$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
 		}
 	}
 	
@@ -91,7 +91,7 @@ class Photo extends Alkaline{
 			$photo_ids[] = $photo_id;
 
 			// Copy photo to archive, delete original from shoebox
-			copy($file, PATH . PHOTOS . $photo_id . '.' . $photo_ext);
+			copy($file, parent::correctWinPath(PATH . PHOTOS . $photo_id . '.' . $photo_ext));
 			@unlink($file);
 		}
 		
@@ -155,7 +155,7 @@ class Photo extends Alkaline{
 				$size_type = $size['size_type'];
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
-				$size_dest = PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext'];
+				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext']);
 				switch($size_type){
 					case 'fill':
 						$this->imageFill($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
@@ -168,7 +168,7 @@ class Photo extends Alkaline{
 				}
 				
 				if($this->returnConf('thumb_watermark')){
-					$watermark = PATH . ASSETS . 'watermark.png';
+					$watermark = parent::correctWinPath(PATH . ASSETS . 'watermark.png');
 					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $photos[$i]['photo_ext']);
 				}
 			}
@@ -411,8 +411,11 @@ class Photo extends Alkaline{
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
+		$src = parent::correctWinPath($src);
+		$dest = parent::correctWinPath($dest);
+		
 		// ImageMagick version
-		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
 			$image = new Imagick($src);
 			
 			switch($ext){
@@ -514,8 +517,11 @@ class Photo extends Alkaline{
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
+		$src = parent::correctWinPath($src);
+		$dest = parent::correctWinPath($dest);
+		
 		// ImageMagick version
-		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
 			$image = new Imagick($src);
 			
 			list($width_orig, $height_orig) = getimagesize($src);
@@ -919,67 +925,69 @@ class Photo extends Alkaline{
 		}
 		
 		for($i = 0; $i < $photo_count; ++$i){
-			// Read EXIF data
-			$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
-			
 			$found_exif = 0;
 			
-			// If EXIF data exists, add each key (group), name, value to database
-			if((count($exif) > 0) and is_array($exif)){
-				$inserts = array();
-				foreach(@$exif as $key => $section){
-				    foreach($section as $name => $value){
-						// Check for geo data
-						if(($key == 'GPS') and ($name == 'GPSLatitude')){
-							$lat_d = $value[0];
+			if(function_exists('exif_read_data')){
+				// Read EXIF data
+				$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
+				
+				// If EXIF data exists, add each key (group), name, value to database
+				if((count($exif) > 0) and is_array($exif)){
+					$inserts = array();
+					foreach(@$exif as $key => $section){
+					    foreach($section as $name => $value){
+							// Check for geo data
+							if(($key == 'GPS') and ($name == 'GPSLatitude')){
+								$lat_d = $value[0];
 							
-							$lat_m = $value[1];
-							$lat_m = explode('/', $lat_m);
-							$lat_m = $lat_m[0] / $lat_m[1];
+								$lat_m = $value[1];
+								$lat_m = explode('/', $lat_m);
+								$lat_m = $lat_m[0] / $lat_m[1];
 							
-							$lat_s = $value[2];
-							$lat_s = explode('/', $lat_s);
-							$lat_s = $lat_s[0] / $lat_s[1];
+								$lat_s = $value[2];
+								$lat_s = explode('/', $lat_s);
+								$lat_s = $lat_s[0] / $lat_s[1];
 							
-							$found_exif++;
-						}
-						if(($key == 'GPS') and ($name == 'GPSLatitudeRef')){
-							if(strtolower($value) == 's'){
-								$lat_d = 0 - $lat_d;
-								$lat_m = 0 - $lat_m;
-								$lat_s = 0 - $lat_s;
+								$found_exif++;
 							}
-							$found_exif++;
-						}
-						if(($key == 'GPS') and ($name == 'GPSLongitude')){
-							$long_d = $value[0];
-							
-							$long_m = $value[1];
-							$long_m = explode('/', $long_m);
-							$long_m = $long_m[0] / $long_m[1];
-							
-							$long_s = $value[2];
-							$long_s = explode('/', $long_s);
-							$long_s = $long_s[0] / $long_s[1];
-							
-							$found_exif++;
-						}
-						if(($key == 'GPS') and ($name == 'GPSLongitudeRef')){
-							if(strtolower($value) == 'w'){
-								$long_d = 0 - $long_d;
-								$long_m = 0 - $long_m;
-								$long_s = 0 - $long_s;
+							if(($key == 'GPS') and ($name == 'GPSLatitudeRef')){
+								if(strtolower($value) == 's'){
+									$lat_d = 0 - $lat_d;
+									$lat_m = 0 - $lat_m;
+									$lat_s = 0 - $lat_s;
+								}
+								$found_exif++;
 							}
-							$found_exif++;
-						}
-				    }
+							if(($key == 'GPS') and ($name == 'GPSLongitude')){
+								$long_d = $value[0];
+							
+								$long_m = $value[1];
+								$long_m = explode('/', $long_m);
+								$long_m = $long_m[0] / $long_m[1];
+							
+								$long_s = $value[2];
+								$long_s = explode('/', $long_s);
+								$long_s = $long_s[0] / $long_s[1];
+							
+								$found_exif++;
+							}
+							if(($key == 'GPS') and ($name == 'GPSLongitudeRef')){
+								if(strtolower($value) == 'w'){
+									$long_d = 0 - $long_d;
+									$long_m = 0 - $long_m;
+									$long_s = 0 - $long_s;
+								}
+								$found_exif++;
+							}
+					    }
+					}
 				}
-			}
 			
-			// Did it find all 4 EXIF GPS tags?
-			if($found_exif == 4){
-				$geo_lat = $lat_d + ($lat_m / 60) + ($lat_s / 3600);
-				$geo_long = $long_d + ($long_m / 60) + ($long_s / 3600);
+				// Did it find all 4 EXIF GPS tags?
+				if($found_exif == 4){
+					$geo_lat = $lat_d + ($lat_m / 60) + ($lat_s / 3600);
+					$geo_long = $long_d + ($long_m / 60) + ($long_s / 3600);
+				}
 			}
 			
 			// Read IPTC data
@@ -1171,7 +1179,7 @@ class Photo extends Alkaline{
 	// Param: delete: delete original photos too?
 	public function deSizePhoto($original=false){
 		// Open photo directory
-		$dir = PATH . PHOTOS;
+		$dir = parent::correctWinPath(PATH . PHOTOS);
 		$handle = opendir($dir);
 		$photos = array();
 		
@@ -1213,7 +1221,11 @@ class Photo extends Alkaline{
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
 		
-		if(class_exists('Imagick') and $this->returnConf('thumb_imagick')){
+		$src = parent::correctWinPath($src);
+		$dest = parent::correctWinPath($dest);
+		$watermark = parent::correctWinPath($watermark);
+		
+		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
 			$image = new Imagick($src);
 			$image_watermark = new Imagick($watermark);
 			

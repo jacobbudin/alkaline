@@ -37,7 +37,7 @@ class Alkaline{
 		if(get_class($this) == 'Alkaline'){
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
-			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents(PATH . 'assets/config.json'), true);
+			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'assets/config.json')), true);
 			
 			if(empty($_SESSION['alkaline']['config'])){
 				$_SESSION['alkaline']['config'] = array();
@@ -254,6 +254,9 @@ class Alkaline{
 			return false;
 		}
 		
+		// Windows-friendly
+		$dir = $this->correctWinPath($dir);
+		
 		$files = array();
 		$ignore = array('.', '..');
 		
@@ -299,6 +302,10 @@ class Alkaline{
 	// Get filename
 	public function getFilename($file){
 		$matches = array();
+		
+		// Windows cheat
+		$file = str_replace('\\', '/', $file);
+		
 		preg_match('#^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))#si', $file, $matches);
 		if(count($matches) < 1){
 			return false;
@@ -1161,7 +1168,7 @@ class Alkaline{
 	
 	// Save configuration
 	public function saveConf(){
-		return file_put_contents(PATH . 'assets/config.json', json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
+		return file_put_contents($this->correctWinPath(PATH . 'assets/config.json'), json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
 	}
 	
 	// URL HANDLING
@@ -1222,6 +1229,14 @@ class Alkaline{
 	public function echoFullCount($count, $singular, $plural=null){
 		$count =  number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
 		return $count;
+	}
+	
+	// Change path to Windows-friendly
+	public function correctWinPath($path){
+		if(SERVER_TYPE == 'win'){
+			$path = str_replace('/', '\\', $path);
+		}
+		return $path;
 	}
 	
 	// REDIRECT HANDLING

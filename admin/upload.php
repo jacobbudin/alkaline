@@ -11,7 +11,7 @@ $user->perm(true);
 if(!empty($_FILES)){
 	$filename = $_FILES['user_file']['name'][0];
 	$tmp_file = $_FILES['user_file']['tmp_name'][0];
-	copy($tmp_file, PATH . SHOEBOX . $filename);
+	copy($tmp_file, $alkaline->correctWinPath(PATH . SHOEBOX . $filename));
 	unlink($tmp_file);
 	exit();
 }

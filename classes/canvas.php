@@ -38,7 +38,7 @@ class Canvas extends Alkaline{
 			$this->error('No default theme selected.');
 		}
 		
-		$this->template .= file_get_contents(PATH . THEMES . $theme_folder . '/' . $file . TEMP_EXT) . "\n";
+		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $file . TEMP_EXT)) . "\n";
 	}
 	
 	// VARIABLES

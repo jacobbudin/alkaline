@@ -4,8 +4,12 @@
 // MODIFY THE DEFINITIONS BELOW
 //
 
+// Server type
+$server_type = 'win';
+
 // Database data source name (DSN)
-$db_dsn = 'mysql:host=localhost;dbname=alkaline';
+// $db_dsn = 'mysql:host=localhost;dbname=alkaline';
+$db_dsn = 'mysql:host=my01.winhost.com;dbname=mysql_14786_alkaline';
 // $db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline5.db';
 // $db_dsn = 'pgsql:dbname=alkaline';
 // $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
@@ -69,13 +73,20 @@ else{
 	define('URL_RW', '');
 }
 
-define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
+if($server_type == 'win'){
+	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '\\');
+}
+else{
+	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
+}
+
 define('BASE', '/');
 define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 
+define('SERVER_TYPE', $server_type);
 define('DB_DSN', $db_dsn);
-@define('DB_TYPE', $db_type);
+define('DB_TYPE', $db_type);
 @define('DB_USER', $db_user);
 @define('DB_PASS', $db_pass);
 define('IMG_EXT', $img_ext);
