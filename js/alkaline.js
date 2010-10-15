@@ -1,8 +1,9 @@
-var BASE = 'http://beta.alkalineapp.com/';
+var BASE = $('meta[name="base"]').attr('content');
+var FOLDER_PREFIX = $('meta[name="folder_prefix"]').attr('content');
 
-var ADMIN = 'admin/';
-var IMAGES = 'images/';
-var PHOTOS = 'photos/';
+var ADMIN = FOLDER_PREFIX + 'admin/';
+var IMAGES = FOLDER_PREFIX + 'images/';
+var PHOTOS = FOLDER_PREFIX + 'photos/';
 
 var working = 0;
 

@@ -1,9 +1,3 @@
-var BASE = 'http://beta.alkalineapp.com/';
-
-var ADMIN = 'admin/';
-var IMAGES = 'images/';
-var PHOTOS = 'photos/';
-
 var task;
 var progress;
 var progress_step;

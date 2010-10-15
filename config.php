@@ -24,6 +24,12 @@ $db_user = 'alkaline';
 // Database user password (not needed for SQLite or ODBC connections)
 $db_pass = 'm902j2JK91kaO';
 
+// Add a prefix to all database names
+$table_prefix = '';
+
+// Add a prefix to all primary directories
+$folder_prefix = '';
+
 
 //
 // DO NOT MODIFY BELOW THIS LINE
@@ -89,6 +95,8 @@ define('DB_DSN', $db_dsn);
 define('DB_TYPE', $db_type);
 @define('DB_USER', $db_user);
 @define('DB_PASS', $db_pass);
+define('TABLE_PREFIX', $table_prefix);
+define('FOLDER_PREFIX', $folder_prefix);
 define('IMG_EXT', $img_ext);
 define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
@@ -97,17 +105,17 @@ define('DATE_FORMAT', $date_format);
 define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
 
-define('ADMIN', 'admin/');
-define('ASSETS', 'assets/');
-define('BLOCKS', 'blocks/');
-define('CLASSES', 'classes/');
-define('CSS', 'css/');
-define('EXTENSIONS', 'extensions/');
-define('FUNCTIONS', 'functions/');
-define('JS', 'js/');
-define('IMAGES', 'images/');
-define('PHOTOS', 'photos/');
-define('SHOEBOX', 'shoebox/');
-define('THEMES', 'themes/');
+define('ADMIN', FOLDER_PREFIX . 'admin/');
+define('ASSETS', FOLDER_PREFIX . 'assets/');
+define('BLOCKS', FOLDER_PREFIX . 'blocks/');
+define('CLASSES', FOLDER_PREFIX . 'classes/');
+define('CSS', FOLDER_PREFIX . 'css/');
+define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
+define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
+define('JS', FOLDER_PREFIX . 'js/');
+define('IMAGES', FOLDER_PREFIX . 'images/');
+define('PHOTOS', FOLDER_PREFIX . 'photos/');
+define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
+define('THEMES', FOLDER_PREFIX . 'themes/');
 
 ?>
