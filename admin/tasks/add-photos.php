@@ -15,6 +15,7 @@ if(empty($_POST['photo_file'])){
 }
 else{
 	$photo = new Photo();
+	$photo->attachUser($user);
 	$photo->import(base64_decode($_POST['photo_file']));
 	$tags = $photo->getTags();
 	$photo = $photo->photos[0];
