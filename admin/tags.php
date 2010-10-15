@@ -33,7 +33,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	$tags_html = array();
 	
 	foreach($tags as $tag){
-		$tags_html[] = '<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['id'] . '" style="font-size: ' . $tag['size'] . 'em;">' . $tag['name'] . '</a></span> <span class="small quiet">(' . $tag['count'] . ')</span>';
+		$tags_html[] = '<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['id'] . '/" style="font-size: ' . $tag['size'] . 'em;">' . $tag['name'] . '</a></span> <span class="small quiet">(' . $tag['count'] . ')</span>';
 	}
 	
 	echo implode($tags_html, ', ');
