@@ -46,13 +46,24 @@ function reset(){
 	photo = $('#gallery').find('img');
 	height = photo.innerHeight();
     width = photo.innerWidth();
-	if(height < width){
-		padding = (640 - height) / 2;
-		$('#gallery').css('padding-top', padding + 'px');
+	doc_height = $(document).height();
+	if(doc_height > 700){
+		if(width > height){
+			padding = ((640 - height) / 2) + ((doc_height - 700) / 2);
+		}
+		else{
+			padding = ((doc_height - 700) / 2);
+		}
 	}
 	else{
-		$('#gallery').css('padding-top', '0');
+		if(width > height){
+			padding = ((640 - height) / 2);
+		}
+		else{
+			padding = 0;
+		}
 	}
+	$('#gallery').css('padding-top', padding + 'px');
 }
 
 function update(id){
@@ -109,6 +120,8 @@ $(document).ready(function(){
 		$('#gallery').hide();
 	 	var gallery = true;
 	}
+	
+	$(window).resize(function () { reset(); });
 	
 	if(gallery == true){
 		$.get(BASE + ADMIN + "tasks/build-slideshow.php", function(data){ photos = $.evalJSON(data).photos; process(); } );
