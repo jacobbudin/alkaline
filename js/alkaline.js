@@ -62,7 +62,7 @@ function update(id){
 	
 		var field_regex = new RegExp('\{(.*?)\}', 'gi');
 	
-		function field(field){
+		function field(field, photo_id){
 			field = field.replace(field_regex, "$1").toLowerCase();
 			field = photos[photo_id][field];
 			if(field == null){ field = ''; }
@@ -72,11 +72,35 @@ function update(id){
 		gallery_copy = gallery;
 	
 		while((matchArray = field_regex.exec(gallery_copy)) != null) {
-			replacement = field(matchArray[0]);
+			replacement = field(matchArray[0], photo_id);
 			gallery_copy = gallery_copy.replace(matchArray[0], replacement);
 		}
 	
-		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; reset(); });
+		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; reset(); preload(); });
+		
+		function preload(){
+			if((photo_count - photo_id) < 5){
+				photo_id_top = photo_count;
+			}
+			else{
+				photo_id_top = photo_id + 4;
+			}
+		
+			gallery_copy_cumulative = '';
+		
+			$('.preload').remove();
+		
+			for(var photo_id_temp = (photo_id + 1); photo_id_temp < photo_id_top; photo_id_temp++){
+				gallery_copy = gallery;
+
+				while((matchArray = field_regex.exec(gallery_copy)) != null) {
+					replacement = field(matchArray[0], photo_id_temp);
+					gallery_copy = gallery_copy.replace(matchArray[0], replacement);
+				}
+				gallery_copy_cumulative += gallery_copy;
+			}
+			$('<div class="preload">' + gallery_copy_cumulative + '</div>').appendTo('body');
+		}
 	}
 }
 

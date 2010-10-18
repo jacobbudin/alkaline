@@ -134,3 +134,5 @@ a#prev{
 .copyright, .copyright a{
 	color: #777;
 }
+
+.preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }

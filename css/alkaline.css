@@ -88,6 +88,7 @@ h3{
 .center{ text-align: center; }
 .right{ text-align: right; }
 .none{ display: none; }
+.preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
 .quiet a{ color: #666; }
 .full {width:100%;}
 
