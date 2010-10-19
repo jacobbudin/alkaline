@@ -1159,6 +1159,7 @@ class Photo extends Alkaline{
 			if(!empty($comment['comment_author_avatar'])){
 				$comment['comment_author_avatar'] = '<img src="' . $comment['comment_author_avatar'] . '" alt="" />';
 			}
+			$comment['comment_created'] = parent::formatTime($comment['comment_created']);
 		}
 		
 		// Store photo comment fields

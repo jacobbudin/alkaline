@@ -597,69 +597,6 @@ class Alkaline{
 		return $tags;
 	}
 	
-	// Display all comments
-	public function getComments($search=null, $status=null, $created_begin=null, $created_end=null){
-		$sql_conds = array();
-		$sql_params = array();
-		
-		// Set search
-		if(!empty($search)){
-			$sql_conds[] = '(LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_url) LIKE :comment_author_url) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip)';
-			$search = '%' . strtolower($search) . '%';
-			$sql_params[':comment_text'] = $search;
-			$sql_params[':comment_author_name'] = $search;
-			$sql_params[':comment_author_url'] = $search;
-			$sql_params[':comment_author_email'] = $search;
-			$sql_params[':comment_author_ip'] = $search;
-		}
-		
-		// Set comment status
-		if(isset($status)){
-			if(intval($status)){
-				$sql_conds[] = 'comment_status = :comment_status';
-				$sql_params[':comment_status'] = $status;
-			}
-			elseif(is_string($status)){
-				$comment_statuses = array(-1 => 'Spam', 0 => 'Unpublished', 1 => 'Published');
-				$status = ucwords($status);
-				
-				if(($key = array_search($status, $comment_statuses)) !== false){
-					$sql_conds[] = 'comment_status = :comment_status';
-					$sql_params[':comment_status'] = $key;
-				}
-			}
-		}
-		
-		// Set begin date
-		if(!empty($created_begin)){
-			if(is_int($created_begin)){ $created_begin = strval($created_begin); }
-			if(strlen($created_begin) == 4){ $created_begin .= '-01-01'; }
-			$created_begin = date('Y-m-d', strtotime($created_begin));
-			$sql_conds[] = 'comment_created >= :comment_created_begin';
-			$sql_params[':comment_created_begin'] = $created_begin . ' 00:00:00';
-		}
-		
-		// Set end date
-		if(!empty($created_end)){
-			if(is_int($created_end)){ $created_end = strval($created_end); }
-			if(strlen($created_end) == 4){ $created_end .= '-01-01'; }
-			$created_end = date('Y-m-d', strtotime($created_end));
-			$sql_conds[] = 'comment_created <= :comment_created_end';
-			$sql_params[':comment_created_end'] = $created_end . ' 23:59:59"';
-		}
-		
-		if(count($sql_conds) > 0){
-			$query = $this->prepare('SELECT * FROM comments WHERE (' . implode(') AND (', $sql_conds) . ') ORDER BY comment_created DESC;');
-		}
-		else{
-			$query = $this->prepare('SELECT * FROM comments ORDER BY comment_created DESC;');
-		}
-		$query->execute($sql_params);
-		$comments = $query->fetchAll();
-		
-		return $comments;
-	}
-	
 	// Display all blocks
 	public function getBlocks(){
 		$blocks = self::seekDirectory(PATH . BLOCKS, '.*');
@@ -793,6 +730,7 @@ class Alkaline{
 		return $html;
 	}
 	
+	// TABLE AND ROW FUNCTIONS
 	public function getTable($table, $ids=null, $limit=null, $page=1, $order_by=null){
 		if(empty($table)){
 			return false;
@@ -833,49 +771,6 @@ class Alkaline{
 		$table = $query->fetchAll();
 		return $table;
 	}
-	
-	public function getTableNew($table, $ids=null, $limit=null, $page=1, $order_by=null){
-		if(empty($table)){
-			return false;
-		}
-		if(!is_int($page) or ($page < 1)){
-			$page = 1;
-		}
-		
-		$table = $this->sanitize($table);
-		
-		$sql_params = array();
-		
-		$order_by_sql = '';
-		$limit_sql = '';
-		
-		if(!empty($order_by)){
-			$order_by_sql = ' ORDER BY ' . $order_by;
-			$sql_params[':order_by'] = $order_by;
-		}
-		
-		if(!empty($limit)){
-			$limit = intval($limit);
-			$page = intval($page);
-			$limit_sql = ' LIMIT ' . ($limit * ($page - 1)) . ', ' . $limit;
-		}
-		
-		if(empty($ids)){
-			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 ' . $order_by_sql . $limit_sql . ';');
-		}
-		else{
-			$ids = self::convertToIntegerArray($ids);
-			$field = $this->tables[$table];
-			echo 'SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';';
-			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0 AND ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
-		}
-		
-		$query->execute($sql_params);
-		$table = $query->fetchAll();
-		
-		return $table;
-	}
-	
 	
 	public function addRow($fields=null, $table){
 		// Error checking

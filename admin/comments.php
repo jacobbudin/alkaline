@@ -39,27 +39,26 @@ define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
+	$comments = new Comment();
 	
 	if($comment_act == 'search'){
-		$comments = $alkaline->getComments(@$_POST['search'], @$_POST['published'], @$_POST['created_begin'], @$_POST['created_end']);
-	}
-	elseif($comment_act == 'unpublished'){
-		$comments = $alkaline->getTableNew('comments', null, null, null, 'comment_created DESC');
-	}
-	else{
-		$comments = $alkaline->getTable('comments', null, null, null, 'comment_created DESC');	
-	}
-	
-	$comment_count = @count($comments);
-	
-	$photo_ids = array();
-	
-	foreach($comments as $comment){
-		$photo_ids[] = $comment['photo_id'];
+		if(!empty($_POST['search'])){
+			$comments->search($_POST['search']);
+		}
+		if(!empty($_POST['created_begin']) or !empty($_POST['created_end'])){
+			$comments->created($_POST['created_begin'], $_POST['created_end']);
+		}
+		if(!empty($_POST['status'])){
+			$comments->created($_POST['status']);
+		}
 	}
 	
-	$photo_ids = array_unique($photo_ids, SORT_NUMERIC);
-	$photo_ids = array_values($photo_ids);
+	$comments->fetch();
+	$comments->formatTime();
+	
+	$photo_ids = $comments->photo_ids;
+	$comment_count = $comments->comment_count;
+	$comments = $comments->comments;
 	
 	$photos = new Photo($photo_ids);
 	$photos->getImgUrl('square');
@@ -84,7 +83,7 @@ if(empty($comment_id)){
 			<tr>
 				<td class="right middle"><label for="published">Publication status:</label></td>
 				<td class="quiet">
-					<select id="published" name="published">
+					<select id="status" name="status">
 						<option value="">All</option>
 						<option value="published">Published</option>
 						<option value="unpublished">Unpublished</option>
@@ -128,7 +127,7 @@ if(empty($comment_id)){
 					echo '<em>(Unsigned)</em>';
 				}
 				echo '</a></strong> wrote &#8220;' . $alkaline->fitString($comment['comment_text'], 225) . '&#8221;</td>';
-				echo '<td>' . $alkaline->formatTime($comment['comment_created']) . '</td>';
+				echo '<td>' . $comment['comment_created'] . '</td>';
 			echo '</tr>';
 		}
 		
