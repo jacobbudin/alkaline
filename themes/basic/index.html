@@ -3,35 +3,35 @@
 
 {block:Photos}
 <div class="photo">
-	<a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a><br />
+	<div class="center"><a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a></div><br />
 	<div class="float_right">
 		<div class="uploaded">{Photo_Uploaded}</div>
-		<div class="right">{if:Right_Title}
-			{Right_Title}
+		<div class="right">
+			{if:Right_Title}
+				{Right_Title}
 			{else:Right_Title}
-			No rights set.
-			{/if:Right_Title}</div>
+				No rights set.
+			{/if:Right_Title}
+		</div>
 	</div>
-	<div class="title">
-		{Photo_Title}
-	</div>
-	<p>
-		{if:Tags}{block:Tags}<span class="tag">#{Tag_Name}</span>{/block:Tags}<br />{/if:Tags}
-		<!-- <strong>Comments:</strong>
-		<!-- IF(COMMENTS) -->
-		<!-- LOOP(COMMENTS) -->
-				<!-- COMMENT_TEXT --> ... 
-		<!-- ENDLOOP(COMMENTS) -->
-		<!-- ELSEIF(COMMENTS) -->
-		<!-- No comments. -->
-		<!-- ENDIF(COMMENTS) -->
-	</p>
+	{if:Photo_Title}
+		<div class="title">
+			{Photo_Title}
+		</div>
+	{/if:Photo_Title}
+	{if:Tags}
+		<p>
+		{block:Tags}
+			<span class="tag">#{Tag_Name}</span>
+		{/block:Tags}
+		</p>
+	{/if:Tags}
 </div>
 <hr />
 {/block:Photos}
 
 <p>
-	Page #{PAGE_CURRENT} of {PAGE_COUNT}
-	{if:PAGE_NEXT}<br /><a href="/page{PAGE_NEXT}/">Next page</a>: Page #{PAGE_NEXT}{/if:PAGE_NEXT}
-	{if:PAGE_PREVIOUS}<br /><a href="/page{PAGE_PREVIOUS}/">Previous page</a>: Page #{PAGE_PREVIOUS}{/if:PAGE_PREVIOUS}
+	Page #{Page_Current} of {Page_Count}
+	{if:Page_Next}<br /><a href="/page{PAGE_NEXT}/">Next page</a>: Page #{Page_Next}{/if:Page_Next}
+	{if:Page_Previous}<br /><a href="/page{PAGE_PREVIOUS}/">Previous page</a>: Page #{Page_Previous}{/if:Page_Previous}
 </p>

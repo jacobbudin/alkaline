@@ -4,11 +4,16 @@
 
 body{
 	background-color: #eee;
-	font-size: .8em;
+	font-family: Verdana, sans-serif;
+	font-size: .7em;
 	margin: 4em auto;
 }
 
 h1, h2, h3, h4, h5, h6 { color: #888; }
+
+table td{
+	vertical-align: top;
+}
 
 #slideshow{
 }
@@ -83,13 +88,23 @@ a#prev{
 
 .title{
 	text-shadow: 1px 1px 2px #fff;
-	font-family: "Lobster";
-	font-size: 3em;
+	font-family: "Vollkorn", Georgia, serif;
+	font-style: italic;
+	font-size: 2.4em;
+	font-weight: 500;
+	color: #444;
+	line-height: 1.4em;
+	padding-bottom: .75em;
 	text-align: left;
 }
 
+p.description{
+	font-family: "Vollkorn", Georgia, serif;
+	font-size: 1.3em;
+}
+
 .float_right{
-	margin: 1em 0 1.5em 0;
+	margin: 0 0 1.5em 0;
 	float: right;
 	text-align: right;
 }
@@ -98,27 +113,26 @@ a#prev{
 	padding: 3px 6px 4px 6px;
 	margin-right: 10px;
 	background-color: #ddd;
-	font-family: Verdana;
 	color: #666;
-	font-size: .84em;
 	border-radius: 4px;
 }
 
 .uploaded{
 	color: #999;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
 	font-weight: bold;
-	font-size: .9em;
 	text-transform: uppercase;
 }
 
 .right{
 	color: #aaa;
-	font-size: .9em;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
 }
 
 #copyright{
 	margin-top: 2em;
-	font-size: .9em;
 	text-align: center;
 }
 
