@@ -1208,6 +1208,7 @@ class Photo extends Alkaline{
 	
 	public function formatTime($format=null){
 		for($i = 0; $i < $this->photo_count; ++$i){
+			$this->photos[$i]['photo_taken'] = parent::formatTime($this->photos[$i]['photo_taken'], $format);
 			$this->photos[$i]['photo_uploaded'] = parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
 			$this->photos[$i]['photo_published'] = parent::formatTime($this->photos[$i]['photo_published'], $format);
 			$this->photos[$i]['photo_updated'] = parent::formatTime($this->photos[$i]['photo_updated'], $format);
