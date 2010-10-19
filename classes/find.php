@@ -493,22 +493,15 @@ class Find extends Alkaline{
 		// Prepare input
 		$search_lower = strtolower($search);
 		$search_lower = preg_replace('#\s#', '%', $search_lower);
-		
-		// Set fields to search (security)
-		// $sql = '(';
-		// $sql .= 'LOWER(photos.photo_title) LIKE "%' . $search_lower . '%" OR ';
-		// $sql .= 'LOWER(photos.photo_description) LIKE "%' . $search_lower . '%"';
-		// $sql .= ')';
-		// $this->sql_conds[] = $sql;
+		$search_lower = '%' . $search_lower . '%';
 		
 		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower)');
-		$query->execute(array(':photo_title_lower' => '%' . $search_lower . '%', ':photo_description_lower' => '%' . $search_lower . '%'));
-		
-		$this->photos = $query->fetchAll();
+		$query->execute(array(':photo_title_lower' => $search_lower, ':photo_description_lower' => $search_lower));
+		$photos = $query->fetchAll();
 		
 		$photo_ids = array();
 		
-		foreach($this->photos as $photo){
+		foreach($photos as $photo){
 			$photo_ids[] = $photo['photo_id'];
 		}
 		
