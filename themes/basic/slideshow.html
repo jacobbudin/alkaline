@@ -3,19 +3,22 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+	<link href="http://fonts.googleapis.com/css?family=Vollkorn:regular,italic&subset=latin" rel="stylesheet" type="text/css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="base" content="<?php echo LOCATION . BASE; ?>" />
 	<meta name="folder_prefix" content="<?php echo FOLDER_PREFIX; ?>" />
 	<title>{if:Title}{Title}{else:Title}Jacob Budin{/if:Title}</title>
-	<link rel="stylesheet" href="/css/blueprint/screen.css" type="text/css" media="screen, projection" />
-	<link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print" />	
-	<!--[if lt IE 8]><link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
-	<link rel="stylesheet" href="/themes/basic/jacobbudin.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/screen.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/print.css" type="text/css" media="print" />	
+	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+	<link rel="stylesheet" href="<?php echo BASE . THEMES; ?>basic/basic.css" type="text/css" media="screen, projection" />
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.4.3.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.json-2.2.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 	<style>
-		body { margin: 0; }
+		body { margin: 0; background-color: #222; }
+		.frame { border-color: #fff; -webkit-box-shadow: 0 0 10px #000; -moz-box-shadow: 0 0 10px #000; }
+		.title { color: #ccc; 	text-shadow: 1px 1px 2px #000; }
 	</style>
 </head>
 <body>
@@ -23,10 +26,10 @@
 		<div id="gallery">
 			<div class="photo">
 				<div class="center">
-					<a href="/photo/{PHOTO_ID}"><img src="{PHOTO_SRC_MEDIUM}" alt="" class="frame" /></a><br />
+					<a href="/photo/{Photo_Id}"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a><br />
 				</div>
 				<div class="title">
-					{PHOTO_TITLE}
+					{Photo_Title}
 				</div>
 			</div>
 		</div>
