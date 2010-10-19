@@ -226,7 +226,7 @@ class Find extends Alkaline{
 		parent::convertToArray($tags);
 		
 		// Find tags in database
-		if(is_int($tags[0])){
+		if(intval($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
 			$query->execute();
@@ -275,7 +275,7 @@ class Find extends Alkaline{
 		parent::convertToArray($tags);
 		
 		// Find photos with these tags in database
-		if(is_int($tags[0])){
+		if(intval($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 			$query->execute();
@@ -332,7 +332,7 @@ class Find extends Alkaline{
 		parent::convertToArray($tags);
 		
 		// Find photos with these tags in database
-		if(is_int($tags[0])){
+		if(intval($tags[0])){
 			parent::convertToIntegerArray($tags);
 			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 			$query->execute();

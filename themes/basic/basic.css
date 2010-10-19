@@ -99,6 +99,7 @@ a#prev{
 }
 
 p.description{
+	color: #555;
 	font-family: "Vollkorn", Georgia, serif;
 	font-size: 1.3em;
 }
