@@ -782,6 +782,12 @@ class Alkaline{
 		return $table;
 	}
 	
+	public function getRow($table, $id){
+		$table = $this->getTable($table, $id);
+		if(count($table) != 1){ return false; }
+		return $table[0];
+	}
+	
 	public function addRow($fields=null, $table){
 		// Error checking
 		if(empty($table) or (!is_array($fields) and isset($fields))){

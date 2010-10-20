@@ -9,15 +9,17 @@ $alkaline->recordStat('pile');
 $id = $alkaline->findID($_GET['id']);
 
 $photo_ids = new Find;
-$photo_ids->page(null,5,3);
+$photo_ids->page(null,5);
 $photo_ids->published();
 $photo_ids->privacy('public');
 $photo_ids->pile($id);
 $photo_ids->find();
 
+$pile = $alkaline->getRow('piles', $id);
+
 $photos = new Photo($photo_ids);
 $photos->formatTime();
-$photos->getImgUrl('medium');
+$photos->getImgUrl('square');
 $photos->getExif();
 $photos->getTags();
 $photos->getRights();
@@ -28,11 +30,9 @@ $header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title')
 $header->display();
 
 $index = new Canvas;
-$index->load('index');
-$index->assign('PAGE_NEXT', $photo_ids->page_next);
-$index->assign('PAGE_PREVIOUS', $photo_ids->page_previous);
-$index->assign('PAGE_CURRENT', $photo_ids->page);
-$index->assign('PAGE_COUNT', $photo_ids->page_count);
+$index->load('pile');
+$index->assign('Pile_Title', $pile['pile_title']);
+$index->assign('Pile_Description', $pile['pile_description']);
 $index->loop($photos);
 $index->display();
 
