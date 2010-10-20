@@ -5,30 +5,28 @@
 //
 
 // Server type
-$server_type = 'unix';
+$server_type = '';
 
-// Database data source name (DSN)
-$db_dsn = 'mysql:host=localhost;dbname=alkaline';
-// $db_dsn = 'mysql:host=my01.winhost.com;dbname=mysql_14786_alkaline';
-// $db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline5.db';
-// $db_dsn = 'pgsql:dbname=alkaline';
-// $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
-// $db_dsn = 'odbc:Driver=FreeTDS;Server=s03.winhost.com;Database=DB_14786_alkaline;Uid=DB_14786_alkaline_user;Pwd=m902j2JK91kaO;';
+// Database data source name (DSN including protocol)
+$db_dsn = '';
 
-// Same as DSN prefix
-$db_type = 'mysql';
+// Database type (DSN protocol)
+$db_type = '';
 
-// Database user username (not needed for SQLite or ODBC connections)
-$db_user = 'alkaline';
+// Database user username (leave empty for SQLite)
+$db_user = '';
 
-// Database user password (not needed for SQLite or ODBC connections)
-$db_pass = 'm902j2JK91kaO';
+// Database user password (leave empty for SQLite)
+$db_pass = '';
 
-// Add a prefix to all database names
+// Database table prefix
 $table_prefix = '';
 
-// Add a prefix to all primary directories
+// Alkaline subdirectory prefix
 $folder_prefix = '';
+
+// URL rewriting (supports Apache mod_rewrite, Microsoft URL Rewrite 2, and compatible)
+$url_rewrite = false;
 
 
 //
@@ -55,9 +53,6 @@ $palette_size = 8;
 
 // Color tolerance (higher numbers varies colors more)
 $color_tolerance = 60;
-
-// URL rewriting (Apache mod_rewrite, Microsoft URL Rewrite 2, or compatible)
-$url_rewrite = true;
 
 
 if($url_rewrite){

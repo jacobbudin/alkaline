@@ -65,6 +65,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td style="padding-top: .65em;">
 					<label for="login_remember">Remember me on this computer.</label>
 				</td>
+			</tr>
 			<tr>
 				<td></td>
 				<td>

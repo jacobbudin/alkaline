@@ -200,7 +200,7 @@ class Alkaline{
 	
 	// Check notifications
 	public function isNotification(){
-		$count = count($_SESSION['alkaline']['notifications']);
+		$count = @count($_SESSION['alkaline']['notifications']);
 		if($count > 0){
 			// Determine unique types
 			return $count;
@@ -346,6 +346,16 @@ class Alkaline{
 		closedir($handle);
 		
 		return true;
+	}
+	
+	// Check permissions
+	public function checkPerm($file){
+		return substr(sprintf('%o', @fileperms($file)), -4);
+	}
+	
+	// Replace variable
+	public function replaceVar($var, $replacement, $subject){
+		return preg_replace('#^\s*' . str_replace('$', '\$', $var) . '\s*=(.*)$#mi', $replacement, $subject);
 	}
 	
 	// CONVERT TO ARRAY
