@@ -1073,22 +1073,32 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate image URLs for images
-	public function getImgUrl($size){
-		$photo_src = 'photo_src_' . $size;
+	public function getImgUrl($sizes=null){
+		$sizes = $this->convertToArray($sizes);
+		
+		$value_slots = array_fill(0, count($sizes), '?');
 		
 		// Find size's prefix and suffix
-		$query = $this->prepare('SELECT size_prepend, size_append FROM sizes WHERE size_title = :size_title');
-		$query->execute(array(':size_title' => $size));
-		$sizes = $query->fetchAll();
-				
-		foreach($sizes as $size){
-			$size_prepend = $size['size_prepend'];
-			$size_append = $size['size_append'];
+		if(!empty($size)){
+			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes WHERE size_title = ' . implode(' OR size_title = ', $value_slots) . ' ');
+			$query->execute($sizes);
+		}
+		else{
+			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes');
+			$query->execute();
 		}
 		
-		// Attach photo_src_ to photos array
-		for($i = 0; $i < $this->photo_count; ++$i){
-		    $this->photos[$i][$photo_src] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
+		$sizes = $query->fetchAll();
+		
+		foreach($sizes as $size){
+			$size_title = 'photo_src_' . $size['size_title'];
+			$size_prepend = $size['size_prepend'];
+			$size_append = $size['size_append'];
+			
+			// Attach photo_src_ to photos array
+			for($i = 0; $i < $this->photo_count; ++$i){
+			    $this->photos[$i][$size_title] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
+			}
 		}
 	}
 	
