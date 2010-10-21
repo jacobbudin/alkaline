@@ -7,6 +7,9 @@
 // Server type
 $server_type = 'unix';
 
+// Folder base
+$base = '';
+
 // Database data source name (DSN)
 $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 // $db_dsn = 'mysql:host=my01.winhost.com;dbname=mysql_14786_alkaline';
@@ -82,7 +85,7 @@ else{
 	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 }
 
-define('BASE', '/');
+define('BASE', '/' . $base);
 define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 

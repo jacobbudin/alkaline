@@ -106,6 +106,8 @@ h4{
 .quiet a{ color: #666; }
 .full {width:100%;}
 
+.code{ font-family: "Anonymous Pro", "Courier New", Courier, serif; background-color: #eee; }
+
 ul{
 	margin: .3em 2.1em 1.5em 1.75em;
 	list-style-type: block;

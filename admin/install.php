@@ -111,6 +111,10 @@ if(@$_POST['install'] == 'Install'){
 	if(!empty($_POST['install_db_prefix'])){
 		$config = $alkaline->replaceVar('$table_prefix', '$table_prefix = \'' . $_POST['install_db_prefix'] . '\';', $config);
 	}
+	
+	if(!empty($_POST['install_base'])){
+		$config = $alkaline->replaceVar('$folder_base', '$folder_base = \'' . $_POST['install_base'] . '\';', $config);
+	}
 }
 
 
@@ -137,7 +141,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 	
 	<p class="large"><strong>Almost there.</strong> Copy and paste the text below into a text editor and save it as &#8220;config.php&#8221; to your hard disk. Then upload this file (overwriting the file that is already there) to your Alkaline directory to complete your installation.</p>
 	
-	<textarea style="height: 30em;"><?php echo $config; ?></textarea>
+	<textarea style="height: 30em;" class="code"><?php echo $config; ?></textarea>
 	
 	<?php
 }
@@ -171,10 +175,24 @@ else{
 				</td>
 			</tr>
 		</table>
+		
+		<h3>Your File Structure</h3>
+	
+		<p>Where did you install Alkaline relative to your domain name?</p>
+	
+		<table>
+			<tr>
+				<td class="right pad">
+					<label for="install_base">Base path:</label>
+				</td>
+				<td>
+					<input type="text" name="install_base" id="install_base" class="s" value="<?php preg_match_all('#(?:/)?(.*)/(?:.*)admin/install#si', $_SERVER['SCRIPT_NAME'], $matches); if(!empty($matches[1][0])){ echo $matches[1][0] . '/'; } ?>" /> <span class="quiet">(optional)</span><br />
+					<span class="quiet">For example, http://www.yourdomain.com/photos/ would be <strong>photos/</strong></span>
+				</td>
+			</tr>
+		</table>
 	
 		<h3>Your Database Server</h3>
-	
-		<p>Can&#8217;t decide? SQLite is the easiest.</p>
 	
 		<table>
 			<tr>
