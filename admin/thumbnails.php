@@ -55,7 +55,7 @@ if(empty($size_id)){
 
 	?>
 	
-	<div class="actions"><a href="build/">Build thumbnial</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build thumbnial</a></div>
 
 	<h1>Thumbnails (<?php echo $size_count; ?>)</h1>
 
@@ -113,9 +113,9 @@ else{
 			<tr>
 				<td class="right"><label>Type:</label></td>
 				<td>
-					<input type="radio" name="size_type" value="scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?>/> <strong>Scale image</strong><br />
+					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?>/> <label for="size_type_scale">Scale image</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;&#8220;normal&#8221; thumbnails<br />
-					<input type="radio" name="size_type" value="fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?>/> <strong>Fill canvas</strong><br />
+					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?>/> <label for="size_type_fill">Fill canvas</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Fills the thumbnail, crops excess&#8212;good for arranging in grids
 				</td>
 			</tr>
