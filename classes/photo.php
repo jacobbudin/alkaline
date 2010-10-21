@@ -26,32 +26,32 @@ class Photo extends Alkaline{
 		$this->photo_ids = parent::convertToIntegerArray($photo_ids);
 		
 		// Error checking
-		if(empty($photo_ids)){
-			return false;
-		}
+		$this->sql = ' WHERE (photos.photo_id IS NULL)';
 		
-		// Retrieve photos from database
-		$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
+		if(count($this->photo_ids) > 0){
+			// Retrieve photos from database
+			$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
 		
-		$query = $this->prepare('SELECT * FROM photos' . $this->sql . ';');
-		$query->execute();
-		$photos = $query->fetchAll();
+			$query = $this->prepare('SELECT * FROM photos' . $this->sql . ';');
+			$query->execute();
+			$photos = $query->fetchAll();
 		
-		// Ensure photos array correlates to photo_ids array
-		foreach($this->photo_ids as $photo_id){
-			foreach($photos as $photo){
-				if($photo_id == $photo['photo_id']){
-					$this->photos[] = $photo;
+			// Ensure photos array correlates to photo_ids array
+			foreach($this->photo_ids as $photo_id){
+				foreach($photos as $photo){
+					if($photo_id == $photo['photo_id']){
+						$this->photos[] = $photo;
+					}
 				}
 			}
-		}
 		
-		// Store photo count as integer
-		$this->photo_count = count($this->photos);
+			// Store photo count as integer
+			$this->photo_count = count($this->photos);
 		
-		// Store photo_file
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
+			// Store photo_file
+			for($i = 0; $i < $this->photo_count; ++$i){
+				$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
+			}
 		}
 	}
 	
@@ -1075,12 +1075,13 @@ class Photo extends Alkaline{
 	// Generate image URLs for images
 	public function getImgUrl($sizes=null){
 		$sizes = $this->convertToArray($sizes);
+		$sizes = array_map('strtolower', $sizes);
 		
 		$value_slots = array_fill(0, count($sizes), '?');
 		
 		// Find size's prefix and suffix
 		if(!empty($size)){
-			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes WHERE size_title = ' . implode(' OR size_title = ', $value_slots) . ' ');
+			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' ');
 			$query->execute($sizes);
 		}
 		else{
@@ -1091,7 +1092,7 @@ class Photo extends Alkaline{
 		$sizes = $query->fetchAll();
 		
 		foreach($sizes as $size){
-			$size_title = 'photo_src_' . $size['size_title'];
+			$size_title = 'photo_src_' . strtolower($size['size_title']);
 			$size_prepend = $size['size_prepend'];
 			$size_append = $size['size_append'];
 			
