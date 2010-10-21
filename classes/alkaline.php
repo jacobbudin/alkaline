@@ -55,33 +55,28 @@ class Alkaline{
 		$nodb_classes = array('Canvas');
 		
 		if(!in_array(get_class($this), $nodb_classes)){
-			// Determine database type
-			$this->db_type = DB_TYPE;
+			if(defined('DB_TYPE') and defined('DB_DSN')){
+				// Determine database type
+				$this->db_type = DB_TYPE;
 			
-			if($this->db_type == 'mssql'){
-				$this->db = new PDO(DB_DSN);
-			}
-			elseif($this->db_type == 'mysql'){
-				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-			}
-			elseif($this->db_type == 'pgsql'){
-				$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
-				$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-			}
-			elseif($this->db_type == 'sqlite'){
-				$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+				if($this->db_type == 'mssql'){
+					// $this->db = new PDO(DB_DSN);
+				}
+				elseif($this->db_type == 'mysql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+				}
+				elseif($this->db_type == 'pgsql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+					$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+				}
+				elseif($this->db_type == 'sqlite'){
+					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 				
-				$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
-				$this->db->sqliteCreateFunction('COS', 'cos', 1);
-				$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
-				$this->db->sqliteCreateFunction('SIN', 'sin', 1);
-			}
-			else{
-				$this->error('You must specify a database type in your configuration.');
-			}
-			
-			if(!$this->db){
-				$this->error('No database connection.');
+					$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+					$this->db->sqliteCreateFunction('COS', 'cos', 1);
+					$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+				}
 			}
 		}
 	}
@@ -112,6 +107,7 @@ class Alkaline{
 		$_SESSION['alkaline']['debug']['queries']++;
 		
 		if($this->db_type == 'mssql'){
+			/*
 			preg_match('#GROUP BY (.*) ORDER BY#si', $query, $match);
 			$find = @$match[0];
 			if(!empty($find)){
@@ -131,6 +127,7 @@ class Alkaline{
 				$query = str_replace('SELECT ', 'SELECT TOP 999999999999999999 ROW_NUMBER() OVER (ORDER BY ' . $this->tables[$table]  . ' ASC) AS row_number,', $query);
 				$query = 'SELECT * FROM (' . $query . ') AS temp WHERE temp.row_number > ' . $offset . ' AND temp.row_number <= ' . ($offset + $limit);
 			}
+			*/
 		}
 		elseif($this->db_type == 'pgsql'){
 			$query = preg_replace('#LIMIT[[:space:]]+([0-9]+),[[:space:]]*([0-9]+)#si', 'LIMIT \2 OFFSET \1', $query);
@@ -832,13 +829,19 @@ class Alkaline{
 		$field = $this->tables[$table];
 		unset($fields[$field]);
 		
-		$columns = array_keys($fields);
-		$values = array_values($fields);
+		if(count($fields) > 0){
+			$columns = array_keys($fields);
+			$values = array_values($fields);
 		
-		$value_slots = array_fill(0, count($values), '?');
+			$value_slots = array_fill(0, count($values), '?');
 		
-		// Add row to database
-		$query = $this->prepare('INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $value_slots) . ');');
+			// Add row to database
+			$query = $this->prepare('INSERT INTO ' . $table . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $value_slots) . ');');
+		}
+		else{
+			$values = array();
+			$query = $this->prepare('INSERT INTO ' . $table . ' (' . $this->tables[$table] . ') VALUES (NULL);');
+		}
 		
 		if(!$query->execute($values)){
 			return false;
