@@ -20,6 +20,11 @@ if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
 // Configuration setup
 
 if(@$_POST['install'] == 'Install'){
+	$type = $_POST['install_db_type'];
+	$name = $_POST['install_db_name'];
+	$username = $_POST['install_db_user'];
+	$password = $_POST['install_db_pass'];
+	
 	if(!$config = file_get_contents(PATH . ASSETS . 'config-default.php', false)){
 		$alkaline->addNotification('Cannot find configuration file.', 'error');
 	}
@@ -29,13 +34,13 @@ if(@$_POST['install'] == 'Install'){
 	}
 	
 	if($_POST['install_db_type'] == 'mysql'){
-		if(empty($_POST['install_db_name'])){
+		if(empty($name)){
 			$alkaline->addNotification('A database name is required for MySQL.', 'error');
 		}
-		if(empty($_POST['install_db_user'])){
+		if(empty($username)){
 			$alkaline->addNotification('A database username is required for MySQL.', 'error');
 		}
-		if(empty($_POST['install_db_pass'])){
+		if(empty($password)){
 			$alkaline->addNotification('A database passsword is required for MySQL.', 'error');
 		}
 		
@@ -56,8 +61,8 @@ if(@$_POST['install'] == 'Install'){
 		
 		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
 		$config = $alkaline->replaceVar('$db_type', '$db_type = \'mysql\';', $config);
-		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $_POST['install_db_user'] . '\';', $config);
-		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $_POST['install_db_pass'] . '\';', $config);
+		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $username . '\';', $config);
+		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $password . '\';', $config);
 	}
 	elseif($_POST['install_db_type'] == 'sqlite'){
 		if(!empty($_POST['install_db_file'])){
@@ -67,7 +72,9 @@ if(@$_POST['install'] == 'Install'){
 			$path = PATH . ASSETS . 'alkaline.db';
 		}
 		
-		$dsn = $alkaline->correctWinPath('sqlite:' . $path);
+		$path = $alkaline->correctWinPath($path);
+		
+		$dsn = 'sqlite:' . $path;
 		
 		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
 		$config = $alkaline->replaceVar('$db_type', '$db_type = \'sqlite\';', $config);
@@ -77,13 +84,13 @@ if(@$_POST['install'] == 'Install'){
 		}
 	}
 	elseif($_POST['install_db_type'] == 'pgsql'){
-		if(empty($_POST['install_db_name'])){
+		if(empty($name)){
 			$alkaline->addNotification('A database name is required for PostgreSQL.', 'error');
 		}
-		if(empty($_POST['install_db_user'])){
+		if(empty($username)){
 			$alkaline->addNotification('A database username is required for PostgreSQL.', 'error');
 		}
-		if(empty($_POST['install_db_pass'])){
+		if(empty($password)){
 			$alkaline->addNotification('A database passsword is required for PostgreSQL.', 'error');
 		}
 		
@@ -104,8 +111,8 @@ if(@$_POST['install'] == 'Install'){
 		
 		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
 		$config = $alkaline->replaceVar('$db_type', '$db_type = \'pgsql\';', $config);
-		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $_POST['install_db_user'] . '\';', $config);
-		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $_POST['install_db_pass'] . '\';', $config);
+		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $username . '\';', $config);
+		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $username . '\';', $config);
 	}
 	
 	if(!empty($_POST['install_db_prefix'])){
@@ -120,14 +127,40 @@ if(@$_POST['install'] == 'Install'){
 
 // Database setup
 
-if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)){
-	
+if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)){	
 	// Check to see if can connect
-	
-	// Import default SQL
-	
-	// Add admin user
-	
+	if(!$db = new PDO($dsn, $username, $password)){
+		$alkaline->addNotification('The database could not be contacted. Check your settings.', 'error');
+	}
+	else{
+		// Import default SQL
+		$queries = file_get_contents(PATH . ASSETS . $type . '.sql');
+		$queries = explode(';', $queries);
+		
+		foreach($queries as $query){
+			$db->exec($query . ';');
+		}
+		
+		// Import geo database
+		$queries = file_get_contents(PATH . ASSETS . 'geo.sql');
+		$queries = explode(';', $queries);
+		
+		foreach($queries as $query){
+			if($type != 'sqlite'){
+				$query = str_replace('\'\'', '\\\'', $query);
+			}
+			$db->exec($query . ';');
+		}
+		
+		// Add admin user
+		$query = $db->prepare('INSERT INTO users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
+		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
+		// Add admin thumbnails
+		
+		$query = $db->prepare('INSERT INTO sizes (size_title, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?);');
+		$query->execute(array('Dashboard (L)', 600, 600, 'scale', '_dash_s'));
+		$query->execute(array('Dashboard (S)', 80, 80, 'fill', '_dash_l'));
+	}
 }
 
 
@@ -303,6 +336,14 @@ else{
 		<table>
 			<tr>
 				<td class="right middle">
+					<label for="install_name">Name:</label>
+				</td>
+				<td>
+					<input type="text" name="install_name" id="install_name" class="s" />
+				</td>
+			</tr>
+			<tr>
+				<td class="right middle">
 					<label for="install_user">Username:</label>
 				</td>
 				<td>
@@ -337,7 +378,7 @@ else{
 		
 		<h3>Install Alkaline</h3>
 	
-		<p>This may take a few moments, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" /></p>
+		<p>This may take several minutes, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" /></p>
 	</form>
 
 	<?php
