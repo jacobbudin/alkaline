@@ -80,23 +80,23 @@ $durations = array_combine($keys, $zeros);
 
 $durations_count = count($stats->durations);
 
+$accounted_for = 0;
+
 foreach($stats->durations as $duration){
-	$accounted_for = false;
 	foreach($levels as $level_text => $level_max){
 		if($duration['stat_duration'] < $level_max){
 			$durations[$level_text]++;
-			$accounted_for = true;
+			$accounted_for++;
 			break;
 		}
 	}
-	if($accounted_for == false){
-		$durations[$last]++;
-	}
 }
 
+$durations[$last] = $durations_count - $accounted_for;
+
 if($durations_count > 0){
-	foreach($durations as $text => &$duration){
-		$duration = round(($duration / $durations_count) * 100, 1);
+	foreach($durations as $text => $duration){
+		$durations[$text] = round(($duration / $durations_count) * 100, 1);
 	}
 }
 
