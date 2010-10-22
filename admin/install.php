@@ -5,16 +5,18 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 
+$_POST = array_map('strip_tags', $_POST);
+
 // Diagnostic checks
 
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Assets folder is not writable.', 'error');
+	$alkaline->addNotification('Assets folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Photos folder is not writable.', 'error');
+	$alkaline->addNotification('Photos folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Shoebox folder is not writable.', 'error');
+	$alkaline->addNotification('Shoebox folder is not writable (CHMOD 777).', 'error');
 } 
 
 // Configuration setup
@@ -80,7 +82,7 @@ if(@$_POST['install'] == 'Install'){
 		$config = $alkaline->replaceVar('$db_type', '$db_type = \'sqlite\';', $config);
 		
 		if($alkaline->checkPerm($path) != '0777'){
-			$alkaline->addNotification('Your SQLite database is not writable.', 'error');
+			$alkaline->addNotification('Your SQLite database is not writable (CHMOD 777).', 'error');
 		}
 	}
 	elseif($_POST['install_db_type'] == 'pgsql'){
@@ -133,33 +135,58 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		$alkaline->addNotification('The database could not be contacted. Check your settings.', 'error');
 	}
 	else{
+		// Import empty DB SQL
+		if(@$_POST['install_db_empty'] == 1){
+			$queries = file_get_contents(PATH . ASSETS . 'empty.sql');
+			$queries = explode("\n", $queries);
+
+			foreach($queries as $query){
+				$query = trim($query);
+				if(!empty($query)){
+					$db->exec($query . ';');
+				}
+			}
+		}
+		
 		// Import default SQL
 		$queries = file_get_contents(PATH . ASSETS . $type . '.sql');
-		$queries = explode(';', $queries);
+		$queries = explode(";", $queries);
 		
 		foreach($queries as $query){
-			$db->exec($query . ';');
+			$query = trim($query);
+			if(!empty($query)){
+				$db->exec($query . ';');
+			}
 		}
 		
 		// Import geo database
 		$queries = file_get_contents(PATH . ASSETS . 'geo.sql');
-		$queries = explode(';', $queries);
+		$queries = explode("\n", $queries);
 		
 		foreach($queries as $query){
 			if($type != 'sqlite'){
 				$query = str_replace('\'\'', '\\\'', $query);
 			}
-			$db->exec($query . ';');
+			$query = trim($query);
+			if(!empty($query)){
+				$db->exec($query . ';');
+			}
 		}
 		
 		// Add admin user
 		$query = $db->prepare('INSERT INTO users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
+		
 		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
 		// Add admin thumbnails
 		
 		$query = $db->prepare('INSERT INTO sizes (size_title, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?);');
-		$query->execute(array('Dashboard (L)', 600, 600, 'scale', '_dash_s'));
-		$query->execute(array('Dashboard (S)', 80, 80, 'fill', '_dash_l'));
+		$query->execute(array('Dashboard (L)', 600, 600, 'scale', '_admin'));
+		$query->execute(array('Dashboard (S)', 80, 80, 'fill', '_sq'));
+		
+		// Add default theme
+		
+		$query = $db->prepare('INSERT INTO themes (theme_uid, theme_title, theme_default, theme_build, theme_version, theme_folder, theme_creator, theme_creator_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
+		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
 	}
 }
 
@@ -262,10 +289,18 @@ else{
 			</tr>
 			<tr>
 				<td class="right pad">
-					<label for="install_user">Database table prefix:</label>
+					<label for="install_db_prefix">Database table prefix:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_prefix" id="install_user" class="xs" /> <span class="quiet">(optional)</span>
+					<input type="text" name="install_db_prefix" id="install_db_prefix" value="<?php echo @$_POST['install_db_prefix'] ?>" class="xs" /> <span class="quiet">(optional)</span>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: right;">
+					<input type="checkbox" name="install_db_empty" id="install_db_empty" value="1">
+				</td>
+				<td>
+					<label for="install_db_empty" style="font-weight: normal;">Delete Alkaline database contents if they already exist.</label>
 				</td>
 			</tr>
 		</table>
@@ -278,15 +313,15 @@ else{
 					<label for="install_db_name">Database name:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_name" id="install_db_name" class="s" />
+					<input type="text" name="install_db_name" id="install_db_name" value="<?php echo @$_POST['install_db_name'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
 				<td class="right pad">
-					<label for="install_user">Database username:</label>
+					<label for="install_db_user">Database username:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_user" id="install_user" class="s" />
+					<input type="text" name="install_db_user" id="install_db_user" value="<?php echo @$_POST['install_db_user'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -294,7 +329,7 @@ else{
 					<label for="install_db_pass">Database password:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_pass" id="install_db_pass" class="s" />
+					<input type="text" name="install_db_pass" id="install_db_pass" value="<?php echo @$_POST['install_db_pass'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -302,7 +337,7 @@ else{
 					<label for="install_db_host">Database host:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_host" id="install_db_host" class="m" /> <span class="quiet">(optional)</span>
+					<input type="text" name="install_db_host" id="install_db_host" value="<?php echo @$_POST['install_db_host'] ?>" class="m" /> <span class="quiet">(optional)</span>
 				</td>
 			</tr>
 			<tr>
@@ -310,7 +345,7 @@ else{
 					<label for="install_db_port">Database port:</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_port" id="install_db_port" class="xs" /> <span class="quiet">(optional)</span>
+					<input type="text" name="install_db_port" id="install_db_port" value="<?php echo @$_POST['install_db_port'] ?>" class="xs" /> <span class="quiet">(optional)</span>
 				</td>
 			</tr>
 		</table>
@@ -323,8 +358,8 @@ else{
 					<label for="install_db_file">Database file (full path):</label>
 				</td>
 				<td>
-					<input type="text" name="install_db_file" id="install_db_file" class="m" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet">Defaults to /assets/alkaline.db. Must be writable (777).</span>
+					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
+					<span class="quiet">Defaults to /assets/alkaline.db. Your database file be writable (CHMOD 777).</span>
 				</td>
 			</tr>
 		</table>
@@ -339,7 +374,7 @@ else{
 					<label for="install_name">Name:</label>
 				</td>
 				<td>
-					<input type="text" name="install_name" id="install_name" class="s" />
+					<input type="text" name="install_name" id="install_name" value="<?php echo @$_POST['install_name'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -347,7 +382,7 @@ else{
 					<label for="install_user">Username:</label>
 				</td>
 				<td>
-					<input type="text" name="install_user" id="install_user" class="s" />
+					<input type="text" name="install_user" id="install_user" value="<?php echo @$_POST['install_user'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -355,7 +390,7 @@ else{
 					<label for="install_pass">Password:</label>
 				</td>
 				<td>
-					<input type="password" name="install_pass" id="install_pass" class="s" />
+					<input type="password" name="install_pass" id="install_pass" value="<?php echo @$_POST['install_pass'] ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -363,7 +398,7 @@ else{
 					<label for="install_email">Email:</label>
 				</td>
 				<td>
-					<input type="text" name="install_email" id="install_email" class="m" />
+					<input type="text" name="install_email" id="install_email" value="<?php echo @$_POST['install_email'] ?>" class="m" />
 				</td>
 			</tr>
 			<tr>
@@ -378,7 +413,7 @@ else{
 		
 		<h3>Install Alkaline</h3>
 	
-		<p>This may take several minutes, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" /></p>
+		<p>This may take several minutes, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" onclick="this.disabled=true;this.value='Installing...'" /></p>
 	</form>
 
 	<?php
