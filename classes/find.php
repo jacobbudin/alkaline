@@ -237,12 +237,12 @@ class Find extends Alkaline{
 			
 			// Grab tag IDs
 			for($j=0; $j<$tag_count; ++$j){
-				$sql_params[':tag' . $j] = $tags[$j];
+				$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
 			}
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
 		}
 		
@@ -286,12 +286,12 @@ class Find extends Alkaline{
 			
 			// Grab tag IDs
 			for($j=0; $j<$tag_count; ++$j){
-				$sql_params[':tag' . $j] = $tags[$j];
+				$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
 			}
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ');');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
 			$query->execute($sql_params);
 		}
 		
@@ -343,12 +343,12 @@ class Find extends Alkaline{
 			
 			// Grab tag IDs
 			for($j=0; $j<$tag_count; ++$j){
-				$sql_params[':tag' . $j] = $tags[$j];
+				$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
 			}
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ');');
+			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
 			$query->execute($sql_params);
 		}
 		$this->photos = $query->fetchAll();
@@ -495,6 +495,7 @@ class Find extends Alkaline{
 		$search_lower = preg_replace('#\s#', '%', $search_lower);
 		$search_lower = '%' . $search_lower . '%';
 		
+		// Search title, description
 		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower)');
 		$query->execute(array(':photo_title_lower' => $search_lower, ':photo_description_lower' => $search_lower));
 		$photos = $query->fetchAll();
@@ -505,11 +506,21 @@ class Find extends Alkaline{
 			$photo_ids[] = $photo['photo_id'];
 		}
 		
+		// Search tags
+		$tags = new Find();
+		$tags->tags($search);
+		$tags->find();
+		
+		if(count($tags->photo_ids) > 0){
+			$photo_ids = array_merge($photo_ids, $tags->photo_ids);
+			$photo_ids = array_unique($photo_ids);
+		}
+		
 		if(count($photo_ids)){
 			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+			$this->sql_conds[] = 'photos.photo_id IS NULL';
 		}
 		
 		return true;
