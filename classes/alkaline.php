@@ -88,6 +88,8 @@ class Alkaline{
 	
 	// DATABASE
 	public function exec($query){
+		if(!$this->db){ $this->error('No database connection.'); }
+		
 		$this->prequery($query);
 		$response = $this->db->exec($query);
 		$this->postquery($query);
@@ -96,14 +98,18 @@ class Alkaline{
 	}
 	
 	public function prepare($query){
+		if(!$this->db){ $this->error('No database connection.'); }
+		
 		$this->prequery($query);
 		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 		$this->postquery($query);
 		
+		if(!$response){ $this->error('Invalid query, check database connection.'); }
+		
 		return $response;
 	}
 	
-	public function prequery(&$query){
+	public function prequery(&$query){		
 		$_SESSION['alkaline']['debug']['queries']++;
 		
 		if($this->db_type == 'mssql'){
