@@ -30,7 +30,7 @@ class Photo extends Alkaline{
 		
 		if(count($this->photo_ids) > 0){
 			// Retrieve photos from database
-			$this->sql = ' WHERE (photos.photo_id = ' . implode(' OR photos.photo_id = ', $this->photo_ids) . ')';
+			$this->sql = ' WHERE (photos.photo_id IN (' . implode(', ', $this->photo_ids) . '))';
 		
 			$query = $this->prepare('SELECT * FROM photos' . $this->sql . ';');
 			$query->execute();
