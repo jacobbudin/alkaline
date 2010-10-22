@@ -150,8 +150,15 @@ class Alkaline{
 		$error = $db->errorInfo();
 		
 		if(isset($error[2])){
-			$error = ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2]));
-			$this->addNotification($query . '; ' . $error . '.', 'error');
+			$code = $error[0];
+			$message = $query . ' ' . ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2])) . ' (' . $code . ').';
+			
+			if(substr($code, 0, 2) == '00'){
+				$this->report($message, $code);
+			}
+			else{
+				$this->addNotification($message, 'error');
+			}
 		}
 	}
 	
@@ -1210,9 +1217,25 @@ class Alkaline{
 		exit();
 	}
 	
+	// Ouput debug info
 	public function debug(){
 		$_SESSION['alkaline']['debug']['execution_time'] = microtime(true) - $_SESSION['alkaline']['debug']['start_time'];
 		return $_SESSION['alkaline']['debug'];
+	}
+	
+	// Add report to log
+	public function report($message, $number=null){
+		// Format message
+		$message = date('Y-m-d H:i:s') . "\t" . $message;
+		if(!empty($number)){ $message .= ' (' . $number . ')'; }
+		$message .= "\n";
+		
+		// Write message
+		$handle = fopen($this->correctWinPath(PATH . ASSETS . 'log.txt'), 'a');
+		if(@fwrite($handle, $message) === false){
+			$this->error('Cannot write to report file.');
+		}
+		fclose($handle);
 	}
 }
 

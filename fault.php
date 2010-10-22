@@ -17,14 +17,14 @@ if(!empty($message)){
 	echo $message;
 }
 else{
-	echo 'An unknown error has occured';
+	echo 'An unknown error has occured.';
 }
 
 if(!empty($number)){
-	echo '(' . $number . ').';
+	echo '(' . $number . ')';
 }
 
-echo '.</p>';
+echo '</p>';
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 
