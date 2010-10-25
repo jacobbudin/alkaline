@@ -143,7 +143,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 			foreach($queries as $query){
 				$query = trim($query);
 				if(!empty($query)){
-					$db->exec($query . ';');
+					$db->exec($query);
 				}
 			}
 		}
@@ -155,7 +155,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		foreach($queries as $query){
 			$query = trim($query);
 			if(!empty($query)){
-				$db->exec($query . ';');
+				$db->exec($query);
 			}
 		}
 		

@@ -29,7 +29,7 @@ if(!empty($_POST['user_id'])){
 	unset($user_db_id);
 }
 else{
-	$alkaline->deleteEmptyRow('users', array('user_name'));
+	$alkaline->deleteEmptyRow('users', array('user_user', 'user_pass', 'user_name'));
 }
 
 // CREATE User

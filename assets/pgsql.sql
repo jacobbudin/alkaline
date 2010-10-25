@@ -14,3 +14,4 @@ CREATE TABLE "stats" ("stat_id" SERIAL, "stat_session" TEXT, "stat_date" TIMESTA
 CREATE TABLE "tags" ("tag_id" SERIAL, "tag_name" TEXT);
 CREATE TABLE "themes" ("theme_id" SERIAL, "theme_uid" TEXT, "theme_title" TEXT, "theme_default" INTEGER, "theme_build" INTEGER, "theme_version" TEXT, "theme_folder" TEXT, "theme_creator" TEXT, "theme_creator_url" TEXT);
 CREATE TABLE "users" ("user_id" SERIAL, "user_user" TEXT, "user_pass" TEXT, "user_key" TEXT, "user_name" TEXT, "user_email" TEXT, "user_last_login" TIMESTAMP, "user_created" TIMESTAMP, "user_permissions" TEXT, "user_preferences" TEXT, "user_photo_count" INTEGER);
+VACUUM;

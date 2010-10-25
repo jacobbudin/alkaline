@@ -11,16 +11,16 @@ $server_type = '';
 $folder_base = '';
 
 // Database data source name (DSN including protocol)
-$db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/assets/alkaline.db';
+$db_dsn = 'mysql:host=localhost;dbname=alkaline';
 
 // Database type (DSN protocol)
-$db_type = 'sqlite';
+$db_type = 'mysql';
 
 // Database user username (leave empty for SQLite)
-$db_user = '';
+$db_user = 'alkaline';
 
 // Database user password (leave empty for SQLite)
-$db_pass = '';
+$db_pass = 'm902j2JK91kaO';
 
 // Database table prefix
 $table_prefix = '';
