@@ -1077,28 +1077,28 @@ class Photo extends Alkaline{
 		$sizes = $this->convertToArray($sizes);
 		$sizes = array_map('strtolower', $sizes);
 		
-		$value_slots = array_fill(0, count($sizes), '?');
+		$value_slots = array_fill(0, count($sizes)*2, '?');
 		
 		// Find size's prefix and suffix
 		if(!empty($size)){
-			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' ');
+			$query = $this->prepare('SELECT size_label, size_prepend, size_append FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots));
 			$query->execute($sizes);
 		}
 		else{
-			$query = $this->prepare('SELECT size_title, size_prepend, size_append FROM sizes');
+			$query = $this->prepare('SELECT size_label, size_prepend, size_append FROM sizes');
 			$query->execute();
 		}
 		
 		$sizes = $query->fetchAll();
 		
 		foreach($sizes as $size){
-			$size_title = 'photo_src_' . strtolower($size['size_title']);
+			$size_label = 'photo_src_' . strtolower($size['size_label']);
 			$size_prepend = $size['size_prepend'];
 			$size_append = $size['size_append'];
 			
 			// Attach photo_src_ to photos array
 			for($i = 0; $i < $this->photo_count; ++$i){
-			    $this->photos[$i][$size_title] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
+			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
 			}
 		}
 	}

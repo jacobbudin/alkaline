@@ -23,10 +23,11 @@ if(!empty($_POST['size_id'])){
 	// Update size
 	else{
 		$fields = array('size_title' => $alkaline->makeUnicode($_POST['size_title']),
+			'size_label' => preg_replace('#[^a-z]#si', '', $alkaline->makeUnicode($_POST['size_label'])),
 			'size_height' => $_POST['size_height'],
 			'size_width' => $_POST['size_width'],
 			'size_type' => $_POST['size_type'],
-			'size_append' => $_POST['size_append'],
+			'size_append' => @$_POST['size_append'],
 			'size_prepend' => @$_POST['size_prepend']);
 		
 		$alkaline->updateRow($fields, 'sizes', $size_id);
@@ -35,7 +36,7 @@ if(!empty($_POST['size_id'])){
 	unset($size_id);
 }
 else{
-	$alkaline->deleteEmptyRow('sizes', array('size_height', 'size_width'));
+	$alkaline->deleteEmptyRow('sizes', array('size_title', 'size_height', 'size_width'));
 }
 
 // CREATE SIZE
@@ -73,7 +74,7 @@ if(empty($size_id)){
 				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails' . URL_ID . $size['size_id'] . URL_RW . '">' . $size['size_title'] . '</a></strong></td>';
 				echo '<td class="center">' . $size['size_width'] . ' &#0215; ' . $size['size_height'] . '</td>';
 				echo '<td class="center">' . ucwords($size['size_type']) . '</a></td>';
-				echo '<td class="center">{Photo_Src_' . ucwords($size['size_title']) . '}</td>';
+				echo '<td class="center">{Photo_Src_' . ucwords($size['size_label']) . '}</td>';
 			echo '</tr>';
 		}
 	
@@ -100,11 +101,20 @@ else{
 	
 	<h1>Thumbnail</h1>
 	
+	<p>All fields are required except append to and prepend to filename&#8212;use one or both.</p>
+	
 	<form action="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="size_title">Title:</label></td>
 				<td><input type="text" id="size_title" name="size_title" value="<?php echo $size['size_title']; ?>" class="title" /></td>
+			</tr>
+			<tr>
+				<td class="right pad"><label for="size_label">Label:</label></td>
+				<td>
+					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" /><br />
+					<span class="quiet">Required. Used for Canvas markup.</span>
+				</td>
 			</tr>
 			<tr>
 				<td class="right middle"><label>Dimensions:</label></td>
@@ -120,10 +130,15 @@ else{
 				</td>
 			</tr>
 			<tr>
-				<td class="right"><label for="size_append">Append to filename:</label></td>
+				<td class="right pad"><label for="size_append">Append to filename:</label></td>
 				<td>
-					<input type="text" id="size_append" name="size_append" value="<?php echo $size['size_append']; ?>" style="width: 5em;" /><br />
-					Required. Type an underscore, followed by one or more lowercase letters (e.g., "_m", "_lrg", "_tiny").
+					<input type="text" id="size_append" name="size_append" value="<?php echo @$size['size_append']; ?>" style="width: 5em;" /><br />
+				</td>
+			</tr>
+			<tr>
+				<td class="right pad"><label for="size_prepend">Prepend to filename:</label></td>
+				<td>
+					<input type="text" id="size_prepend" name="size_prepend" value="<?php echo @$size['size_prepend']; ?>" style="width: 5em;" />
 				</td>
 			</tr>
 			<tr>

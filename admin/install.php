@@ -179,9 +179,9 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
 		// Add admin thumbnails
 		
-		$query = $db->prepare('INSERT INTO sizes (size_title, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?);');
-		$query->execute(array('Dashboard (L)', 600, 600, 'scale', '_admin'));
-		$query->execute(array('Dashboard (S)', 80, 80, 'fill', '_sq'));
+		$query = $db->prepare('INSERT INTO sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
+		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
+		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
 		
 		// Add default theme
 		
