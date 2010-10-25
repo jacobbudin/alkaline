@@ -150,23 +150,9 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		
 		// Import default SQL
 		$queries = file_get_contents(PATH . ASSETS . $type . '.sql');
-		$queries = explode(";", $queries);
-		
-		foreach($queries as $query){
-			$query = trim($query);
-			if(!empty($query)){
-				$db->exec($query . ';');
-			}
-		}
-		
-		// Import geo database
-		$queries = file_get_contents(PATH . ASSETS . 'geo.sql');
 		$queries = explode("\n", $queries);
 		
 		foreach($queries as $query){
-			if($type != 'sqlite'){
-				$query = str_replace('\'\'', '\\\'', $query);
-			}
 			$query = trim($query);
 			if(!empty($query)){
 				$db->exec($query . ';');
@@ -413,7 +399,7 @@ else{
 		
 		<h3>Install Alkaline</h3>
 	
-		<p>This may take several minutes, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" onclick="this.disabled=true;this.value='Installing...'" /></p>
+		<p>This may take several moments, please be patient. Do not interrupt the process by stopping the page from loading or closing your Web browser.</p><p><input type="submit" name="install" value="Install" /></p>
 	</form>
 
 	<?php
