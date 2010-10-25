@@ -218,15 +218,25 @@ class Photo extends Alkaline{
 				}
 				elseif($key == 'photo_geo'){
 					$geo = new Geo($value);
-					if($geo->city['country_name'] == 'United States'){
-						$fields[$key] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
+					if(!empty($geo->city)){
+						if($geo->city['country_name'] == 'United States'){
+							$fields['photo_geo'] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
+						}
+						else{
+							$fields['photo_geo'] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
+						}
+					}
+					elseif(!empty($geo->raw)){
+						$fields['photo_geo'] = ucwords($geo->raw);
 					}
 					else{
-						$fields[$key] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
+						$fields['photo_geo'] = '';
 					}
-					$fields['photo_geo_lat'] = $geo->city['city_lat'];
-					$fields['photo_geo_long'] = $geo->city['city_long'];
 					
+					if(!empty($geo->lat) and !empty($geo->long)){
+						$fields['photo_geo_lat'] = $geo->lat;
+						$fields['photo_geo_long'] = $geo->long;
+					}
 				}
 				else{
 					$fields[$key] = $value;
@@ -1004,7 +1014,7 @@ class Photo extends Alkaline{
 			}
 			
 			// Determine if there's geo data in IPTC
-			if(!empty($city)){
+			elseif(!empty($city)){
 				// Require geography class
 				require_once('geo.php');
 				
@@ -1019,35 +1029,35 @@ class Photo extends Alkaline{
 				}
 				
 				// Locate place
-				if($place = new Geo($place)){
-					$geo = $place->city['city_name'];
-					if(!empty($place->city['city_state'])){
-						$geo .= ', ' . $place->city['city_state'];
-					}
-					$geo .= ', ' . $place->city['country_name'];
-					if($found_exif != 4){
-						$geo_lat = $place->city['city_lat'];
-						$geo_long = $place->city['city_long'];
-					}
-				}
+				$place = new Geo($place);
 			}
 			elseif($found_exif == 4){
 				// Require geography class
 				require_once('geo.php');
 				
-				if($place = new Geo(strval($geo_lat) . ', ' . strval($geo_long))){
-					$geo = $place->city['city_name'];
-					if(!empty($place->city['city_state'])){
-						$geo .= ', ' . $place->city['city_state'];
-					}
-					$geo .= ', ' . $place->city['country_name'];
+				$place = new Geo(strval($geo_lat) . ', ' . strval($geo_long));
+			}
+			
+			if(!empty($place->city)){
+				$geo = $place->city['city_name'];
+				if(!empty($place->city['city_state'])){
+					$geo .= ', ' . $place->city['city_state'];
 				}
+				$geo .= ', ' . $place->city['country_name'];
+			}
+			elseif(!empty($place->raw)){
+				$geo = $place->raw;
+			}
+			
+			if(!empty($place->lat) or !empty($place->long)){
+				$geo_lat = $place->lat;
+				$geo_long = $place->long;
 			}
 			
 			$fields = array('photo_geo' => @$geo,
 				'photo_geo_lat' => @$geo_lat,
 				'photo_geo_long' => @$geo_long);
-			
+		
 			$photo = new Photo($photos[$i]['photo_id']);
 			$photo->updateFields($fields, false);
 		}

@@ -2,6 +2,9 @@
 
 class Geo extends Alkaline{
 	public $city;
+	public $lat;
+	public $long;
+	public $raw;
 	public $states;
 	public $states_abbrev;
 	public $states_full;
@@ -94,9 +97,6 @@ class Geo extends Alkaline{
 			return false;
 		}
 		
-		// Remove parenthetical coordinates
-		$geo = trim(preg_replace('#\(.*\)#si', '', $geo));
-		
 		// Convert integer-like strings into integers
 		if(preg_match('/^[0-9]+$/', $geo)){
 			$geo = intval($geo);
@@ -110,11 +110,20 @@ class Geo extends Alkaline{
 		}
 		
 		// Are these coordinates?
-		elseif(preg_match('/^[^A-Z]+$/i', $geo)){
+		elseif(preg_match('#^[^A-Z]+$#si', $geo)){
+			// Must have latitude and longitude
+			if(!preg_match('#[0-9-]+\s*,\s*[0-9-]+#si', $geo)){ return false; }
+			
+			$geo = preg_replace('#[^0-9-,.]+#', '', $geo);
+			
 			$type = 'coord';
 			$coord = explode(',', $geo);
+			
 			$lat = floatval(trim($coord[0]));
 			$long = floatval(trim($coord[1]));
+			
+			$this->lat = $lat;
+			$this->long = $long;
 			
 			// Haversine formula
 			$this->sql .= ', (3959 * acos(cos(radians(' . $lat . ')) * cos(radians(city_lat)) * cos(radians(city_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(city_lat)))) AS distance';
@@ -127,10 +136,19 @@ class Geo extends Alkaline{
 		
 		// Lookup city in cities table
 		elseif(is_string($geo)){
+			if(preg_match('#([0-9-,.]+)\s*,\s*([0-9-,.]+)#si', $geo, $matches)){
+				$this->lat = $matches[1];
+				$this->long = $matches[2];
+				$geo = preg_replace('#\(?([0-9-,.]+)\s*,\s*([0-9-,.]+)\)?#si', '', $geo);
+			}
+			
 			$type = 'name';
 			
+			$geo = trim($geo);
+			$this->raw = $geo;
+			
 			if(strpos($geo, ',') === false){
-				$geo_city = trim($geo);
+				$geo_city = $geo;
 			}
 			elseif(preg_match('/([^\,]+)\,([^\,]+)\,([^\,]*)/', $geo, $matches)){
 				$geo_city = trim($matches[1]);
@@ -212,7 +230,7 @@ class Geo extends Alkaline{
 		if(empty($cities[0])){
 			
 			// If coordinate searching, expand radius
-			if($type == 'coord'){
+			if(($type == 'coord') and ($radius < 1000000)){
 				self::__construct($geo, $radius*5);
 			}
 			
@@ -221,6 +239,11 @@ class Geo extends Alkaline{
 		}
 		
 		$this->city = $cities[0];
+		
+		if(empty($this->lat) or empty($this->long)){
+			$this->lat = $this->city['city_lat'];
+			$this->long = $this->city['city_long'];
+		}
 		
 		if(!array_key_exists(strtoupper($this->city['city_state']), $this->states)){
 			$this->city['city_state'] = '';
@@ -234,13 +257,19 @@ class Geo extends Alkaline{
 	}
 	
 	public function __toString(){
-        $str = $this->city['city_name'];
-		$str .= '<br />' . "\n";
-		$str .= '(' . $this->city['city_lat'] . ', ' . $this->city['city_long'] . ')';
-		$str .= '<br />' . "\n";
-		$str .= (!empty($this->city['city_state'])) ? $this->city['city_state'] . ', ' : null;
-		$str .= $this->city['country_name'];
-		return $str;
+		$str = '';
+		if(!empty($this->city)){
+	        $str .= $this->city['city_name'] . ', ';
+			$str .= (!empty($this->city['city_state'])) ? $this->city['city_state'] . ', ' : null;
+			$str .= $this->city['country_name'] . ' ';
+		}
+		elseif(!empty($this->raw)){
+			$str .= $this->raw . ' ';
+		}
+		if(!empty($this->lat) and !empty($this->long)){
+			$str .= '(' . $this->lat . ', ' . $this->long . ')';
+		}
+		return trim($str);
     }
 
 	public function hint($hint){

@@ -1,8 +1,7 @@
 var task;
+var page;
 var progress;
 var progress_step;
-
-var alkaline_pref_shoe_pub = '';
 
 // SHOEBOX
 
@@ -20,9 +19,7 @@ function now(){
 	var minute = time.getMinutes();
 	var second = time.getSeconds();
 	var temp = "" + ((hour > 12) ? hour - 12 : hour);
-	if(hour == 0){
-		temp = "12";
-	}
+	if(hour == 0){ temp = "12"; }
 	temp += ((minute < 10) ? ":0" : ":") + minute;
 	temp += ((second < 10) ? ":0" : ":") + second;
 	temp += (hour >= 12) ? " P.M." : " A.M.";
@@ -31,7 +28,7 @@ function now(){
 
 var now = now();
 
-function empty (mixed_var) {
+function empty(mixed_var){
     var key;
     
     if (mixed_var === "" ||
@@ -61,12 +58,12 @@ function photoArray(input){
 	photo_count = input.length;
 	progress = 0;
 	progress_step = 100 / input.length;
-	if(task == 'add-photos'){
+	if(page == 'Shoebox'){
 		for(item in input){
 			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: input[item] }, function(data){ appendPhoto(data); updateProgress(); } );
 		}
 	}
-	else if(task == 'rebuild-all'){
+	else if(page == 'Maintenance'){
 		for(item in input){
 			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_id: input[item] }, function(data){ updateMaintProgress(); } );
 		}
@@ -78,7 +75,7 @@ function updateMaintProgress(){
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress > 99.9999999){
-		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your photo library&#8217;s thumbnails have been rebuilt.", type: "success" }, function(data){ window.location = BASE + ADMIN + 'maintenance/'; } );
+		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your maintenace task is complete.", type: "success" }, function(data){ window.location = BASE + ADMIN; } );
 	}
 }
 
@@ -157,6 +154,7 @@ function updateAllTags(){
 		updateTags(this);
 	});
 }
+
 function appendPhoto(photo){
 	var photo = $.evalJSON(photo);
 	photo_ids = $("#shoebox_photo_ids").val();
@@ -165,7 +163,13 @@ function appendPhoto(photo){
 	var privacy = static_html('privacy_html', photo.photo_id);
 	var rights = static_html('rights_html', photo.photo_id);
 	photo.photo_tags = $.toJSON(photo.photo_tags);
-	$("#shoebox_photos").append('<div id="photo-' + photo.photo_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.photo_id + '_admin.' + photo.photo_ext + '" alt="" /><p><input type="text" id="photo-' + photo.photo_id + '-title" name="photo-' + photo.photo_id + '-title" value="' + photo.photo_title + '" class="title bottom-border" /><textarea id="photo-' + photo.photo_id + '-description" name="photo-' + photo.photo_id + '-description">' + photo.photo_description + '</textarea></p></div><div class="span-8 last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none">' + photo.photo_tags + '</div><input type="hidden" name="photo-' + photo.photo_id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.photo_id + '-geo" name="photo-' + photo.photo_id + '-geo" value="' + photo.photo_geo + '" /></p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.photo_id + '-published" name="photo-' + photo.photo_id + '-published" value="' + photo.photo_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo-' + photo.photo_id + '-delete" name="photo-' + photo.photo_id + '-delete" value="delete" /></td><td><strong><label for="photo-' + photo.photo_id + '-delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
+	if(empty(photo.photo_geo_lat) && empty(photo.photo_geo_long)){
+		var geo = '';
+	}
+	else{
+		var geo = '<br /><img src="' + BASE + IMAGES + '/icons/geo.png" alt="" /> ' + photo.photo_geo_lat + ', ' + photo.photo_geo_long;
+	}
+	$("#shoebox_photos").append('<div id="photo-' + photo.photo_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.photo_id + '_admin.' + photo.photo_ext + '" alt="" /><p><input type="text" id="photo-' + photo.photo_id + '-title" name="photo-' + photo.photo_id + '-title" value="' + photo.photo_title + '" class="title bottom-border" /><textarea id="photo-' + photo.photo_id + '-description" name="photo-' + photo.photo_id + '-description">' + photo.photo_description + '</textarea></p></div><div class="span-8 last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none">' + photo.photo_tags + '</div><input type="hidden" name="photo-' + photo.photo_id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.photo_id + '-geo" name="photo-' + photo.photo_id + '-geo" value="' + photo.photo_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.photo_id + '-published" name="photo-' + photo.photo_id + '-published" value="' + photo.photo_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo-' + photo.photo_id + '-delete" name="photo-' + photo.photo_id + '-delete" value="delete" /></td><td><strong><label for="photo-' + photo.photo_id + '-delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 	updateAllTags();
 }
 
@@ -177,12 +181,6 @@ function updateProgress(val){
 	if(progress == 100){
 		$("#progress").slideUp(1000);
 		$("#shoebox_add").delay(1000).removeAttr("disabled");
-	}
-}
-
-function checkCount(){
-	if(count == 0){
-		$('#shoebox_add').attr('disabled', 'disabled');
 	}
 }
 
@@ -198,51 +196,10 @@ function executeTask(){
 
 $(document).ready(function(){
 	// PRIMARY
-	var page = $("h1").first().text();
-	var page_re = /^(\w+).*/;
-	page = page.replace(page_re, "$1");
+	page = $("h1").first().text();
+	page = page.replace(/^(\w+).*/, "$1");
 	
 	updateAllTags();
-	
-	// PHOTO
-	// $('.photo_tag_add').click(function(){
-	// 	focusTags(this);
-	// 	var tag = $(this).siblings('.photo_tag').val();
-	// 	tag = jQuery.trim(tag);
-	// 	if(tags.indexOf(tag) == -1){
-	// 		tags.push(tag);
-	// 		updateTags(this);
-	// 	}
-	// 	$(this).siblings('.photo_tag').val('');
-	// 	event.preventDefault();
-	// });
-    // 
-	// $('.photo_tag').keydown(function(event){
-	// 	focusTags(this);
-	// 	if(event.keyCode == '13'){
-	// 		var tag = $(this).val();
-	// 		tag = jQuery.trim(tag);
-	// 		if(tags.indexOf(tag) == -1){
-	// 			tags.push(tag);
-	// 			updateTags(this);
-	// 		}
-	// 		$(this).val('');
-	// 		event.preventDefault();
-	// 	}
-	// });
-    // 
-	// $(".photo_tags a.tag").live('click', function(){
-	// 	focusTags(this);
-	// 	var tag = $(this).contents().text();
-	// 	tag = jQuery.trim(tag);
-	// 	var index = tags.lastIndexOf(tag);
-	// 	if(index > -1){
-	// 		tags.splice(index, 1);
-	// 		$(this).fadeOut();
-	// 	}
-	// 	updateTags(this);
-	// 	event.preventDefault();
-	// });
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
