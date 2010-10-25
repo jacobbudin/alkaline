@@ -120,7 +120,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View photos</a> <a href="<?php echo BASE; ?>pages<?php echo URL_ID . $page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View photos</a> <a href="<?php echo BASE; ?>pages<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
 	
 	<h1>Page</h1>
 
@@ -128,22 +128,22 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="page_title">Title:</label></td>
-				<td><input type="text" id="page_title" name="page_title" value="<?php echo $page['page_title']; ?>" class="title" /></td>
+				<td><input type="text" id="page_title" name="page_title" value="<?php echo @$page['page_title']; ?>" class="title" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
 				<td class="quiet">
-					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo $page['page_title_url']; ?>" style="width: 300px;" /><br />
+					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
 					Optional. Use only letters, numbers, underscores, and hyphens.
 				</td>
 			</tr>
 			<tr>
-				<td class="right"><label for="page_description">Text:</label></td>
-				<td><textarea id="page_description" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo $page['page_text_raw']; ?></textarea></td>
+				<td class="right"><label for="page_text_raw">Text:</label></td>
+				<td><textarea id="page_text_raw" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$page['page_text_raw']; ?></textarea></td>
 			</tr>
 			<tr id="tr_page_markup">
 				<td class="right pad"><input type="checkbox" id="page_markup" value="delete" /></td>
-				<td><strong><label for="page_markup">Markup this page using <select name="page_markup" title="<?php echo $page['page_markup']; ?>"><option value=""></option><?php $orbit->hook('page_markup_html'); ?></select>.</label></strong></td>
+				<td><strong><label for="page_markup">Markup this page using <select name="page_markup" title="<?php echo @$page['page_markup']; ?>"><option value=""></option><?php $orbit->hook('page_markup_html'); ?></select>.</label></strong></td>
 			</tr>
 			<tr>
 				<td class="right center"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>

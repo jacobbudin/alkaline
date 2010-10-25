@@ -162,7 +162,11 @@ class Alkaline{
 			if(substr($code, 0, 2) == '00'){
 				$this->report($message, $code);
 			}
+			elseif($code == '23000'){
+				$this->report($message, $code);
+			}
 			else{
+				$this->report($message, $code);
 				$this->addNotification($message, 'error');
 			}
 		}

@@ -49,11 +49,10 @@ if(empty($extension_id)){
 
 	<h1>Extensions (<?php echo @$orbit->extension_count; ?>)</h1>
 
-	<h3>Enabled</h3>
-
 	<table>
 		<tr>
 			<th>Extension</th>
+			<th class="center">Status</th>
 			<th class="center">Version</th>
 			<th class="center">Update</th>
 		</tr>
@@ -72,6 +71,14 @@ if(empty($extension_id)){
 				}
 			}
 			echo '<br />' . $extension['extension_description'] . '</td>';
+			echo '<td class="center">';
+			if($extension['extension_status'] == 1){
+				echo 'Enabled';
+			}
+			else{
+				echo 'Disabled';
+			}
+			echo '</td>';
 			echo '<td class="center">' . $extension['extension_version'] . ' <span class="small">(' . $extension['extension_build'] . ')</span></td>';
 			echo '<td class="center quiet">&#8212;</td>';
 			echo '</tr>';
@@ -79,8 +86,6 @@ if(empty($extension_id)){
 	
 		?>
 	</table>
-
-	<h3>Disabled</h3><br />
 	
 	<?php
 

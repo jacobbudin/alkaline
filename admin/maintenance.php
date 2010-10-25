@@ -22,17 +22,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 </div>
 
 <div id="tasks">
-	<h3>Thumbnails</h3>
+	<h3>Files</h3>
 		
 	<ul>
 		<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>
 		<li><a href="#delete-unused">Delete unclaimed photo thumbnails</a></li>
-	</ul>
-
-	<h3>System</h3>
-
-	<ul>
 		<li><a href="#delete-shoebox">Delete all files in shoebox</a></li>
+	</ul>
+	
+	<h3>Database</h3>
+	
+	<ul>
+		<li><a href="#rebuild-geo-library">Rebuild geographic library</a></li>
+		<li><a href="#delete-orphan-tags">Delete orphaned tags</a></li>
 	</ul>
 </div>
 

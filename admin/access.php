@@ -24,6 +24,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 <h1>Access</h1>
 
+<p>Users can upload photos and modify the library. Guests can view a subset of protected photos.</p>
+
 <table>
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>guests/">View guests (<?php echo $guest_count; ?>)</a> <a href="<?php echo BASE . ADMIN; ?>guests/add/">Add guest</a></div>
 	
