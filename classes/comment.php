@@ -111,11 +111,11 @@ class Comment extends Alkaline{
 			// Set fields to search
 			$this->sql_conds[] = 'comments.comment_status = ' . $status;
 		}
-		elseif(is_integer($privacy)){
+		elseif(is_integer($status)){
 			$this->sql_conds[] = 'comments.comment_status = ' . $status;
 			
 		}
-		elseif(is_array($privacy)){
+		elseif(is_array($status)){
 			parent::convertToIntegerArray($privacy);
 			
 			// Set fields to search
