@@ -12,6 +12,11 @@ $user->perm(true);
 $queries = file_get_contents(PATH . ASSETS . 'geo.sql');
 $queries = explode("\n", $queries);
 
+function quoteFix($str){
+	$str = str_replace('\'\'', '\\\'', $str);
+	return $str;
+}
+
 if(empty($_POST['photo_id'])){
 	$alkaline->exec('DELETE FROM cities;');
 	$alkaline->exec('DELETE FROM countries;');
@@ -32,17 +37,17 @@ if(empty($_POST['photo_id'])){
 	// Generate array of query blocks
 	$execute = array();
 	$count = count($queries);
-	for($i = 0; $i < $count; $i=$i+100){
+	for($i = 0; $i < $count; $i=$i+1000){
 		$execute[] = $i;
 	}
 	echo json_encode($execute);
 }
 else{
 	// Execute a block of queries
-	$queries = @array_slice($queries, $_POST['photo_id'], 100);
+	$queries = @array_slice($queries, $_POST['photo_id'], 1000);
 	foreach($queries as $query){
 		if($alkaline->db_type != 'sqlite'){
-			$query = str_replace('\'\'', '\\\'', $query);
+			$query = preg_replace('#(\')(.*?)(\',|\))#es', "'\\1'.quoteFix('\\2').'\\3'", $query);
 		}
 		$query = trim($query);
 		if(!empty($query)){
