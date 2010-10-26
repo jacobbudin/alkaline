@@ -46,24 +46,26 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<?php
 
-		$shoebox_count = $alkaline->countDirectory();
-		$comment_count = $alkaline->countTableNew('comments');
+		$shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
+		
+		$comments = new Comment();
+		$comments->status(0);
 
-		if(($shoebox_count > 0) or ($comment_count > 0)){
+		if(($shoebox_count > 0) or ($comments->comment_count > 0)){
 			?>
 
 			<h3>New</h3>
-			<table class="counts">
+			<table class="census">
 				<?php if($shoebox_count > 0){ ?>
 					<tr>
 						<td class="right"><?php echo $shoebox_count; ?></td>
 						<td><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
 					</tr>
 				<?php } ?>
-				<?php if($comment_count > 0){ ?>
+				<?php if($comments->comment_count > 0){ ?>
 					<tr>
 						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php $alkaline->echoCount($comment_count, 'comment'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php $alkaline->echoCount($comments->comment_count, 'comment'); ?></a></td>
 					</tr>
 				<?php } ?>
 			</table>
