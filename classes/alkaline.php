@@ -167,7 +167,6 @@ class Alkaline{
 			}
 			else{
 				$this->report($message, $code);
-				$this->addNotification($message, 'error');
 			}
 		}
 	}
@@ -994,19 +993,6 @@ class Alkaline{
 		return $count;
 	}
 	
-	function countTableNew($table){
-		$table = $this->sanitize($table);
-		if(empty($table)){ return false; }
-		
-		$field = $this->tables[$table];
-		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ' WHERE ' . substr($table, 0, -1) . '_status = 0;');
-		$query->execute();
-		$count = $query->fetch();
-		
-		$count = intval($count['count']);
-		return $count;
-	}
-	
 	// RECORD STATISTIC
 	// Record a visitor to statistics
 	public function recordStat($page_type=null){
@@ -1235,6 +1221,10 @@ class Alkaline{
 	
 	// Add report to log
 	public function report($message, $number=null){
+		if($_SESSION['alkaline']['warning'] == $message){ return false; }
+		
+		$_SESSION['alkaline']['warning'] = $message;
+		
 		// Format message
 		$message = date('Y-m-d H:i:s') . "\t" . $message;
 		if(!empty($number)){ $message .= ' (' . $number . ')'; }
@@ -1246,6 +1236,8 @@ class Alkaline{
 			$this->error('Cannot write to report file.');
 		}
 		fclose($handle);
+		
+		return true;
 	}
 }
 
