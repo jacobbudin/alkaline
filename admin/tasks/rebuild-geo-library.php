@@ -8,51 +8,45 @@ $user = new User;
 
 $user->perm(true);
 
-// Open Geo SQL file
-$queries = file_get_contents(PATH . ASSETS . 'geo.sql');
-$queries = explode("\n", $queries);
-
-function quoteFix($str){
-	$str = str_replace('\'\'', '\\\'', $str);
-	return $str;
-}
+// Open cities JSON file
+$cities = file_get_contents(PATH . INSTALL . 'cities.json');
+$cities = explode("\n", $cities);
 
 if(empty($_POST['photo_id'])){
+	// Delete existing geo data, start from scratch
 	$alkaline->exec('DELETE FROM cities;');
 	$alkaline->exec('DELETE FROM countries;');
 	
-	/*
-	// Import default SQL
-	$queries = file_get_contents(PATH . ASSETS . $alkaline->db_type . '.sql');
-	$queries = explode("\n", $queries);
+	// Load countries
+	$countries = file_get_contents(PATH . INSTALL . 'countries.json');
+	$countries = explode("\n", $countries);
 	
-	foreach($queries as $query){
-		$query = trim($query);
-		if(!empty($query) and (strstr($query, 'cities') or strstr($query, 'countries'))){
-			$alkaline->exec($query . ';');
-		}
+	$query = $alkaline->prepare('INSERT INTO countries (country_id, country_code, country_name) VALUES (?, ?, ?);');
+	
+	foreach($countries as $country){
+		$country = json_decode($country);
+		$query->execute($country);
 	}
-	*/
 	
-	// Generate array of query blocks
+	// Generate array of query blocks for cities
 	$execute = array();
-	$count = count($queries);
-	for($i = 0; $i < $count; $i=$i+1000){
+	$count = count($cities);
+	for($i = 0; $i < $count; $i=$i+250){
 		$execute[] = $i;
 	}
 	echo json_encode($execute);
 }
 else{
-	// Execute a block of queries
-	$queries = @array_slice($queries, $_POST['photo_id'], 1000);
-	foreach($queries as $query){
-		if($alkaline->db_type != 'sqlite'){
-			$query = preg_replace('#(\')(.*?)(\',|\))#es', "'\\1'.quoteFix('\\2').'\\3'", $query);
-		}
-		$query = trim($query);
-		if(!empty($query)){
-			$alkaline->exec($query);
-		}
+	// Insert blocks of cities
+	$cities = @array_slice($cities, $_POST['photo_id'], 250);
+	
+	$query = $alkaline->prepare('INSERT INTO cities (city_id, city_name, city_state, country_code, city_name_raw, city_name_alt, city_pop, city_lat, city_long, city_class, city_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);');
+	
+	foreach($cities as $city){
+		$city = json_decode($city);
+		$city = array_map('utf8_encode', $city);
+		$city = array_map('utf8_decode', $city);
+		$query->execute($city);
 	}
 }
 
