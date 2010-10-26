@@ -34,7 +34,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<ul>
 		<li><a href="#rebuild-geo-library">Rebuild geographic library</a></li>
-		<li><a href="#delete-orphan-tags">Delete orphaned tags</a></li>
+		<li><a href="#delete-orphaned-tags">Delete orphaned tags</a></li>
 	</ul>
 </div>
 
