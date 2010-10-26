@@ -19,6 +19,7 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.5.custom.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery.ajaxq-0.0.1.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>dashboard.js" type="text/javascript"></script>
 </head>

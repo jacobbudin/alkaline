@@ -52,30 +52,60 @@ function empty(mixed_var){
 }
 
 function photoArray(input){
-	if(empty(input)){
-		updateProgress(100); return;
-	}
 	photo_count = input.length;
 	progress = 0;
 	progress_step = 100 / input.length;
 	if(page == 'Shoebox'){
+		if(empty(input)){
+			updateProgress(100); return;
+		}
 		for(item in input){
-			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_file: input[item] }, function(data){ appendPhoto(data); updateProgress(); } );
+			$.ajaxq("default", {
+				type: "POST",
+			    url: BASE + ADMIN + "tasks/" + task + ".php",
+				data: { photo_file: input[item] },
+			    cache: false,
+			    success: function(data)
+			    {
+			        appendPhoto(data);
+					updateProgress();
+			    }
+			});
 		}
 	}
 	else if(page == 'Maintenance'){
 		for(item in input){
-			$.post(BASE + ADMIN + "tasks/" + task + ".php", { photo_id: input[item] }, function(data){ updateMaintProgress(); } );
+			$.ajaxq("default", {
+				type: "POST",
+			    url: BASE + ADMIN + "tasks/" + task + ".php",
+				data: { photo_id: input[item] },
+			    cache: false,
+			    success: function(data)
+			    {
+			        updateMaintProgress();
+			    }
+			});
 		}
 	}
 }
 
 function updateMaintProgress(){
-	progress += progress_step;
+	if(!empty(progress_step)){
+		progress += progress_step;
+	}
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress > 99.9999999){
-		$.post(BASE + ADMIN + "tasks/add-notification.php", { message: "Your maintenace task is complete.", type: "success" }, function(data){ window.location = BASE + ADMIN; } );
+		$.ajaxq("exit", {
+			type: "POST",
+		    url: BASE + ADMIN + "tasks/add-notification.php",
+			data: { message: "Your maintenace task is complete.", type: "success" },
+		    cache: false,
+		    success: function(data)
+		    {
+		        window.location = BASE + ADMIN;
+		    }
+		});
 	}
 }
 
@@ -222,6 +252,11 @@ $(document).ready(function(){
 		}
 	);
 	
+	$("input[name='install']").live('click', function(){
+		$(this).hide();
+		$(this).after('<input type="submit" name="install" value="Installing..." disabled="disabled" />');
+	});
+	
 	// PRIMARY - DATEPICKER
 	
 	$(".date").datepicker({
@@ -301,7 +336,14 @@ $(document).ready(function(){
 				cache: false,
 				error: function(data){ alert(data); },
 				dataType: "json",
-				success: function(data){ photoArray(data); }
+				success: function(data){
+					if(empty(data)){
+						progress = 100; updateMaintProgress();
+					}
+					else{
+						photoArray(data);
+					}
+				}
 			});
 			event.preventDefault();
 		});
