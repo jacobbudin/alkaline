@@ -37,7 +37,7 @@ class Alkaline{
 		if(get_class($this) == 'Alkaline'){
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
-			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'assets/config.json')), true);
+			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'config.json')), true);
 			
 			if(empty($_SESSION['alkaline']['config'])){
 				$_SESSION['alkaline']['config'] = array();
@@ -1085,7 +1085,7 @@ class Alkaline{
 	
 	// Save configuration
 	public function saveConf(){
-		return file_put_contents($this->correctWinPath(PATH . 'assets/config.json'), json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
+		return file_put_contents($this->correctWinPath(PATH . 'config.json'), json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
 	}
 	
 	// URL HANDLING
@@ -1231,7 +1231,7 @@ class Alkaline{
 		$message .= "\n";
 		
 		// Write message
-		$handle = fopen($this->correctWinPath(PATH . ASSETS . 'log.txt'), 'a');
+		$handle = fopen($this->correctWinPath(PATH . INSTALL . 'log.txt'), 'a');
 		if(@fwrite($handle, $message) === false){
 			$this->error('Cannot write to report file.');
 		}

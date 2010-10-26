@@ -27,7 +27,7 @@ if(@$_POST['install'] == 'Install'){
 	$username = $_POST['install_db_user'];
 	$password = $_POST['install_db_pass'];
 	
-	if(!$config = file_get_contents(PATH . ASSETS . 'config-default.php', false)){
+	if(!$config = file_get_contents(PATH . INSTALL . 'config.php', false)){
 		$alkaline->addNotification('Cannot find configuration file.', 'error');
 	}
 	
@@ -71,7 +71,7 @@ if(@$_POST['install'] == 'Install'){
 			$path = $_POST['install_db_file'];
 		}
 		else{
-			$path = PATH . ASSETS . 'alkaline.db';
+			$path = PATH . INSTALL . 'alkaline.db';
 		}
 		
 		$path = $alkaline->correctWinPath($path);
@@ -137,7 +137,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 	else{
 		// Import empty DB SQL
 		if(@$_POST['install_db_empty'] == 1){
-			$queries = file_get_contents(PATH . ASSETS . 'empty.sql');
+			$queries = file_get_contents(PATH . INSTALL . 'empty.sql');
 			$queries = explode("\n", $queries);
 
 			foreach($queries as $query){
@@ -149,7 +149,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		}
 		
 		// Import default SQL
-		$queries = file_get_contents(PATH . ASSETS . $type . '.sql');
+		$queries = file_get_contents(PATH . INSTALL . $type . '.sql');
 		$queries = explode("\n", $queries);
 		
 		foreach($queries as $query){
@@ -345,7 +345,7 @@ else{
 				</td>
 				<td>
 					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet">Defaults to /assets/alkaline.db. Your database file be writable (CHMOD 777).</span>
+					<span class="quiet">Defaults to /alkaline.db. Your database file be writable (CHMOD 777).</span>
 				</td>
 			</tr>
 		</table>

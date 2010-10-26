@@ -168,7 +168,7 @@ class Photo extends Alkaline{
 				}
 				
 				if($this->returnConf('thumb_watermark')){
-					$watermark = parent::correctWinPath(PATH . ASSETS . 'watermark.png');
+					$watermark = parent::correctWinPath(PATH . 'watermark.png');
 					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $photos[$i]['photo_ext']);
 				}
 			}

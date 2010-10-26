@@ -191,7 +191,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="thumb_watermark" name="thumb_watermark" <?php echo $alkaline->readConf('thumb_watermark'); ?> value="true" /></td>
 			<td class="description">
 				<label for="thumb_watermark">Apply watermark</label><br />
-				Apply the <a href="<?php echo BASE . ASSETS; ?>watermark.png">alpha-transparent PNG image</a> to the
+				Apply the <a href="<?php echo BASE; ?>watermark.png">alpha-transparent PNG image</a> to the
 				<select name="thumb_watermark_pos">
 					<option value="nw" <?php echo $user->readConf('thumb_watermark_pos', 'nw'); ?>>NW corner</option>
 					<option value="ne" <?php echo $user->readConf('thumb_watermark_pos', 'ne'); ?>>NE corner</option>
