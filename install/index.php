@@ -9,14 +9,14 @@ $_POST = array_map('strip_tags', $_POST);
 
 // Diagnostic checks
 
-if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Assets folder is not writable (CHMOD 777).', 'error');
+if($alkaline->checkPerm(PATH . DB) != '0777'){
+	$alkaline->addNotification('Database (db/) folder is not writable (CHMOD 777).', 'error');
+}
+if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
+	$alkaline->addNotification('Photos (photos/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Photos folder is not writable (CHMOD 777).', 'error');
-}
-if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Shoebox folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNotification('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
 } 
 
 // Configuration setup
@@ -71,7 +71,7 @@ if(@$_POST['install'] == 'Install'){
 			$path = $_POST['install_db_file'];
 		}
 		else{
-			$path = PATH . INSTALL . 'alkaline.db';
+			$path = PATH . DB . 'alkaline.db';
 		}
 		
 		$path = $alkaline->correctWinPath($path);
@@ -163,19 +163,25 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		$query = $db->prepare('INSERT INTO users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
 		
 		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
+		
+		$query->closeCursor();
+		
 		// Add admin thumbnails
 		
 		$query = $db->prepare('INSERT INTO sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
 		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
 		
+		$query->closeCursor();
+		
 		// Add default theme
 		
 		$query = $db->prepare('INSERT INTO themes (theme_uid, theme_title, theme_default, theme_build, theme_version, theme_folder, theme_creator, theme_creator_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
 		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
+		
+		$query->closeCursor();
 	}
 }
-
 
 define('TAB', 'Installation');
 define('TITLE', 'Alkaline Installation');
@@ -345,7 +351,7 @@ else{
 				</td>
 				<td>
 					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet">Defaults to /alkaline.db. Your database file be writable (CHMOD 777).</span>
+					<span class="quiet">Defaults to /<?php echo DB; ?>alkaline.db. Your database file be writable (CHMOD 777).</span>
 				</td>
 			</tr>
 		</table>

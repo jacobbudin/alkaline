@@ -1221,7 +1221,7 @@ class Alkaline{
 	
 	// Add report to log
 	public function report($message, $number=null){
-		if($_SESSION['alkaline']['warning'] == $message){ return false; }
+		if(@$_SESSION['alkaline']['warning'] == $message){ return false; }
 		
 		$_SESSION['alkaline']['warning'] = $message;
 		

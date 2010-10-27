@@ -8,26 +8,13 @@ $user = new User;
 
 $user->perm(true);
 
+$id = @$_POST['photo_id'];
+
 // Open cities JSON file
 $cities = file_get_contents(PATH . INSTALL . 'cities.json');
 $cities = explode("\n", $cities);
 
-if(empty($_POST['photo_id'])){
-	// Delete existing geo data, start from scratch
-	$alkaline->exec('DELETE FROM cities;');
-	$alkaline->exec('DELETE FROM countries;');
-	
-	// Load countries
-	$countries = file_get_contents(PATH . INSTALL . 'countries.json');
-	$countries = explode("\n", $countries);
-	
-	$query = $alkaline->prepare('INSERT INTO countries (country_id, country_code, country_name) VALUES (?, ?, ?);');
-	
-	foreach($countries as $country){
-		$country = json_decode($country);
-		$query->execute($country);
-	}
-	
+if(empty($id)){
 	// Generate array of query blocks for cities
 	$execute = array();
 	$count = count($cities);
@@ -37,8 +24,27 @@ if(empty($_POST['photo_id'])){
 	echo json_encode($execute);
 }
 else{
+	if($id == 0){
+		// Delete existing geo data, start from scratch
+		$alkaline->exec('DELETE FROM cities;');
+		$alkaline->exec('DELETE FROM countries;');
+		
+		// Load countries
+		$countries = file_get_contents(PATH . INSTALL . 'countries.json');
+		$countries = explode("\n", $countries);
+
+		$query = $alkaline->prepare('INSERT INTO countries (country_id, country_code, country_name) VALUES (?, ?, ?);');
+
+		foreach($countries as $country){
+			$country = json_decode($country);
+			$query->execute($country);
+		}
+
+		$query->closeCursor();
+	}
+	
 	// Insert blocks of cities
-	$cities = @array_slice($cities, $_POST['photo_id'], 250);
+	$cities = @array_slice($cities, $id, 250);
 	
 	$query = $alkaline->prepare('INSERT INTO cities (city_id, city_name, city_state, country_code, city_name_raw, city_name_alt, city_pop, city_lat, city_long, city_class, city_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);');
 	
@@ -48,6 +54,8 @@ else{
 		$city = array_map('utf8_decode', $city);
 		$query->execute($city);
 	}
+	
+	$query->closeCursor();
 }
 
 ?>

@@ -7,20 +7,17 @@
 // Server type
 $server_type = '';
 
-// Folder base
-$folder_base = '';
-
 // Database data source name (DSN including protocol)
-$db_dsn = 'mysql:host=localhost;dbname=alkaline';
+$db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/db/alkaline2.db';
 
 // Database type (DSN protocol)
-$db_type = 'mysql';
+$db_type = 'sqlite';
 
 // Database user username (leave empty for SQLite)
-$db_user = 'alkaline';
+$db_user = '';
 
 // Database user password (leave empty for SQLite)
-$db_pass = 'm902j2JK91kaO';
+$db_pass = '';
 
 // Database table prefix
 $table_prefix = '';
@@ -80,7 +77,7 @@ else{
 	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 }
 
-define('BASE', '/' . $folder_base);
+define('BASE', '/');
 define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
 
@@ -103,6 +100,7 @@ define('ADMIN', FOLDER_PREFIX . 'admin/');
 define('BLOCKS', FOLDER_PREFIX . 'blocks/');
 define('CLASSES', FOLDER_PREFIX . 'classes/');
 define('CSS', FOLDER_PREFIX . 'css/');
+define('DB', FOLDER_PREFIX . 'db/');
 define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
 define('JS', FOLDER_PREFIX . 'js/');
