@@ -96,7 +96,7 @@ function updateMaintProgress(){
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress > 99.9999999){
-		$.ajaxq("exit", {
+		$.ajaxq("default", {
 			type: "POST",
 		    url: BASE + ADMIN + "tasks/add-notification.php",
 			data: { message: "Your maintenace task is complete.", type: "success" },
@@ -331,19 +331,21 @@ $(document).ready(function(){
 			$("#tasks").slideUp(500);
 			$("#progress").delay(500).slideDown(500);
 			$("#progress").progressbar({ value: 0 });
-			$.ajax({
-				url: BASE + ADMIN + "tasks/" + task + ".php",
-				cache: false,
-				error: function(data){ alert(data); },
+			
+			$.ajaxq("default", {
+				type: "POST",
+			    url: BASE + ADMIN + "tasks/" + task + ".php",
+			    cache: false,
 				dataType: "json",
-				success: function(data){
-					if(empty(data)){
+			    success: function(data)
+			    {
+			        if(empty(data)){
 						progress = 100; updateMaintProgress();
 					}
 					else{
 						photoArray(data);
 					}
-				}
+			    }
 			});
 			event.preventDefault();
 		});

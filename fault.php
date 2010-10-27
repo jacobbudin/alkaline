@@ -21,7 +21,7 @@ else{
 }
 
 if(!empty($number)){
-	echo '(' . $number . ')';
+	echo ' (' . $number . ')';
 }
 
 echo '</p>';

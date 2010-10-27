@@ -4,9 +4,11 @@ require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
-$alkaline->recordStat('pile');
+$alkaline->recordStat('tag');
 
 $id = $alkaline->findID($_GET['id']);
+$tag = $alkaline->getRow('tags', $id);
+if(!$tag){ $alkaline->error('No tag was found.', 404); }
 
 $photo_ids = new Find;
 $photo_ids->page(null,5,4);
@@ -24,15 +26,16 @@ $photos->getRights();
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
+$header->assign('Title', '#' . $tag['tag_name'] . ' &#8212; ' . $alkaline->returnConf('web_title'));
 $header->display();
 
 $index = new Canvas;
 $index->load('index');
-$index->assign('PAGE_NEXT', $photo_ids->page_next);
-$index->assign('PAGE_PREVIOUS', $photo_ids->page_previous);
-$index->assign('PAGE_CURRENT', $photo_ids->page);
-$index->assign('PAGE_COUNT', $photo_ids->page_count);
+$index->assign('Page_Next', $photo_ids->page_next);
+$index->assign('Page_Previous', $photo_ids->page_previous);
+$index->assign('Page_Current', $photo_ids->page);
+$index->assign('Page_Count', $photo_ids->page_count);
+$index->assignArray($tag);
 $index->loop($photos);
 $index->display();
 

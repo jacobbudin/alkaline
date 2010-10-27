@@ -47,10 +47,10 @@ $header->display();
 
 $index = new Canvas;
 $index->load('index');
-$index->assign('PAGE_NEXT', $photo_ids->page_next);
-$index->assign('PAGE_PREVIOUS', $photo_ids->page_previous);
-$index->assign('PAGE_CURRENT', $photo_ids->page);
-$index->assign('PAGE_COUNT', $photo_ids->page_count);
+$index->assign('Page_Next', $photo_ids->page_next);
+$index->assign('Page_Previous', $photo_ids->page_previous);
+$index->assign('Page_Current', $photo_ids->page);
+$index->assign('Page_Count', $photo_ids->page_count);
 $index->loop($photos);
 $index->display();
 
