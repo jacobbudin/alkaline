@@ -54,6 +54,26 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	public function assignArray($array){
+		// Error checking
+		if(empty($array)){
+			return false;
+		}
+		
+		if(is_array($array)){
+			foreach($array as $key => $value){
+				// Set variable, scrub to remove conditionals
+				$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
+				$this->template = self::scrub($key, $this->template);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	// LOOPS
 	// Set photo array to loop
 	public function loop($array){
