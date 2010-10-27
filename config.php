@@ -8,16 +8,16 @@
 $server_type = '';
 
 // Database data source name (DSN including protocol)
-$db_dsn = 'sqlite:/var/www/vhosts/alkalineapp.com/beta/db/alkaline2.db';
+$db_dsn = 'pgsql:host=localhost;dbname=alkaline2';
 
 // Database type (DSN protocol)
-$db_type = 'sqlite';
+$db_type = 'pgsql';
 
 // Database user username (leave empty for SQLite)
-$db_user = '';
+$db_user = 'postgres';
 
 // Database user password (leave empty for SQLite)
-$db_pass = '';
+$db_pass = 'postgres';
 
 // Database table prefix
 $table_prefix = '';

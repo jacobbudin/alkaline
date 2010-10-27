@@ -1,6 +1,6 @@
-CREATE TABLE "cities" ("city_id" INTEGER, "city_name" TEXT, "city_state" TEXT, "country_code" TEXT, "city_name_raw" TEXT, "city_name_alt" TEXT, "city_pop" INTEGER, "city_lat" REAL, "city_long" REAL, "city_class" TEXT, "city_code" TEXT);
+CREATE TABLE "cities" ("city_id" INTEGER PRIMARY KEY, "city_name" TEXT, "city_state" TEXT, "country_code" TEXT, "city_name_raw" TEXT, "city_name_alt" TEXT, "city_pop" INTEGER, "city_lat" REAL, "city_long" REAL, "city_class" TEXT, "city_code" TEXT);
 CREATE TABLE "comments" ("comment_id" SERIAL, "photo_id" INTEGER, "user_id" INTEGER, "comment_created" TIMESTAMP, "comment_status" INTEGER, "comment_text" TEXT, "comment_text_raw" TEXT, "comment_author_name" TEXT, "comment_author_url" TEXT, "comment_author_email" TEXT, "comment_author_ip" TEXT, "comment_author_avatar" TEXT);
-CREATE TABLE "countries" ("country_id" SMALLINT, "country_code" TEXT, "country_name" TEXT);
+CREATE TABLE "countries" ("country_id" SMALLINT PRIMARY KEY, "country_code" TEXT, "country_name" TEXT);
 CREATE TABLE "exifs" ("exif_id" SERIAL, "photo_id" INTEGER, "exif_key" TEXT, "exif_name" TEXT, "exif_value" TEXT);
 CREATE TABLE "extensions" ("extension_id" SERIAL, "extension_uid" TEXT, "extension_class" TEXT, "extension_title" TEXT, "extension_status" INTEGER, "extension_build" INTEGER, "extension_version" TEXT, "extension_hooks" TEXT, "extension_preferences" TEXT, "extension_folder" TEXT, "extension_file" TEXT, "extension_description" TEXT, "extension_creator" TEXT, "extension_creator_url" TEXT);
 CREATE TABLE "guests" ("guest_id" SERIAL, "guest_title" TEXT, "guest_key" TEXT, "guest_last_login" TIMESTAMP, "guest_created" TIMESTAMP, "guest_views" INTEGER);

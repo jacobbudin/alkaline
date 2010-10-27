@@ -42,9 +42,6 @@ if(@$_POST['install'] == 'Install'){
 		if(empty($username)){
 			$alkaline->addNotification('A database username is required for MySQL.', 'error');
 		}
-		if(empty($password)){
-			$alkaline->addNotification('A database passsword is required for MySQL.', 'error');
-		}
 		
 		$dsn = 'mysql:';
 		
@@ -91,9 +88,6 @@ if(@$_POST['install'] == 'Install'){
 		}
 		if(empty($username)){
 			$alkaline->addNotification('A database username is required for PostgreSQL.', 'error');
-		}
-		if(empty($password)){
-			$alkaline->addNotification('A database passsword is required for PostgreSQL.', 'error');
 		}
 		
 		$dsn = 'pgsql:';

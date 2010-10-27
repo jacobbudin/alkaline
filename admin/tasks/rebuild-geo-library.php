@@ -18,7 +18,7 @@ if(empty($id)){
 	// Generate array of query blocks for cities
 	$execute = array();
 	$count = count($cities);
-	for($i = 0; $i < $count; $i=$i+250){
+	for($i = 0; $i < $count; $i=$i+1000){
 		$execute[] = $i;
 	}
 	echo json_encode($execute);
@@ -44,7 +44,7 @@ else{
 	}
 	
 	// Insert blocks of cities
-	$cities = @array_slice($cities, $id, 250);
+	$cities = @array_slice($cities, $id, 1000);
 	
 	$query = $alkaline->prepare('INSERT INTO cities (city_id, city_name, city_state, country_code, city_name_raw, city_name_alt, city_pop, city_lat, city_long, city_class, city_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);');
 	
