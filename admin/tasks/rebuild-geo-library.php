@@ -8,13 +8,13 @@ $user = new User;
 
 $user->perm(true);
 
-$id = @$_POST['photo_id'];
+$id = $alkaline->findID(@$_POST['photo_id']);
 
 // Open cities JSON file
 $cities = file_get_contents(PATH . INSTALL . 'cities.json');
 $cities = explode("\n", $cities);
 
-if(empty($id)){
+if(!is_int($id)){
 	// Generate array of query blocks for cities
 	$execute = array();
 	$count = count($cities);
@@ -37,9 +37,11 @@ else{
 
 		foreach($countries as $country){
 			$country = json_decode($country);
+			$country = @array_map('utf8_encode', $country);
+			$country = @array_map('utf8_decode', $country);
 			$query->execute($country);
 		}
-
+		
 		$query->closeCursor();
 	}
 	
@@ -50,8 +52,8 @@ else{
 	
 	foreach($cities as $city){
 		$city = json_decode($city);
-		$city = array_map('utf8_encode', $city);
-		$city = array_map('utf8_decode', $city);
+		$city = @array_map('utf8_encode', $city);
+		$city = @array_map('utf8_decode', $city);
 		$query->execute($city);
 	}
 	
