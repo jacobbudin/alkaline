@@ -331,7 +331,7 @@ class Photo extends Alkaline{
 				if($found === false){
 					$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
 					$query->execute(array(':tag' => $tag));
-					$tag_id = intval($this->db->lastInsertId());
+					$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
 					
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
 					$this->exec($query);	
@@ -905,7 +905,7 @@ class Photo extends Alkaline{
 						// Add tag
 						$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
 						$query->execute(array(':tag' => $tag));
-						$tag_id = $this->db->lastInsertId();
+						$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
 					
 						// Add link
 						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag_id . ');';

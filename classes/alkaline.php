@@ -869,7 +869,7 @@ class Alkaline{
 		}
 		
 		// Return ID
-		$id = intval($this->db->lastInsertId($table . '_' . $field . '_seq'));
+		$id = intval($this->db->lastInsertId(TABLE_PREFIX . $table . '_' . $field . '_seq'));
 		
 		if($id == 0){
 			return false;
