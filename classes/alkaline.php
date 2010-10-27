@@ -160,7 +160,7 @@ class Alkaline{
 			$message = $query . ' ' . ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2])) . ' (' . $code . ').';
 			
 			if(substr($code, 0, 2) == '00'){
-				$this->report($message, $code);
+				// $this->report($message, $code);
 			}
 			elseif($code == '23000'){
 				$this->report($message, $code);
@@ -576,6 +576,11 @@ class Alkaline{
 		$string = preg_replace('#\&\#0039\;#s', '\'', $string);	
 		$string = preg_replace('#\&\#0034\;#s', '"', $string);
 		return $string;
+	}
+	
+	public function countWords($str){
+		preg_match_all("/\S+/", $str, $matches); 
+	    return count($matches[0]);
 	}
 	
 	// SHOW TAGS
@@ -1231,7 +1236,7 @@ class Alkaline{
 		$message .= "\n";
 		
 		// Write message
-		$handle = fopen($this->correctWinPath(PATH . INSTALL . 'log.txt'), 'a');
+		$handle = fopen($this->correctWinPath(PATH . DB . 'log.txt'), 'a');
 		if(@fwrite($handle, $message) === false){
 			$this->error('Cannot write to report file.');
 		}

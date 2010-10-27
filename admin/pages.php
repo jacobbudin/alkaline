@@ -36,8 +36,11 @@ if(!empty($_POST['page_id'])){
 		if(!empty($_POST['page_markup'])){
 			$page_text = $orbit->hook('markup_' . $_POST['page_markup'], $page_text_raw, $page_text);
 		}
+		else{
+			$page_text = nl2br($page_text_raw);
+		}
 		
-		$page_words = str_word_count($_POST['page_text_raw'], 0);
+		$page_words = $alkaline->countWords($_POST['page_text_raw'], 0);
 		
 		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,
