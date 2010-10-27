@@ -683,6 +683,9 @@ class Find extends Alkaline{
 			case 'piles':
 				$this->_pile(@intval($_GET['id']));
 				break;
+			case 'users':
+				$this->_user(@intval($_GET['id']));
+				break;
 			case 'rights':
 				$this->_rights(@intval($_GET['id']));
 				break;
