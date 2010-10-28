@@ -19,7 +19,7 @@ if(empty($id)){
 	$tag_ids = array();
 	
 	foreach($orphans as $orphan){
-		$tag_ids = $orphan['tag_id'];
+		$tag_ids[] = $orphan['tag_id'];
 	}
 	
 	echo json_encode($tag_ids);
