@@ -642,6 +642,34 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY PAGES CONTENT
+	public function pages($id=null){
+		if(empty($id)){ return false; }
+		
+		$pages = $this->getTable('pages', $id);
+		
+		$content = '';
+		
+		foreach($pages as $page){
+			$content .= $page['page_text'];
+		}
+		
+		preg_match_all('#/[^/.]*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $content, $matches, PREG_SET_ORDER);
+		
+		$photo_ids = array();
+		
+		foreach($matches as $match){
+			$photo_ids[] = $match[1];
+		}
+		
+		if(count($photo_ids) > 0){
+			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		}
+		else{
+			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+		}
+	}
+	
 	// SMART SEARCH
 	protected function smart($kind){
 		if(empty($kind)){
@@ -688,6 +716,9 @@ class Find extends Alkaline{
 				break;
 			case 'rights':
 				$this->_rights(@intval($_GET['id']));
+				break;
+			case 'pages':
+				$this->_pages(@intval($_GET['id']));
 				break;
 			default:
 				return false;

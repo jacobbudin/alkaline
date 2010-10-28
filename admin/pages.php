@@ -93,7 +93,7 @@ if(empty($page_id)){
 
 			foreach($pages->pages as $page){
 				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'pages' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
+					echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 					echo '<td class="center">' . number_format($page['page_words']) . '</td>';
 					echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
@@ -123,7 +123,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View photos</a> <a href="<?php echo BASE; ?>pages<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View photos</a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
 	
 	<h1>Page</h1>
 
