@@ -8,7 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$size_id = @$alkaline->findID($_GET['id']);
+$size_id = $alkaline->findID(@$_GET['id']);
 $size_act = @$_GET['act'];
 
 // SAVE CHANGES
