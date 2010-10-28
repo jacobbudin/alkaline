@@ -584,6 +584,7 @@ class Alkaline{
 	}
 	
 	public function countWords($str){
+		$str = strip_tags($str);
 		preg_match_all("/\S+/", $str, $matches); 
 	    return count($matches[0]);
 	}
