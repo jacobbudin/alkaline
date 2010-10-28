@@ -38,7 +38,7 @@ if(!empty($_POST['right_id'])){
 	unset($right_id);
 }
 else{
-	$alkaline->deleteEmptyRow('rights', array('right_title', 'right_description', 'right_url', 'right_image', 'right_default'));
+	$alkaline->deleteEmptyRow('rights', array('right_title'));
 }
 
 // CREATE RIGHTS SET

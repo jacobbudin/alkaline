@@ -841,7 +841,7 @@ class Alkaline{
 				$fields['pile_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'sizes':
-				if(!isset($fields['size_title'])){ $fields['size_title'] = PDO::PARAM_NULL; }
+				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
 				break;
 			case 'users':
 				$fields['user_created'] = date('Y-m-d H:i:s');
@@ -951,10 +951,10 @@ class Alkaline{
 			$conditions[] = '(' . $field . ' = ? OR ' . $field . ' IS NULL)';
 		}
 		
-		$sql_params = array_fill(0, count($fields), null);
+		$sql_params = array_fill(0, count($fields), '');
 		
 		// Delete empty rows
-		$query = $this->prepare('DELETE FROM ' . $table . ' WHERE ' . implode(' AND ', $conditions) . ';');
+		$query = $this->prepare('DELETE FROM ' . $table . ' WHERE ' . implode(' OR ', $conditions) . ';');
 		
 		if(!$query->execute($sql_params)){
 			return false;

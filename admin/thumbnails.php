@@ -36,7 +36,7 @@ if(!empty($_POST['size_id'])){
 	unset($size_id);
 }
 else{
-	$alkaline->deleteEmptyRow('sizes', array('size_title', 'size_height', 'size_width'));
+	$alkaline->deleteEmptyRow('sizes', array('size_title'));
 }
 
 // CREATE SIZE
