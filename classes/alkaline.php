@@ -840,6 +840,9 @@ class Alkaline{
 				$fields['pile_created'] = date('Y-m-d H:i:s');
 				$fields['pile_modified'] = date('Y-m-d H:i:s');
 				break;
+			case 'sizes':
+				if(!isset($fields['size_title'])){ $fields['size_title'] = PDO::PARAM_NULL; }
+				break;
 			case 'users':
 				$fields['user_created'] = date('Y-m-d H:i:s');
 				break;
@@ -861,7 +864,8 @@ class Alkaline{
 		}
 		else{
 			$values = array();
-			$query = $this->prepare('INSERT INTO ' . $table . ' (' . $this->tables[$table] . ') VALUES (NULL);');
+			$query = $this->prepare('INSERT INTO ' . $table . ' (' . $this->tables[$table] . ') VALUES (?);');
+			$values = array(PDO::PARAM_NULL);
 		}
 		
 		if(!$query->execute($values)){
