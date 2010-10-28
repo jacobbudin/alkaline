@@ -113,7 +113,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><?php if($theme['theme_default'] == 1){ echo '<input type="hidden" name="theme_default" value="default" />'; } ?><input type="hidden" name="theme_id" value="<?php echo $theme['theme_id']; ?>" /><input type="hidden" name="theme_folder" value="<?php echo $theme['theme_folder']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">cancel</a></td>
+				<td><?php if($theme['theme_default'] == 1){ echo '<input type="hidden" name="theme_default" value="default" />'; } ?><input type="hidden" name="theme_id" value="<?php echo $theme['theme_id']; ?>" /><input type="hidden" name="theme_folder" value="<?php echo $theme['theme_folder']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

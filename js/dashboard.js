@@ -269,8 +269,7 @@ $(document).ready(function(){
 		showAnim: null
 	});
 	
-	// PIMRARY - GEO HINTING
-	
+	// PRIMARY - GEO HINTING
 	$(".photo_geo").autocomplete({
 		source: BASE + ADMIN + 'tasks/geo-hint.php',
 		delay: 200,
@@ -605,6 +604,5 @@ $(document).ready(function(){
 	
 		$(".tickLabels").css('font-size', '');
 		
-	}
-	
+	}	
 });

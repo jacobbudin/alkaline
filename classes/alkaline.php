@@ -51,6 +51,11 @@ class Alkaline{
 			}
 		}
 		
+		// Set back link
+		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
+			$_SESSION['alkaline']['back'] = $_SERVER['HTTP_REFERER'];
+		}
+		
 		// Initiate database connection, if necessary
 		$nodb_classes = array('Canvas');
 		
@@ -1193,6 +1198,19 @@ class Alkaline{
 			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
 		}
 		exit();
+	}
+	
+	// Go back (for cancel links)
+	public function back(){
+		if(!empty($_SESSION['alkaline']['back'])){
+			echo $_SESSION['alkaline']['back'];
+		}
+		elseif(!empty($_SERVER['HTTP_REFERER'])){
+			echo $_SERVER['HTTP_REFERER'];
+		}
+		else{
+			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+		}
 	}
 	
 	// MAIL	
