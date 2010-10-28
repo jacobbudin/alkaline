@@ -654,7 +654,7 @@ class Find extends Alkaline{
 			$content .= $page['page_text'];
 		}
 		
-		preg_match_all('#/[^/.]*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $content, $matches, PREG_SET_ORDER);
+		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $content, $matches, PREG_SET_ORDER);
 		
 		$photo_ids = array();
 		

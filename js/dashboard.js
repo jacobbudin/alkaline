@@ -199,7 +199,7 @@ function appendPhoto(photo){
 	else{
 		var geo = '<br /><img src="' + BASE + IMAGES + '/icons/geo.png" alt="" /> ' + photo.photo_geo_lat + ', ' + photo.photo_geo_long;
 	}
-	$("#shoebox_photos").append('<div id="photo-' + photo.photo_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.photo_id + '_admin.' + photo.photo_ext + '" alt="" /><p><input type="text" id="photo-' + photo.photo_id + '-title" name="photo-' + photo.photo_id + '-title" value="' + photo.photo_title + '" class="title bottom-border" /><textarea id="photo-' + photo.photo_id + '-description" name="photo-' + photo.photo_id + '-description">' + photo.photo_description + '</textarea></p></div><div class="span-8 last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none">' + photo.photo_tags + '</div><input type="hidden" name="photo-' + photo.photo_id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.photo_id + '-geo" name="photo-' + photo.photo_id + '-geo" value="' + photo.photo_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.photo_id + '-published" name="photo-' + photo.photo_id + '-published" value="' + photo.photo_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo-' + photo.photo_id + '-delete" name="photo-' + photo.photo_id + '-delete" value="delete" /></td><td><strong><label for="photo-' + photo.photo_id + '-delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
+	$("#shoebox_photos").append('<div id="photo-' + photo.photo_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + BASE + PHOTOS + photo.photo_id + '_admin.' + photo.photo_ext + '" alt="" /><p><input type="text" id="photo-' + photo.photo_id + '-title" name="photo-' + photo.photo_id + '-title" value="' + photo.photo_title + '" class="title bottom-border" /><textarea id="photo-' + photo.photo_id + '-description" name="photo-' + photo.photo_id + '-description">' + photo.photo_description + '</textarea></p></div><div class="span-8 last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none">' + photo.photo_tags + '</div><input type="hidden" name="photo-' + photo.photo_id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.photo_id + '-geo" name="photo-' + photo.photo_id + '-geo" class="photo_geo" value="' + photo.photo_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.photo_id + '-published" name="photo-' + photo.photo_id + '-published" value="' + photo.photo_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo-' + photo.photo_id + '-delete" name="photo-' + photo.photo_id + '-delete" value="delete" /></td><td><strong><label for="photo-' + photo.photo_id + '-delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 	updateAllTags();
 }
 
@@ -252,7 +252,7 @@ $(document).ready(function(){
 		}
 	);
 	
-	$("input[name='install']").live('click', function(){
+	$("input[name='install']").click(function(){
 		$(this).hide();
 		$(this).after('<input type="submit" name="install" value="Installing..." disabled="disabled" />');
 	});
@@ -270,10 +270,12 @@ $(document).ready(function(){
 	});
 	
 	// PRIMARY - GEO HINTING
-	$(".photo_geo").autocomplete({
-		source: BASE + ADMIN + 'tasks/geo-hint.php',
-		delay: 200,
-		minLength: 3
+	$(".photo_geo").live('focus', function(){
+		$(this).autocomplete({
+			source: BASE + ADMIN + 'tasks/geo-hint.php',
+			delay: 200,
+			minLength: 3
+		});
 	});
 	
 	// UPLOAD

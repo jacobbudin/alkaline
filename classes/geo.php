@@ -278,7 +278,7 @@ class Geo extends Alkaline{
 		$sql = 'SELECT cities.city_name, cities.city_state, countries.country_name, cities.city_pop FROM cities, countries WHERE ((LOWER(cities.city_name) LIKE :hint_lower OR LOWER(cities.city_name_raw) LIKE :hint_lower OR LOWER(cities.city_name_alt) LIKE :hint_lower)) AND cities.country_code = countries.country_code ORDER BY cities.city_pop DESC';
 		
 		$query = $this->prepare($sql);
-		$query->execute(array(':hint_lower' => '%' . $hint_lower . '%'));
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
 		$cities = $query->fetchAll();
 		
 		$cities_list = array();
