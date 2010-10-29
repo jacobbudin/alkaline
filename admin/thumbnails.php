@@ -107,13 +107,12 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="size_title">Title:</label></td>
-				<td><input type="text" id="size_title" name="size_title" value="<?php echo $size['size_title']; ?>" class="title" /></td>
+				<td><input type="text" id="size_title" name="size_title" value="<?php echo $size['size_title']; ?>" class="m" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="size_label">Label:</label></td>
 				<td>
-					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" /><br />
-					<span class="quiet">Required. Used for Canvas markup.</span>
+					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" />
 				</td>
 			</tr>
 			<tr>

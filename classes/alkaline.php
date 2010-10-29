@@ -13,17 +13,14 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 402;
+	const build = 469;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const version = '1.0';
 	
 	public $db;
 	public $db_type;
-	public $configuration;
 	public $tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 	
-	protected $addendum;
-	protected $guest;
 	protected $notifications;
 	
 	public function __construct(){
@@ -54,7 +51,7 @@ class Alkaline{
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
 			$_SESSION['alkaline']['back'] = $_SERVER['HTTP_REFERER'];
-		}
+		} 
 		
 		// Initiate database connection, if necessary
 		$nodb_classes = array('Canvas');
@@ -220,6 +217,7 @@ class Alkaline{
 		if(empty($key)){ return false; }
 		
 		$key = strip_tags($key);
+		
 		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key LIMIT 0, 1;');
 		$query->execute(array(':guest_key' => $key));
 		$guests = $query->fetchAll();
@@ -229,8 +227,7 @@ class Alkaline{
 			$this->error('You are not authorized.');
 		}
 		
-		$this->guest = $guest;
-		$_SESSION['alkaline']['guest'] = $this->guest;
+		$_SESSION['alkaline']['guest'] = $guest;
 		
 		return true;
 	}

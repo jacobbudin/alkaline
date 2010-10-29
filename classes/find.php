@@ -537,6 +537,21 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($privacy)){ return false; }
 		
+		// Guest, admin checking
+		$user = new User;
+		
+		if($user->perm(false)){
+			return;
+		}
+		elseif(@$_SESSION['alkaline']['guest']){
+			$privacy = 2;
+			$all = false;
+			
+			if(!empty($_SESSION['alkaline']['guest']['guest_piles'])){
+				$this->pile(intval($_SESSION['alkaline']['guest']['guest_piles']));
+			}
+		}
+		
 		// Convert strings
 		if(is_string($privacy)){
 			$levels = array('public' => 1, 'protected' => 2, 'private' => 3);
@@ -612,6 +627,13 @@ class Find extends Alkaline{
 	
 	// FIND BY PUBLISHED
 	public function published($published=true){
+		// Admin checking
+		$user = new User;
+		
+		if($user->perm(false)){
+			return;
+		}
+		
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
@@ -674,6 +696,28 @@ class Find extends Alkaline{
 		else{
 			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
 		}
+		
+		return true;
+	}
+	
+	// FIND BY GUEST SIMULATION
+	public function guest($id=null){
+		if(empty($id)){ return false; }
+		
+		$guest = $this->getRow('guests', $id);
+		
+		if($guest === false){
+			return false;
+		}
+		
+		if(empty($guest['guest_piles'])){	
+			$this->privacy('protected');
+		}
+		else{
+			$this->pile(intval($guest['guest_piles']));
+		}
+		
+		return true;
 	}
 	
 	// SMART SEARCH
@@ -714,6 +758,9 @@ class Find extends Alkaline{
 			case 'tags':
 				$this->allTags(@intval($_GET['id']));
 				break;
+			case 'guests':
+				$this->guest(@intval($_GET['id']));
+				break;
 			case 'piles':
 				$this->pile(@intval($_GET['id']));
 				break;
@@ -727,6 +774,7 @@ class Find extends Alkaline{
 				$this->pages(@intval($_GET['id']));
 				break;
 			default:
+				$this->addNotification('There is no smart search by that name.', 'notice');
 				return false;
 				break;
 		}

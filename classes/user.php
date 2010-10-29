@@ -49,6 +49,9 @@ class User extends Alkaline{
 	
 	// Login user by ID, key
 	protected function authByCookie($user_id, $user_key, $remember=true){
+		// Error checking
+		if(empty($user_id) or empty($user_key)){ return false ; }
+		
 		$query = $this->prepare('SELECT * FROM users WHERE user_id = :user_id AND user_key = :user_key;');
 		$query->execute(array(':user_id' => $user_id, ':user_key' => $user_key));
 		$this->user = $query->fetchAll();
