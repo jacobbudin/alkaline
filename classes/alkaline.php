@@ -222,10 +222,11 @@ class Alkaline{
 		$key = strip_tags($key);
 		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key LIMIT 0, 1;');
 		$query->execute(array(':guest_key' => $key));
-		$guest = $query->fetch();
+		$guests = $query->fetchAll();
+		$guest = $guests[0];
 		
 		if(!$guest){
-			return false;
+			$this->error('You are not authorized.');
 		}
 		
 		$this->guest = $guest;
@@ -782,6 +783,31 @@ class Alkaline{
 				$html .= ' selected="selected"';
 			}
 			$html .= '>' . $privacy_label . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
+	// SHOW PILES
+	public function showPiles($name, $pile_id=null){
+		if(empty($name)){
+			return false;
+		}
+		
+		$query = $this->prepare('SELECT pile_id, pile_title FROM piles;');
+		$query->execute();
+		$piles = $query->fetchAll();
+		
+		$html = '<select name="' . $name . '" id="' . $name . '"><option value=""></option>';
+		
+		foreach($piles as $pile){
+			$html .= '<option value="' . $pile['pile_id'] . '"';
+			if($pile['pile_id'] == $pile_id){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $pile['pile_title'] . '</option>';
 		}
 		
 		$html .= '</select>';
