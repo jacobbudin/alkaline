@@ -687,38 +687,38 @@ class Find extends Alkaline{
 				$this->sql_conds[] = 'links.link_id IS NULL';
 				break;
 			case 'unpublished':
-				$this->_published(false);
+				$this->published(false);
 				break;
 			case 'displayed':
-				$this->_published(true);
-				$this->_privacy('public');
+				$this->published(true);
+				$this->privacy('public');
 				break;
 			case 'updated':
-				$this->_sort('photo_updated', 'DESC');
+				$this->sort('photo_updated', 'DESC');
 				break;
 			case 'nonpublic':
-				$this->_privacy(array(2, 3));
+				$this->privacy(array(2, 3));
 				break;
 			case 'untitled':
 				$this->sql_conds[] = 'photos.photo_title IS NULL';
 				break;
 			case 'views':
-				$this->_sort('photo_views', 'DESC');
+				$this->sort('photo_views', 'DESC');
 				break;
 			case 'tags':
-				$this->_allTags(@intval($_GET['id']));
+				$this->allTags(@intval($_GET['id']));
 				break;
 			case 'piles':
-				$this->_pile(@intval($_GET['id']));
+				$this->pile(@intval($_GET['id']));
 				break;
 			case 'users':
-				$this->_user(@intval($_GET['id']));
+				$this->user(@intval($_GET['id']));
 				break;
 			case 'rights':
-				$this->_rights(@intval($_GET['id']));
+				$this->rights(@intval($_GET['id']));
 				break;
 			case 'pages':
-				$this->_pages(@intval($_GET['id']));
+				$this->pages(@intval($_GET['id']));
 				break;
 			default:
 				return false;

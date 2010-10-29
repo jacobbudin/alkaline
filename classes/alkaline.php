@@ -114,7 +114,7 @@ class Alkaline{
 		return $response;
 	}
 	
-	public function prequery(&$query){		
+	public function prequery(&$query){
 		$_SESSION['alkaline']['debug']['queries']++;
 		
 		if(TABLE_PREFIX != ''){
