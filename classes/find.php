@@ -98,6 +98,12 @@ class Find extends Alkaline{
 				if(is_string($arg)){
 					$arg = '\'' . addslashes($arg) . '\'';
 				}
+				elseif($arg === true){
+					$arg = 'true';
+				}
+				elseif($arg === false){
+					$arg = 'false';
+				}
 			}
 		
 			// Save to memory
