@@ -42,7 +42,7 @@ else{
 // CREATE PILE
 if($pile_act == 'build'){
 	$pile_call = Find::recentMemory();
-	$fields = array('pile_call' => $pile_call, );
+	$fields = array('pile_call' => $pile_call);
 	$pile_id = $alkaline->addRow($fields, 'piles');
 }
 
