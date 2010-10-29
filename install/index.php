@@ -129,6 +129,15 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		$alkaline->addNotification('The database could not be contacted. Check your settings.', 'error');
 	}
 	else{
+		function appendTableName($query){
+			if(!empty($_POST['install_db_prefix'])){
+				return preg_replace('#TABLE ([[:punct:]]*)(\w+)#s', 'TABLE \\1' . $_POST['install_db_prefix'] . '\\2', $query);
+			}
+			else{
+				return $query;
+			}
+		}
+		
 		// Import empty DB SQL
 		if(@$_POST['install_db_empty'] == 1){
 			$queries = file_get_contents(PATH . INSTALL . 'empty.sql');
@@ -137,6 +146,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 			foreach($queries as $query){
 				$query = trim($query);
 				if(!empty($query)){
+					$query = appendTableName($query);
 					$db->exec($query);
 				}
 			}
@@ -149,12 +159,13 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		foreach($queries as $query){
 			$query = trim($query);
 			if(!empty($query)){
+				$query = appendTableName($query);
 				$db->exec($query);
 			}
 		}
 		
 		// Add admin user
-		$query = $db->prepare('INSERT INTO users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
 		
 		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
 		
@@ -162,7 +173,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		
 		// Add admin thumbnails
 		
-		$query = $db->prepare('INSERT INTO sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
 		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
 		
@@ -170,7 +181,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 		
 		// Add default theme
 		
-		$query = $db->prepare('INSERT INTO themes (theme_uid, theme_title, theme_default, theme_build, theme_version, theme_folder, theme_creator, theme_creator_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'themes (theme_uid, theme_title, theme_default, theme_build, theme_version, theme_folder, theme_creator, theme_creator_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
 		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
 		
 		$query->closeCursor();

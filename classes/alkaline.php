@@ -117,6 +117,13 @@ class Alkaline{
 	public function prequery(&$query){		
 		$_SESSION['alkaline']['debug']['queries']++;
 		
+		if(TABLE_PREFIX != ''){
+			// Add table prefix
+			$query = preg_replace('#(FROM|JOIN)\s+([\sa-z0-9_\-,]*)\s*(WHERE|GROUP|HAVING|ORDER)?#se', "'\\1 '.Alkaline::appendTablePrefix('\\2').' \\3'", $query);
+			$query = preg_replace('#(\w+)\.#si', TABLE_PREFIX . '\\1.', $query);
+			$query = preg_replace('#(DELETE FROM|INSERT INTO|UPDATE)\s+(\w+)#si', '\\1 ' . TABLE_PREFIX . '\\2', $query);
+		}
+		
 		if($this->db_type == 'mssql'){
 			/*
 			preg_match('#GROUP BY (.*) ORDER BY#si', $query, $match);
@@ -153,6 +160,24 @@ class Alkaline{
 			$query = str_replace('MONTH(', 'strftime("%m",', $query);
 			$query = str_replace('YEAR(', 'strftime("%Y",', $query);
 		}
+		
+		$query = trim($query);
+	}
+	
+	protected function appendTablePrefix($tables){
+		if(strpos($tables, ',') === false){
+			$tables = trim($tables);
+			$tables = TABLE_PREFIX . $tables;
+		}
+		else{
+			$tables = explode(',', $tables);
+			$tables = array_map('trim', $tables);
+			foreach($tables as &$table){
+				$table = TABLE_PREFIX . $table;
+			}
+			$tables = implode(', ', $tables);
+		}
+		return $tables;
 	}
 	
 	public function postquery(&$query, $db=null){

@@ -20,7 +20,7 @@ $db_user = 'postgres';
 $db_pass = 'postgres';
 
 // Database table prefix
-$table_prefix = '';
+$table_prefix = 'alka_';
 
 // Alkaline subdirectory prefix
 $folder_prefix = '';
