@@ -103,34 +103,38 @@ class Canvas extends Alkaline{
 			return false;
 		}
 		
-		for($j = 0; $j < count($loops); ++$j){
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
 			$replacement = '';
 			$reel = $array->$loops[$j]['reel'];
 			
-			for($i = 0; $i < count($reel); ++$i){
-				$loop_template = $loops[$j]['template'];
-				
-				foreach($reel[$i] as $key => $value){
-					if(is_array($value)){
-						$value = var_export($value, true);
-					}
-					$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
-					if(!empty($value)){
-						$loop_template = self::scrub($key, $loop_template);
-					}
-				}
-				
-				$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
-				
-				$replacement .= $loop_template;
-			}
+			$reel_count = count($reel);
 			
-			$loops[$j]['replacement'] = $replacement;
-		}
-		
-		foreach($loops as $loop){
-			$this->template = str_replace($loop['replace'], $loop['replacement'], $this->template);
-			$this->template = self::scrub($loop['reel'], $this->template);
+			if($reel_count > 0){			
+				for($i = 0; $i < $reel_count; ++$i){
+					$loop_template = $loops[$j]['template'];
+				
+					foreach($reel[$i] as $key => $value){
+						if(is_array($value)){
+							$value = var_export($value, true);
+						}
+						$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
+						if(!empty($value)){
+							$loop_template = self::scrub($key, $loop_template);
+						}
+					}
+				
+					$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
+				
+					$replacement .= $loop_template;
+				}
+			
+				// $loops[$j]['replacement'] = $replacement;
+			
+				$this->template = str_replace($loops[$j]['replace'], $replacement, $this->template);
+				$this->template = self::scrub($loops[$j]['reel'], $this->template);
+			}
 		}
 		
 		return true;

@@ -1,67 +1,71 @@
-{block:Photos}
-	<div class="photo">
-		<div class="center"><img src="{Photo_Src_Medium}" alt="" class="frame" /></div><br />
-		<div class="float_right">
-			<div class="uploaded">{Photo_Uploaded}</div>
-			<div class="right">
-				{if:Right_Title}
-					{Right_Title}
-				{else:Right_Title}
-					No rights set.
-				{/if:Right_Title}
+{if:Photos}
+	{block:Photos}
+		<div class="photo">
+			<div class="center"><img src="{Photo_Src_Medium}" alt="" class="frame" /></div><br />
+			<div class="float_right">
+				<div class="uploaded">{Photo_Uploaded}</div>
+				<div class="right">
+					{if:Right_Title}
+						{Right_Title}
+					{else:Right_Title}
+						No rights set.
+					{/if:Right_Title}
+				</div>
 			</div>
-		</div>
-		{if:Photo_Title}
-			<div class="title">
-				{Photo_Title}
-			</div>
-		{/if:Photo_Title}
-		{if:Photo_Description}
-			<p class="description">
-				{Photo_Description}
-			</p>
-		{/if:Photo_Description}
-		{if:Tags}
-			<p>
-			{block:Tags}
-				<span class="tag">#{Tag_Name}</span>
-			{/block:Tags}
-			</p>
-		{/if:Tags}
-		{if:Comments}
+			{if:Photo_Title}
+				<div class="title">
+					{Photo_Title}
+				</div>
+			{/if:Photo_Title}
+			{if:Photo_Description}
+				<p class="description">
+					{Photo_Description}
+				</p>
+			{/if:Photo_Description}
+			{if:Tags}
+				<p>
+				{block:Tags}
+					<span class="tag">#{Tag_Name}</span>
+				{/block:Tags}
+				</p>
+			{/if:Tags}
+			{if:Comments}
+				<table>
+				{block:Comments}
+					<tr>
+						<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}{if:Comment_Author_Name}<p>&#8212; {Comment_Author_Name} on {/if:Comment_Author_Name}{Comment_Created}</p></td>
+					</tr>
+				{/block:Comments}
+				</table>
+			{else:Comments}
+				<p><strong>No comments.</strong></p>
+			{/if:Comments}
 			<table>
-			{block:Comments}
 				<tr>
-					<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}{if:Comment_Author_Name}<p>&#8212; {Comment_Author_Name} on {/if:Comment_Author_Name}{Comment_Created}</p></td>
+					<td>Author:</td>
+					<td>{Photo_Comment_Author_Name}</td>
 				</tr>
-			{/block:Comments}
+				<tr>
+					<td>Email:</td>
+					<td>{Photo_Comment_Author_Email}</td>
+				</tr>
+				<tr>
+					<td>URL:</td>
+					<td>{Photo_Comment_Author_Url}</td>
+				</tr>
+				<tr>
+					<td>Comment:</td>
+					<td>{Photo_Comment_Text}</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>{Photo_Comment_Submit}</td>
+				</tr>
 			</table>
-		{else:Comments}
-			<p><strong>No comments.</strong></p>
-		{/if:Comments}
-		<table>
-			<tr>
-				<td>Author:</td>
-				<td>{Photo_Comment_Author_Name}</td>
-			</tr>
-			<tr>
-				<td>Email:</td>
-				<td>{Photo_Comment_Author_Email}</td>
-			</tr>
-			<tr>
-				<td>URL:</td>
-				<td>{Photo_Comment_Author_Url}</td>
-			</tr>
-			<tr>
-				<td>Comment:</td>
-				<td>{Photo_Comment_Text}</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>{Photo_Comment_Submit}</td>
-			</tr>
-		</table>
-	</div>
-	
+		</div>
+		<hr />
+	{/block:Photos}
+{else:Photos}
+	<p>No photos.</p>
 	<hr />
-{/block:Photos}
+{/if:Photos}

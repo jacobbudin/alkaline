@@ -24,7 +24,7 @@ $photos->getComments();
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('Title', $photos->photos[0]['photo_title']);
+$header->assign('Title', @$photos->photos[0]['photo_title']);
 $header->display();
 
 $index = new Canvas;
