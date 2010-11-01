@@ -35,7 +35,7 @@ class Find extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
-	public function __construct(){
+	public function __construct($photo_ids=null, $auto_guest=true){
 		parent::__construct();
 		
 		// Store data to object
@@ -60,6 +60,22 @@ class Find extends Alkaline{
 		$this->sql_params = array();
 		$this->sql_order_by = '';
 		$this->sql_where = '';
+		
+		// Optional "starter photo set"
+		if(!empty($photo_ids)){
+			$photo_ids = parent::convertToIntegerArray($photo_ids);
+			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		}
+		
+		if($auto_guest == true){
+			// Guest access
+			if(@$_SESSION['alkaline']['guest']){
+				$this->privacy(2);
+				if(!empty($_SESSION['alkaline']['guest']['guest_piles'])){
+					$this->pile(intval($_SESSION['alkaline']['guest']['guest_piles']));
+				}
+			}
+		}
 	}
 	
 	public function __destruct(){
@@ -374,7 +390,7 @@ class Find extends Alkaline{
 	}
 	
 	// FIND BY PILE
-	public function pile($pile=null, $update=true){
+	public function pile($pile=null){
 		// Error checking
 		if(empty($pile)){ return false; }
 		
@@ -401,8 +417,27 @@ class Find extends Alkaline{
 		
 		// If auto, apply stored functions
 		if($pile['pile_type'] == 'auto'){
+			$photo_ids = new Find(null, false);
+			$pile['pile_call'] = str_ireplace('$this->', '$photo_ids->', $pile['pile_call']);
 			if(eval($pile['pile_call']) === false){
 				return false;
+			}
+			$photo_ids->find();
+			
+			$pile_photos = implode(', ', $photo_ids->photo_ids);
+			
+			// Update pile if photos have changed
+			if($pile_photos != $pile['pile_photos']){
+				$fields = array('pile_photo_count' => $photo_ids->photo_count,
+					'pile_photos' => $pile_photos);
+				$this->updateRow($fields, 'piles', $pile['pile_id'], false);
+			}
+			
+			if(!empty($photo_ids->photo_ids)){
+				$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids->photo_ids) . ')';
+			}
+			else{
+				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
 			}
 		}
 		
@@ -414,20 +449,6 @@ class Find extends Alkaline{
 			else{
 				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
 			}
-		}
-		
-		if((($pile['pile_type'] == 'auto') or empty($pile['pile_photo_count'])) and ($update === true)){
-			$photo_ids = new Find;
-			$photo_ids->pile(intval($pile['pile_id']), false);
-			$photo_ids->find();
-			$fields = array('pile_photo_count' => $photo_ids->photo_count);
-
-			// Check to see if automatic
-			if($pile['pile_type'] == 'auto'){
-				$fields['pile_photos'] = implode(', ', $photo_ids->photo_ids);
-			}
-
-			$this->updateRow($fields, 'piles', $pile['pile_id'], false);
 		}
 		
 		return true;
@@ -513,16 +534,16 @@ class Find extends Alkaline{
 		}
 		
 		// Search tags
-		$tags = new Find();
-		$tags->tags($search);
-		$tags->find();
+		$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
+		$query->execute(array(':tag_name_lower' => $search_lower));
 		
-		if(count($tags->photo_ids) > 0){
-			$photo_ids = array_merge($photo_ids, $tags->photo_ids);
-			$photo_ids = array_unique($photo_ids);
+		$photos = $query->fetchAll();
+		
+		foreach($photos as $photo){
+			$photo_ids[] = $photo['photo_id'];
 		}
 		
-		if(count($photo_ids)){
+		if(count($photo_ids) > 0){
 			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
 		}
 		else{
@@ -546,10 +567,6 @@ class Find extends Alkaline{
 		elseif(@$_SESSION['alkaline']['guest']){
 			$privacy = 2;
 			$all = false;
-			
-			if(!empty($_SESSION['alkaline']['guest']['guest_piles'])){
-				$this->pile(intval($_SESSION['alkaline']['guest']['guest_piles']));
-			}
 		}
 		
 		// Convert strings
@@ -999,7 +1016,6 @@ class Find extends Alkaline{
 				}
 				$this->photo_ids_after = array_slice($photo_ids, $offset);
 			}
-			
 		}
 		
 		// Return photos.photo_ids

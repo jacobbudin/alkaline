@@ -9,7 +9,11 @@ $alkaline->addComments();
 
 $id = $alkaline->findID($_GET['id']);
 
-$photos = new Photo($id);
+$photo_ids = new Find($id);
+$photo_ids->privacy('public');
+$photo_ids->find();
+
+$photos = new Photo($photo_ids);
 $photos->updateViews();
 $photos->formatTime();
 $photos->getImgUrl('medium');
