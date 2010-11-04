@@ -42,8 +42,20 @@ else{
 // CREATE PILE
 if($pile_act == 'build'){
 	$pile_call = Find::recentMemory();
-	$fields = array('pile_call' => $pile_call);
+	$fields = array('pile_call' => $pile_call,
+		'pile_type' => 'auto');
 	$pile_id = $alkaline->addRow($fields, 'piles');
+	
+	$photos = new Find;
+	$photos->pile($pile_id);
+	$photos->find();
+	
+	$pile_photos = implode(', ', $photos->photo_ids);
+	$pile_photo_count = $photos->photo_count;
+	
+	$fields = array('pile_photos' => $pile_photos,
+		'pile_photo_count' => $pile_photo_count);
+	$alkaline->updateRow($fields, 'piles', $pile_id);
 }
 
 define('TAB', 'features');
