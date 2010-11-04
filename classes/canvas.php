@@ -111,7 +111,8 @@ class Canvas extends Alkaline{
 			
 			$reel_count = count($reel);
 			
-			if($reel_count > 0){			
+			// Determine if block has items
+			if($reel_count > 0){
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = $loops[$j]['template'];
 				
@@ -134,6 +135,9 @@ class Canvas extends Alkaline{
 			
 				$this->template = str_replace($loops[$j]['replace'], $replacement, $this->template);
 				$this->template = self::scrub($loops[$j]['reel'], $this->template);
+			}
+			else{
+				$this->template = str_replace($loops[$j]['replace'], '', $this->template);
 			}
 		}
 		
