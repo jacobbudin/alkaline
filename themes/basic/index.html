@@ -25,9 +25,26 @@
 		{/block:Tags}
 		</p>
 	{/if:Tags}
+	{if:Piles}
+		<p>
+		{block:Piles}
+			<span class="tag">!{Pile_Title}</span>
+		{/block:Piles}
+		</p>
+	{/if:Piles}
 </div>
 <hr />
 {/block:Photos}
+
+{if:Piles}
+	<p>
+	{block:Piles}
+		<span class="tag">!{Pile_Title}</span>
+	{/block:Piles}
+	</p>
+{/if:Piles}
+
+<hr />
 
 <p>
 	Page #{Page_Current} of {Page_Count}

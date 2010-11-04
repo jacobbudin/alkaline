@@ -36,6 +36,7 @@ $photos->formatTime();
 $photos->getImgUrl('square');
 $photos->getImgUrl('medium');
 $photos->getExif();
+$photos->getPiles();
 $photos->getTags();
 $photos->getRights();
 $photos->getComments();

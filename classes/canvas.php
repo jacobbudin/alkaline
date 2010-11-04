@@ -8,7 +8,6 @@ class Canvas extends Alkaline{
 	public function __construct($template=null){
 		parent::__construct();
 		
-		$this->tables = array('photos', 'comments', 'tags');
 		$this->template = (empty($template)) ? '' : $template . "\n";
 	}
 	
@@ -79,7 +78,7 @@ class Canvas extends Alkaline{
 	public function loop($array){
 		$loops = array();
 		
-		$table_regex = implode('|', $this->tables);
+		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
 		
 		$matches = array();
@@ -111,23 +110,37 @@ class Canvas extends Alkaline{
 			
 			$reel_count = count($reel);
 			
+			$field = $this->tables[$loops[$j]['reel']];
+			
 			// Determine if block has items
 			if($reel_count > 0){
-				for($i = 0; $i < $reel_count; ++$i){
-					$loop_template = $loops[$j]['template'];
+				$done_once = array();
+				for($i = 0; $i < $reel_count; ++$i){				
+					if(!empty($reel[$i][$field])){
+						if(!in_array($reel[$i][$field], $done_once)){
+							$loop_template = $loops[$j]['template'];
 				
-					foreach($reel[$i] as $key => $value){
-						if(is_array($value)){
-							$value = var_export($value, true);
+							foreach($reel[$i] as $key => $value){
+								if(is_array($value)){
+									$value = var_export($value, true);
+								}
+								$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
+								if(!empty($value)){
+									$loop_template = self::scrub($key, $loop_template);
+								}
+							}
+				
+							$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
+							$done_once[] = $reel[$i][$field];
 						}
-						$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
-						if(!empty($value)){
-							$loop_template = self::scrub($key, $loop_template);
+						else{
+							$loop_template = '';
 						}
 					}
-				
-					$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
-				
+					else{
+						$loop_template = '';
+					}
+					
 					$replacement .= $loop_template;
 				}
 			
@@ -155,7 +168,7 @@ class Canvas extends Alkaline{
 	protected function loopSub($array, $template, $photo_id){
 		$loops = array();
 		
-		$table_regex = implode('|', $this->tables);
+		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
 		
 		$matches = array();
@@ -174,32 +187,46 @@ class Canvas extends Alkaline{
 			return $template;
 		}
 		
-		for($j = 0; $j < count($loops); ++$j){
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
 			$replacement = '';
 			$reel = $array->$loops[$j]['reel'];
 			
-			for($i = 0; $i < count($reel); ++$i){
-				$loop_template = '';
+			$reel_count = count($reel);
+			
+			if($reel_count > 0){
+				for($i = 0; $i < $reel_count; ++$i){
+					$loop_template = '';
 				
-				if($reel[$i]['photo_id'] == $photo_id){
-					if(empty($loop_template)){
-						$loop_template = $loops[$j]['template'];
-					}
-					foreach($reel[$i] as $key => $value){
-						if(is_array($value)){
-							$value = var_export($value, true);
+					if(!empty($reel[$i]['photo_id'])){
+						if($reel[$i]['photo_id'] == $photo_id){
+							if(empty($loop_template)){
+								$loop_template = $loops[$j]['template'];
+							}
+							foreach($reel[$i] as $key => $value){
+								if(is_array($value)){
+									$value = var_export($value, true);
+								}
+								$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
+								if(!empty($value)){
+									$loop_template = self::scrub($key, $loop_template);
+								}
+							}
 						}
-						$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
-						if(!empty($value)){
-							$loop_template = self::scrub($key, $loop_template);
-						}
 					}
+					else{
+						$loop_template = '';
+					}
+				
+					$replacement .= $loop_template;
 				}
 				
-				$replacement .= $loop_template;
+				$loops[$j]['replacement'] = $replacement;
 			}
-			
-			$loops[$j]['replacement'] = $replacement;
+			else{
+				$this->template = str_replace($loops[$j]['replace'], '', $this->template);
+			}
 		}
 		
 		foreach($loops as $loop){

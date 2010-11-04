@@ -4,6 +4,7 @@ class Photo extends Alkaline{
 	public $db;
 	public $photos = array();
 	public $comments;
+	public $piles;
 	public $tags;
 	public $photo_columns;
 	public $photo_count;
@@ -1169,8 +1170,27 @@ class Photo extends Alkaline{
 				}
 			}
 		}
+		
+		return $rights;
 	}
 	
+	// Retrieve image piles
+	public function getPiles(){
+		$piles = $this->getTable('piles');
+		
+		foreach($piles as &$pile){
+			$pile_photos = explode(', ', $pile['pile_photos']);
+			foreach($this->photo_ids as $photo_id){
+				if(in_array($photo_id, $pile_photos)){
+					$pile['photo_id'] = $photo_id;
+					$this->piles[] = $pile;
+				}
+			}
+		}
+		
+		return $this->piles;
+	}
+		
 	// Retrieve image comments
 	public function getComments(){
 		$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
@@ -1196,6 +1216,8 @@ class Photo extends Alkaline{
 		
 			$this->photos[$i]['photo_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->photos[$i]['photo_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
 		}
+		
+		return $this->comments;
 	}
 	
 	// Delete photo thumbnails
