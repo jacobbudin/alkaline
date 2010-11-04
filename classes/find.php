@@ -43,6 +43,7 @@ class Find extends Alkaline{
 		$this->photo_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
+		$this->page_first = LIMIT;
 		$this->sql = 'SELECT photos.photo_id AS photo_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
@@ -966,6 +967,7 @@ class Find extends Alkaline{
 		// Determine pagination
 		if(!empty($this->page)){
 			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
+			echo $this->page_first;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
