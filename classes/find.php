@@ -673,15 +673,15 @@ class Find extends Alkaline{
 		
 		if(!empty($min)){
 			$min = floatval($min);
-			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) < ' . $min;
+			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) < ' . $min;
 		}
 		if(!empty($max)){
 			$max = floatval($max);
-			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) >' . $max;
+			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) >' . $max;
 		}
 		if(!empty($equal)){
 			$equal = floatval($equal);
-			$this->sql_conds[] = '(photos.photo_width / photos.photo_height) = ' . $equal;
+			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) = ' . $equal;
 		}
 		
 		return true;
