@@ -39,7 +39,7 @@
 {if:Piles}
 	<p>
 	{block:Piles}
-		<span class="tag">!{Pile_Title}</span>
+		<strong>{Pile_Title}{if:Pile_Description}--{Pile_Description}{/if:Pile_Description}</strong><br />
 	{/block:Piles}
 	</p>
 	<hr />

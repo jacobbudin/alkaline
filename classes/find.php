@@ -967,7 +967,6 @@ class Find extends Alkaline{
 		// Determine pagination
 		if(!empty($this->page)){
 			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
-			echo $this->page_first;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
