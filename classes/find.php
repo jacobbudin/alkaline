@@ -648,7 +648,7 @@ class Find extends Alkaline{
 		// Admin checking
 		$user = new User;
 		
-		if($user->perm(false)){
+		if(!$user->perm(false)){
 			return;
 		}
 		
