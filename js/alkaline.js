@@ -87,7 +87,7 @@ function update(id){
 			gallery_copy = gallery_copy.replace(matchArray[0], replacement);
 		}
 	
-		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(0, function(){ reset(); }).fadeIn(100, function(){ working = 0; reset(); preload(); });
+		$('#gallery').fadeOut(100, function(){ $('#gallery').html(gallery_copy); }).delay(0).hide(10, function(){ reset(); }).fadeIn(100, function(){ working = 0; preload(); });
 		
 		function preload(){
 			if((photo_count - photo_id) < 5){

@@ -56,8 +56,8 @@ $index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
+$index->loop($pages);
 $index->loop($photos);
-// $index->loop($pages);
 $index->display();
 
 $footer = new Canvas;
