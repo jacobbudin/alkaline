@@ -45,6 +45,15 @@
 	<hr />
 {/if:Piles}
 
+{if:Pages}
+	<p>
+	{block:Pages}
+		<strong><a href="/page.php?id={Page_Title_Url}">{Page_Title}</a></strong><br />
+	{/block:Pages}
+	</p>
+	<hr />
+{/if:Pages}
+
 <p>
 	Page #{Page_Current} of {Page_Count}
 	{if:Page_Next}<br /><a href="/page{PAGE_NEXT}/">Next page</a>: Page #{Page_Next}{/if:Page_Next}

@@ -41,6 +41,9 @@ $photos->getTags();
 $photos->getRights();
 $photos->getComments();
 
+$pages = new Page;
+$pages->fetchAll();
+
 $header = new Canvas;
 $header->load('header');
 $header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
@@ -53,6 +56,7 @@ $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
 $index->loop($photos);
+$index->loop($pages);
 $index->display();
 
 $footer = new Canvas;

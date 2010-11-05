@@ -105,6 +105,8 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
+			if(!isset($array->$loops[$j]['reel'])){ continue; }
+			
 			$replacement = '';
 			$reel = $array->$loops[$j]['reel'];
 			
@@ -128,8 +130,11 @@ class Canvas extends Alkaline{
 								$loop_template = self::scrub($key, $loop_template);
 							}
 						}
-			
-						$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
+						
+						// If tied to photo array (either sub or super), execute inner blocks
+						if(!empty($reel[$i]['photo_id'])){
+							$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
+						}
 						$done_once[] = $reel[$i][$field];
 					}
 					else{
