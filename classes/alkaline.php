@@ -1172,6 +1172,21 @@ class Alkaline{
 		return $match;
 	}
 	
+	// Find photo ID references from a string
+	public function findIDRef($str){
+		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $str, $matches, PREG_SET_ORDER);
+		
+		$photo_ids = array();
+		
+		foreach($matches as $match){
+			$photo_ids[] = intval($match[1]);
+		}
+		
+		$photo_ids = array_unique($photo_ids);
+		
+		return $photo_ids;
+	}
+	
 	// Make a URL-friendly string
 	public function makeURL($string){
 		$string = html_entity_decode($string, 1, 'UTF-8');

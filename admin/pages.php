@@ -40,12 +40,15 @@ if(!empty($_POST['page_id'])){
 			$page_text = nl2br($page_text_raw);
 		}
 		
+		$page_photos = implode(', ', $alkaline->findIDRef($page_text));
+		
 		$page_words = $alkaline->countWords($_POST['page_text_raw'], 0);
 		
 		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,
 			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
 			'page_markup' => $page_markup,
+			'page_photos' => $page_photos,
 			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_words' => $page_words);
 		$alkaline->updateRow($fields, 'pages', $page_id);

@@ -39,6 +39,7 @@ $photos->getExif();
 $photos->getPiles();
 $photos->getTags();
 $photos->getRights();
+$photos->getPages();
 $photos->getComments();
 
 $pages = new Page;
@@ -56,7 +57,7 @@ $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
 $index->loop($photos);
-$index->loop($pages);
+// $index->loop($pages);
 $index->display();
 
 $footer = new Canvas;

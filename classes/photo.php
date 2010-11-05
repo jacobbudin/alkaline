@@ -4,6 +4,7 @@ class Photo extends Alkaline{
 	public $db;
 	public $photos = array();
 	public $comments;
+	public $pages;
 	public $piles;
 	public $tags;
 	public $photo_columns;
@@ -1189,6 +1190,23 @@ class Photo extends Alkaline{
 		}
 		
 		return $this->piles;
+	}
+	
+	// Retrieve image pages
+	public function getPages(){
+		$pages = $this->getTable('pages');
+		
+		foreach($pages as &$page){
+			$page_photos = explode(', ', $page['page_photos']);
+			foreach($this->photo_ids as $photo_id){
+				if(in_array($photo_id, $page_photos)){
+					$page['photo_id'] = $photo_id;
+					$this->pages[] = $page;
+				}
+			}
+		}
+		
+		return $this->pages;
 	}
 		
 	// Retrieve image comments
