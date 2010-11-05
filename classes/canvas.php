@@ -195,7 +195,7 @@ class Canvas extends Alkaline{
 			if($reel_count > 0){
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
-				
+					
 					if(!empty($reel[$i]['photo_id'])){
 						if($reel[$i]['photo_id'] == $photo_id){
 							if(empty($loop_template)){
@@ -215,7 +215,6 @@ class Canvas extends Alkaline{
 					else{
 						$loop_template = '';
 					}
-				
 					$replacement .= $loop_template;
 				}
 			}
@@ -224,10 +223,8 @@ class Canvas extends Alkaline{
 		}
 		
 		foreach($loops as $loop){
-			if(!empty($loop['replacement'])){
-				$template = str_replace($loop['replace'], $loop['replacement'], $template);
-				$template = self::scrub($loop['reel'], $template);
-			}
+			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+			$template = self::scrub($loop['reel'], $template);
 		}
 		
 		return $template;
