@@ -152,3 +152,7 @@ p.description{
 }
 
 .preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
+
+ul#slideshow{
+	list-style-type: none;
+}

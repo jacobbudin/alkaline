@@ -1106,12 +1106,14 @@ class Photo extends Alkaline{
 		
 		foreach($sizes as $size){
 			$size_label = 'photo_src_' . strtolower($size['size_label']);
+			$size_img_label = 'photo_img_' . strtolower($size['size_label']);
 			$size_prepend = $size['size_prepend'];
 			$size_append = $size['size_append'];
 			
 			// Attach photo_src_ to photos array
 			for($i = 0; $i < $this->photo_count; ++$i){
 			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
+			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'] . ' alt="" />';
 			}
 		}
 	}

@@ -19,10 +19,19 @@ $photos->getTags();
 $photos->getRights();
 $photos->getComments();
 
+$header = new Canvas;
+$header->load('header');
+$header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
+$header->display();
+
 $slideshow = new Canvas;
 $slideshow->load('slideshow');
-$slideshow->assign('Title', 'Slideshow &#8212; ' . $alkaline->returnConf('web_title'));
+$slideshow->slideshow();
 $slideshow->loop($photos);
 $slideshow->display();
+
+$header = new Canvas;
+$header->load('footer');
+$header->display();
 
 ?>

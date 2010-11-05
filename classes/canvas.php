@@ -2,6 +2,7 @@
 
 class Canvas extends Alkaline{
 	public $form_wrap;
+	public $slideshow;
 	public $tables;
 	public $template;
 	
@@ -81,6 +82,10 @@ class Canvas extends Alkaline{
 		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
 		
+		if($this->slideshow === true){
+			$this->template = '<ul id="slideshow">' . $this->template . '</ul>';
+		}
+		
 		$matches = array();
 		
 		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $this->template, $matches, PREG_SET_ORDER);
@@ -94,6 +99,9 @@ class Canvas extends Alkaline{
 				// Wrap in <form> for commenting
 				if(($match[1] == 'photos') and ($this->form_wrap === true)){
 					$match[2] = '<form action="" id="photo_{PHOTO_ID}" class="photo" method="post">' . $match[2] . '</form>';
+				}
+				elseif(($match[1] == 'photos') and ($this->slideshow === true)){
+					$match[2] = '<li><!-- ' . $match[2] . ' --></li>';
 				}
 				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
 			}
@@ -151,6 +159,13 @@ class Canvas extends Alkaline{
 			}
 		}
 		
+		return true;
+	}
+	
+	public function slideshow($bool=true){
+		if(!is_bool($bool)){ return false; }
+		
+		$this->slideshow = $bool;
 		return true;
 	}
 	
