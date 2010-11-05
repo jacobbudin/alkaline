@@ -25,7 +25,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Files</h3>
 		
 	<ul>
-		<li><a href="#rebuild-all">Rebuild all photo thumbnails</a></li>
+		<li><a href="#rebuild-thumbnails">Rebuild all photo thumbnails</a></li>
 		<li><a href="#delete-unused">Delete unclaimed photo thumbnails</a></li>
 		<li><a href="#delete-shoebox">Delete all files in shoebox</a></li>
 	</ul>
@@ -33,7 +33,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Database</h3>
 	
 	<ul>
-		<li><a href="#rebuild-geo-library">Rebuild geographic library</a></li>
+		<li><a href="#rebuild-piles">Rebuild pile catalog</a></li>
+		<li><a href="#rebuild-geo">Rebuild geographic library</a></li>
 		<li><a href="#delete-orphaned-tags">Delete orphaned tags</a></li>
 	</ul>
 </div>
