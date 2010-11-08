@@ -1017,7 +1017,7 @@ class Photo extends Alkaline{
 			}
 			
 			// Determine if there's geo data in IPTC
-			elseif(!empty($city)){
+			if(!empty($city)){
 				// Require geography class
 				require_once('geo.php');
 				
