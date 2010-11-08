@@ -120,7 +120,7 @@ class Alkaline{
 		if(TABLE_PREFIX != ''){
 			// Add table prefix
 			$query = preg_replace('#(FROM|JOIN)\s+([\sa-z0-9_\-,]*)\s*(WHERE|GROUP|HAVING|ORDER)?#se', "'\\1 '.Alkaline::appendTablePrefix('\\2').' \\3'", $query);
-			$query = preg_replace('#(\w+)\.#si', TABLE_PREFIX . '\\1.', $query);
+			$query = preg_replace('#([a-z]+[a-z0-9-\_]*)\.#si', TABLE_PREFIX . '\\1.', $query);
 			$query = preg_replace('#(INSERT INTO|UPDATE)\s+(\w+)#si', '\\1 ' . TABLE_PREFIX . '\\2', $query);
 		}
 		
