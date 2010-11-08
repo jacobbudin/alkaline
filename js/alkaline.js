@@ -44,27 +44,29 @@ function slideshow_prev(){
 }
 
 function reset(){
-	photo = slideshow_photo.find('img');
-	height = photo.innerHeight();
-    width = photo.innerWidth();
-	doc_height = $(document).height();
-	if(doc_height > 700){
-		if(width > height){
-			padding = ((640 - height) / 2) + ((doc_height - 700) / 2);
+	if(slideshow_photo){
+		photo = slideshow_photo.find('img');
+		height = photo.innerHeight();
+	    width = photo.innerWidth();
+		doc_height = $(document).height();
+		if(doc_height > 700){
+			if(width > height){
+				padding = ((640 - height) / 2) + ((doc_height - 700) / 2);
+			}
+			else{
+				padding = ((doc_height - 700) / 2);
+			}
 		}
 		else{
-			padding = ((doc_height - 700) / 2);
+			if(width > height){
+				padding = ((640 - height) / 2);
+			}
+			else{
+				padding = 0;
+			}
 		}
+		slideshow_photo.css('padding-top', padding + 'px');
 	}
-	else{
-		if(width > height){
-			padding = ((640 - height) / 2);
-		}
-		else{
-			padding = 0;
-		}
-	}
-	slideshow_photo.css('padding-top', padding + 'px');
 }
 
 function slideshow_update(){
