@@ -71,8 +71,40 @@ function slideshow_update(){
 	if(slideshow_working == 0){
 		slideshow_working = 1;
 		
-		slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); slideshow_photo_prev.hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_working = 0; });
+		slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); slideshow_photo_prev.hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_photo_next = slideshow_photo.next(); slideshow_photo_next.hide(0, function(){ uncomment(slideshow_photo_next); } ); slideshow_working = 0; });
 	}
+}
+
+function slideshow_play_now(){
+	if(slideshow_play == 1){
+		setTimeout("slideshow_play_next()", 3000);
+	}
+}
+
+function slideshow_play_next(){
+	if(slideshow_play == 1){
+		slideshow_next();
+		slideshow_play_now();
+	}
+}
+
+function slideshow_pause(){
+	if(slideshow_play == 1){
+		slideshow_play = 0;
+	}
+	else{
+		slideshow_play = 1;
+		slideshow_play_next();
+	}
+}
+
+function slideshow_play(){
+	slideshow_play = 1;
+	slideshow_play_next();
+}
+
+function slideshow_stop(){
+	slideshow_play = 0;
 }
 
 function uncomment(slideshow_photo){
@@ -91,12 +123,35 @@ $(document).ready(function(){
 		slideshow_photo = slideshow_photos.first('li');
 		slideshow_photo_prev = slideshow_photo;
 		slideshow_update();
+		slideshow_play_now();
+		
+		$('#slideshow_pause').click(function() {
+			slideshow_pause();
+		});
+				
+		$('#slideshow_play').click(function() {
+			slideshow_play();
+		});
+		
+		$('#slideshow_stop').click(function() {
+			slideshow_stop();
+		});
 		
 		$(document).keydown(function(event){
+			if(event.keyCode == '38'){
+				slideshow_play = 0;
+				slideshow_first();
+			}
 			if(event.keyCode == '37'){
+				slideshow_play = 0;
 				slideshow_prev();
 			}
+			if(event.keyCode == '40'){
+				slideshow_play = 0;
+				slideshow_last();
+			}
 			if(event.keyCode == '39'){
+				slideshow_play = 0;
 				slideshow_next();
 			}
 		});
