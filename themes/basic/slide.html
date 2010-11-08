@@ -18,27 +18,12 @@
 			{Photo_Title}
 		</div>
 	{/if:Photo_Title}
-	{if:Tags}
-		<p>
-		{block:Tags}
-			<span class="tag">#{Tag_Name}</span>
-		{/block:Tags}
-		</p>
-	{/if:Tags}
 	{if:Piles}
 		<p>
 		{block:Piles}
-			<span class="tag">!{Pile_Title}</span>
+			<span class="tag">See pile: {Pile_Title}</span>
 		{/block:Piles}
 		</p>
 	{/if:Piles}
-	{if:Pages}
-		<p>
-		{block:Pages}
-			<span class="tag">@{Page_Title}</span>
-		{/block:Pages}
-		</p>
-	{/if:Pages}
 </div>
-<hr />
 {/block:Photos}

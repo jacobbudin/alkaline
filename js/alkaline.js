@@ -8,48 +8,43 @@ var PHOTOS = FOLDER_PREFIX + 'photos/';
 var slideshow;
 var slideshow_photo;
 var slideshow_photo_prev;
-var slideshow_photo_count;
 var slideshow_working = 0;
 var slideshow_play = 1;
 
 function slideshow_first(){
-	slideshow = $('ul#slideshow');
-	slideshow_photos = slideshow.children('li');
 	slideshow_photo = slideshow_photos.first('li');
 	slideshow_update();
 }
 
 function slideshow_last(){
-	slideshow = $('ul#slideshow');
-	slideshow_photos = slideshow.children('li');
 	slideshow_photo = slideshow_photos.last('li');
 	slideshow_update();
 }
 
 function slideshow_next(){
-	slideshow_photo = slideshow_photo.next();
-	if(slideshow_photo.length == 0){
+	slideshow_photo_next = slideshow_photo.next();
+	if(slideshow_photo_next.length == 0){
 		slideshow_first();
-		slideshow_photo_prev = slideshow_photo;
 	}
 	else{
+		slideshow_photo = slideshow_photo_next;
 		slideshow_update();
 	}
 }
 
 function slideshow_prev(){
-	slideshow_photo = slideshow_photo.prev();
-	if(slideshow_photo.length == 0){
+	slideshow_photo_next = slideshow_photo.prev();
+	if(slideshow_photo_next.length == 0){
 		slideshow_last();
-		slideshow_photo_prev = slideshow_photo;
 	}
 	else{
+		slideshow_photo = slideshow_photo_next;
 		slideshow_update();
 	}
 }
 
 function reset(){
-	photo = $('ul#slideshow').find('img');
+	photo = slideshow_photo.find('img');
 	height = photo.innerHeight();
     width = photo.innerWidth();
 	doc_height = $(document).height();
@@ -69,16 +64,14 @@ function reset(){
 			padding = 0;
 		}
 	}
-	$('ul#slideshow').css('padding-top', padding + 'px');
+	slideshow_photo.css('padding-top', padding + 'px');
 }
 
 function slideshow_update(){
 	if(slideshow_working == 0){
 		slideshow_working = 1;
 		
-		uncomment(slideshow_photo);
-		
-		$('ul#slideshow').fadeOut(100, function(){ slideshow_photo_prev.hide(); }).delay(0).hide(10, function(){ slideshow_photo.show(); reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_working = 0; });
+		slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); slideshow_photo_prev.hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_working = 0; });
 	}
 }
 
