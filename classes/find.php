@@ -993,7 +993,17 @@ class Find extends Alkaline{
 		if(!empty($this->page_limit)){
 			if(!empty($this->photo_offset_length)){
 				$offset = $this->page_begin - $this->photo_offset_length;
-				$this->photo_ids_before = array_slice($photo_ids, $offset, $this->photo_offset_length);
+				
+				if($offset < 0){
+					$length = $this->photo_offset_length + $offset;
+					$offset = 0;
+				}
+				else{
+					$length = $this->photo_offset_length;
+				}
+				
+				$this->photo_ids_before = array_slice($photo_ids, $offset, $length, true);
+				$this->photo_ids_before = array_reverse($this->photo_ids_before);
 				
 				if($this->page == 1){
 					$offset = $this->page_begin + $this->page_first;
@@ -1001,10 +1011,11 @@ class Find extends Alkaline{
 				else{
 					$offset = $this->page_begin + $this->page_limit;
 				}
-				$this->photo_ids_after = array_slice($photo_ids, $offset, $this->photo_offset_length);
+				
+				$this->photo_ids_after = array_slice($photo_ids, $offset, $this->photo_offset_length, true);
 			}
 			else{
-				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin);
+				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin, true);
 				
 				if($this->page == 1){
 					$offset = $this->page_begin + $this->page_first;
@@ -1012,7 +1023,7 @@ class Find extends Alkaline{
 				else{
 					$offset = $this->page_begin + $this->page_limit;
 				}
-				$this->photo_ids_after = array_slice($photo_ids, $offset);
+				$this->photo_ids_after = array_slice($photo_ids, $offset, null, true);
 			}
 		}
 		
