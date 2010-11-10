@@ -5,6 +5,7 @@ class Canvas extends Alkaline{
 	public $slideshow;
 	public $tables;
 	public $template;
+	protected $value;
 	
 	public function __construct($template=null){
 		parent::__construct();
@@ -133,8 +134,13 @@ class Canvas extends Alkaline{
 							if(is_array($value)){
 								$value = var_export($value, true);
 							}
-							$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
-							if(!empty($value)){
+							
+							$this->value = $value;
+							
+							$loop_template = str_ireplace('{' . $key . '}', $this->value, $loop_template);
+							$loop_template = preg_replace('#\{' . $key . '\|([a-z0-9_]+)\}#esi', "Canvas::\\1()", $loop_template);
+							
+							if(!empty($this->value)){
 								$loop_template = self::scrub($key, $loop_template);
 							}
 						}
@@ -220,8 +226,13 @@ class Canvas extends Alkaline{
 								if(is_array($value)){
 									$value = var_export($value, true);
 								}
-								$loop_template = str_ireplace('{' . $key . '}', $value, $loop_template);
-								if(!empty($value)){
+								
+								$this->value = $value;
+								
+								$loop_template = str_ireplace('{' . $key . '}', $this->value, $loop_template);
+								$loop_template = preg_replace('#\{' . $key . '\|([a-z0-9_]+)\}#esi', "Canvas::\\1()", $loop_template);
+								
+								if(!empty($this->value)){
 									$loop_template = self::scrub($key, $loop_template);
 								}
 							}
@@ -243,6 +254,10 @@ class Canvas extends Alkaline{
 		}
 		
 		return $template;
+	}
+	
+	public function makeURL(){
+		return Alkaline::makeURL($this->value);
 	}
 	
 	// PREPROCESS
