@@ -267,9 +267,35 @@ class Canvas extends Alkaline{
 		if(stripos($template, '{else:' . $var . '}')){
 			$template = preg_replace('#{else:' . $var . '}(.*?){/if:' . $var . '}#is', '', $template);
 		}
-		else{
-			$template = str_ireplace('{/if:' . $var . '}', '', $template);
+		$template = str_ireplace('{/if:' . $var . '}', '', $template);
+		return $template;
+	}
+	
+	// Remove unmatched conditionals before displaying
+	public function scrubEmpty($template){
+		preg_match_all('#{if:([A-Z0-9_]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			$loops = array();
+			
+			foreach($matches as $match){
+				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
+			}
 		}
+		
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
+			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
+				$loops[$j]['replacement'] = $loops[$j]['template'];
+				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
+			}
+		}
+		
+		foreach($loops as $loop){
+			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+		}
+		
 		return $template;
 	}
 	
@@ -351,8 +377,7 @@ class Canvas extends Alkaline{
 		$this->initOrbit();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
-		$this->template = preg_replace('#{if:([A-Z0-9_]*)}(.*?)\{else:\1}(.*?)\{/if:\1}#is', '$3', $this->template);
-		$this->template = preg_replace('#{if:([A-Z0-9_]*)}(.*?)\{/if:\1}#is', '', $this->template);
+		$this->template = $this->scrubEmpty($this->template);
 		
 		return true;
 	}
