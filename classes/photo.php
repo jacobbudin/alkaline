@@ -305,6 +305,8 @@ class Photo extends Alkaline{
 			}
 			
 			$sql_params = array();
+			
+			$tags = array_merge($tags);
 			$tag_count = count($tags);
 			
 			// Grab tag IDs
@@ -317,8 +319,6 @@ class Photo extends Alkaline{
 			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
 			$tags_db = $query->fetchAll();
-			
-			$tags = array_map('stripslashes', $tags);
 			
 			foreach($tags as $tag){
 				$found = false;
