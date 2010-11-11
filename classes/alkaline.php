@@ -858,6 +858,10 @@ class Alkaline{
 	}
 	
 	public function getRow($table, $id){
+		// Error checking
+		if(empty($id)){ return false; }
+		if(!($id = intval($id))){ return false; }
+		
 		$table = $this->getTable($table, $id);
 		if(count($table) != 1){ return false; }
 		return $table[0];
