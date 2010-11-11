@@ -95,7 +95,7 @@ function updateMaintProgress(){
 	}
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
-	if(progress > 99.9999999){
+	if(progress > 99.99999){
 		$.ajaxq("default", {
 			type: "POST",
 		    url: BASE + ADMIN + "tasks/add-notification.php",
@@ -208,7 +208,7 @@ function updateProgress(val){
 	if(!empty(val)){ progress = val; }
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
-	if(progress == 100){
+	if(progress > 99.99999){
 		$("#progress").slideUp(1000);
 		$("#shoebox_add").delay(1000).removeAttr("disabled");
 	}
