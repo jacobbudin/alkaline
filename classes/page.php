@@ -2,6 +2,7 @@
 
 class Page extends Alkaline{
 	public $page_id;
+	public $page_count;
 	public $page;
 	
 	public function __construct($page=null){
@@ -26,18 +27,14 @@ class Page extends Alkaline{
 			if(!empty($query)){
 				$query->execute($sql_params);
 				$this->pages = $query->fetchAll();
+				
+				$this->page_count = count($this->pages);
 			}
 		}
 	}
 	
 	public function __destruct(){
 		parent::__destruct();
-	}
-	
-	public function count(){
-		$count = @count($this->pages);
-		if(!is_int($count)){ $count = 0; }
-		return $count;
 	}
 	
 	public function create(){
@@ -48,6 +45,8 @@ class Page extends Alkaline{
 		$query = $this->prepare('SELECT * FROM pages;');
 		$query->execute();
 		$this->pages = $query->fetchAll();
+		
+		$this->page_count = count($this->pages);
 	}
 	
 	public function search($search=null){
