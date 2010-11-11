@@ -219,7 +219,6 @@ class Find extends Alkaline{
 		$pieces = array_map('trim', $pieces);
 
 		$any = array();
-		$any_count = count(array_keys($pieces, 'OR'));
 		$all = array();
 		$not = array();
 
@@ -234,6 +233,8 @@ class Find extends Alkaline{
 				$all[] = $pieces[$i];
 			}
 		}
+		
+		$any_count = count($any) - count(array_keys($pieces, 'OR'));
 		
 		$this->anyTags($any, $any_count);
 		$this->allTags($all);
@@ -524,8 +525,8 @@ class Find extends Alkaline{
 		$search_lower = '%' . $search_lower . '%';
 		
 		// Search title, description
-		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower)');
-		$query->execute(array(':photo_title_lower' => $search_lower, ':photo_description_lower' => $search_lower));
+		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower OR LOWER(photos.photo_geo) LIKE :photo_geo_lower)');
+		$query->execute(array(':photo_title_lower' => $search_lower, ':photo_description_lower' => $search_lower, ':photo_geo_lower' => $search_lower));
 		$photos = $query->fetchAll();
 		
 		$photo_ids = array();
