@@ -275,9 +275,9 @@ class Canvas extends Alkaline{
 	public function scrubEmpty($template){
 		preg_match_all('#{if:([A-Z0-9_]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
 		
+		$loops = array();
+		
 		if(count($matches) > 0){
-			$loops = array();
-			
 			foreach($matches as $match){
 				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
 			}
