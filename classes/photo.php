@@ -135,13 +135,17 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate photo thumbnails based on sizes in database
-	public function sizePhoto($photos=null){
+	public function sizePhoto($photos=null, $size_ids=null){
 		if(empty($photos)){
 			$photos = $this->photos;
 			$photo_count = $this->photo_count;
 		}
 		else{
 			$photo_count = count($photos);
+		}
+		
+		if(!empty($size_ids)){
+			$size_ids = parent::convertToIntegerArray($size_ids);
 		}
 		
 		// Look up sizes in database
@@ -152,6 +156,14 @@ class Photo extends Alkaline{
 		// Generate thumbnails
 		for($i = 0; $i < $photo_count; ++$i){
 			foreach($sizes as $size){
+				$size_id = $size['size_id'];
+				
+				if(!empty($size_ids)){
+					if(!in_array($size_id, $size_ids)){
+						continue;
+					}
+				}
+				
 				$size_height = $size['size_height'];
 				$size_width = $size['size_width'];
 				$size_type = $size['size_type'];
