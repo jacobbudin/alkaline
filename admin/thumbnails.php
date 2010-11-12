@@ -33,6 +33,17 @@ if(!empty($_POST['size_id'])){
 		$alkaline->updateRow($fields, 'sizes', $size_id);
 	}
 	
+	// Build size
+	if(@$_POST['size_build'] == 'build'){
+		// Store to build thumbnails
+		$_SESSION['alkaline']['maintenance']['size_id'] = $size_id;
+		
+		sleep(1);
+		
+		header('Location: ' . LOCATION . BASE . ADMIN . 'maintenance' . URL_CAP . '#build-thumbnail');
+		exit();
+	}
+	
 	unset($size_id);
 }
 else{
@@ -88,8 +99,7 @@ if(empty($size_id)){
 }
 else{
 	// Get sizes set
-	$sizes = $alkaline->getTable('sizes', $size_id);
-	$size = $sizes[0];
+	$size = $alkaline->getRow('sizes', $size_id);
 	$size = $alkaline->makeHTMLSafe($size);
 
 	if(!empty($size['size_title'])){	
@@ -139,6 +149,10 @@ else{
 				<td>
 					<input type="text" id="size_prepend" name="size_prepend" value="<?php echo @$size['size_prepend']; ?>" style="width: 5em;" />
 				</td>
+			</tr>
+			<tr>
+				<td class="right"><input type="checkbox" id="size_build" name="size_build" value="build" <?php if(empty($size['size_title'])){ echo 'checked="checked"'; } ?> /></td>
+				<td><strong><label for="size_build">Build this thumbnail size.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" /></td>
