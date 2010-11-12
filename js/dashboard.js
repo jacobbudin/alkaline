@@ -326,6 +326,32 @@ $(document).ready(function(){
 	
 	if(page == 'Maintenance'){
 		$("#progress").hide(0);
+		url = location.href;
+		task_in_url = /\#([a-z0-9_\-]+)$/i;
+		task = url.match(task_in_url);
+		if(!empty(task)){
+			task = task[1];
+			executeTask();
+			$("#tasks").slideUp(500);
+			$("#progress").delay(500).slideDown(500);
+			$("#progress").progressbar({ value: 0 });
+			
+			$.ajaxq("default", {
+				type: "POST",
+			    url: BASE + ADMIN + "tasks/" + task + ".php",
+			    cache: false,
+				dataType: "json",
+			    success: function(data)
+			    {
+			        if(empty(data)){
+						progress = 100; updateMaintProgress();
+					}
+					else{
+						photoArray(data);
+					}
+			    }
+			});
+		}
 		$("#tasks a").click(function(){
 			task = $(this).attr("href").slice(1);
 			executeTask();
