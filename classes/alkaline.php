@@ -1212,9 +1212,27 @@ class Alkaline{
 	
 	// Trim long strings
 	public function fitString($string, $length=50){
+		$length = intval($length);
+		if($length < 3){ return false; }
+		
 		$string = trim($string);
 		if(strlen($string) > $length){
 			$string = rtrim(substr($string, 0, $length - 3)) . '&#0133;';
+		}
+		return $string;
+	}
+	
+	// Trim long strings by word
+	public function fitStringByWord($string, $length=50){
+		$length = intval($length);
+		if($length < 3){ return false; }
+		
+		$string = trim($string);
+		if(strlen($string) > $length){
+			$space = strpos($string, ' ', $length);
+			if($space !== false){
+				$string = substr($string, 0, $space) . '&#0133;';
+			}
 		}
 		return $string;
 	}
