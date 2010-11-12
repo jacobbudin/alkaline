@@ -8,13 +8,24 @@ $user = new User;
 
 $user->perm(true);
 
-// Open cities JSON file
 $id = $alkaline->findID(@$_POST['photo_id']);
 
 if(empty($id)){
-	$query = $alkaline->prepare('SELECT DISTINCT tags.tag_id FROM tags, links WHERE tags.tag_id != links.tag_id;');
+	$query = $alkaline->prepare('SELECT DISTINCT tags.tag_id FROM tags;');
 	$query->execute();
-	$orphans = $query->fetchAll();
+	$tags = $query->fetchAll();
+	
+	$query = $alkaline->prepare('SELECT DISTINCT tags.tag_id FROM tags, links WHERE tags.tag_id = links.tag_id;');
+	$query->execute();
+	$tags_in_use = $query->fetchAll();
+	
+	$orphans = array();
+	
+	foreach($tags as $tag){
+		if(!in_array($tag, $tags_in_use)){
+			$orphans[] = $tag;
+		}
+	}
 	
 	$tag_ids = array();
 	
