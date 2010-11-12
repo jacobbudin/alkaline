@@ -12,16 +12,19 @@ var slideshow_working = 0;
 var slideshow_play = 1;
 
 function slideshow_first(){
+	if(slideshow_working == 1){ return; }
 	slideshow_photo = slideshow_photos.first('li');
 	slideshow_update();
 }
 
 function slideshow_last(){
+	if(slideshow_working == 1){ return; }
 	slideshow_photo = slideshow_photos.last('li');
 	slideshow_update();
 }
 
 function slideshow_next(){
+	if(slideshow_working == 1){ return; }
 	slideshow_photo_next = slideshow_photo.next();
 	if(slideshow_photo_next.length == 0){
 		slideshow_first();
@@ -33,6 +36,7 @@ function slideshow_next(){
 }
 
 function slideshow_prev(){
+	if(slideshow_working == 1){ return; }
 	slideshow_photo_next = slideshow_photo.prev();
 	if(slideshow_photo_next.length == 0){
 		slideshow_last();
@@ -70,11 +74,9 @@ function reset(){
 }
 
 function slideshow_update(){
-	if(slideshow_working == 0){
-		slideshow_working = 1;
-		
-		slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); slideshow_photo_prev.hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_photo_next = slideshow_photo.next(); slideshow_photo_next.hide(0, function(){ uncomment(slideshow_photo_next); } ); slideshow_working = 0; });
-	}
+	slideshow_working = 1;
+	
+	slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); $('ul#slideshow li').hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_photo_next = slideshow_photo.next(); slideshow_photo_next.hide(0, function(){ uncomment(slideshow_photo_next); } ); slideshow_working = 0; });
 }
 
 function slideshow_play_now(){
@@ -85,8 +87,8 @@ function slideshow_play_now(){
 
 function slideshow_play_next(){
 	if(slideshow_play == 1){
-		slideshow_next();
 		slideshow_play_now();
+		slideshow_next();
 	}
 }
 
@@ -156,12 +158,35 @@ $(document).ready(function(){
 				slideshow_play = 0;
 				slideshow_next();
 			}
+			
+			if(event.keyCode == '80'){
+				slideshow_pause();
+			}
 		});
 	}
+	
+	$('#load_map').click(function() {
+		map = $('#map').html();
+		if(map == ''){
+			thisisit = $('#load_map').attr('title');
+			$('#map').hide();
+			$('#map').html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' + thisisit + '&amp;ie=UTF8&amp;&amp;output=embed"></iframe>');
+			$('#map iframe').css('border', '#fff 5px solid');
+			$('#map').slideDown();
+		}
+		else{
+			$('#map').slideToggle();
+		}
+		event.preventDefault();
+	});
 	
 	$(window).resize(function () { reset(); });
 });
 
 $(window).load(function(){
 	reset();
+});
+
+$(window).scroll(function() {
+    $('#header_home').css('top', "-" + $(this).scrollTop() + "px");
 });
