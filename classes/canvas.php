@@ -88,12 +88,11 @@ class Canvas extends Alkaline{
 		}
 		
 		$matches = array();
-		
 		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $this->template, $matches, PREG_SET_ORDER);
 		
+		$loops = array();
+		
 		if(count($matches) > 0){
-			$loops = array();
-			
 			foreach($matches as $match){
 				$match[1] = strtolower($match[1]);
 				
@@ -254,6 +253,10 @@ class Canvas extends Alkaline{
 		}
 		
 		return $template;
+	}
+	
+	public function urlencode(){
+		return urlencode($this->value);
 	}
 	
 	public function makeURL(){
