@@ -1212,8 +1212,9 @@ class Alkaline{
 	
 	// Trim long strings
 	public function fitString($string, $length=50){
+		$string = trim($string);
 		if(strlen($string) > $length){
-			$string = substr($string, 0, $length - 3) . '&#0133;';
+			$string = rtrim(substr($string, 0, $length - 3)) . '&#0133;';
 		}
 		return $string;
 	}
