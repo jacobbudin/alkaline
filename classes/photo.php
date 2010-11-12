@@ -1222,6 +1222,27 @@ class Photo extends Alkaline{
 		
 		return $this->pages;
 	}
+	
+	// Retrieve image comments
+	public function addSequence($label, $frequency, $start_first=false){
+		if($start_first === false){
+			$i = 1;
+		}
+		else{
+			$i = $frequency;
+		}
+		
+		// Store photo comment fields
+		foreach($this->photos as &$photo){
+			if($i == $frequency){
+				$photo['photo_sequence'] = $label;
+				$i = 1;
+			}
+			else{
+				$i++;
+			}
+		}
+	}
 		
 	// Retrieve image comments
 	public function getComments(){
