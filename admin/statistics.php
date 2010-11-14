@@ -208,7 +208,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			foreach($stats->referrers_popular as $referrer){
 				echo '<tr>';
 				echo '<td class="right">' . number_format($referrer['stat_referrer_count']) . '</td>';
-				echo '<td><a href="' . $referrer['stat_referrer_count'] . '">' . $alkaline->fitString($referrer['stat_referrer_display'], 30) . '</a></td>';
+				echo '<td><a href="' . $referrer['stat_referrer'] . '">' . $alkaline->fitString($referrer['stat_referrer_display'], 30) . '</a></td>';
 				echo '</tr>';
 			}
 			?>
