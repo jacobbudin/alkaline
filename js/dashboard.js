@@ -250,15 +250,15 @@ $(document).ready(function(){
 	
 	$("a.show").toggle(
 		function(){
+			$(this).parent().siblings(".reveal").slideDown();
 			$(this).siblings(".switch").html('&#9662;');
 			$(this).text(modified);
-			$(this).parent().siblings(".reveal").slideDown();
 			event.preventDefault();
 		},
 		function(){
+			$(this).parent().siblings(".reveal").slideUp();
 			$(this).siblings(".switch").html('&#9656;');
 			$(this).text(original);
-			$(this).parent().siblings(".reveal").slideUp();
 			event.preventDefault();
 		}
 	);

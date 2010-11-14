@@ -116,14 +116,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			if(count($exifs) > 0){
 				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';
-				echo '<table class="reveal">' . "\n";
+				echo '<div class="reveal"><table>' . "\n";
 				foreach($exifs as $exif){
 					$value = @unserialize(stripslashes($exif['exif_value']));
 					if(!is_array($value)){
 						echo '<tr><td class="right">' . $exif['exif_name'] . ':</td><td>' . $value . '</td></tr>' . "\n";
 					}
 				}
-				echo '</table>';
+				echo '</table></div>';
 			}
 			
 			?>
