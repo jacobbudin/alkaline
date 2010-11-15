@@ -10,9 +10,13 @@ $user->perm(true);
 
 $alkaline->setCallback();
 
+if(!empty($_GET['id'])){
+	$_GET['page'] = $_GET['id'];
+}
+
 $photo_ids = new Find();
 $photo_ids->clearMemory();
-$photo_ids->page(1,100);
+$photo_ids->page(null,2);
 $photo_ids->find();
 
 $photos = new Photo($photo_ids->photo_ids);
@@ -188,7 +192,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 		</form>
 		
-		<h1>Photos (<?php echo $photo_ids->photo_count_result; ?>)</h1>
+		<h1>Photos (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
 		<p>
 			<?php
 
@@ -199,9 +203,31 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</a>
 				<?php
 			}
-
 			?>
 		</p>
+		<?php
+		if($photo_ids->page_count > 1){
+			?>
+			<p>
+				<?php
+				if(!empty($photo_ids->page_previous)){
+					for($i = 1; $i <= $photo_ids->page_previous; ++$i){
+						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+					}
+				}
+				?>
+				<span class="page_no">Page <?php echo $photo_ids->page; ?> of <?php echo $photo_ids->page_count; ?></span>
+				<?php
+				if(!empty($photo_ids->page_next)){
+					for($i = $photo_ids->page_next; $i <= $photo_ids->page_count; ++$i){
+						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+					}
+				}
+				?>
+			</p>
+			<?php
+		}
+		?>
 	</div>
 </div>
 

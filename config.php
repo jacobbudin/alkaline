@@ -8,24 +8,24 @@
 $server_type = '';
 
 // Database data source name (DSN including protocol)
-$db_dsn = 'pgsql:host=localhost;dbname=alkaline2';
+$db_dsn = 'mysql:host=localhost;dbname=alkaline';
 
 // Database type (DSN protocol)
-$db_type = 'pgsql';
+$db_type = 'mysql';
 
 // Database user username (leave empty for SQLite)
-$db_user = 'postgres';
+$db_user = 'alkaline';
 
 // Database user password (leave empty for SQLite)
-$db_pass = 'postgres';
+$db_pass = '212021fbyu';
 
 // Database table prefix
-$table_prefix = 'alka_';
+$table_prefix = '';
 
 // Alkaline subdirectory prefix
 $folder_prefix = '';
 
-// URL rewriting (supports Apache mod_rewrite, Microsoft URL Rewrite 2, and compatible)
+// URL rewriting (supports Apache mod_rewrite, Microsoft IIS7 URL Rewrite 2, and compatible)
 $url_rewrite = false;
 
 
@@ -60,12 +60,14 @@ if($url_rewrite){
 	define('URL_ID', '/');
 	define('URL_ACT', '/');
 	define('URL_AID', '/');
+	define('URL_PAGE', '/');
 	define('URL_RW', '/');
 }
 else{
 	define('URL_CAP', '.php');
 	define('URL_ID', '.php?id=');
 	define('URL_ACT', '.php?act=');
+	define('URL_PAGE', '.php?page=');
 	define('URL_AID', '&id=');
 	define('URL_RW', '');
 }

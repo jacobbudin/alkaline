@@ -60,12 +60,14 @@ if($url_rewrite){
 	define('URL_ID', '/');
 	define('URL_ACT', '/');
 	define('URL_AID', '/');
+	define('URL_PAGE', '/');
 	define('URL_RW', '/');
 }
 else{
 	define('URL_CAP', '.php');
 	define('URL_ID', '.php?id=');
 	define('URL_ACT', '.php?act=');
+	define('URL_PAGE', '.php?page=');
 	define('URL_AID', '&id=');
 	define('URL_RW', '');
 }

@@ -1270,10 +1270,17 @@ class Alkaline{
 	public function location(){
 		$location = LOCATION;
 		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
+		
+		// Retain page data
+		preg_match('#page=[0-9]+#si', $_SERVER['REQUEST_URI'], $matches);
+		if(!empty($matches[0])){
+			$location .= '?' . $matches[0];
+		}
+		
 		return $location;
 	}
 	
-	public function setCallback(){
+	public function setCallback($page=null){
 		$_SESSION['alkaline']['callback'] = self::location();
 	}
 	
