@@ -165,6 +165,10 @@ table.census a{
 	text-decoration: none;
 }
 
+#user_panel a.user:active{
+	background: #5bb4e5 url(/images/button_bg_inv.png) top left repeat-x;
+}
+
 #user_panel img{
 	vertical-align: middle;
 }

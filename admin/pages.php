@@ -78,11 +78,11 @@ if(empty($page_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>">Add page</a></div>
 	
-	<h1>Pages (<?php echo $pages->count(); ?>)</h1>
+	<h1>Pages (<?php echo $pages->page_count; ?>)</h1>
 
 	<?php
 	
-	if($pages->count() > 0){
+	if($pages->page_count > 0){
 		?>
 		<table>
 			<tr>
