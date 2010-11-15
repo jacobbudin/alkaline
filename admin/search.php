@@ -36,6 +36,11 @@ if(!empty($_POST['tags'])){
 	$photo_ids->_tags($_POST['tags']);
 }
 
+// EXIF metadata
+if(!empty($_POST['exifs'])){
+	$photo_ids->_exifs($_POST['exifs']);
+}
+
 // Rights set
 if(!empty($_POST['rights'])){
 	$photo_ids->_rights(intval($_POST['rights']));

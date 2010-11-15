@@ -731,6 +731,21 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	// FIND BY EXIFS CONTENT
+	public function exifs($search){
+		if(empty($search)){ return false; }
+		
+		// Add EXIFs to find
+		$this->sql_tables[] = 'exifs';
+		$this->sql_conds[] = 'exifs.photo_id = photos.photo_id';
+		
+		// Search EXIFs
+		$this->sql_conds[] = '(LOWER(exifs.exif_value) LIKE :exif_value)';
+		$this->sql_params[':exif_value'] = '%' . strtolower($search) . '%';
+		
+		return true;
+	}
+	
 	// FIND BY GUEST SIMULATION
 	public function guest($id=null){
 		if(empty($id)){ return false; }

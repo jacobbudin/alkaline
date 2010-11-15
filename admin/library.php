@@ -65,6 +65,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						</td>
 					</tr>
 					<tr>
+						<td class="right pad"><label for="tags">EXIF metadata:</label></td>
+						<td>
+							<input type="text" id="exifs" name="exifs" style="width: 30em;" /><br />
+						</td>
+					</tr>
+					<tr>
 						<td class="right middle"><label for="rights">Rights set:</label></td>
 						<td class="quiet">
 							<?php echo $alkaline->showRights('rights'); ?>
