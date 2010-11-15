@@ -28,7 +28,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <h1>Preferences</h1>
 
 <form id="preferences" action="" method="post">
-	<h3>Shoebox</h3>
+	<h3>Dashboard</h3>
 	
 	<table>
 		<tr>

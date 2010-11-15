@@ -25,6 +25,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
 	$alkaline->setConf('thumb_watermark_margin', intval(@$_POST['thumb_watermark_margin']));
 	$alkaline->setConf('photo_original', @$_POST['photo_original']);
+	$alkaline->setConf('tag_alpha', @$_POST['tag_alpha']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
@@ -213,6 +214,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="100" <?php echo $user->readConf('thumb_watermark_margin', '100'); ?>>100</option>
 				</select>
 				pixel margin
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Tags</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="tag_alpha" name="tag_alpha" <?php echo $alkaline->readConf('tag_alpha'); ?> value="true" /></td>
+			<td class="description">
+				<label for="tag_alpha">Sort tags in alphabetical order</label>
 			</td>
 		</tr>
 	</table>
