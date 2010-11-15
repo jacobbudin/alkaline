@@ -1219,7 +1219,10 @@ class Photo extends Alkaline{
 		$pages = $this->getTable('pages');
 		
 		foreach($pages as &$page){
-			$page_photos = explode(', ', $page['page_photos']);
+			$page_photos = $page['page_photos'];
+			if(empty($page_photos)){ continue; }
+			
+			$page_photos = explode(', ', $page_photos);
 			foreach($this->photo_ids as $photo_id){
 				if(in_array($photo_id, $page_photos)){
 					$page['photo_id'] = $photo_id;
