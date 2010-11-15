@@ -30,11 +30,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<table>
 			<tr>
 				<td class="right">Product:</td>
-				<td>Alkaline Multiuser</td>
+				<td><?php echo Alkaline::product ?></td>
 			</tr>
 			<tr>
-				<td class="right">License:</td>
-				<td>Jacob Budin, Budin Ltd.</td>
+				<td class="right">Licensee:</td>
+				<td><?php echo Alkaline::licensee; ?></td>
 			</tr>
 			<tr>
 				<td class="right">Version:</td>
