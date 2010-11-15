@@ -675,15 +675,30 @@ class Find extends Alkaline{
 		
 		if(!empty($min)){
 			$min = floatval($min);
-			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) < ' . $min;
+			if($this->db_type == 'pgsql'){
+				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) < ' . $min;
+			}
+			else{
+				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) < ' . $min;
+			}
 		}
 		if(!empty($max)){
 			$max = floatval($max);
-			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) >' . $max;
+			if($this->db_type == 'pgsql'){
+				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) >' . $max;
+			}
+			else{
+				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) > ' . $max;
+			}
 		}
 		if(!empty($equal)){
 			$equal = floatval($equal);
-			$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) = ' . $equal;
+			if($this->db_type == 'pgsql'){
+				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) = ' . $equal;
+			}
+			else{
+				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) = ' . $equal;
+			}
 		}
 		
 		return true;
