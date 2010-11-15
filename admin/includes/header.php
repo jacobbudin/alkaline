@@ -28,22 +28,15 @@
 		<div class="container">
 			<div id="header" class="span-24 last">
 				<div class="span-10 append-1">
-					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/shutter.png" alt="Alkaline" /></a>
 				</div>
 				<div id="user_panel" class="span-13 last">
 					<?php
 					if(!empty($user) and $user->perm()){
 						?>
-						<img src="/images/icons/user.png" alt="" /> &#0160; <a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>" class="user"><?php echo $user->user['user_name']; ?></a>
-						<?php
-						
-						$web_title = $alkaline->returnConf('web_title');
-						if(!empty($web_title)){
-							echo 'for <a href="' . BASE . '" target="_new">' . $web_title . '</a>';
-						}
-						
-						?>
-						<a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>" class="logout">Log out</a>
+						<a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>">Preferences</a> &#0183;
+						<a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>">Logout</a>
+						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>" class="user"><img src="/images/user.png" alt="" /> <?php echo $user->user['user_email']; ?></a>
 						<?php
 					}
 					?>

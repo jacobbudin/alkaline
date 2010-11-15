@@ -2,8 +2,8 @@
 	width: 950px;
 }
 
-.colborderl {padding-left:24px;margin-left:25px;border-left: 1px solid #eee;}
-.colborderr {padding-right:0;margin-right:0;}
+.colborderl { padding-left:24px; margin-left:25px; border-left: 1px solid #eee; }
+.colborderr { padding-right:0; margin-right:0; }
 
 body{
 	font-size: .75em;
@@ -30,13 +30,14 @@ ul{
 	list-style-type: square;
 }
 
-input[type=checkbox], input[type=radio], input.checkbox, input.radio {position:relative;top:0em;}
-input[type=text], input.text {padding:.35em; width: 60%;}
-input.xs{padding:.35em;width: 10%;}
-input.s{padding:.35em;width: 30%;}
-input.m{padding:.35em;width: 45%;}
-input.l{padding:.35em;width: 75%;}
-input.xl{padding:.35em;width: 100%;}
+input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }
+input[type=text], input.text { padding:.35em; width: 60%; }
+
+input.xs{ width: 10%; }
+input.s{ width: 30%; }
+input.m{ width: 45%; }
+input.l{ width: 75%; }
+input.xl{ width: 100%; }
 
 input.title{
 	font-size: 1.2em;
@@ -62,9 +63,7 @@ h1, h2, h3, h4, h5, h6{
 	line-height: 1.5em;
 }
 
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a{
-	text-decoration: none;
-}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a{ text-decoration: none; }
 
 h1{
 	font-size: 1.7em;
@@ -144,37 +143,36 @@ table.census a{
 #user_panel{
 	position: relative;
 	bottom: -2em;
-	color: #5bb4e5;
+	color: #fff;
 	text-align: right;
 }
 
 #user_panel a{
-	color: #5bb4e5;
-	font-weight: bold;
+	color: #fff;
+	font-size: .9em;
 }
 
 #user_panel a.user{
-	margin-right: 0.1em;
-	color: #5bb4e5;
-	border: dotted #0096db;
-	border-width: 0 0 1px 0;
-	text-decoration: none;
-}
-
-#user_panel a.logout{
 	margin-left: 1em;
-	padding: .4em .5em;
-	background-color: #5eb0e5;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
+	padding: .5em .6em;
+	background: #0297db url(/images/button_bg.png) top left repeat-x;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-moz-box-shadow: 0 0 5px #000;
+	-webkit-box-shadow: 0 0 5px #000;
 	color: #021e2f;
-	font-size: .9em;
+	font-weight: bold;
 	text-decoration: none;
-	text-transform: uppercase;
 }
 
 #user_panel img{
 	vertical-align: middle;
+}
+
+#user_panel a img{
+	position: relative;
+	top: -2px;
+	padding: 0 3px;
 }
 
 #footer{
