@@ -16,7 +16,7 @@ if(!empty($_GET['id'])){
 
 $photo_ids = new Find();
 $photo_ids->clearMemory();
-$photo_ids->page(null,2);
+$photo_ids->page(null, 100);
 $photo_ids->find();
 
 $photos = new Photo($photo_ids->photo_ids);
@@ -179,7 +179,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								<option value="updated">Date last updated</option>
 								<option value="published">Date published</option>
 								<option value="uploaded" selected="selected">Date uploaded</option>
-								<option value="title">Photo title</option>
+								<option value="title">Title</option>
 								<option value="views">Views</option>
 							</select>
 							<select name="sort_direction">
