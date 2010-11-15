@@ -14,15 +14,6 @@ $theme_id = @$alkaline->findID($_GET['id']);
 if(!empty($_POST['theme_id'])){
 	$theme_id = $alkaline->findID($_POST['theme_id']);
 	
-	if(@$_POST['theme_default'] == 'default'){
-		$alkaline->setConf('theme_id', @$_POST['theme_id']);
-		$alkaline->setConf('theme_folder', @$_POST['theme_folder']);
-		$alkaline->saveConf();
-		
-		$fields = array('theme_default' => '1');
-		$alkaline->updateRow($fields, 'themes', $theme_id);
-	}
-	
 	if(@$_POST['theme_remove'] == 'remove'){
 		$alkaline->deleteRow('themes', $theme_id);
 	}
@@ -33,7 +24,7 @@ if(!empty($_POST['theme_id'])){
 define('TAB', 'settings');
 
 if(empty($theme_id)){
-	$themes = $alkaline->getTable('themes', null, null, null, '');
+	$themes = $alkaline->getTable('themes');
 	$theme_count = @count($themes);
 	
 	define('TITLE', 'Alkaline Themes');
@@ -80,10 +71,8 @@ if(empty($theme_id)){
 	
 }
 else{
-	
 	// Get pile
-	$themes = $alkaline->getTable('themes', $theme_id);
-	$theme = $themes[0];
+	$theme = $alkaline->getRow('themes', $theme_id);
 	$theme = $alkaline->makeHTMLSafe($theme);
 
 	if(!empty($theme['theme_title'])){	
@@ -103,10 +92,6 @@ else{
 	
 	<form id="theme" action="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>" method="post">
 		<table>
-			<tr>
-				<td class="right"><input type="checkbox" id="theme_default" name="theme_default" value="default" <?php if($theme['theme_default'] == 1){ echo 'checked="checked" disabled="disabled"'; } ?> /></td>
-				<td><strong><label for="theme_default">Make this theme the default.</label></strong></td>
-			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="theme_remove" name="theme_remove" value="remove" <?php if($theme['theme_default'] == 1){ echo 'disabled="disabled"'; } ?> /></td>
 				<td><strong><label for="theme_remove">Remove this theme.</label></strong></td>

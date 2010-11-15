@@ -818,6 +818,32 @@ class Alkaline{
 		return $html;
 	}
 	
+	// SHOW THEMES
+	public function showThemes($name, $theme_id=null){
+		if(empty($name)){
+			return false;
+		}
+		
+		$query = $this->prepare('SELECT theme_id, theme_title FROM themes;');
+		$query->execute();
+		$themes = $query->fetchAll();
+		
+		$html = '<select name="' . $name . '" id="' . $name . '">';
+		
+		foreach($themes as $theme){
+			$html .= '<option value="' . $theme['theme_id'] . '"';
+			if($theme['theme_id'] == $theme_id){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $theme['theme_title'] . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
+	
 	// TABLE AND ROW FUNCTIONS
 	public function getTable($table, $ids=null, $limit=null, $page=1, $order_by=null){
 		if(empty($table)){

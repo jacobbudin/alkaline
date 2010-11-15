@@ -28,7 +28,7 @@
 		<div class="container">
 			<div id="header" class="span-24 last">
 				<div class="span-10 append-1">
-					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/shutter.png" alt="Alkaline" /></a>
+					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/alkaline.png" alt="Alkaline" /></a>
 				</div>
 				<div id="user_panel" class="span-13 last">
 					<?php

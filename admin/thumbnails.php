@@ -165,7 +165,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_build" name="size_build" value="build" <?php if(empty($size['size_title'])){ echo 'checked="checked"'; } ?> /></td>
-				<td><strong><label for="size_build">Build this thumbnail size.</label></strong> This action cannot be undone.</td>
+				<td><strong><label for="size_build">Build thumbnails of this size.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" /></td>

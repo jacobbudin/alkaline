@@ -9,6 +9,15 @@ $user = new User;
 $user->perm(true);
 
 if(!empty($_POST['configuration_save'])){
+	$theme_id = intval($_POST['theme_id']);
+	if($_POST['theme_id'] != $alkaline->returnConf('theme_id')){
+		$theme = $alkaline->getRow('themes', $theme_id);
+		$theme_folder = $theme['theme_folder'];
+		
+		$alkaline->setConf('theme_id', $theme_id);
+		$alkaline->setConf('theme_folder', $theme_folder);
+	}
+	
 	$alkaline->setConf('web_name', @$_POST['web_name']);
 	$alkaline->setConf('web_title', @$_POST['web_title']);
 	$alkaline->setConf('web_description', @$_POST['web_description']);
@@ -29,6 +38,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
+	$alkaline->setConf('rights_default', @$_POST['rights_default']);
+	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
@@ -54,16 +65,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <form action="" id="configuration" method="post">
 	<h1>Configuration</h1>
 	
-	<h3>Web Site</h3>
+	<h3>General</h3>
 	
-	<table style="width: 50%">
+	<table style="width: 70%">
 		<tr>
 			<td class="right middle"><label for="web_title">Name:</label></td>
-			<td><input type="text" id="web_name" name="web_name" value="<?php echo $alkaline->returnConf('web_name'); ?>" style="width: 100%;" /></td>
+			<td><input type="text" id="web_name" name="web_name" value="<?php echo $alkaline->returnConf('web_name'); ?>" class="m" /></td>
 		</tr>
 		<tr>
 			<td class="right middle"><label for="web_title">Title:</label></td>
-			<td><input type="text" id="web_title" name="web_title" value="<?php echo $alkaline->returnConf('web_title'); ?>" style="width: 100%;" /></td>
+			<td><input type="text" id="web_title" name="web_title" value="<?php echo $alkaline->returnConf('web_title'); ?>" class="m" /></td>
 		</tr>
 		<tr>
 			<td class="right pad"><label for="web_description">Description:</label></td>
@@ -72,8 +83,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="right pad"><label for="web_email">Email:</label></td>
 			<td>
-				<input type="text" id="web_email" name="web_email" value="<?php echo $alkaline->returnConf('web_email'); ?>" style="width: 100%;" /><br />
+				<input type="text" id="web_email" name="web_email" value="<?php echo $alkaline->returnConf('web_email'); ?>" class="m" /><br />
 				Notifications will be sent from this email address
+			</td>
+		</tr>
+		<tr>
+			<td class="right pad"><label for="theme_id">Theme:</label></td>
+			<td>
+				<?php echo $alkaline->showThemes('theme_id', $alkaline->returnConf('theme_id')); ?>
 			</td>
 		</tr>
 		<tr>
@@ -123,8 +140,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 				echo '</select>';
 
-				?><br />
-				The time and date will change (and reflect DST if need be) based on the city you select
+				?>
 			</td>
 		</tr>
 	</table>
@@ -191,7 +207,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="thumb_watermark" name="thumb_watermark" <?php echo $alkaline->readConf('thumb_watermark'); ?> value="true" /></td>
 			<td class="description">
-				<label for="thumb_watermark">Apply watermark</label><br />
+				<label for="thumb_watermark">Apply watermark</label> (on selected thumbnails)<br />
 				Apply the <a href="<?php echo BASE; ?>watermark.png">alpha-transparent PNG image</a> to the
 				<select name="thumb_watermark_pos">
 					<option value="nw" <?php echo $user->readConf('thumb_watermark_pos', 'nw'); ?>>NW corner</option>
@@ -224,7 +240,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="tag_alpha" name="tag_alpha" <?php echo $alkaline->readConf('tag_alpha'); ?> value="true" /></td>
 			<td class="description">
-				<label for="tag_alpha">Sort tags in alphabetical order</label>
+				<label for="tag_alpha">Sort tags in alphabetical order</label> (instead of by order added)
 			</td>
 		</tr>
 	</table>
@@ -249,6 +265,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="description">
 				<label for="comm_mod">Moderate visitor comments</label><br />
 				Require administrator approval before visitor comments appear
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Rights</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
+			<td class="description">
+				<label for="rights_default">Attach rights set to new photos</label><br />
+				Use the <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> rights set
 			</td>
 		</tr>
 	</table>
