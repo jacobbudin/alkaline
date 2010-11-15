@@ -169,6 +169,7 @@ class Photo extends Alkaline{
 				$size_type = $size['size_type'];
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
+				$size_watermark = $size['size_watermark'];
 				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext']);
 				switch($size_type){
 					case 'fill':
@@ -181,7 +182,7 @@ class Photo extends Alkaline{
 						return false; break;
 				}
 				
-				if($this->returnConf('thumb_watermark')){
+				if($this->returnConf('thumb_watermark') and ($size_watermark == 1)){
 					$watermark = parent::correctWinPath(PATH . 'watermark.png');
 					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $photos[$i]['photo_ext']);
 				}

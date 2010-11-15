@@ -22,13 +22,22 @@ if(!empty($_POST['size_id'])){
 	
 	// Update size
 	else{
+		
+		if(@$_POST['size_watermark'] == 'watermark'){
+			$size_watermark = 1;
+		}
+		else{
+			$size_watermark = 0;
+		}
+		
 		$fields = array('size_title' => $alkaline->makeUnicode($_POST['size_title']),
 			'size_label' => preg_replace('#[^a-z]#si', '', $alkaline->makeUnicode($_POST['size_label'])),
 			'size_height' => $_POST['size_height'],
 			'size_width' => $_POST['size_width'],
 			'size_type' => $_POST['size_type'],
 			'size_append' => @$_POST['size_append'],
-			'size_prepend' => @$_POST['size_prepend']);
+			'size_prepend' => @$_POST['size_prepend'],
+			'size_watermark' => $size_watermark);
 		
 		$alkaline->updateRow($fields, 'sizes', $size_id);
 	}
@@ -149,6 +158,10 @@ else{
 				<td>
 					<input type="text" id="size_prepend" name="size_prepend" value="<?php echo @$size['size_prepend']; ?>" style="width: 5em;" />
 				</td>
+			</tr>
+			<tr>
+				<td class="right"><input type="checkbox" id="size_watermark" name="size_watermark" value="watermark" <?php if($size['size_watermark'] == 1){ echo 'checked="checked"'; } ?> /></td>
+				<td><strong><label for="size_watermark">Apply watermark to this thumbnail size.</label></strong></td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_build" name="size_build" value="build" <?php if(empty($size['size_title'])){ echo 'checked="checked"'; } ?> /></td>
