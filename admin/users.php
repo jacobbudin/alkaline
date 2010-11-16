@@ -54,6 +54,8 @@ if(empty($user_db_id)){
 
 	<h1>Users (<?php echo $user_db_count; ?>)</h1>
 	
+	<p>Users can add photos and modify the library.</p>
+	
 	<table>
 		<tr>
 			<th>Username</th>

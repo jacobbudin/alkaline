@@ -62,6 +62,8 @@ if(empty($guest_id)){
 
 	<h1>Guests (<?php echo $guest_count; ?>)</h1>
 	
+	<p>Guests use an access key to view some or all protected photos in your library.</p>
+	
 	<table>
 		<tr>
 			<th>Title</th>
@@ -107,8 +109,6 @@ else{
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">View photos</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
 	
 	<h1>Guest</h1>
-	
-	<p>Guests use an access key to view some or all protected photos in your library.</p>
 	
 	<form id="guest" action="<?php echo BASE . ADMIN . 'guests' . URL_CAP; ?>" method="post">
 		<table>
