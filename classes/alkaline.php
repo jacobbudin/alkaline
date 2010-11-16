@@ -30,6 +30,9 @@ class Alkaline{
 		@header('Cache-Control: no-cache, must-revalidate');
 		@header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 		
+		// Determine class
+		$class = get_class($this);
+		
 		// Begin a session, if one does not yet exist
 		if(session_id() == ''){ session_start(); }
 		
@@ -60,9 +63,9 @@ class Alkaline{
 		} 
 		
 		// Initiate database connection, if necessary
-		$nodb_classes = array('Canvas');
+		$no_db_classes = array('Canvas');
 		
-		if(!in_array(get_class($this), $nodb_classes)){
+		if(!in_array($class, $no_db_classes)){
 			if(defined('DB_TYPE') and defined('DB_DSN')){
 				// Determine database type
 				$this->db_type = DB_TYPE;
@@ -86,6 +89,11 @@ class Alkaline{
 					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
 				}
 			}
+		}
+		
+		// Delete saved Orbit extension session references
+		if($class == 'Alkaline'){
+			unset($_SESSION['alkaline']['extensions']);
 		}
 	}
 	

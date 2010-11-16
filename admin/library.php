@@ -26,6 +26,9 @@ $shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
 if($shoebox_count > 0){
 	$shoebox_count = '(' . $shoebox_count . ') ';
 }
+else{
+	$shoebox_count = '';
+}
 
 define('TAB', 'library');
 define('TITLE', 'Alkaline Library');

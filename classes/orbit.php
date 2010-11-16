@@ -25,58 +25,91 @@ class Orbit extends Alkaline{
 		
 		// Start Orbit Engine
 		if(!is_subclass_of($this, 'Orbit')){
-			if(empty($id)){
-				$query = $this->prepare('SELECT * FROM extensions WHERE extension_status > 0 ORDER BY extension_title ASC;');
-			}
-			else{
-				$id = intval($id);
-				$query = $this->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
-			}
-			$query->execute();
-			$extensions = $query->fetchAll();
+			if(empty($_SESSION['alkaline']['extensions'])){
+				if(empty($id)){
+					$query = $this->prepare('SELECT * FROM extensions WHERE extension_status > 0 ORDER BY extension_title ASC;');
+				}
+				else{
+					$id = intval($id);
+					$query = $this->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
+				}
+				$query->execute();
+				$extensions = $query->fetchAll();
 
-			$this->extensions = array();
+				$this->extensions = array();
 
-			foreach($extensions as &$extension){
-				$extension['extension_uid'] = strval($extension['extension_uid']);
-				$extension['extension_file'] = parent::correctWinPath(PATH . EXTENSIONS . $extension['extension_file'] . '.php');
-				$extension['extension_hooks'] = unserialize(stripslashes($extension['extension_hooks']));
+				foreach($extensions as &$extension){
+					$extension['extension_uid'] = strval($extension['extension_uid']);
+					$extension['extension_file'] = parent::correctWinPath(PATH . EXTENSIONS . $extension['extension_file'] . '.php');
+					$extension['extension_hooks'] = unserialize($extension['extension_hooks']);
+				}
+			
+				$_SESSION['alkaline']['extensions'] = $extensions;
 			}
 			
-			$this->extensions = $extensions;
+			$this->extensions = $_SESSION['alkaline']['extensions'];
 			$this->extension_count = count($this->extensions);
 		}
 		// Prepare Orbit-powered extension
 		else{
-			if(empty($id)){
-				$query = $this->prepare('SELECT * FROM extensions WHERE extension_class = :extension_class AND extension_status > 0;');
-				$query->execute(array(':extension_class' => get_class($this)));
+			if(empty($_SESSION['alkaline']['extensions'])){
+				if(empty($id)){
+					$query = $this->prepare('SELECT * FROM extensions WHERE extension_class = :extension_class AND extension_status > 0;');
+					$query->execute(array(':extension_class' => get_class($this)));
+				}
+				else{
+					$id = intval($id);
+					$query = $this->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
+					$query->execute();
+				}
+				$extensions = $query->fetchAll();
+			
+				if(count($extensions) != 1){
+					return false;
+				}
+				
+				$extension = $extensions[0];
 			}
 			else{
-				$id = intval($id);
-				$query = $this->prepare('SELECT * FROM extensions WHERE extension_id = ' . $id . ' AND extension_status > 0;');
-				$query->execute();
+				$class = get_class($this);
+				$extensions = $_SESSION['alkaline']['extensions'];
+				foreach($extensions as $extension){
+					if(!empty($id)){
+						if($extension['extension_id'] == $id){
+							$extension_key = key($extensions);
+							break;
+						}
+					}
+					elseif($extension['extension_class'] == $class){
+						$extension_key = key($extensions);
+						break;
+					}
+				}
+				$extension = $extensions[$extension_key];
 			}
-			$extensions = $query->fetchAll();
 			
-			if(count($extensions) != 1){
-				return false;
-			}
-			
-			foreach($extensions[0] as $key => $value){
+			foreach($extension as $key => $value){
 				$key = preg_replace('#^extension\_#si', '', $key, 1);
 				$this->$key = $value;
 			}
 			
 			$this->uid = strval($this->uid);
 			$this->file = parent::correctWinPath(PATH . EXTENSIONS . strtolower($this->file) . '.php');
-			$this->hooks = unserialize(stripslashes($this->hooks));
-			$this->preferences = unserialize(stripslashes($this->preferences));
+			if(!is_array($this->hooks)){
+				$this->hooks = unserialize($this->hooks);
+			}
+			$this->preferences = unserialize($this->preferences);
 		}
 		return true;
 	}
 	
 	public function __destruct(){
+		// Close database connection
+		$this->db_safe = null;
+		
+		// Save extension data
+		$_SESSION['alkaline']['extensions'] = $this->extensions;
+		
 		parent::__destruct();
 	}
 	

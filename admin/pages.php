@@ -51,6 +51,7 @@ if(!empty($_POST['page_id'])){
 			'page_photos' => $page_photos,
 			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_words' => $page_words);
+		
 		$alkaline->updateRow($fields, 'pages', $page_id);
 	}
 	unset($page_id);
