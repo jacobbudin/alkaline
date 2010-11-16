@@ -36,7 +36,8 @@
 						?>
 						<a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>">Preferences</a> &#0183;
 						<a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>">Logout</a>
-						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>" class="user"><img src="/images/user.png" alt="" /> <?php echo $user->user['user_email']; ?></a>
+						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>" class="user"><img src="/images/icons/user.png" alt="" /> <?php echo $user->user['user_user']; ?></a>
+						<!-- <a href="<?php echo BASE; ?>" class="go"><img src="/images/go.png" alt="" /></a> -->
 						<?php
 					}
 					?>

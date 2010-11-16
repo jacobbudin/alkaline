@@ -81,7 +81,13 @@ class Photo extends Alkaline{
 			$photo_mime = $this->getMIME($file);
 			$photo_size = $this->getSize($file);
 			
+			// Configuration: default rights set
+			if($alkaline->returnConf('rights_default')){
+				$right_id = $alkaline->returnConf('rights_default_id');
+			}
+			
 			$fields = array('user_id' => @$this->user['user_id'],
+				'right_id' => @$right_id,
 				'photo_ext' => $photo_ext,
 				'photo_mime' => $photo_mime,
 				'photo_name' => $filename,

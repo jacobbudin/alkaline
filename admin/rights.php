@@ -15,6 +15,21 @@ $right_act = @$_GET['act'];
 if(!empty($_POST['right_id'])){
 	$right_id = $alkaline->findID($_POST['right_id']);
 	
+	// Merge rights set
+	if(@$_POST['right_merge'] == 'merge'){
+		$right_merge_id = $_POST['right_merge_id'];
+		
+		if(!empty($right_merge_id)){
+			$right_merge_id = intval($right_merge_id);
+		}
+		else{
+			$right_merge_id = '';
+		}
+		
+		$query = $alkaline->prepare('UPDATE photos SET right_id = :right_merge_id WHERE right_id = :right_id;');
+		$query->execute(array(':right_merge_id' => $right_merge_id, ':right_id' => $right_id));
+	}
+	
 	// Delete rights set
 	if(@$_POST['right_delete'] == 'delete'){
 		$alkaline->deleteRow('rights', $right_id);
@@ -25,13 +40,6 @@ if(!empty($_POST['right_id'])){
 		$fields = array('right_title' => $alkaline->makeUnicode($_POST['right_title']),
 			'right_description' => $alkaline->makeUnicode($_POST['right_description']));
 		
-		// Check default rights set
-		if(@$_POST['right_default'] == 'default'){
-			$fields['right_default'] = 1;
-		}
-		else{
-			$fields['right_default'] = 0;
-		}
 		$alkaline->updateRow($fields, 'rights', $right_id);
 	}
 	
@@ -50,6 +58,7 @@ define('TAB', 'features');
 
 // GET RIGHTS SETS TO VIEW OR RIGHTS SET TO EDIT
 if(empty($right_id)){
+	$alkaline->updateCounts('photos', 'rights', 'right_photo_count');
 	$rights = $alkaline->getTable('rights');
 	$right_count = @count($rights);
 	
@@ -123,8 +132,8 @@ else{
 				<td><textarea id="right_description" name="right_description"><?php echo $right['right_description']; ?></textarea></td>
 			</tr>
 			<tr>
-				<td class="right"><input type="checkbox" id="right_default" name="right_default" value="default" <?php echo ($right['right_default'] == 1) ? 'checked="checked"' : ''; ?> /></td>
-				<td><strong><label for="right_default">Make default rights set.</label></strong> New photos will be given these rights.</td>
+				<td class="right pad"><input type="checkbox" id="right_merge" name="right_merge" value="merge" /></td>
+				<td><strong><label for="right_merge">Transfer photos to <?php echo $alkaline->showRights('right_merge_id'); ?> rights set.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="right_delete" name="right_delete" value="delete" /></td>
