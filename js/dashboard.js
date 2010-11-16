@@ -423,7 +423,7 @@ $(document).ready(function(){
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
-			yaxis: { tickDecimals: 0 },
+			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 	
