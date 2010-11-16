@@ -721,6 +721,7 @@ class Alkaline{
 		$result_id = intval($result_id);
 		
 		$count_table = $this->sanitize($count_table);
+		$result_table = $this->sanitize($result_table);
 		
 		$count_id_field = $this->tables[$count_table];
 		$result_id_field = $this->tables[$result_table];
@@ -736,10 +737,43 @@ class Alkaline{
 		$count = $counts[0]['count'];
 		
 		// Update row
-		$query = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = ' . $result_id . ';');
+		$query = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = :result_id;');
 		
-		if(!$query->execute(array(':count' => $count))){
+		if(!$query->execute(array(':count' => $count, ':result_id' => $result_id))){
 			return false;
+		}
+		
+		return true;
+	}
+	
+	public function updateCounts($count_table, $result_table, $result_field){
+		$count_table = $this->sanitize($count_table);
+		$result_table = $this->sanitize($result_table);
+		
+		$count_id_field = $this->tables[$count_table];
+		$result_id_field = $this->tables[$result_table];
+		
+		$results = $this->getTable($result_table);
+		
+		// Get count
+		$select = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
+		
+		// Update row
+		$update = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = :result_id;');
+		
+		
+		foreach($results as $result){
+			$result_id = $result[$result_id_field];
+			if(!$select->execute(array(':result_id' => $result_id))){
+				return false;
+			}
+		
+			$counts = $select->fetchAll();
+			$count = $counts[0]['count'];
+		
+			if(!$update->execute(array(':count' => $count, ':result_id' => $result_id))){
+				return false;
+			}
 		}
 		
 		return true;
