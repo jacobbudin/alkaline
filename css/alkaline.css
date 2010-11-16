@@ -165,8 +165,25 @@ table.census a{
 	text-decoration: none;
 }
 
-#user_panel a.go:active{
-	background: #5bb4e5 url(/images/button_pink_bg_inv.png) top left repeat-x;
+#user_panel a.user:active{
+	background: #5bb4e5 url(/images/button_bg_inv.png) top left repeat-x;
+}
+
+#user_panel a.home{
+	margin-left: .5em;
+	padding: .5em .6em;
+	background: #9e9e9f url(/images/button_grey_bg.png) top left repeat-x;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-moz-box-shadow: 0 0 5px #000;
+	-webkit-box-shadow: 0 0 5px #000;
+	color: #021e2f;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#user_panel a.home:active{
+	background: #bfbfbf url(/images/button_grey_bg_inv.png) top left repeat-x;
 }
 
 #user_panel img{

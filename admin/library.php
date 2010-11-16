@@ -22,6 +22,11 @@ $photo_ids->find();
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
 
+$shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
+if($shoebox_count > 0){
+	$shoebox_count = '(' . $shoebox_count . ') ';
+}
+
 define('TAB', 'library');
 define('TITLE', 'Alkaline Library');
 require_once(PATH . ADMIN . 'includes/header.php');
@@ -31,7 +36,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div class="span-24 last">
 	<div class="span-5 colborderr">
 		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="/images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
 		<hr />
 
 		<h3>Find</h3>
