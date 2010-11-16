@@ -12,7 +12,7 @@ class User extends Alkaline{
 		}
 		// Login user by ID, key
 		elseif(!empty($_COOKIE['id']) and !empty($_COOKIE['key'])){
-			$user_id = strip_tags($_COOKIE['id']);
+			$user_id = strip_tags($_COOKIE['uid']);
 			$user_key = strip_tags($_COOKIE['key']);
 			self::authByCookie($user_id, $user_key);
 		}
@@ -78,9 +78,9 @@ class User extends Alkaline{
 		
 		// Store "remember me" data
 		if($remember == true){
-			$key = $this->user['user_id'] . $this->user['user_user'] . $this->user['user_pass'] . time();
+			$key = $this->user['user_id'] . $this->user['user_user'] . $this->user['user_pass'] . DB_DSN . time();
 			$key = sha1($key);
-			setcookie('id', $this->user['user_id'], time()+USER_REMEMBER, '/');
+			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, '/');
 			setcookie('key', $key, time()+USER_REMEMBER, '/');
 		}
 		
@@ -102,7 +102,7 @@ class User extends Alkaline{
 	public function deauth(){
 		unset($this->user);
 		session_destroy();
-		setcookie('id', '', time()-3600, '/');
+		setcookie('uid', '', time()-3600, '/');
 		setcookie('key', '', time()-3600, '/');
 		session_start();
 		
