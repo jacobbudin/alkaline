@@ -5,6 +5,30 @@ var progress_step;
 
 // SHOEBOX
 
+function shortNum(num){
+	app = '';
+	if(num >= 1000){
+		num /= 1000;
+		app = 'k';
+		if(num >= 1000){
+			num /= 1000;
+			app = 'm';
+			if(num >= 1000){
+				num /= 1000;
+				app = 'b';
+			}
+		}
+	}
+	num = num.toString();
+	num = num.slice(0, 4);
+	if(num.charAt(3) == '.'){
+		num = num.slice(0, 3);
+	}
+	num += app;
+	
+	return num;
+}
+
 function static_html(div_id, photo_id){
 	var block = $('#' + div_id).html();
 	photo_id = photo_id.toString();
@@ -406,7 +430,7 @@ $(document).ready(function(){
 		$.each(stats.getData()[0].data, function(i, el){
 			var o = stats.pointOffset({x: el[0], y: el[1]});
 			if(el[1] > 0){
-			  $('<div class="point">' + el[1] + '</div>').css( {
+			  $('<div class="point">' + shortNum(el[1]) + '</div>').css( {
 			    position: 'absolute',
 			    left: o.left - 12,
 			    top: o.top - 20,
@@ -470,7 +494,7 @@ $(document).ready(function(){
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, timeformat: "%h %p" },
-			yaxis: { tickDecimals: 0 },
+			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
@@ -501,7 +525,7 @@ $(document).ready(function(){
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, minTickSize: [3, "day"] },
-			yaxis: { tickDecimals: 0 },
+			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
@@ -530,14 +554,14 @@ $(document).ready(function(){
 			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
-			yaxis: { tickDecimals: 0 },
+			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
 			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
 		$.each(h_stats.getData()[0].data, function(i, el){
 			var o = h_stats.pointOffset({x: el[0], y: el[1]});
 			if(el[1] > 0){
-			  $('<div class="point">' + el[1] + '</div>').css( {
+			  $('<div class="point">' + shortNum(el[1]) + '</div>').css( {
 			    position: 'absolute',
 			    left: o.left - 12,
 			    top: o.top - 20,
@@ -548,7 +572,7 @@ $(document).ready(function(){
 		$.each(d_stats.getData()[0].data, function(i, el){
 			var o = d_stats.pointOffset({x: el[0], y: el[1]});
 			if(el[1] > 0){
-			  $('<div class="point">' + el[1] + '</div>').css( {
+			  $('<div class="point">' + shortNum(el[1]) + '</div>').css( {
 			    position: 'absolute',
 			    left: o.left - 12,
 			    top: o.top - 20,
@@ -559,7 +583,7 @@ $(document).ready(function(){
 		$.each(m_stats.getData()[0].data, function(i, el){
 			var o = m_stats.pointOffset({x: el[0], y: el[1]});
 			if(el[1] > 0){
-			  $('<div class="point">' + el[1] + '</div>').css( {
+			  $('<div class="point">' + shortNum(el[1]) + '</div>').css( {
 			    position: 'absolute',
 			    left: o.left - 12,
 			    top: o.top - 20,

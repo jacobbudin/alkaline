@@ -276,16 +276,22 @@ class Stat extends Alkaline{
 		$this->page_types = $query->fetchAll();
 	}
 	
-	public function getRecentReferrers($limit=20){
+	public function getRecentReferrers($limit=20, $include_local=true){
 		$limit = intval($limit);
-		$query = $this->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
+		if($include_local === false){
+			$where_local = 'AND stat_local = 0';
+		}
+		$query = $this->prepare('SELECT stat_referrer, stat_date FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end ' . @$where_local . ' ORDER BY stat_date DESC LIMIT 0, ' . $limit . ';');
 		$query->execute(array(':stat_referrer' => '', ':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->referrers_recent = $query->fetchAll();
 	}
 	
-	public function getPopularReferrers($limit=20){
+	public function getPopularReferrers($limit=20, $include_local=true){
 		$limit = intval($limit);
-		$query = $this->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
+		if($include_local === false){
+			$where_local = 'AND stat_local = 0';
+		}
+		$query = $this->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end ' . @$where_local . ' GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
 		$query->execute(array(':stat_referrer' => '', ':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->referrers_popular = $query->fetchAll();
 	}

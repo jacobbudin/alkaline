@@ -1150,7 +1150,13 @@ class Alkaline{
 		
 		$referrer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
 		$page = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
-		$local = (stripos($referrer, LOCATION)) ? 1 : 0;
+		
+		if(stripos($referrer, LOCATION . BASE) === false){
+			$local = 0;
+		}
+		else{
+			$local = 1;
+		}
 		
 		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
 		

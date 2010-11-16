@@ -110,7 +110,7 @@ $stats->getPageTypes();
 
 // RECENT REFERRERS
 
-$stats->getRecentReferrers(10);
+$stats->getRecentReferrers(10, false);
 
 foreach($stats->referrers_recent as &$referrer){
 	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
@@ -118,7 +118,7 @@ foreach($stats->referrers_recent as &$referrer){
 
 // POPULAR REFERRS
 
-$stats->getPopularReferrers(10);
+$stats->getPopularReferrers(10, false);
 
 foreach($stats->referrers_popular as &$referrer){
 	$referrer['stat_referrer_display'] = $alkaline->fitString($alkaline->minimizeURL($referrer['stat_referrer']));
