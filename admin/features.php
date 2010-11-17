@@ -119,7 +119,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<h1>Editor (<span id="photo_count_selected">0</span> of <?php echo number_format($photo_ids->photo_count); ?>)</h1>
 		
-		<p><a href="#select_all" id="select_all">Select all</a> &#0183; <a href="#deselect_all" id="deselect_all">Deselect all</a></p>
+		<p>
+			<a href="#select_all" id="select_all">Select all</a> &#0183; <a href="#deselect_all" id="deselect_all">Deselect all</a>
+		</p>
 		
 		<p>
 			<?php
@@ -130,7 +132,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					$selected = '_selected';
 				}
 				?>
-				<img src="<?php echo $photo['photo_src_square']; ?>" alt="<?php echo $photo['photo_id']; ?>" title="<?php echo $photo['photo_title']; ?>" class="frame<?php echo $selected; ?>" />
+				<img src="<?php echo $photo['photo_src_square']; ?>" alt="" id="photo-<?php echo $photo['photo_id']; ?>" title="<?php echo $photo['photo_title']; ?>" class="frame<?php echo $selected; ?>" />
 				<?php
 			}
 			?>
@@ -158,7 +160,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php
 		}
 		?>
-		
+		<p class="quiet">
+			<em>Tip: Hold down the Shift key to select a series multiple photos.</em>
+		</p>
 	</div>
 </div>
 

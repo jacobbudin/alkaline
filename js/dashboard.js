@@ -1,3 +1,4 @@
+var shift = 0;
 var task;
 var page;
 var progress;
@@ -457,7 +458,27 @@ $(document).ready(function(){
 		});
 		
 		$('img.frame').live('click', function() {
-			$(this).removeClass('frame').addClass('frame_selected');
+			if((last_selected.length > 0) && (shift == 1) && (ids.length > 0)){
+				group = $(this).prevUntil('img[id="' + last_selected + '"]').andSelf();
+				group_first = group.first().attr('id');
+				if(group_first != first_photo){
+					group.removeClass('frame').addClass('frame_selected');
+					last_selected = $(this).attr('id');
+				}
+			}
+			else if(shift == 1){
+				$(this).prevAll('img.frame').andSelf().removeClass('frame').addClass('frame_selected');
+				last_selected = $(this).attr('id');
+			}
+			else{
+				$(this).removeClass('frame').addClass('frame_selected');
+				last_selected = $(this).attr('id');
+			}
+			selectedCount();
+		});
+		
+		$('img.frame_selected').live('click', function() {
+			$(this).removeClass('frame_selected').addClass('frame');
 			selectedCount();
 		});
 		
@@ -473,11 +494,20 @@ $(document).ready(function(){
 			$(this).css('cursor', '');
 		});
 		
-		$('img.frame_selected').live('click', function() {
-			$(this).removeClass('frame_selected').addClass('frame');
-			selectedCount();
+		$(document).keydown(function(event) {
+			if(event.keyCode == '16'){
+				shift = 1;
+			}
 		});
 		
+		$(document).keyup(function(event) {
+			if(event.keyCode == '16'){
+				shift = 0;
+			}
+		});
+		
+		first_photo = $('img.frame').parent().children().first().attr('id');
+		last_selected = '';
 		actEditor();
 		selectedCount();
 	}
