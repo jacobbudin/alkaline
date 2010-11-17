@@ -8,6 +8,10 @@ $user = new User;
 
 $user->perm(true);
 
+if(!empty($_GET['id'])){
+	$_GET['page'] = $_GET['id'];
+}
+
 // Process actions
 if(@$_POST['do'] == 'Do'){
 	$act = $_POST['act'];
@@ -61,9 +65,9 @@ if(@$_POST['do'] == 'Do'){
 			$photos = new Photo($photo_ids);
 			$now = date('Y-m-d H:i:s');
 			$time = time();
-			foreach($photos as $photo){
+			foreach($photos->photos as $photo){
 				if(empty($photo['photo_published']) or (strtotime($photo['photo_published']) > $time)){
-					$photos->updateFields(array('photo_published' => $now));
+					$alkaline->updateRow(array('photo_published' => $now), 'photos', $photo['photo_id'], false);
 				}
 			}
 		}
@@ -99,7 +103,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<select name="act" id="act">
 					<option value="tag_add">Add tag</option>
 					<option value="tag_remove">Remove tag</option>
-					<option value="pile_add">Add to pile</option>
+					<option value="pile_add">Add to static pile</option>
 					<option value="right">Switch to rights set</option>
 					<option value="privacy">Switch to privacy level</option>
 					<option value="publish">Publish now</option>
@@ -138,7 +142,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				if(!empty($photo_ids->page_previous)){
 					for($i = 1; $i <= $photo_ids->page_previous; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
@@ -146,7 +150,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				if(!empty($photo_ids->page_next)){
 					for($i = $photo_ids->page_next; $i <= $photo_ids->page_count; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>

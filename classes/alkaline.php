@@ -851,7 +851,7 @@ class Alkaline{
 		}
 		$piles = $query->fetchAll();
 		
-		$html = '<select name="' . $name . '" id="' . $name . '"><option value=""></option>';
+		$html = '<select name="' . $name . '" id="' . $name . '">';
 		
 		foreach($piles as $pile){
 			$html .= '<option value="' . $pile['pile_id'] . '"';
@@ -1032,8 +1032,11 @@ class Alkaline{
 		$field = $this->tables[$table];
 		
 		// Add default fields
-		if($default == true){
+		if($default === true){
 			switch($table){
+				case 'photos':
+					$fields['photo_modified'] = date('Y-m-d H:i:s');
+					break;
 				case 'piles':
 					$fields['pile_modified'] = date('Y-m-d H:i:s');
 					break;

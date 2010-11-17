@@ -406,6 +406,21 @@ li.ui-menu-item{
 	float: right;
 }
 
+.actions form{
+	padding: 0;
+	margin: 0;
+	vertical-align: middle;
+}
+
+.actions input{
+	margin: .3em;
+}
+
+.actions select{
+	text-align: right;
+	margin: .3em;
+}
+
 .actions a, a.button{
 	margin-left:.5em;
 	padding: .4em .6em;

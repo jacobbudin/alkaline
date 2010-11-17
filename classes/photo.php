@@ -279,7 +279,7 @@ class Photo extends Alkaline{
 	}
 	
 	// UPDATE TAGS & LINKS TABLES
-	public function updateTags($tags){		
+	public function updateTags($tags){
 		// Error checking
 		if(!is_array($tags)){
 			return false;
@@ -290,8 +290,31 @@ class Photo extends Alkaline{
 		$tags = array_map('trim', $tags);
 		$tags = array_unique($tags);
 		
+		// Find input tags (and their IDs) in database	
+		$sql_params = array();
+		$tag_count = count($tags);
+		
+		for($j=0; $j<$tag_count; ++$j){
+			$sql_params[':tag' . $j] = $tags[$j];
+		}
+		
+		$sql_param_keys = array_keys($sql_params);
+		
+		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+		$query->execute($sql_params);
+		$tags_db = $query->fetchAll();
+		$tags_db_names = array();
+		
+		foreach($tags_db as $tag_db){
+			$tags_db_names[] = $tag_db['tag_name'];
+		}
+		
+		// Get current tags
 		$this->getTags();
 		
+		$affected_photo_ids = array();
+		
+		// Loop through photos
 		for($i = 0; $i < $this->photo_count; ++$i){
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
@@ -318,54 +341,179 @@ class Photo extends Alkaline{
 				}
 			}
 			
+			$tags = array_merge($tags);
+			
 			// If no tags have changed, break
 			if(count($tags) == 0){
 				continue;
 			}
 			
-			$sql_params = array();
-			
-			$tags = array_merge($tags);
-			$tag_count = count($tags);
-			
-			// Grab tag IDs
-			for($j=0; $j<$tag_count; ++$j){
-				$sql_params[':tag' . $j] = $tags[$j];
-			}
-			
-			$sql_param_keys = array_keys($sql_params);
-			
-			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
-			$query->execute($sql_params);
-			$tags_db = $query->fetchAll();
+			$affected_photo_ids[] = $this->photos[$i]['photo_id'];
 			
 			foreach($tags as $tag){
-				$found = false;
-				foreach($tags_db as $tag_db){
-					if($tag == $tag_db['tag_name']){
-						$found = true;
-						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_db['tag_id'] . ');';
-						$this->exec($query);
-						continue;
-					}
+				$key = array_search($tag, $tags_db_names);
+				if($key !== false){
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
+					$this->exec($query);
 				}
-				if($found === false){
+				else{
 					$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
 					$query->execute(array(':tag' => $tag));
 					$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
 					
+					$tags_db[] = array('tag_id' => $tag_id, 'tag_name' => $tag);
+					$tags_db_names[] = $tag;
+					
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
-					$this->exec($query);	
+					$this->exec($query);
+				}
+			}
+		}
+		
+		if(count($affected_photo_ids) > 0){
+			$now = date('Y-m-d H:i:s');
+			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
+			foreach($affected_photo_ids as $photo_id){
+				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			}
+		}
+		
+		return true;
+	}
+	
+	// ADD TAGS
+	public function addTags($tags){
+		// Error checking
+		if(!is_array($tags)){
+			return false;
+		}
+		
+		// Sanitize input
+		$tags = array_map('strip_tags', $tags);
+		$tags = array_map('trim', $tags);
+		$tags = array_unique($tags);
+		
+		// Find input tags (and their IDs) in database	
+		$sql_params = array();
+		
+		$tags = array_merge($tags);
+		$tag_count = count($tags);
+		
+		for($j=0; $j<$tag_count; ++$j){
+			$sql_params[':tag' . $j] = $tags[$j];
+		}
+		
+		$sql_param_keys = array_keys($sql_params);
+		
+		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+		$query->execute($sql_params);
+		$tags_db = $query->fetchAll();
+		$tags_db_names = array();
+		
+		foreach($tags_db as $tag_db){
+			$tags_db_names[] = $tag_db['tag_name'];
+		}
+		
+		// Get current tags
+		$this->getTags();
+		
+		$affected_photo_ids = array();
+		
+		// Loop through photos
+		for($i = 0; $i < $this->photo_count; ++$i){
+			// Verify tags have changed; if not, unset the key
+			foreach($this->tags as $tag){
+				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+					$tag_key = array_search($tag['tag_name'], $tags);
+					if($tag_key !== false){
+						unset($tags[$tag_key]);
+						continue;
+					}
 				}
 			}
 			
-			// Update table
-			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			$query->execute(array(':photo_updated' => date('Y-m-d H:i:s')));
+			$tags = array_merge($tags);
+			
+			// If no tags have changed, break
+			if(count($tags) == 0){
+				continue;
+			}
+			
+			$affected_photo_ids[] = $this->photos[$i]['photo_id'];
+			
+			foreach($tags as $tag){
+				$key = array_search($tag, $tags_db_names);
+				if($key !== false){
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
+					$this->exec($query);
+				}
+				else{
+					$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
+					$query->execute(array(':tag' => $tag));
+					$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
+					
+					$tags_db[] = array('tag_id' => $tag_id, 'tag_name' => $tag);
+					$tags_db_names[] = $tag;
+					
+					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+					$this->exec($query);
+				}
+			}
 		}
+		
+		if(count($affected_photo_ids) > 0){
+			$now = date('Y-m-d H:i:s');
+			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
+			foreach($affected_photo_ids as $photo_id){
+				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			}
+		}
+		
+		return true;
 	}
 	
-	// Detemine image extension
+	// UPDATE TAGS & LINKS TABLES
+	public function removeTags($tags){
+		// Error checking
+		if(!is_array($tags)){
+			return false;
+		}
+		
+		// Sanitize input
+		$tags = array_map('strip_tags', $tags);
+		$tags = array_map('trim', $tags);
+		$tags = array_unique($tags);
+		
+		$this->getTags();
+		
+		$affected_photo_ids = array();
+		
+		for($i = 0; $i < $this->photo_count; ++$i){
+			// Verify tags have changed; if not, unset the key
+			foreach($this->tags as $tag){
+				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+					$tag_key = array_search($tag['tag_name'], $tags);
+					if($tag_key !== false){			
+						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
+						$this->exec($query);
+						$affected_photo_ids[] = $this->photos[$i]['photo_id'];
+					}
+				}
+			}
+		}
+		
+		if(count($affected_photo_ids) > 0){
+			$now = date('Y-m-d H:i:s');
+			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
+			foreach($affected_photo_ids as $photo_id){
+				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			}
+		}
+		
+		return true;
+	}
+	
+	// Determine image extension
 	public function getExt($file){
 		// Error checking
 		if(empty($file)){
