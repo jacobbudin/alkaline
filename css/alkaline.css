@@ -423,3 +423,10 @@ li.ui-menu-item{
 	background-color: #ccc;
 	color: #444;
 }
+
+img.frame_selected{
+	border: solid 3px #fbde42;
+	margin: .2em .4em .2em 0;
+	-moz-box-shadow: 0 0 3px #ddd;
+	-webkit-box-shadow: 0 0 3px #ddd;
+}

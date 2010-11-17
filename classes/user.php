@@ -11,7 +11,7 @@ class User extends Alkaline{
 			$this->user = $_SESSION['alkaline']['user'];
 		}
 		// Login user by ID, key
-		elseif(!empty($_COOKIE['id']) and !empty($_COOKIE['key'])){
+		elseif(!empty($_COOKIE['uid']) and !empty($_COOKIE['key'])){
 			$user_id = strip_tags($_COOKIE['uid']);
 			$user_key = strip_tags($_COOKIE['key']);
 			self::authByCookie($user_id, $user_key);

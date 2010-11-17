@@ -836,13 +836,19 @@ class Alkaline{
 	}
 	
 	// SHOW PILES
-	public function showPiles($name, $pile_id=null){
+	public function showPiles($name, $pile_id=null, $static_only=false){
 		if(empty($name)){
 			return false;
 		}
 		
-		$query = $this->prepare('SELECT pile_id, pile_title FROM piles;');
-		$query->execute();
+		if($static_only === true){	
+			$query = $this->prepare('SELECT pile_id, pile_title FROM piles WHERE pile_type = :pile_type;');
+			$query->execute(array(':pile_type', 'static'));
+		}
+		else{
+			$query = $this->prepare('SELECT pile_id, pile_title FROM piles;');
+			$query->execute();
+		}
 		$piles = $query->fetchAll();
 		
 		$html = '<select name="' . $name . '" id="' . $name . '"><option value=""></option>';

@@ -396,6 +396,92 @@ $(document).ready(function(){
 		}
 	}
 	
+	// FEATURES EDITOR
+	if(page == 'Editor'){
+		function actEditor(){
+			$('#act_tag_name').hide();
+			$('#act_pile_id').hide();
+			$('#act_right_id').hide();
+			$('#act_privacy_id').hide();
+			
+			act = $('#act').val();
+			if(act == 'tag_add'){
+				$('#act_tag_name').show();
+			}
+			else if(act == 'tag_remove'){
+				$('#act_tag_name').show();
+			}
+			else if(act == 'pile_add'){
+				$('#act_pile_id').show();
+			}
+			else if(act == 'right'){
+				$('#act_right_id').show();
+			}
+			else if(act == 'privacy'){
+				$('#act_privacy_id').show();
+			}
+		}
+		
+		function selectedCount(){
+			count = $('img.frame_selected').length;
+			$('#photo_count_selected').text(count);
+			
+			ids = new Array();
+			
+			$('img.frame_selected').each(function(index) {
+				id = $(this).attr('alt');
+				ids.push(id);
+			});
+			
+			$('#photo_ids').val(ids.join(', '));
+		}
+		
+		$('#act').mouseup(function() {
+		  actEditor();
+		});
+		
+		$('#select_all').click(function() {
+			$('img.frame').each(function(index) {
+				$(this).removeClass('frame').addClass('frame_selected');
+			});
+			selectedCount();
+			event.preventDefault();
+		});
+		
+		$('#deselect_all').click(function() {
+			$('img.frame_selected').each(function(index) {
+				$(this).removeClass('frame_selected').addClass('frame');
+			});
+			selectedCount();
+			event.preventDefault();
+		});
+		
+		$('img.frame').live('click', function() {
+			$(this).removeClass('frame').addClass('frame_selected');
+			selectedCount();
+		});
+		
+		$('img.frame').hover(function(){
+			$(this).css('cursor', 'pointer');
+		}, function(){
+			$(this).css('cursor', '');
+		});
+		
+		$('img.frame_selected').hover(function(){
+			$(this).css('cursor', 'pointer');
+		}, function(){
+			$(this).css('cursor', '');
+		});
+		
+		$('img.frame_selected').live('click', function() {
+			$(this).removeClass('frame_selected').addClass('frame');
+			selectedCount();
+		});
+		
+		actEditor();
+		selectedCount();
+	}
+	
 	// DASHBOARD
 	if(page == 'Vitals'){
 		var statistics_views = $("#statistics_views").attr("title");
