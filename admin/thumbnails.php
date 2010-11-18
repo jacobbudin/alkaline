@@ -110,7 +110,12 @@ else{
 	// Get sizes set
 	$size = $alkaline->getRow('sizes', $size_id);
 	$size = $alkaline->makeHTMLSafe($size);
-
+	
+	if(($size['size_label'] == 'admin') or ($size['size_label'] == 'square')){
+		$alkaline->addNotification('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'notice');
+		$size_lock = true;
+	}
+	
 	if(!empty($size['size_title'])){	
 		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');
 	}
@@ -131,7 +136,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="size_label">Label:</label></td>
 				<td>
-					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" />
+					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -141,9 +146,9 @@ else{
 			<tr>
 				<td class="right"><label>Type:</label></td>
 				<td>
-					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?>/> <label for="size_type_scale">Scale image</label><br />
+					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /> <label for="size_type_scale">Scale image</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;&#8220;normal&#8221; thumbnails<br />
-					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?>/> <label for="size_type_fill">Fill canvas</label><br />
+					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /> <label for="size_type_fill">Fill canvas</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Fills the thumbnail, crops excess&#8212;good for arranging in grids
 				</td>
 			</tr>
@@ -168,7 +173,7 @@ else{
 				<td><strong><label for="size_build">Build thumbnails of this size.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>
-				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" /></td>
+				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /></td>
 				<td><strong><label for="size_delete">Delete this thumbnail size.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>

@@ -41,7 +41,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="50" <?php echo $user->readPref('recent_photos', 50); ?>>50</option>
 					<option value="100" <?php echo $user->readPref('recent_photos', 100); ?>>100</option>
 				</select>
-				most recent photos on my dashboard.</label>
+				most recent photos on my dashboard</label>
 			</td>
 		</tr>
 	</table>

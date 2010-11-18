@@ -161,7 +161,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		}
 		?>
 		<p class="quiet">
-			<em>Tip: Hold down the Shift key to select a series multiple photos.</em>
+			<em>Tip: Hold down the Shift key to select a series of photos.</em>
 		</p>
 	</div>
 </div>
