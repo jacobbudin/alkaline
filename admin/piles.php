@@ -36,21 +36,26 @@ if(!empty($_POST['pile_id'])){
 	unset($pile_id);
 }
 else{
-	$alkaline->deleteEmptyRow('piles', array('pile_title', 'pile_call'));
+	$alkaline->deleteEmptyRow('piles', array('pile_title'));
 }
 
 // CREATE PILE
 if($pile_act == 'build'){
 	$pile_call = Find::recentMemory();
-	$fields = array('pile_call' => $pile_call,
-		'pile_type' => 'auto');
+	if(!empty($pile_call)){
+		$fields = array('pile_call' => $pile_call,
+			'pile_type' => 'auto');
+	}
+	else{
+		$fields = array('pile_type' => 'static');
+	}
 	$pile_id = $alkaline->addRow($fields, 'piles');
 	
 	$photos = new Find;
 	$photos->pile($pile_id);
 	$photos->find();
 	
-	$pile_photos = implode(', ', $photos->photo_ids);
+	$pile_photos = @implode(', ', $photos->photo_ids);
 	$pile_photo_count = $photos->photo_count;
 	
 	$fields = array('pile_photos' => $pile_photos,
@@ -62,7 +67,6 @@ define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($pile_id)){
-
 	$piles = $alkaline->getTable('piles');
 	$pile_count = @count($piles);
 	
@@ -70,8 +74,12 @@ if(empty($pile_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
+	
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'piles' . URL_ACT . 'build' . URL_RW; ?>">Build static pile</a></div>
 
 	<h1>Piles (<?php echo $pile_count; ?>)</h1>
+	
+	<p>Piles are collections of photos. You can build automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
 	<table>
 		<tr>
@@ -101,11 +109,10 @@ if(empty($pile_id)){
 }
 else{
 	// Get pile
-	$piles = $alkaline->getTable('piles', $pile_id);
-	$pile = $piles[0];
+	$pile = $alkaline->getRow('piles', $pile_id);
 	$pile = $alkaline->makeHTMLSafe($pile);
 	
-	// Update  pile
+	// Update pile
 	$photo_ids = new Find;
 	$photo_ids->pile($pile_id);
 	$photo_ids->find();
@@ -120,7 +127,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>piles<?php echo URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE; ?>piles<?php echo URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE . 'piles' . URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	
@@ -144,7 +151,7 @@ else{
 			<tr>
 				<td class="right"><label for="pile_type">Type:</label></td>
 				<td>
-					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new photos that meet the pile&#8217;s criteria<br />
+					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; } if(empty($pile['pile_call'])){ echo 'disabled="disabled"'; } ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new photos that meet the pile&#8217;s criteria<br />
 					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the photos originally selected<br /><br />
 				</td>
 			</tr>
