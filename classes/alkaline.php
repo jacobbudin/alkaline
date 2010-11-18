@@ -629,7 +629,12 @@ class Alkaline{
 	// SHOW TAGS
 	// Display all tags
 	public function getTags(){
-		$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id;');
+		if($this->returnConf('tag_alpha')){
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_name;');
+		}
+		else{
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_id ASC;');
+		}
 		$query->execute();
 		$tags = $query->fetchAll();
 		
@@ -654,8 +659,6 @@ class Alkaline{
 		}
 		
 		$tag_uniques = array_unique($tag_names);
-		natsort($tag_uniques);
-		
 		$tags = array();
 		
 		foreach($tag_uniques as $tag){
