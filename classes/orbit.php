@@ -71,20 +71,29 @@ class Orbit extends Alkaline{
 				$extension = $extensions[0];
 			}
 			else{
-				$class = get_class($this);
 				$extensions = $_SESSION['alkaline']['extensions'];
-				foreach($extensions as $extension){
-					if(!empty($id)){
-						if($extension['extension_id'] == $id){
-							$extension_key = key($extensions);
-							break;
-						}
+				
+				if(!empty($id)){
+					$extension_ids = array();
+					foreach($extensions as $extension){
+						$extension_ids[] = $extension['extension_id'];
 					}
-					elseif($extension['extension_class'] == $class){
-						$extension_key = key($extensions);
-						break;
-					}
+					$extension_key = array_search($id, $extension_ids);
 				}
+				else{
+					$class = get_class($this);
+					
+					$extension_classes = array();
+					foreach($extensions as $extension){
+						$extension_classes[] = $extension['extension_class'];
+					}
+					$extension_key = array_search($class, $extension_classes);
+				}
+				
+				if($extension_key === false){
+					return false;
+				}
+				
 				$extension = $extensions[$extension_key];
 			}
 			
@@ -198,10 +207,12 @@ class Orbit extends Alkaline{
 				if(@in_array($hook, $extension['extension_hooks'])){
 					require_once($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
-					$return = call_user_func_array(array($orbit, $hook), $arguments);
-					if(!empty($return) and !is_bool($return)){
-						$arguments = array_slice($arguments, 0, $argument_count);
-						$arguments[] = $return;
+					if(method_exists($orbit, $hook)){
+						$return = call_user_func_array(array($orbit, $hook), $arguments);
+						if(!empty($return) and !is_bool($return)){
+							$arguments = array_slice($arguments, 0, $argument_count);
+							$arguments[] = $return;
+						}
 					}
 				}
 			}
