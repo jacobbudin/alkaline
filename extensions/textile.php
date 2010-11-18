@@ -24,7 +24,7 @@ class TextileHandler extends Orbit{
 		<?php
 	}
 	
-	public function page_markup_html(){
+	public function markup_html(){
 		echo '<option value="textile">Textile</option>';
 	}
 }

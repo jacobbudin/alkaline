@@ -24,7 +24,7 @@ class Markdown extends Orbit{
 		<?php
 	}
 	
-	function page_markup_html(){
+	public function markup_html(){
 		echo '<option value="markdown">Markdown</option>';
 	}
 }

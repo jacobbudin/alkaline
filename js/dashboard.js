@@ -314,6 +314,14 @@ $(document).ready(function(){
 		});
 	});
 	
+	// PRIMARY - MARKUP
+	$('select[name$="markup_ext"]').each(function() {
+		ext = $(this).attr("title");
+		if(!empty(ext)){
+			$(this).find('option[value="' + ext + '"]').attr("selected", "selected");
+		}
+	});
+	
 	// UPLOAD
 	
 	if(page == 'Upload'){
@@ -383,18 +391,6 @@ $(document).ready(function(){
 		
 		$("#shoebox_add").attr("disabled", "disabled");
 		$("#progress").progressbar({ value: 0 });
-	}
-	
-	// PAGE (EDIT)
-	
-	if(page == 'Page'){
-		var markup_row = $("#tr_page_markup");
-		var markup = markup_row.find("select").attr("title");
-		
-		if(markup){
-			markup_row.find("input").attr("checked", "checked");
-			markup_row.find("option[value='" + markup + "']").attr("selected", "selected");
-		}
 	}
 	
 	// FEATURES EDITOR

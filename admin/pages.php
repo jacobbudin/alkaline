@@ -31,12 +31,14 @@ if(!empty($_POST['page_id'])){
 		$page_text_raw = $_POST['page_text_raw'];
 		$page_text = $page_text_raw;
 		
-		$page_markup = $_POST['page_markup'];
+		$page_markup = @$_POST['page_markup'];
+		$page_markup_ext = @$_POST['page_markup_ext'];
 		
-		if(!empty($_POST['page_markup'])){
-			$page_text = $orbit->hook('markup_' . $_POST['page_markup'], $page_text_raw, $page_text);
+		if($page_markup == 'markup'){
+			$page_text = $orbit->hook('markup_' . $page_markup_ext, $page_text_raw, $page_text);
 		}
 		else{
+			$page_markup_ext = '';
 			$page_text = nl2br($page_text_raw);
 		}
 		
@@ -47,7 +49,7 @@ if(!empty($_POST['page_id'])){
 		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,
 			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
-			'page_markup' => $page_markup,
+			'page_markup' => $page_markup_ext,
 			'page_photos' => $page_photos,
 			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_words' => $page_words);
@@ -148,13 +150,13 @@ else{
 				<td class="right"><label for="page_text_raw">Text:</label></td>
 				<td><textarea id="page_text_raw" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$page['page_text_raw']; ?></textarea></td>
 			</tr>
-			<tr id="tr_page_markup">
-				<td class="right pad"><input type="checkbox" id="page_markup" value="delete" /></td>
-				<td><strong><label for="page_markup">Markup this page using <select name="page_markup" title="<?php echo @$page['page_markup']; ?>"><option value=""></option><?php $orbit->hook('page_markup_html'); ?></select>.</label></strong></td>
+			<tr>
+				<td class="right pad"><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
+				<td><label for="page_markup">Markup this page using <select name="page_markup_ext" title="<?php echo @$page['page_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
 			</tr>
 			<tr>
 				<td class="right center"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
-				<td><strong><label for="page_delete">Delete this page.</label></strong> This action cannot be undone.</td>
+				<td><label for="page_delete">Delete this page.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td></td>
