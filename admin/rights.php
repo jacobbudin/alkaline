@@ -95,8 +95,7 @@ if(empty($right_id)){
 	require_once(PATH . ADMIN . 'includes/footer.php');
 	
 }
-else{
-	
+else{	
 	// Update photo count on rights set
 	$photo_ids = new Find;
 	$photo_ids->rights($right_id);
