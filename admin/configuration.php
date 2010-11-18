@@ -4,6 +4,7 @@ require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
+$orbit = new Orbit;
 $user = new User;
 
 $user->perm(true);
@@ -26,6 +27,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
+	$alkaline->setConf('photo_markup', @$_POST['photo_markup']);
+	$alkaline->setConf('photo_markup_ext', @$_POST['photo_markup_ext']);
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
@@ -38,6 +41,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
+	$alkaline->setConf('comm_markup', @$_POST['comm_markup']);
+	$alkaline->setConf('comm_markup_ext', @$_POST['comm_markup_ext']);
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
@@ -175,7 +180,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="photo_original" name="photo_original" <?php echo $alkaline->readConf('photo_original'); ?> value="true" /></td>
 			<td class="description">
 				<label for="photo_original">Protect original files</label><br />
-				Save your high-resolution originals in a password-protected folder
+				Save your high-resolution originals behind a password-protected firewall
+			</td>
+		</tr>
+		<tr class="markup">
+			<td class="pad"><input type="checkbox" id="photo_markup" name="photo_markup" <?php echo $alkaline->readConf('photo_markup'); ?> value="true" /></td>
+			<td>
+				<label for="photo_markup">Markup new photo descriptions using <select name="photo_markup_ext" title="<?php echo $alkaline->returnConf('photo_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
+				To use this setting for all your photos, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-photo-markup' ?>">reset your photo markup</a>
 			</td>
 		</tr>
 	</table>
@@ -265,6 +277,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="description">
 				<label for="comm_mod">Moderate visitor comments</label><br />
 				Require administrator approval before visitor comments appear
+			</td>
+		</tr>
+		<tr>
+			<td class="pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
+			<td>
+				<label for="comm_markup">Markup new comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
+				To use this setting for all your comments, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-comment-markup' ?>">reset your comment markup</a>
 			</td>
 		</tr>
 	</table>
