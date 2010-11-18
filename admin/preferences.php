@@ -36,9 +36,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input pad"><input type="checkbox" checked="checked" disabled="disabled" /></td>
 			<td class="description">
-				<label for="page_limit">Display
+				<label>Display
 				<select name="page_limit">
-					<option value="3" <?php echo $user->readPref('page_limit', 3); ?>>3</option>
 					<option value="25" <?php echo $user->readPref('page_limit', 25); ?>>25</option>
 					<option value="50" <?php echo $user->readPref('page_limit', 50); ?>>50</option>
 					<option value="100" <?php echo $user->readPref('page_limit', 100); ?>>100</option>

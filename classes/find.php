@@ -1082,23 +1082,25 @@ class Find extends Alkaline{
 			return false;
 		}
 		
-		$_SESSION['alkaline']['recent_memory'] = $this->memory;
+		$_SESSION['alkaline']['search']['memory'] = $this->memory;
+		$_SESSION['alkaline']['search']['results'] = $this->photo_ids;
 		
 		return true;
 	}
 	
 	// Most recent saved memory
 	public function recentMemory(){
-		if(empty($_SESSION['alkaline']['recent_memory'])){
+		if(empty($_SESSION['alkaline']['search']['memory'])){
 			return false;
 		}
 		
-		return implode(' ', $_SESSION['alkaline']['recent_memory']);
+		return implode(' ', $_SESSION['alkaline']['search']['memory']);
 	}
 	
 	// Clear memory
 	public function clearMemory(){
-		unset($_SESSION['alkaline']['recent_memory']);
+		unset($_SESSION['alkaline']['search']['memory']);
+		unset($_SESSION['alkaline']['search']['results']);
 		
 		return true;
 	}

@@ -8,9 +8,18 @@ $user = new User;
 
 $user->perm(true);
 
+// Fix bad incoming links
 if(!empty($_GET['id'])){
 	$_GET['page'] = $_GET['id'];
 }
+
+if(@$_GET['act'] != 'bulk'){
+	Find::clearMemory();
+}
+
+// SANITIZE INPUT
+$_GET = array_map('strip_tags', $_GET);
+$_POST = array_map('strip_tags', $_POST);
 
 // Process actions
 if(@$_POST['do'] == 'Do'){
@@ -19,13 +28,20 @@ if(@$_POST['do'] == 'Do'){
 	
 	if(count($photo_ids) > 0){	
 		if($act == 'tag_add'){
+			$tag_name = $_POST['act_tag_name'];
 			$photos = new Photo($photo_ids);
-			$photos->addTags(array($_POST['act_tag_name']));
+			$bool = $photos->addTags(array($tag_name));
+			if($bool === true){
+				$alkaline->addNotification('You successfully added the tag &#8220;' . $tag_name . '&#8221;.', 'success');
+			}
 		}
 		elseif($act == 'tag_remove'){
+			$tag_name = $_POST['act_tag_name'];
 			$photos = new Photo($photo_ids);
-			$photos->removeTags(array($_POST['act_tag_name']));
-		
+			$bool = $photos->removeTags(array($tag_name));
+			if($bool === true){
+				$alkaline->addNotification('You successfully removed the tag &#8220;' . $tag_name . '&#8221;.', 'success');
+			}
 		}
 		elseif($act == 'pile_add'){
 			$pile = $alkaline->getRow('piles', $_POST['act_pile_id']);
@@ -45,20 +61,29 @@ if(@$_POST['do'] == 'Do'){
 			$fields = array('pile_photos' => $pile_photos,
 				'pile_photo_count' => $pile_photo_count);
 		
-			$alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
+			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
+			if($bool === true){
+				$alkaline->addNotification('You successfully add to the pile &#8220;' . $pile['pile_title'] . '&#8221;.', 'success');
+			}
 		}
 		elseif($act == 'right'){
 			$right_id = intval($_POST['act_right_id']);
 			if($right_id > 0){
 				$photos = new Photo($photo_ids);
-				$photos->updateFields(array('right_id' => $right_id));
+				$bool = $photos->updateFields(array('right_id' => $right_id));
+				if($bool === true){
+					$alkaline->addNotification('You successfully changed rights sets.', 'success');
+				}
 			}
 		}
 		elseif($act == 'privacy'){
 			$privacy_id = intval($_POST['act_privacy_id']);
 			if($privacy_id > 0){
 				$photos = new Photo($photo_ids);
-				$photos->updateFields(array('photo_privacy' => $privacy_id));
+				$bool = $photos->updateFields(array('photo_privacy' => $privacy_id));
+				if($bool === true){
+					$alkaline->addNotification('You successfully changed privacy levels.', 'success');
+				}
 			}
 		}
 		elseif($act == 'publish'){
@@ -67,8 +92,14 @@ if(@$_POST['do'] == 'Do'){
 			$time = time();
 			foreach($photos->photos as $photo){
 				if(empty($photo['photo_published']) or (strtotime($photo['photo_published']) > $time)){
-					$alkaline->updateRow(array('photo_published' => $now), 'photos', $photo['photo_id'], false);
+					$bool = $alkaline->updateRow(array('photo_published' => $now), 'photos', $photo['photo_id'], false);
 				}
+				else{
+					$bool = true;
+				}
+			}
+			if($bool === true){
+				$alkaline->addNotification('The photos were succesfully published.', 'success');
 			}
 		}
 	}
@@ -81,7 +112,7 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$photo_ids = new Find();
+$photo_ids = new Find(@$_SESSION['alkaline']['search']['results']);
 $photo_ids->page(null, $max);
 $photo_ids->find();
 
@@ -133,7 +164,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 			foreach($photos->photos as $photo){
 				$selected = '';
-				if(@in_array($photo['photo_id'], $selected_photo_ids)){
+				if(!empty($selected_photo_ids)){
+					if(@in_array($photo['photo_id'], $selected_photo_ids)){
+						$selected = '_selected';
+					}
+				}
+				elseif(!empty($_SESSION['alkaline']['search']['results'])){
 					$selected = '_selected';
 				}
 				?>
