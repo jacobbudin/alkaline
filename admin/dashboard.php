@@ -88,36 +88,44 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	<div class="span-18 colborderl last">
 		<h1>Vitals</h1>
+		
 		<div id="statistics_holder" class="statistics_holder"></div>
 		<div id="statistics_views" title="<?php echo $views; ?>"></div>
 		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 		
-		<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
-		<h1>Recent</h1>
-		<p>
-			<?php
-			
-			// Preference: recent_photos
-			if(!$max = $user->returnPref('recent_photos')){
-				$max = 10;
-			}
-			
-			$photo_ids = new Find;
-			$photo_ids->page(1,$max);
-			$photo_ids->sort('photos.photo_uploaded', 'DESC');
-			$photo_ids->find();
-			$photos = new Photo($photo_ids);
-			$photos->getImgUrl('square');
-
-			foreach($photos->photos as $photo){
-				?>
-				<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
-					<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
-				</a>
-				<?php
-			}
+		<?php
+		// Preference: recent_photos
+		if($user->returnPref('recent_photos') === true){
 			?>
-		</p>
+			<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
+			<h1>Recent</h1>
+			<p>
+				<?php
+			
+				// Preference: recent_photos_limit
+				if(!$max = $user->returnPref('recent_photos_limit')){
+					$max = 10;
+				}
+			
+				$photo_ids = new Find;
+				$photo_ids->page(1,$max);
+				$photo_ids->sort('photos.photo_uploaded', 'DESC');
+				$photo_ids->find();
+				$photos = new Photo($photo_ids);
+				$photos->getImgUrl('square');
+
+				foreach($photos->photos as $photo){
+					?>
+					<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
+						<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+					</a>
+					<?php
+				}
+				?>
+			</p>
+			<?php
+		}
+		?>
 	</div>
 </div>
 

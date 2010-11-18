@@ -10,8 +10,13 @@ $user->perm(true);
 
 $alkaline->setCallback();
 
+// Preference: page_limit
+if(!$max = $user->returnPref('page_limit')){
+	$max = 100;
+}
+
 $photo_ids = new Find();
-$photo_ids->page(null, 100);
+$photo_ids->page(null, $max);
 
 // SANITIZE SEARCH QUERY
 unset($_GET['page']);

@@ -14,9 +14,14 @@ if(!empty($_GET['id'])){
 	$_GET['page'] = $_GET['id'];
 }
 
+// Preference: page_limit
+if(!$max = $user->returnPref('page_limit')){
+	$max = 100;
+}
+
 $photo_ids = new Find();
 $photo_ids->clearMemory();
-$photo_ids->page(null, 100);
+$photo_ids->page(null, $max);
 $photo_ids->find();
 
 $photos = new Photo($photo_ids->photo_ids);
