@@ -430,8 +430,10 @@ $(document).ready(function(){
 			ids = new Array();
 			
 			$('img.frame_selected').each(function(index) {
-				id = $(this).attr('alt');
-				ids.push(id);
+				id = $(this).attr('id');
+				id_find = /([0-9]+)/;
+				id = id.match(id_find);
+				ids.push(id[1]);
 			});
 			
 			$('#photo_ids').val(ids.join(', '));
