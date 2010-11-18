@@ -140,6 +140,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="tag_add">Add tag</option>
 					<option value="tag_remove">Remove tag</option>
 					<option value="pile_add">Add to static pile</option>
+					<option value="pile_remove">Remove from static pile</option>
 					<option value="right">Switch to rights set</option>
 					<option value="privacy">Switch to privacy level</option>
 					<option value="publish">Publish now</option>

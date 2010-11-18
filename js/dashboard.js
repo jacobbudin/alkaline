@@ -415,6 +415,9 @@ $(document).ready(function(){
 			else if(act == 'pile_add'){
 				$('#act_pile_id').show();
 			}
+			else if(act == 'pile_remove'){
+				$('#act_pile_id').show();
+			}
 			else if(act == 'right'){
 				$('#act_right_id').show();
 			}
