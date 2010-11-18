@@ -408,9 +408,11 @@ class Photo extends Alkaline{
 		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
 		$query->execute($sql_params);
 		$tags_db = $query->fetchAll();
+		$tags_db_ids = array();
 		$tags_db_names = array();
 		
 		foreach($tags_db as $tag_db){
+			$tags_db_ids[] = $tag_db['tag_id'];
 			$tags_db_names[] = $tag_db['tag_name'];
 		}
 		
@@ -453,6 +455,7 @@ class Photo extends Alkaline{
 					$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
 					
 					$tags_db[] = array('tag_id' => $tag_id, 'tag_name' => $tag);
+					$tag_db_ids[] = $tag_id;
 					$tags_db_names[] = $tag;
 					
 					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
@@ -469,7 +472,9 @@ class Photo extends Alkaline{
 			}
 		}
 		
-		return true;
+		$tags_db_ids = array_unique($tags_db_ids);
+		
+		return $tag_db_ids;
 	}
 	
 	// UPDATE TAGS & LINKS TABLES
@@ -486,6 +491,7 @@ class Photo extends Alkaline{
 		
 		$this->getTags();
 		
+		$tags_db_ids = array();
 		$affected_photo_ids = array();
 		
 		for($i = 0; $i < $this->photo_count; ++$i){
@@ -496,6 +502,7 @@ class Photo extends Alkaline{
 					if($tag_key !== false){			
 						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
 						$this->exec($query);
+						$tags_db_ids[] = $tag['tag_id'];
 						$affected_photo_ids[] = $this->photos[$i]['photo_id'];
 					}
 				}
@@ -510,7 +517,9 @@ class Photo extends Alkaline{
 			}
 		}
 		
-		return true;
+		$tags_db_ids = array_unique($tags_db_ids);
+		
+		return $tags_db_ids;
 	}
 	
 	// Determine image extension

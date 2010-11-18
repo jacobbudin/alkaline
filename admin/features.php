@@ -30,17 +30,33 @@ if(@$_POST['do'] == 'Do'){
 		if($act == 'tag_add'){
 			$tag_name = $_POST['act_tag_name'];
 			$photos = new Photo($photo_ids);
-			$bool = $photos->addTags(array($tag_name));
-			if($bool === true){
-				$alkaline->addNotification('You successfully added the tag &#8220;' . $tag_name . '&#8221;.', 'success');
+			$tags = $photos->addTags(array($tag_name));
+			if($tags !== false){
+				$notification = 'You successfully added the tag &#8220;';
+				if(!empty($tags[0])){
+					$notification .= '<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . @$tags[0] . URL_RW . '">' . $tag_name . '</a>';
+				}
+				else{
+					$notification .= $tag_name;
+				}
+				$notification .= '&#8221;.';
+				$alkaline->addNotification($notification, 'success');
 			}
 		}
 		elseif($act == 'tag_remove'){
 			$tag_name = $_POST['act_tag_name'];
 			$photos = new Photo($photo_ids);
-			$bool = $photos->removeTags(array($tag_name));
-			if($bool === true){
-				$alkaline->addNotification('You successfully removed the tag &#8220;' . $tag_name . '&#8221;.', 'success');
+			$tags = $photos->removeTags(array($tag_name));
+			if($tags !== false){
+				$notification = 'You successfully removed the tag &#8220;';
+				if(!empty($tags[0])){
+					$notification .= '<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . @$tags[0] . URL_RW . '">' . $tag_name . '</a>';
+				}
+				else{
+					$notification .= $tag_name;
+				}
+				$notification .= '&#8221;.';
+				$alkaline->addNotification($notification, 'success');
 			}
 		}
 		elseif($act == 'pile_add'){
@@ -63,7 +79,36 @@ if(@$_POST['do'] == 'Do'){
 		
 			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
 			if($bool === true){
-				$alkaline->addNotification('You successfully add to the pile &#8220;' . $pile['pile_title'] . '&#8221;.', 'success');
+				$alkaline->addNotification('You successfully added to the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . @$pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
+			}
+		}
+		elseif($act == 'pile_remove'){
+			$pile = $alkaline->getRow('piles', $_POST['act_pile_id']);
+		
+			if(!empty($pile['pile_photos'])){
+				$pile_photos = explode(', ', $pile['pile_photos']);
+				foreach($photo_ids as $photo){
+					$key = array_search($photo, $pile_photos, false);
+					if($key !== false){
+						unset($pile_photos[$key]);
+					}
+				}
+				$pile_photos = array_merge($pile_photos);
+				$pile_photos = array_unique($pile_photos);
+			}
+			else{
+				$pile_photos = array();
+			}
+		
+			$pile_photo_count = count($pile_photos);
+			$pile_photos = implode(', ', $pile_photos);
+		
+			$fields = array('pile_photos' => $pile_photos,
+				'pile_photo_count' => $pile_photo_count);
+		
+			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
+			if($bool === true){
+				$alkaline->addNotification('You successfully removed from the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
 			}
 		}
 		elseif($act == 'right'){
