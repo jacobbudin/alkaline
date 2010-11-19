@@ -254,15 +254,29 @@ class Alkaline{
 	}
 	
 	// Check notifications
-	public function isNotification(){
-		$count = @count($_SESSION['alkaline']['notifications']);
-		if($count > 0){
-			// Determine unique types
-			return $count;
+	public function isNotification($type=null){
+		if(!empty($type)){
+			$notifications = @$_SESSION['alkaline']['notifications'];
+			$count = @count($notifications);
+			if($count > 0){
+				$count = 0;
+				foreach($notifications as $notification){
+					if($notification['type'] == $type){
+						$count++;
+					}
+				}
+				if($count > 0){
+					return $count;
+				}
+			}			
 		}
 		else{
-			return false;
+			$count = @count($_SESSION['alkaline']['notifications']);
+			if($count > 0){
+				return $count;
+			}
 		}
+		return false;
 	}
 	
 	// View notification
