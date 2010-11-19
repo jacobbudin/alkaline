@@ -4,6 +4,7 @@ require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
+$orbit = new Orbit;
 $user = new User;
 
 $user->perm(true);
@@ -25,12 +26,31 @@ if(!empty($_POST['photo_id'])){
 
 	}
 	else{
+		$photo_description_raw = @$_POST['photo_description_raw'];
+		
+		// Configuration: photo_markup
+		if(!empty($_POST['photo_markup'])){
+			$photo_markup_ext = $_POST['photo_markup'];
+			$photo_description = $orbit->hook('markup_' . $photo_markup_ext, $photo_description_raw, $photo_description);
+		}
+		elseif($alkaline->returnConf('photo_markup')){
+			$photo_markup_ext = $alkaline->returnConf('photo_markup_ext');
+			$photo_description = $orbit->hook('markup_' . $photo_markup_ext, $photo_description_raw, $photo_description);
+		}
+		else{
+			$photo_markup_ext = '';
+			$photo_description = nl2br($photo_description_raw);
+		}
+		
 		$fields = array('photo_title' => @$_POST['photo_title'],
-			'photo_description' => @$_POST['photo_description'],
+			'photo_description' => $photo_description,
+			'photo_description_raw' => $photo_description_raw,
+			'photo_markup' => $photo_markup_ext,
 			'photo_geo' => @$_POST['photo_geo'],
 			'photo_published' => @$_POST['photo_published'],
 			'photo_privacy' => @$_POST['photo_privacy'],
 			'right_id' => @$_POST['right_id']);
+		
 		$photos->updateFields($fields);
 		$photos->updateTags(json_decode($_POST['photo_tags_input']));
 	}
@@ -65,7 +85,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<img src="<?php echo $photo['photo_src_admin']; ?>" alt="" />
 			<p>
 				<input type="text" id="photo_title" name="photo_title" value="<?php echo $photo['photo_title']; ?>" class="title bottom-border" />
-				<textarea id="photo_description" name="photo_description"><?php echo $photo['photo_description']; ?></textarea>
+				<textarea id="photo_description_raw" name="photo_description_raw"><?php echo $photo['photo_description_raw']; ?></textarea>
+				<input type="hidden" id="photo_markup" name="photo_markup" value="<?php echo $photo['photo_markup']; ?>" />
 				<input type="hidden" name="photo_id" value="<?php echo $photo['photo_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 			</p>
 		</div>
