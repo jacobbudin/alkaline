@@ -69,7 +69,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</tr>
 			<tr>
 				<td class="right">Theme:</td>
-				<td><?php $themes = $alkaline->getTable('themes', null, 1, null, 'theme_default DESC'); if(!empty($themes)){ $theme = $themes[0]; echo $theme['theme_title'] . ' <span class="small">(' . $theme['theme_build'] . ')</span>'; } else { echo '&#8212;'; } ?></td>
+				<td><?php $theme = $alkaline->getRow('themes', $alkaline->returnConf('theme_id')); if(!empty($theme)){ echo $theme['theme_title'] . ' <span class="small">(' . $theme['theme_build'] . ')</span>'; } else { echo '&#8212;'; } ?></td>
 			</tr>
 			<tr>
 				<td class="right">Extensions:</td>
