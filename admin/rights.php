@@ -105,8 +105,7 @@ else{
 	$alkaline->updateRow($fields, 'rights', $right_id, false);
 	
 	// Get rights set
-	$rights = $alkaline->getTable('rights', $right_id);
-	$right = $rights[0];
+	$right = $alkaline->getRow('rights', $right_id);
 	$right = $alkaline->makeHTMLSafe($right);
 
 	if(!empty($right['right_title'])){	

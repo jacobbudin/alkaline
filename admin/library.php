@@ -205,6 +205,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 		</form>
 		
+		<hr />
+		
 		<h1>Photos (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
 		<p>
 			<?php

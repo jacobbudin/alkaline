@@ -97,6 +97,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		// Preference: recent_photos
 		if($user->returnPref('recent_photos') === true){
 			?>
+			<hr />
 			<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
 			<h1>Recent</h1>
 			<p>
