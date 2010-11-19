@@ -22,28 +22,38 @@ if(!empty($_POST['size_id'])){
 	
 	// Update size
 	else{
+		// Check for file append, prepend duplicates--will overwrite
+		$query = $alkaline->prepare('SELECT size_title FROM sizes WHERE size_append = :size_append AND size_prepend = :size_prepend AND size_id != ' . $size_id);
+		$query->execute(array(':size_append' => @$_POST['size_append'], ':size_prepend' => @$_POST['size_prepend']));
+		$sizes = $query->fetchAll();
 		
-		if(@$_POST['size_watermark'] == 'watermark'){
-			$size_watermark = 1;
+		if(count($sizes) > 0){
+			$size_title = $sizes[0]['size_title'];
+			$alkaline->addNotification('The thumbnail &#8220;' . $size_title . '&#8221; already uses these prepend and append to filename settings.', 'error');
 		}
 		else{
-			$size_watermark = 0;
+			if(@$_POST['size_watermark'] == 'watermark'){
+				$size_watermark = 1;
+			}
+			else{
+				$size_watermark = 0;
+			}
+		
+			$fields = array('size_title' => $alkaline->makeUnicode($_POST['size_title']),
+				'size_label' => preg_replace('#[^a-z]#si', '', $alkaline->makeUnicode($_POST['size_label'])),
+				'size_height' => $_POST['size_height'],
+				'size_width' => $_POST['size_width'],
+				'size_type' => $_POST['size_type'],
+				'size_append' => @$_POST['size_append'],
+				'size_prepend' => @$_POST['size_prepend'],
+				'size_watermark' => $size_watermark);
+		
+			$alkaline->updateRow($fields, 'sizes', $size_id);
 		}
-		
-		$fields = array('size_title' => $alkaline->makeUnicode($_POST['size_title']),
-			'size_label' => preg_replace('#[^a-z]#si', '', $alkaline->makeUnicode($_POST['size_label'])),
-			'size_height' => $_POST['size_height'],
-			'size_width' => $_POST['size_width'],
-			'size_type' => $_POST['size_type'],
-			'size_append' => @$_POST['size_append'],
-			'size_prepend' => @$_POST['size_prepend'],
-			'size_watermark' => $size_watermark);
-		
-		$alkaline->updateRow($fields, 'sizes', $size_id);
 	}
 	
 	// Build size
-	if(@$_POST['size_build'] == 'build'){
+	if((@$_POST['size_build'] == 'build') and !$alkaline->isNotification('error')){
 		// Store to build thumbnails
 		$_SESSION['alkaline']['maintenance']['size_id'] = $size_id;
 		
@@ -53,7 +63,9 @@ if(!empty($_POST['size_id'])){
 		exit();
 	}
 	
-	unset($size_id);
+	if(!$alkaline->isNotification('error')){
+		unset($size_id);
+	}
 }
 else{
 	$alkaline->deleteEmptyRow('sizes', array('size_title'));
@@ -111,9 +123,9 @@ else{
 	$size = $alkaline->getRow('sizes', $size_id);
 	$size = $alkaline->makeHTMLSafe($size);
 	
+	// Dashboard thumbnail warning
 	if(($size['size_label'] == 'admin') or ($size['size_label'] == 'square')){
 		$alkaline->addNotification('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'notice');
-		$size_lock = true;
 	}
 	
 	if(!empty($size['size_title'])){	
@@ -136,7 +148,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="size_label">Label:</label></td>
 				<td>
-					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> class="s" />
+					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -146,9 +158,9 @@ else{
 			<tr>
 				<td class="right"><label>Type:</label></td>
 				<td>
-					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /> <label for="size_type_scale">Scale image</label><br />
+					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> /> <label for="size_type_scale">Scale image</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;&#8220;normal&#8221; thumbnails<br />
-					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /> <label for="size_type_fill">Fill canvas</label><br />
+					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> /> <label for="size_type_fill">Fill canvas</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Fills the thumbnail, crops excess&#8212;good for arranging in grids
 				</td>
 			</tr>
