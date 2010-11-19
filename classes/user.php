@@ -150,10 +150,10 @@ class User extends Alkaline{
 	}
 	
 	// Read preference key and return value
-	public function returnPref($name){
+	public function returnPref($name, $default=null){
 		if(!$this->perm(true)){ return false; }
 		
-		return parent::returnForm($this->user['user_preferences'], $name);
+		return parent::returnForm($this->user['user_preferences'], $name, $default);
 	}
 	
 	// Save preferences

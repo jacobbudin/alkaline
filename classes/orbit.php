@@ -121,26 +121,25 @@ class Orbit extends Alkaline{
 	
 	// Local require_once()
 	protected function load($file){
-		require_once(parent::correctWinPath(PATH . EXTENSIONS . $this->folder . '/' . $file));
+		return require_once(parent::correctWinPath(PATH . EXTENSIONS . $this->folder . '/' . $file));
 	}
 	
 	// Set preference key
 	public function setPref($name, $value){
-		$this->preferences[$name] = $value;
-		return true;
+		return $this->preferences[$name] = $value;
 	}
 	
 	// Read preference key and return value
-	public function readPref($name, $default=null){
-		if(isset($this->preferences[$name])){
-			return $this->preferences[$name];
-		}
-		if(isset($default)){
-			return $default;
-		}	
+	public function returnPref($name, $default=null){
+		return parent::returnForm($this->preferences, $name, $default);
 	}
 	
-	// Set preference key
+	// Read preference key, return form data
+	public function readPref($name, $check=true){
+		return parent::readForm($this->preferences, $name, $check);
+	}
+	
+	// Save preferences to database
 	public function savePref(){
 		$query = $this->prepare('UPDATE extensions SET extension_preferences = :extension_preferences WHERE extension_uid = :extension_uid;');
 		return $query->execute(array(':extension_preferences' => serialize($this->preferences), ':extension_uid' => $this->uid));

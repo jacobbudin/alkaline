@@ -8,9 +8,9 @@ class Gravatar extends Orbit{
 	public function __construct(){
 		parent::__construct();
 		
-		$this->gravatar_size = $this->readPref('gravatar_size');
-		$this->gravatar_default = $this->readPref('gravatar_default');
-		$this->gravatar_max_rating = $this->readPref('gravatar_max_rating');
+		$this->gravatar_size = $this->returnPref('gravatar_size');
+		$this->gravatar_default = $this->returnPref('gravatar_default');
+		$this->gravatar_max_rating = $this->returnPref('gravatar_max_rating');
 		
 		if(empty($this->gravatar_size) or !intval($this->gravatar_size)){
 			$this->gravatar_size = 80;
@@ -48,10 +48,10 @@ class Gravatar extends Orbit{
 				<td class="right" style="padding-top: .6em;">Maximum rating (optional):</td>
 				<td>
 					<select name="gravatar_max_rating">
-						<option value="g"<?php if($this->gravatar_max_rating == 'g'){ echo ' selected="selected"'; } ?>>G</option>
-						<option value="pg"<?php if($this->gravatar_max_rating == 'pg'){ echo ' selected="selected"'; } ?>>PG</option>
-						<option value="r"<?php if($this->gravatar_max_rating == 'r'){ echo ' selected="selected"'; } ?>>R</option>
-						<option value="x"<?php if($this->gravatar_max_rating == 'x'){ echo ' selected="selected"'; } ?>>X</option>
+						<option value="g" <?php echo $this->readPref('gravatar_max_rating', 'g'); ?>>G</option>
+						<option value="pg" <?php echo $this->readPref('gravatar_max_rating', 'pg'); ?>>PG</option>
+						<option value="r" <?php echo $this->readPref('gravatar_max_rating', 'r'); ?>>R</option>
+						<option value="x" <?php echo $this->readPref('gravatar_max_rating', 'x'); ?>>X</option>
 					</select>
 				</td>
 			</tr>

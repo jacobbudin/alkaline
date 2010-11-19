@@ -8,7 +8,7 @@ class GoogleAnalytics extends Orbit{
 	public function __construct(){
 		parent::__construct();
 		
-		$this->ga_account_id = $this->readPref('ga_account_id');
+		$this->ga_account_id = $this->returnPref('ga_account_id');
 	}
 	
 	public function __destruct(){

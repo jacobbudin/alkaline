@@ -1230,8 +1230,14 @@ class Alkaline{
 	}
 	
 	// Retrieve form option (HTML)
-	public function readForm($array, $name, $check=true){
-		@$value = $array[$name];
+	public function readForm($array=null, $name, $check=true){
+		if(is_array($array)){
+			@$value = $array[$name];
+		}
+		else{
+			$value = $name;
+		}
+		
 		if(!isset($value)){
 			return false;
 		}
@@ -1251,10 +1257,15 @@ class Alkaline{
 	}
 	
 	// Return form option
-	public function returnForm($array, $name){
+	public function returnForm($array, $name, $default=null){
 		@$value = $array[$name];
 		if(!isset($value)){
-			return false;
+			if(!isset($default)){
+				return $default;
+			}
+			else{
+				return false;
+			}
 		}
 		return $value;
 	}

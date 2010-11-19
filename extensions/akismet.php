@@ -8,8 +8,8 @@ class AkismetHandler extends Orbit{
 	public function __construct(){
 		parent::__construct();
 		
-		$this->akismet_api_key = $this->readPref('akismet_api_key');
-		$this->akismet_spam_caught = $this->readPref('akismet_spam_caught', 0);
+		$this->akismet_api_key = $this->returnPref('akismet_api_key');
+		$this->akismet_spam_caught = $this->returnPref('akismet_spam_caught', 0);
 		$this->akismet_blog_url = LOCATION . BASE;
 	}
 	
@@ -19,6 +19,8 @@ class AkismetHandler extends Orbit{
 	
 	public function comment_add($fields){
 		$this->load('Akismet.php');
+		
+		if(empty($this->akismet_api_key)){ return; }
 		
 		$akismet = new Akismet($this->akismet_blog_url, $this->akismet_api_key);
 		
@@ -48,7 +50,7 @@ class AkismetHandler extends Orbit{
 		<table>
 			<tr>
 				<td class="right" style="padding-top: .75em;">Akismet API Key:</td>
-				<td><input type="text" name="akismet_api_key" value="<?php echo $this->akismet_api_key; ?>" /></td>
+				<td><input type="text" name="akismet_api_key" value="<?php echo $this->akismet_api_key; ?>" class="s" /></td>
 			</tr>
 			<tr>
 				<td class="right">Lifetime spam count:</td>
@@ -59,10 +61,8 @@ class AkismetHandler extends Orbit{
 	}
 	
 	public function config_save(){
-		if(isset($_POST['akismet_api_key'])){
-			$this->setPref('akismet_api_key', $_POST['akismet_api_key']);
-			$this->savePref();
-		}
+		$this->setPref('akismet_api_key', $_POST['akismet_api_key']);
+		$this->savePref();
 	}
 }
 
