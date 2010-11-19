@@ -20,11 +20,13 @@ class Alkaline{
 	const product = 'Alkaline';
 	const version = '1.0';
 	
-	public $db;
 	public $db_type;
+	public $db_version;
 	public $tables;
 	
 	protected $notifications;
+	
+	private $db;
 	
 	public function __construct(){
 		@header('Cache-Control: no-cache, must-revalidate');
@@ -88,6 +90,8 @@ class Alkaline{
 					$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
 					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
 				}
+				
+				$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
 			}
 		}
 		
@@ -940,8 +944,16 @@ class Alkaline{
 		$limit_sql = '';
 		
 		if(!empty($order_by)){
-			$order_by = $this->sanitize($order_by);
-			$order_by_sql = ' ORDER BY ' . $order_by;
+			if(is_string($order_by)){
+				$order_by = $this->sanitize($order_by);
+				$order_by_sql = ' ORDER BY ' . $order_by;
+			}
+			elseif(is_array($order_by)){
+				foreach($order_by as &$by){
+					$by = $this->sanitize($by);
+				}
+				$order_by_sql = ' ORDER BY ' . implode(', ', $order_by);
+			}
 		}
 		
 		if(!empty($limit)){
