@@ -1420,6 +1420,20 @@ class Alkaline{
 		return $location;
 	}
 	
+	public function locationFull($append=null){
+		$location = LOCATION . $_SERVER['REQUEST_URI'];
+		if(!empty($append)){
+			if(preg_match('#\?.*$#si', $location)){
+				$location .= '&' . $append;
+			}
+			else{
+				$location .= '?' . $append;
+			}
+		}
+		
+		return $location;
+	}
+	
 	public function setCallback($page=null){
 		$_SESSION['alkaline']['callback'] = self::location();
 	}
