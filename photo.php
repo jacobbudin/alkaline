@@ -7,6 +7,8 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('photo');
 $alkaline->addComments();
 
+$orbit = new Orbit;
+
 $id = $alkaline->findID($_GET['id']);
 
 $photo_ids = new Find($id);
@@ -21,6 +23,8 @@ $photos->getExif();
 $photos->getTags();
 $photos->getRights();
 $photos->getComments();
+
+$photos->photos = $orbit->hook('photo', $photos->photos, $photos->photos);
 
 $header = new Canvas;
 $header->load('header');
