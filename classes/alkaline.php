@@ -709,6 +709,7 @@ class Alkaline{
 		
 		$id = self::findID($_POST['comment_id']);
 		
+		// Configuration: comm_mod
 		if($this->returnConf('comm_mod')){
 			$comment_status = 0;
 		}
@@ -716,17 +717,30 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
-		$comment_text = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		
+		$orbit = new Orbit;
+		
+		// Configuration: comm_markup
+		if($this->returnConf('comm_markup')){
+			$comm_markup_ext = $this->returnConf('comm_markup_ext');
+			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, $comment_text);
+		}
+		else{
+			$comm_markup_ext = '';
+			$comment_text = nl2br($comment_text_raw);
+		}
 		
 		$fields = array('photo_id' => $id,
 			'comment_status' => $comment_status,
 			'comment_text' => $comment_text,
+			'comment_text_raw' => $comment_text_raw,
+			'comment_markup' => $comm_markup_ext,
 			'comment_author_name' => $comment_text,
 			'comment_author_url' => strip_tags($_POST['comment_' . $id .'_author_url']),
 			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
 			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);
 		
-		$orbit = new Orbit;
 		$fields = $orbit->hook('comment_add', $fields, $fields);
 		
 		if(!$this->addRow($fields, 'comments')){
