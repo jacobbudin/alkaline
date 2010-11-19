@@ -728,9 +728,10 @@ class Alkaline{
 		// Configuration: comm_markup
 		if($this->returnConf('comm_markup')){
 			$comm_markup_ext = $this->returnConf('comm_markup_ext');
-			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, $comment_text);
+			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, null);
 		}
-		else{
+		
+		if(!isset($comment_text)){
 			$comm_markup_ext = '';
 			$comment_text = nl2br($comment_text_raw);
 		}
@@ -1272,7 +1273,7 @@ class Alkaline{
 	public function returnForm($array, $name, $default=null){
 		@$value = $array[$name];
 		if(!isset($value)){
-			if(!isset($default)){
+			if(isset($default)){
 				return $default;
 			}
 			else{
