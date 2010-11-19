@@ -19,10 +19,6 @@ class Orbit extends Alkaline{
 	public function __construct($id=null){
 		parent::__construct();
 		
-		// Secure original database connection
-		$this->db_safe = $this->db;
-		unset($this->db);
-		
 		// Start Orbit Engine
 		if(!is_subclass_of($this, 'Orbit')){
 			if(empty($_SESSION['alkaline']['extensions'])){
@@ -113,9 +109,6 @@ class Orbit extends Alkaline{
 	}
 	
 	public function __destruct(){
-		// Close database connection
-		$this->db_safe = null;
-		
 		// Save extension data
 		$_SESSION['alkaline']['extensions'] = $this->extensions;
 		
@@ -123,21 +116,8 @@ class Orbit extends Alkaline{
 	}
 	
 	// DATABASE
-	public function exec($query){
-		$this->prequery($query);
-		$response = $this->db_safe->exec($query);
-		$this->postquery($query, $this->db_safe);
-		
-		return $response;
-	}
-	
-	public function prepare($query){
-		$this->prequery($query);
-		$response = $this->db_safe->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$this->postquery($query, $this->db_safe);
-		
-		return $response;
-	}
+	// public function exec($query){ }
+	// public function prepare($query){ }
 	
 	// Local require_once()
 	protected function load($file){
