@@ -80,15 +80,44 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h2>Environment</h2>
 		<table>
 			<tr>
-				<td class="right">PHP Version:</td>
+				<td class="right">PHP version:</td>
 				<td><?php echo phpversion(); ?></td>
 			</tr>
 			<tr>
-				<td class="right">GD Version:</td>
+				<td class="right">
+					<?php
+					
+					switch($alkaline->db_type){
+						case 'mssql':
+							echo 'Microsoft SQL Server';
+							break;
+						case 'mysql':
+							echo 'MySQL';
+							break;
+						case 'pgsql':
+							echo 'PostgreSQL';
+							break;
+						case 'sqlite':
+							echo 'SQLite';
+							break;
+						default:
+							echo 'Unknown';
+							break;
+					}
+					
+					?>
+					version:
+				</td>
+				<td>
+					<?php echo $alkaline->db_version; ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="right">GD version:</td>
 				<td><?php if($gd_info = @gd_info()){ preg_match('#[0-9.]+#s', $gd_info['GD Version'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 			</tr>
 			<tr>
-				<td class="right">ImageMagick Version:</td>
+				<td class="right">ImageMagick version:</td>
 				<td><?php if(class_exists('Imagick', false)){ $im_info = Imagick::getVersion(); preg_match('#[0-9.]+#s', $im_info['versionString'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 			</tr>
 		</table>
