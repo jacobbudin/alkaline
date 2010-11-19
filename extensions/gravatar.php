@@ -34,18 +34,18 @@ class Gravatar extends Orbit{
 
 		<table>
 			<tr>
-				<td class="right" style="padding-top: .75em;">Avatar size (in pixels):</td>
-				<td><input type="text" name="gravatar_size" value="<?php echo $this->gravatar_size; ?>" style="width: 3em;" /></td>
+				<td class="right pad"><label>Avatar size:</label></td>
+				<td><input type="text" name="gravatar_size" value="<?php echo $this->gravatar_size; ?>" class="xs" /> pixels</td>
 			</tr>
 			<tr>
-				<td class="right" style="padding-top: .75em;">Default avatar (optional):</td>
+				<td class="right pad"><label>Default avatar:</label></td>
 				<td>
 					<input type="text" name="gravatar_default" value="<?php echo $this->gravatar_default; ?>" style="width: 40em;" /><br />
-					<span class="quiet">Full URL of avatar image file</span>
+					<span class="quiet">Full URL of avatar image file (optional)</span>
 				</td>
 			</tr>
 			<tr>
-				<td class="right" style="padding-top: .6em;">Maximum rating (optional):</td>
+				<td class="right middle"><label>Maximum rating:</label></td>
 				<td>
 					<select name="gravatar_max_rating">
 						<option value="g" <?php echo $this->readPref('gravatar_max_rating', 'g'); ?>>G</option>
