@@ -62,15 +62,17 @@ if(empty($right_id)){
 	$rights = $alkaline->getTable('rights');
 	$right_count = @count($rights);
 	
-	define('TITLE', 'Alkaline Rights Sets');
+	define('TITLE', 'Alkaline Right Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>">Add rights set</a></div>
 
-	<h1>Rights (<?php echo $right_count; ?>)</h1>
-
+	<h1>Right Sets (<?php echo $right_count; ?>)</h1>
+	
+	<p>Right sets clarify which copyrights you retain on your photography to discourage illicit use.</p>
+	
 	<table>
 		<tr>
 			<th style="width: 60%;">Title</th>
@@ -109,7 +111,7 @@ else{
 	$right = $alkaline->makeHTMLSafe($right);
 
 	if(!empty($right['right_title'])){	
-		define('TITLE', 'Alkaline Rights Set: &#8220;' . $right['right_title']  . '&#8221;');
+		define('TITLE', 'Alkaline Right Set: &#8220;' . $right['right_title']  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
 

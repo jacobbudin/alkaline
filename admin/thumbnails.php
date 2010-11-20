@@ -80,7 +80,7 @@ define('TAB', 'settings');
 
 // GET SIZES TO VIEW OR SIZE TO EDIT
 if(empty($size_id)){
-	$sizes = $alkaline->getTable('sizes');
+	$sizes = $alkaline->getTable('sizes', null, null, null, 'size_title ASC');
 	$size_count = @count($sizes);
 	
 	define('TITLE', 'Alkaline Thumbnails');
@@ -95,9 +95,9 @@ if(empty($size_id)){
 	<table>
 		<tr>
 			<th>Title</th>
-			<th class="center">Dimensions</th>
+			<th class="center">Dimensions (W&#0215;H)</th>
 			<th class="center">Type</th>
-			<th class="center">Canvas Markup</th>
+			<th class="center">Canvas tag</th>
 		</tr>
 		<?php
 	

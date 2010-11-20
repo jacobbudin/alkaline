@@ -62,7 +62,7 @@ if(empty($guest_id)){
 
 	<h1>Guests (<?php echo $guest_count; ?>)</h1>
 	
-	<p>Guests use an access key to view some or all protected photos in your library.</p>
+	<p>Guests can use an access key to view some or all protected photos in your Alkaline library.</p>
 	
 	<table>
 		<tr>

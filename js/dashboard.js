@@ -256,6 +256,7 @@ function executeTask(){
 	});
 	
 	$("#tasks").slideUp(500);
+	$("#note").slideUp(500);
 	$("#progress").delay(500).slideDown(500);
 	$("#progress").progressbar({ value: 0 });
 }

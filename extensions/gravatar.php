@@ -10,7 +10,7 @@ class Gravatar extends Orbit{
 		
 		$this->gravatar_size = $this->returnPref('gravatar_size');
 		$this->gravatar_default = $this->returnPref('gravatar_default');
-		$this->gravatar_max_rating = $this->returnPref('gravatar_max_rating');
+		$this->gravatar_max_rating = $this->returnPref('gravatar_max_rating', 'r');
 		
 		if(empty($this->gravatar_size) or !intval($this->gravatar_size)){
 			$this->gravatar_size = 80;
@@ -34,20 +34,20 @@ class Gravatar extends Orbit{
 
 		<table>
 			<tr>
-				<td class="right pad"><label>Avatar size:</label></td>
-				<td><input type="text" name="gravatar_size" value="<?php echo $this->gravatar_size; ?>" class="xs" /> pixels</td>
+				<td class="right pad"><label for="gravatar_size">Avatar size:</label></td>
+				<td><input type="text" id="gravatar_size" name="gravatar_size" value="<?php echo $this->gravatar_size; ?>" class="xs" /> pixels</td>
 			</tr>
 			<tr>
-				<td class="right pad"><label>Default avatar:</label></td>
+				<td class="right pad"><label for="gravatar_default">Default avatar:</label></td>
 				<td>
-					<input type="text" name="gravatar_default" value="<?php echo $this->gravatar_default; ?>" style="width: 40em;" /><br />
+					<input type="text" id="gravatar_default" name="gravatar_default" value="<?php echo $this->gravatar_default; ?>" style="width: 40em;" /><br />
 					<span class="quiet">Full URL of avatar image file (optional)</span>
 				</td>
 			</tr>
 			<tr>
-				<td class="right middle"><label>Maximum rating:</label></td>
+				<td class="right middle"><label for="gravatar_max_rating">Maximum rating:</label></td>
 				<td>
-					<select name="gravatar_max_rating">
+					<select id="gravatar_max_rating" name="gravatar_max_rating">
 						<option value="g" <?php echo $this->readPref('gravatar_max_rating', 'g'); ?>>G</option>
 						<option value="pg" <?php echo $this->readPref('gravatar_max_rating', 'pg'); ?>>PG</option>
 						<option value="r" <?php echo $this->readPref('gravatar_max_rating', 'r'); ?>>R</option>

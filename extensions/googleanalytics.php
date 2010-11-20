@@ -39,15 +39,15 @@ class GoogleAnalytics extends Orbit{
 	
 	public function config(){
 		?>
-		<p>To use this extension you will need a Google Analytics account. If you do not have one, <a href="http://www.google.com/analytics/sign_up.html">get one for free</a>. This extension does not affect Alkaline&#8217;s built-in statistics module.</p>
+		<p>To use this extension you will need a <a href="http://www.google.com/analytics/sign_up.html">Google Analytics account</a>. For more information on Google Analytics, visit <a href="http://www.google.com/analytics/">Google Analytics&#8217;s Web site</a>.</p>
 		
-		<p>For more information on Google Analytics, visit <a href="http://www.google.com/analytics/">Google Analytics&#8217;s Web site</a>.</p>
+		<p>This extension does not affect Alkaline&#8217;s built-in statistics module.</p>
 
 		<table>
 			<tr>
-				<td class="right" style="padding-top: 1em;">Account Identifier (UA ID):</td>
+				<td class="right pad"><label for="ga_account_id">Account identifier (UA ID):</label></td>
 				<td>
-					<input type="text" name="ga_account_id" value="<?php echo $this->ga_account_id; ?>" /><br />
+					<input type="text" id="ga_account_id" name="ga_account_id" value="<?php echo $this->ga_account_id; ?>" class="s" /><br />
 					<span class="quiet">Looks like: UA-12345678-1</span>
 				</td>
 			</tr>

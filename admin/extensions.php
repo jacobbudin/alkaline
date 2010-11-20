@@ -75,7 +75,9 @@ if(empty($extension_id)){
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install extension</a></div>
 
 	<h1>Extensions (<?php echo @$extensions_count; ?>)</h1>
-
+	
+	<p>Extensions add new functionality to your Alkaline installation. You can browse and download additional extensions at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
+	
 	<table>
 		<tr>
 			<th>Extension</th>

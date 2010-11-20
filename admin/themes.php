@@ -35,6 +35,8 @@ if(empty($theme_id)){
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install theme</a></div>
 
 	<h1>Themes (<?php echo $theme_count; ?>)</h1>
+	
+	<p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 
 	<table>
 		<tr>

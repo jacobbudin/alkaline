@@ -54,7 +54,7 @@ if(empty($user_db_id)){
 
 	<h1>Users (<?php echo $user_db_count; ?>)</h1>
 	
-	<p>Users can add photos and modify the library.</p>
+	<p>Users can add photos to your Alkaline library and modify the your Alkaline installation.</p>
 	
 	<table>
 		<tr>
@@ -93,8 +93,7 @@ else{
 	$alkaline->updateRow($fields, 'users', $user_db_id, false);
 	
 	// Get user
-	$user_dbs = $alkaline->getTable('users', $user_db_id);
-	$user_db = $user_dbs[0];
+	$user_db = $alkaline->getRow('users', $user_db_id);
 	$user_db = $alkaline->makeHTMLSafe($user_db);
 
 	if(!empty($user_db['user_name'])){
@@ -115,19 +114,22 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="user_name">Name:</label></td>
-				<td><input type="text" id="user_name" name="user_name" value="<?php echo $user_db['user_name']; ?>" class="title" /></td>
+				<td><input type="text" id="user_name" name="user_name" value="<?php echo $user_db['user_name']; ?>" class="s" /></td>
 			</tr>
 			<tr>
 				<td class="right middle"><label for="user_user">Username:</label></td>
-				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" /></td>
+				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" class="s" /></td>
 			</tr>
 			<tr>
-				<td class="right pad"><label for="user_pass">New password:</label></td>
-				<td><input type="text" id="user_pass" name="user_pass" value="" /></td>
+				<td class="right pad"><label for="user_pass">Password:</label></td>
+				<td>
+					<input type="text" id="user_pass" name="user_pass" value="" class="s" /><br />
+					Enter a password only if you wish to change it (optional)
+				</td>
 			</tr>
 			<tr>
 				<td class="right middle"><label for="user_email">Email:</label></td>
-				<td><input type="text" id="user_email" name="user_email" value="<?php echo $user_db['user_email']; ?>" style="width: 24em;" /></td>
+				<td><input type="text" id="user_email" name="user_email" value="<?php echo $user_db['user_email']; ?>" class="m" /></td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="user_reset_pass" name="user_reset_pass" value="reset_pass" /></td>

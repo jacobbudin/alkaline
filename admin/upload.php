@@ -34,6 +34,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h3>Status</h3>
 		
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
+		
+		<h3>Instructions</h3>
+		
+		<p>Drag photos from a folder on your computer or from most applications including iPhoto and Aperture into the grey retaining area.</p>
+		
+		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
+		
+		<p>Once you&#8217;re done uploading, proceed to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your photos.</p>
 	</div>
 	<div class="span-18 colborderl last">
 		<h1>Upload</h1>

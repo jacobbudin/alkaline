@@ -43,17 +43,15 @@ class AkismetHandler extends Orbit{
 	
 	public function config(){
 		?>
-		<p>To use this extension you will need an Akismet API key. If you do not have one, <a href="http://akismet.com/personal/">get one for free</a>.</p>
-		
-		<p>For more information on Akismet, visit <a href="http://akismet.com/">Akismet&#8217;s Web site</a>.</p>
+		<p>To use this extension you will need an <a href="http://akismet.com/personal/">Akismet API key</a>. For more information on Akismet, visit <a href="http://akismet.com/">Akismet&#8217;s Web site</a>.</p>
 
 		<table>
 			<tr>
-				<td class="right" style="padding-top: .75em;">Akismet API Key:</td>
-				<td><input type="text" name="akismet_api_key" value="<?php echo $this->akismet_api_key; ?>" class="s" /></td>
+				<td class="right pad"><label for="akismet_api_key">Akismet API key:</label></td>
+				<td><input type="text" id="akismet_api_key" name="akismet_api_key" value="<?php echo $this->akismet_api_key; ?>" class="s" /></td>
 			</tr>
 			<tr>
-				<td class="right">Lifetime spam count:</td>
+				<td class="right"><label>Lifetime spam ticker:</label></td>
 				<td><?php echo $this->akismet_spam_caught; ?> comment<?php if($this->akismet_spam_caught != 1){ echo 's'; } ?></td>
 			</tr>
 		</table>

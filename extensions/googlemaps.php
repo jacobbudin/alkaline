@@ -35,7 +35,7 @@ class GoogleMaps extends Orbit{
 	
 	public function config(){
 		?>
-		<p>Use the {Photo_Map} Canvas tag to show off your map.</p>
+		<p>Integrate maps by adding the {Photo_Map} Canvas tag to your {block:Photo} loop.</p>
 
 		<table>
 			<!-- <tr>
