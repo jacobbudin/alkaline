@@ -62,9 +62,70 @@ if($alkaline->returnConf('maint_disable')){
 	$alkaline->addNotification('All extensions have been disabled.', 'notice');
 }
 
-// INSTALL EXTENSION
-if($extension_act == 'install'){
-	$extension_id = $alkaline->addRow(null, 'extensions');
+// Load current extensions
+$extensions = $alkaline->getTable('extensions');
+
+// Seek all extensions
+$seek_extensions = $alkaline->seekDirectory(PATH . EXTENSIONS, '');
+
+$extension_folders = array();
+$extension_classes = array();
+foreach($extensions as $extension){
+	$extension_folders[] = $extension['extension_folder'];
+	$extension_classes[] = $extension['extension_class'];
+}
+
+$extensions_installed = array();
+
+// Determine which extensions are new, intall them
+foreach($seek_extensions as &$extension_folder){
+	$extension_folder = $alkaline->getFilename($extension_folder);
+	if(!in_array($extension_folder, $extension_folders)){
+		$data = file_get_contents(PATH . EXTENSIONS . $extension_folder . '/extension.xml');
+		$xml = new SimpleXMLElement($data);
+		
+		if(in_array($xml->class, $extension_classes)){
+			$alkaline->addNotification('Alkaline could not install a new extension. Its class name interferes with an preexisting extension.', 'error');
+		}
+		
+		require_once(PATH . EXTENSIONS . $extension_folder . '/' . $xml->file . '.php');
+		
+		$extension_methods = get_class_methods(strval($xml->class));
+		$extension_hooks = array();
+		
+		foreach($extension_methods as $method){
+			if(strpos($method, 'orbit_') === 0){
+				$extension_hooks[] = substr($method, 6);
+			}
+		}
+		
+		$fields = array('extension_uid' => $xml->uid,
+			'extension_class' => $xml->class,
+			'extension_title' => $xml->title,
+			'extension_file' => $xml->file,
+			'extension_folder' => $extension_folder,
+			'extension_status' => 1,
+			'extension_build' => $xml->build,
+			'extension_version' => $xml->version,
+			'extension_hooks' => serialize($extension_hooks),
+			'extension_description' => $xml->description,
+			'extension_creator_name' => $xml->creator->name,
+			'extension_creator_uri' => $xml->creator->uri);
+		$extension_intalled_id = $alkaline->addRow($fields, 'extensions');
+		$extensions_installed[] = $extension_intalled_id;
+	}
+}
+
+$extensions_installed_count = count($extensions_installed);
+if($extensions_installed_count > 0){
+	if($extensions_installed_count == 1){
+		$notification = 'You have succesfully installed 1 extension.';
+	}
+	else{
+		$notification = 'You have succesfully installed ' . $extensions_installed_count . ' extensions.';
+	}
+	
+	$alkaline->addNotification($notification, 'success');
 }
 
 define('TAB', 'settings');
@@ -77,8 +138,6 @@ if(empty($extension_id)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 
 	?>
-	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install extension</a></div>
 
 	<h1>Extensions (<?php echo @$extensions_count; ?>)</h1>
 	
@@ -96,13 +155,13 @@ if(empty($extension_id)){
 		foreach($extensions as $extension){
 			echo '<tr>';
 			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
-			if(!empty($extension['extension_creator'])){
+			if(!empty($extension['extension_creator_name'])){
 				echo ' \ ';
-				if(!empty($extension['extension_creator_url'])){
-					echo '<a href="' . $extension['extension_creator_url'] . '" class="nu">' . $extension['extension_creator'] . '</a>';
+				if(!empty($extension['extension_creator_uri'])){
+					echo '<a href="' . $extension['extension_creator_uri'] . '" class="nu">' . $extension['extension_creator_name'] . '</a>';
 				}
 				else{
-					echo $extension['extension_creator'];
+					echo $extension['extension_creator_name'];
 				}
 			}
 			echo '<br />' . $extension['extension_description'] . '</td>';

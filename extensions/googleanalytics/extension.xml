@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
-	<UID>d0aede3777a7e0c5e7f1092997e5d1b69c71b3fc</UID>
-	<Index>googleanalytics</Index>
-	<Class>GoogleAnalytics</Class>
-	<Title>Google Analytics</Title>
-	<Build>1</Build>
-	<Version>1.0</Version>
-	<Description>Implements Google Analytics visitor tracking.</Description>
-	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
-</Extension>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>d0aede3777a7e0c5e7f1092997e5d1b69c71b3fc</uid>
+	<file>googleanalytics</file>
+	<class>GoogleAnalytics</class>
+	<title>Google Analytics</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Implements Google Analytics visitor tracking.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>

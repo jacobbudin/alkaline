@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
-	<UID>2ed2a9cdcf9d375d68b77ffea32487c396fa9866</UID>
-	<Index>twitter</Index>
-	<Class>Twitter</Class>
-	<Title>Twitter</Title>
-	<Build>1</Build>
-	<Version>1.0</Version>
-	<Description>Updates Twitter status.</Description>
-	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
-</Extension>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>2ed2a9cdcf9d375d68b77ffea32487c396fa9866</uid>
+	<file>twitter</file>
+	<class>Twitter</class>
+	<title>Twitter</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Updates Twitter status.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>

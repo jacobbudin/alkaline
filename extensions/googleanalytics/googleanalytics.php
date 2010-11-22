@@ -13,7 +13,7 @@ class GoogleAnalytics extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function body_close(){
+	public function orbit_body_close(){
 		if(!empty($this->ga_account_id)){
 			?>
 			<script type="text/javascript">
@@ -35,7 +35,7 @@ class GoogleAnalytics extends Orbit{
 		}
 	}
 	
-	public function config(){
+	public function orbit_config(){
 		?>
 		<p>To use this extension you will need a <a href="http://www.google.com/analytics/sign_up.html">Google Analytics account</a>. For more information on Google Analytics, visit <a href="http://www.google.com/analytics/">Google Analytics&#8217;s Web site</a>.</p>
 		
@@ -53,7 +53,7 @@ class GoogleAnalytics extends Orbit{
 		<?php
 	}
 	
-	public function config_save(){
+	public function orbit_config_save(){
 		if(isset($_POST['ga_account_id'])){
 			$this->setPref('ga_account_id', $_POST['ga_account_id']);
 			$this->savePref();

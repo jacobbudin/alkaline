@@ -21,14 +21,14 @@ class Gravatar extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function comment_add($fields){
+	public function orbit_comment_add($fields){
 		$email = $fields['comment_author_email'];
 		$gravatar = 'http://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . '?d=' . urlencode($this->gravatar_default) . '&s=' . $this->gravatar_size . '&r=' . $this->gravatar_max_rating . '&$img=false';
 		$fields['comment_author_avatar'] = $gravatar;
 		return $fields;
 	}
 	
-	public function config(){
+	public function orbit_config(){
 		?>
 		<p>For more information on Gravatar, visit <a href="http://www.gravatar.com/">Gravatar&#8217;s Web site</a>.</p>
 
@@ -59,7 +59,7 @@ class Gravatar extends Orbit{
 		<?php
 	}
 	
-	public function config_save(){
+	public function orbit_config_save(){
 		if(isset($_POST['gravatar_size'])){
 			$this->setPref('gravatar_size', $_POST['gravatar_size']);
 			$this->setPref('gravatar_default', $_POST['gravatar_default']);

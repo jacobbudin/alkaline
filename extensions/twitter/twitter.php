@@ -37,7 +37,7 @@ class Twitter extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function config(){
+	public function orbit_config(){
 		?>
 		<p>Every time you publish a photo, your <a href="http://www.twitter.com/">Twitter</a> status will be updated. (If you publish multiple photos simultaneously, your status will only be updated once.)</p>
 		<?php
@@ -84,7 +84,7 @@ class Twitter extends Orbit{
 		}
 	}
 	
-	public function config_load(){
+	public function orbit_config_load(){
 		if(!empty($_GET['from'])){
 			switch($_GET['from']){
 				case 'twitter':
@@ -145,13 +145,13 @@ class Twitter extends Orbit{
 		}
 	}
 	
-	public function config_save(){
+	public function orbit_config_save(){
 		$this->setPref('twitter_format', @$_POST['twitter_format']);
 		$this->setPref('twitter_url_shortener', @$_POST['twitter_url_shortener']);
 		$this->savePref();
 	}
 	
-	public function photo_publish($photo_ids){
+	public function orbit_photo_publish($photo_ids){
 		$status = 'I just uploaded a photo.';
 		$paramaters = array('status' => $status);
 		// $this->twitter->post('/statuses/update.json', $paramaters);

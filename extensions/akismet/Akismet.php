@@ -17,7 +17,7 @@ class AkismetHandler extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function comment_add($fields){
+	public function orbit_comment_add($fields){
 		require_once('classes/Akismet.php');
 		
 		if(empty($this->akismet_api_key)){ return; }
@@ -41,7 +41,7 @@ class AkismetHandler extends Orbit{
 		return $fields;
 	}
 	
-	public function config(){
+	public function orbit_config(){
 		?>
 		<p>To use this extension you will need an <a href="http://akismet.com/personal/">Akismet API key</a>. For more information on Akismet, visit <a href="http://akismet.com/">Akismet&#8217;s Web site</a>.</p>
 
@@ -58,7 +58,7 @@ class AkismetHandler extends Orbit{
 		<?php
 	}
 	
-	public function config_save(){
+	public function orbit_config_save(){
 		$this->setPref('akismet_api_key', $_POST['akismet_api_key']);
 		$this->savePref();
 	}

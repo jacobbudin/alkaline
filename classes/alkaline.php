@@ -345,9 +345,14 @@ class Alkaline{
 					self::seekDirectory($dir . $filename . '/', $files);
 				}
 				*/
-
-				// Find files with proper extensions
-				if(preg_match('([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})', $filename)){
+				
+				if(!empty($ext)){
+					// Find files with proper extensions
+					if(preg_match('([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})', $filename)){
+						$files[] = $dir . $filename;
+					}
+				}
+				else{
 					$files[] = $dir . $filename;
 				}
 			}
@@ -383,7 +388,7 @@ class Alkaline{
 		if(count($matches) < 1){
 			return false;
 		}
-		$filename = $matches[2] . $matches[3];
+		$filename = $matches[2] . @$matches[3];
 		return $filename;
 	}
 	

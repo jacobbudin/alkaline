@@ -36,7 +36,7 @@ class Orbit extends Alkaline{
 
 				foreach($extensions as &$extension){
 					$extension['extension_uid'] = strval($extension['extension_uid']);
-					$extension['extension_file'] = parent::correctWinPath(PATH . EXTENSIONS . $extension['extension_file'] . '.php');
+					$extension['extension_file'] = parent::correctWinPath(PATH . EXTENSIONS . $extension['extension_folder'] . '/' . $extension['extension_file'] . '.php');
 					$extension['extension_hooks'] = unserialize($extension['extension_hooks']);
 				}
 			
@@ -99,7 +99,7 @@ class Orbit extends Alkaline{
 			}
 			
 			$this->uid = strval($this->uid);
-			$this->file = parent::correctWinPath(PATH . EXTENSIONS . strtolower($this->file) . '.php');
+			$this->file = parent::correctWinPath(PATH . EXTENSIONS . $this->folder . '/' . $this->file . '.php');
 			if(!is_array($this->hooks)){
 				$this->hooks = unserialize($this->hooks);
 			}
@@ -181,8 +181,9 @@ class Orbit extends Alkaline{
 				if(@in_array($hook, $extension['extension_hooks'])){
 					require_once($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
-					if(method_exists($orbit, $hook)){
-						$return = call_user_func_array(array($orbit, $hook), $arguments);
+					$method = 'orbit_' . $hook;
+					if(method_exists($orbit, $method)){
+						$return = call_user_func_array(array($orbit, $method), $arguments);
 						if(!empty($return) and !is_bool($return)){
 							$arguments = array_slice($arguments, 0, $argument_count);
 							$arguments[] = $return;

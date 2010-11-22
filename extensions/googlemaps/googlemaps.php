@@ -17,7 +17,7 @@ class GoogleMaps extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function photo($photos){
+	public function orbit_photo($photos){
 		foreach($photos as &$photo){
 			if(!empty($photo['photo_geo'])){
 				$photo_geo = urlencode($photo['photo_geo']);
@@ -33,7 +33,7 @@ class GoogleMaps extends Orbit{
 		return $photos;
 	}
 	
-	public function config(){
+	public function orbit_config(){
 		?>
 		<p>Integrate maps by adding the {Photo_Map} Canvas tag to your {block:Photo} loop.</p>
 
@@ -64,7 +64,7 @@ class GoogleMaps extends Orbit{
 		<?php
 	}
 	
-	public function config_save(){
+	public function orbit_config_save(){
 		// $this->setPref('maps_provider', $_POST['maps_provider']);
 		$this->setPref('maps_type', $_POST['maps_type']);
 		$this->setPref('maps_height', $_POST['maps_height']);
