@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<UID>9127a08be624d7a68d462dd8b31d1cc80e83cb3e</UID>
+	<Index>textile</Index>
+	<Class>TextileHandler</Class>
+	<Title>Textile</Title>
+	<Build>1</Build>
+	<Version>1.0</Version>
+	<Description>Adds Textile markup.</Description>
+	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
+</Extension>

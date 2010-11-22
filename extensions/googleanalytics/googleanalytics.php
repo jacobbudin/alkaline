@@ -1,9 +1,7 @@
 <?php
 
 class GoogleAnalytics extends Orbit{
-	private $akismet_api_key;
-	public $akismet_spam_caught = 0;
-	public $akismet_blog_url;
+	private $ga_account_id;
 	
 	public function __construct(){
 		parent::__construct();

@@ -48,7 +48,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</li>
 		<li>
 			<strong><a href="#rebuild-geo">Rebuild geographic library</a></strong><br />
-			Regenerates the built-in database of cities and nations, necessary for corrupt or missing locations
+			Regenerates the built-in database of cities and nations, necessary for fixing corrupt or missing locations
 		</li>
 		<li>
 			<strong><a href="#delete-orphaned-tags">Delete orphaned tags</a></strong><br />

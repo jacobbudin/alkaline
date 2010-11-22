@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<UID>97257bc2e1f4ef8036d7b4116d428f9150449859</UID>
+	<Index>akismet</Index>
+	<Class>AkismetHandler</Class>
+	<Title>Akismet</Title>
+	<Build>1</Build>
+	<Version>1.0</Version>
+	<Description>Filters comments through Akismet spam protection.</Description>
+	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
+</Extension>

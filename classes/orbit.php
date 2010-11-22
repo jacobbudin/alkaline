@@ -119,11 +119,6 @@ class Orbit extends Alkaline{
 	// public function exec($query){ }
 	// public function prepare($query){ }
 	
-	// Local require_once()
-	protected function load($file){
-		return require_once(parent::correctWinPath(PATH . EXTENSIONS . $this->folder . '/' . $file));
-	}
-	
 	// Set preference key
 	public function setPref($name, $value){
 		return $this->preferences[$name] = $value;

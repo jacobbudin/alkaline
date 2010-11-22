@@ -9,6 +9,7 @@ $user = new User;
 $user->perm(true);
 
 $extension_id = @$alkaline->findID($_GET['id']);
+$extension_act = @$_GET['act'];
 
 // SAVE CHANGES
 if(!empty($_POST['extension_id'])){
@@ -61,6 +62,11 @@ if($alkaline->returnConf('maint_disable')){
 	$alkaline->addNotification('All extensions have been disabled.', 'notice');
 }
 
+// INSTALL EXTENSION
+if($extension_act == 'install'){
+	$extension_id = $alkaline->addRow(null, 'extensions');
+}
+
 define('TAB', 'settings');
 
 if(empty($extension_id)){
@@ -108,7 +114,7 @@ if(empty($extension_id)){
 				echo 'Disabled';
 			}
 			echo '</td>';
-			echo '<td class="center">' . $extension['extension_version'] . ' <span class="small">(' . $extension['extension_build'] . ')</span></td>';
+			echo '<td class="center">' . $extension['extension_version'] . '</td>';
 			echo '<td class="center quiet">&#8212;</td>';
 			echo '</tr>';
 		}

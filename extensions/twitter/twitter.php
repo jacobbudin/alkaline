@@ -15,7 +15,7 @@ class Twitter extends Orbit{
 		$this->twitter_format = $this->returnPref('twitter_format');
 		$this->twitter_url_shortener = $this->returnPref('twitter_url_shortener');
 		
-		$this->load('twitteroauth.php');
+		require_once('classes/twitteroauth.php');
 		
 		$this->twitter_screen_name = $this->returnPref('twitter_screen_name');
 		$this->twitter_oauth_token = $this->returnPref('twitter_oauth_token');

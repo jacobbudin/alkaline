@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<UID>1b71330e9bcdaa4428557a0bd935428372e48d4c</UID>
+	<Index>markdown</Index>
+	<Class>Markdown</Class>
+	<Title>Markdown</Title>
+	<Build>1</Build>
+	<Version>1.0</Version>
+	<Description>Adds Markdown markup.</Description>
+	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
+</Extension>

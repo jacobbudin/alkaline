@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<UID>c347e79e6cfe2c2161d150d74364e74a57ee388c</UID>
+	<Index>gravatar</Index>
+	<Class>Gravatar</Class>
+	<Title>Gravatar</Title>
+	<Build>1</Build>
+	<Version>1.0</Version>
+	<Description>Implements Gravatar comment avatars.</Description>
+	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
+</Extension>

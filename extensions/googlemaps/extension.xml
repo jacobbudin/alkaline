@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<UID>1046278740794c5c41cb737f8b5aaa02c1cab5d6</UID>
+	<Index>googlemaps</Index>
+	<Class>GoogleMaps</Class>
+	<Title>Google Maps</Title>
+	<Build>1</Build>
+	<Version>1.0</Version>
+	<Description>Adds Google Maps to photos.</Description>
+	<Creator href="http://www.alkalinelabs.com/">Alkaline Labs</Creator>
+</Extension>
