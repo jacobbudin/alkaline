@@ -1439,7 +1439,7 @@ class Photo extends Alkaline{
 			
 			$this->photos[$i]['photo_comment_author_email'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_email" name="comment_' . $this->photos[$i]['photo_id'] . '_author_email" class="comment_author_email" />';
 			
-			$this->photos[$i]['photo_comment_author_url'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_url" name="comment_' . $this->photos[$i]['photo_id'] . '_author_url" class="comment_author_url" />';
+			$this->photos[$i]['photo_comment_author_uri'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_uri" name="comment_' . $this->photos[$i]['photo_id'] . '_author_uri" class="comment_author_uri" />';
 		
 			$this->photos[$i]['photo_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->photos[$i]['photo_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
 		}

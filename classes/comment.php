@@ -73,8 +73,8 @@ class Comment extends Alkaline{
 		$search_lower = preg_replace('#\s#', '%', $search_lower);
 		$search_lower = '%' . $search_lower . '%';
 		
-		$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_url) LIKE :comment_author_url) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
-		$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_url' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
+		$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_uri) LIKE :comment_author_uri) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
+		$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
 		$comments = $query->fetchAll();
 		
 		$comment_ids = array();

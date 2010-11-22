@@ -50,7 +50,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 	
 	<title><?php echo $alkaline->returnConf('web_title'); ?></title>
 	<updated><?php echo date('c', strtotime($photos->photos[0]['photo_published'])); ?></updated>
-	<link href="<?php echo BASE; ?>"/>
+	<link href="<?php echo BASE; ?>" />
 	<link rel="self" type="application/atom+xml" href="<?php echo LOCATION . BASE; ?>atom.php" />
 	<id>tag:<?php echo DOMAIN; ?>,2010:/</id>
 	<author>

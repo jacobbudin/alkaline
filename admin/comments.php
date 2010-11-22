@@ -179,8 +179,8 @@ else{
 						echo '<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a><br />';
 					}
 					
-					if(!empty($comment['comment_author_url'])){
-						echo '<a href="' . $comment['comment_author_url'] . '">' . $comment['comment_author_url'] . '</a>';
+					if(!empty($comment['comment_author_uri'])){
+						echo '<a href="' . $comment['comment_author_uri'] . '">' . $comment['comment_author_uri'] . '</a>';
 					}
 					
 					?>
