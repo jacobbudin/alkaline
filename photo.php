@@ -9,7 +9,9 @@ $alkaline->addComments();
 
 $orbit = new Orbit;
 
-$id = $alkaline->findID($_GET['id']);
+$id = $alkaline->findID($_GET['id'], true);
+
+if(!$id){ $alkaline->error('No photo was found.', 404); }
 
 $photo_ids = new Find($id);
 $photo_ids->privacy('public');

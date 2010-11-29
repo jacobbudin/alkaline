@@ -7,7 +7,9 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('pile');
 
 $id = $alkaline->findID($_GET['id']);
-$pile = $alkaline->getRow('piles', $id);
+$pile = new Pile($id);
+$pile = @$pile->piles[0];
+
 if(!$pile){ $alkaline->error('No pile was found.', 404); }
 
 $pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);

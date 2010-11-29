@@ -115,8 +115,7 @@ if(empty($page_id)){
 	require_once(PATH . ADMIN . 'includes/footer.php');
 }
 else{
-	$pages = new Page($page_id);
-	$page = $pages->pages[0];
+	$page = $alkaline->getRow('pages', $page_id);
 	$page = $alkaline->makeHTMLSafe($page);
 	
 	if(!empty($page['page_title'])){	

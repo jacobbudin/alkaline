@@ -7,7 +7,9 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('page');
 
 $id = $alkaline->findID($_GET['id']);
-$page = $alkaline->getRow('pages', $id);
+$page = new Page($id);
+$page = @$page->pages[0];
+
 if(!$page){ $alkaline->error('No page was found.', 404); }
 
 $page['page_created'] = $alkaline->formatTime($page['page_created']);

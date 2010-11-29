@@ -3,7 +3,7 @@
 class Pile extends Alkaline{
 	public $pile_id;
 	public $pile_count;
-	public $pile;
+	public $piles;
 	
 	public function __construct($pile=null){
 		parent::__construct();
@@ -15,9 +15,8 @@ class Pile extends Alkaline{
 				$query = $this->prepare('SELECT * FROM piles WHERE pile_id = ' . $pile_id . ';');
 			}
 			elseif(is_string($pile)){
-				$pile_title = $pile;
-				$query = $this->prepare('SELECT * FROM piles WHERE LOWER(pile_title) LIKE :pile_title;');
-				$sql_params[':pile_title'] = '%' . strtolower($pile_title) . '%';
+				$query = $this->prepare('SELECT * FROM piles WHERE (LOWER(pile_title_url) LIKE :pile_title_url);');
+				$sql_params[':pile_title_url'] = '%' . strtolower($pile) . '%';
 			}
 			elseif(is_array($pile)){
 				$pile_ids = convertToIntegerArray($pile);

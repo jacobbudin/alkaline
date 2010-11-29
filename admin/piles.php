@@ -92,7 +92,7 @@ if(empty($pile_id)){
 	
 		foreach($piles as $pile){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'piles' . URL_ID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a></strong><br />' . $alkaline->fitString($pile['pile_description'], 150) . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'piles' . URL_ID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a></strong><br /><a href="' . BASE . 'pile' . URL_ID . $pile['pile_title_url'] . URL_RW . '" class="nu">/' . $pile['pile_title_url'] . '</td>';
 				echo '<td class="center">' . $pile['pile_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
