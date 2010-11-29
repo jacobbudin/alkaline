@@ -335,12 +335,13 @@ $(document).ready(function(){
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
 				no_of_files = total;
-				if(total == 1){
-					return confirm("You are about to upload 1 file. Are you sure?");
-				}
-				else{
-					return confirm("You are about to upload " + total + " files. Are you sure?");
-				}
+				// if(total == 1){
+				// 	return confirm("You are about to upload 1 file. Are you sure?");
+				// }
+				// else{
+				// 	return confirm("You are about to upload " + total + " files. Are you sure?");
+				// }
+				return true;
 			},
 			setName: function(text) {
 				$("#shoebox_link").slideUp(500);

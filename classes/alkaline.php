@@ -24,9 +24,8 @@ class Alkaline{
 	public $db_version;
 	public $tables;
 	
+	protected $db;
 	protected $notifications;
-	
-	private $db;
 	
 	public function __construct(){
 		@header('Cache-Control: no-cache, must-revalidate');
@@ -809,7 +808,6 @@ class Alkaline{
 		
 		// Update row
 		$update = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = :result_id;');
-		
 		
 		foreach($results as $result){
 			$result_id = $result[$result_id_field];

@@ -159,7 +159,7 @@ else{
 				<td class="right"><label>Type:</label></td>
 				<td>
 					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> /> <label for="size_type_scale">Scale image</label><br />
-					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;&#8220;normal&#8221; thumbnails<br />
+					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;standard thumbnails<br />
 					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> /> <label for="size_type_fill">Fill canvas</label><br />
 					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Fills the thumbnail, crops excess&#8212;good for arranging in grids
 				</td>

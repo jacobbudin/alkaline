@@ -78,27 +78,29 @@ if(empty($comment_id)){
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
 		</p>
-
-		<table class="reveal">
-			<tr>
-				<td class="right middle"><label for="published">Publication status:</label></td>
-				<td class="quiet">
-					<select id="status" name="status">
-						<option value="">All</option>
-						<option value="published">Published</option>
-						<option value="unpublished">Unpublished</option>
-						<option value="spam">Spam</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="right middle"><label>Date created:</label></td>
-				<td class="quiet">
-					between <input type="text" class="date" name="created_begin" style="width: 10em;" />
-					and <input type="text" class="date" name="created_end" style="width: 10em;" />
-				</td>
-			</tr>
-		</table>
+		
+		<div class="reveal">
+			<table>
+				<tr>
+					<td class="right middle"><label for="published">Publication status:</label></td>
+					<td class="quiet">
+						<select id="status" name="status">
+							<option value="">All</option>
+							<option value="published">Published</option>
+							<option value="unpublished">Unpublished</option>
+							<option value="spam">Spam</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Date created:</label></td>
+					<td class="quiet">
+						between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+						and <input type="text" class="date" name="created_end" style="width: 10em;" />
+					</td>
+				</tr>
+			</table>
+		</div>
 	</form>
 	
 	<h1>Comments (<?php echo $comment_count; ?>)</h1>
