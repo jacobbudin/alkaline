@@ -276,6 +276,8 @@ class Photo extends Alkaline{
 				return false;
 			}
 		}
+		
+		return true;
 	}
 	
 	// UPDATE TAGS & LINKS TABLES
