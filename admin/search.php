@@ -43,8 +43,8 @@ if(!empty($_POST['tags'])){
 }
 
 // EXIF metadata
-if(!empty($_POST['exifs'])){
-	$photo_ids->_exifs($_POST['exifs']);
+if(!empty($_POST['exif_value'])){
+	$photo_ids->_exifs($_POST['exif_value'], @$_POST['exif_name']);
 }
 
 // Rights set

@@ -930,6 +930,31 @@ class Alkaline{
 		return $html;
 	}
 	
+	// SHOW EXIF NAMES
+	public function showEXIFNames($name, $exif_name=null){
+		if(empty($name)){
+			return false;
+		}
+		
+		$query = $this->prepare('SELECT DISTINCT exif_name FROM exifs ORDER BY exif_name ASC;');
+		$query->execute();
+		$exifs = $query->fetchAll();
+		
+		$html = '<select name="' . $name . '" id="' . $name . '"><option value=""></option>';
+		
+		foreach($exifs as $exif){
+			$html .= '<option value="' . $exif['exif_name'] . '"';
+			if($exif['exif_name'] == $exif_name){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $exif['exif_name'] . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
 	
 	// TABLE AND ROW FUNCTIONS
 	public function getTable($table, $ids=null, $limit=null, $page=1, $order_by=null){

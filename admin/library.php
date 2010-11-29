@@ -77,14 +77,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<tr>
 						<td class="right pad"><label for="tags">Tags:</label></td>
 						<td class="quiet">
-							<input type="text" id="tags" name="tags" style="width: 30em;" /><br />
+							<input type="text" id="tags" name="tags" class="l" /><br />
 							<em>Tip: Use the uppercase boolean operators AND, OR, and NOT.</em>
 						</td>
 					</tr>
 					<tr>
 						<td class="right pad"><label for="tags">EXIF metadata:</label></td>
 						<td>
-							<input type="text" id="exifs" name="exifs" style="width: 30em;" /><br />
+							<?php echo $alkaline->showEXIFNames('exif_name'); ?>
+							<input type="text" id="exif_value" name="exif_value" class="s" /><br />
 						</td>
 					</tr>
 					<tr>
@@ -96,15 +97,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<tr>
 						<td class="right middle"><label>Date taken:</label></td>
 						<td class="quiet">
-							between <input type="text" class="date" name="taken_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="taken_end" style="width: 10em;" />
+							between <input type="text" class="date s" name="taken_begin" />
+							and <input type="text" class="date s" name="taken_end" />
 						</td>
 					</tr>
 					<tr>
 						<td class="right middle"><label>Date uploaded:</label></td>
 						<td class="quiet">
-							between <input type="text" class="date" name="uploaded_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="uploaded_end" style="width: 10em;" />
+							between <input type="text" class="date s" name="uploaded_begin" />
+							and <input type="text" class="date s" name="uploaded_end" />
 						</td>
 					</tr>
 					<tr>
@@ -122,7 +123,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								<option value="2500">2,500</option>
 							</select>
 							miles of 
-							<input type="text" name="location" class="photo_geo" style="width: 15em;" />
+							<input type="text" name="location" class="photo_geo m" />
 						</td>
 					</tr>
 					<tr>
@@ -149,7 +150,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								<option value="less">&#8804;</option>
 								<option value="equal">&#0061;</option>
 							</select>
-							<input type="text" name="views" style="width: 4em;" />
+							<input type="text" name="views" class="xs" />
 						</td>
 					</tr>
 					<tr>
