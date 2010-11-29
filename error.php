@@ -2,7 +2,7 @@
 
 require_once('config.php');
 
-session_start();
+@session_start();
 
 @$message = $_SESSION['alkaline']['error']['message'];
 @$number = $_SESSION['alkaline']['error']['number'];

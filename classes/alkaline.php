@@ -1334,15 +1334,21 @@ class Alkaline{
 	
 	// URL HANDLING
 	// Find ID number from string
-	public function findID($string){
+	public function findID($string, $numeric_required=false){
 		$matches = array();
-		if(preg_match('#^([0-9]+)#s', $string, $matches)){
-			$match = intval($matches[1]);
+		if(is_numeric($string)){
+			$id = intval($string);
 		}
-		else{
+		elseif(preg_match('#^([0-9]+)#s', $string, $matches)){
+			$id = intval($matches[1]);
+		}
+		elseif($numeric_required === true){
 			return false;
 		}
-		return $match;
+		else{
+			$id = $string;
+		}
+		return $id;
 	}
 	
 	// Find photo ID references from a string
@@ -1521,7 +1527,7 @@ class Alkaline{
 	public function error($message, $number=null){
 		$_SESSION['alkaline']['error']['message'] = $message;
 		$_SESSION['alkaline']['error']['number'] = $number;
-		header('Location: ' . LOCATION . BASE . 'fault' . URL_CAP);
+		require_once(PATH . '/error.php');
 		exit();
 	}
 	
