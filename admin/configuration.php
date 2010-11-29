@@ -28,10 +28,13 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
 	$alkaline->setConf('photo_markup', @$_POST['photo_markup']);
+	if(@$_POST['photo_markup'] == ''){ $_POST['photo_markup_ext'] = ''; }
+	
 	$alkaline->setConf('photo_markup_ext', @$_POST['photo_markup_ext']);
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
+	
 	$alkaline->setConf('thumb_compress_tol', intval(@$_POST['thumb_compress_tol']));
 	$alkaline->setConf('thumb_watermark', @$_POST['thumb_watermark']);
 	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
@@ -42,6 +45,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
 	$alkaline->setConf('comm_markup', @$_POST['comm_markup']);
+	if(@$_POST['comment_markup'] == ''){ $_POST['comment_markup_ext'] = ''; }
+	
 	$alkaline->setConf('comm_markup_ext', @$_POST['comm_markup_ext']);
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);

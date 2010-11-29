@@ -54,6 +54,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<strong><a href="#delete-orphaned-tags">Delete orphaned tags</a></strong><br />
 			Removes tags that are no longer linked to any photos, increasing available space
 		</li>
+		<li>
+			<strong><a href="#reset-photo-markup">Reset photo markup</a></strong>
+		</li>
+		<li>
+			<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>
+		</li>
 	</ul>
 </div>
 
