@@ -261,6 +261,17 @@ function executeTask(){
 	$("#progress").progressbar({ value: 0 });
 }
 
+function pileSort(pile){
+	photos = new Array();
+	photo_id_regex = new RegExp('photo-', 'gim');
+	pile.children('img').each(function(){
+		id = $(this).attr('id');
+		id = id.replace(photo_id_regex, '');
+		photos.push(id);
+	});
+	pile.siblings('#pile_photos').val(photos.join(', '));
+};
+
 $(document).ready(function(){
 	// PRIMARY
 	page = $("h1").first().text();
@@ -294,6 +305,15 @@ $(document).ready(function(){
 		$(this).after('<input type="submit" name="install" value="Installing..." disabled="disabled" />');
 	});
 	
+	// PRIMARY - LABEL SELECT CHECKBOXES
+	
+	$("label select").click(
+		function(){
+			event.preventDefault();
+			$(this).parent("tr").find("input:checkbox").attr("checked", "checked");
+		}
+	);
+	
 	// PRIMARY - DATEPICKER
 	
 	$(".date").datepicker({
@@ -322,6 +342,10 @@ $(document).ready(function(){
 			$(this).find('option[value="' + ext + '"]').attr("selected", "selected");
 		}
 	});
+	
+	// PRIMARY - SORTABLE
+	
+	$("#pile_photo_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { pile = $(this); pileSort(pile); } });
 	
 	// UPLOAD
 	

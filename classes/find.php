@@ -8,6 +8,7 @@ class Find extends Alkaline{
 	public $photo_count;
 	public $photo_count_result;
 	public $photo_offset_length;
+	public $photo_order;
 	public $page;
 	public $page_begin;
 	public $page_count;
@@ -447,6 +448,7 @@ class Find extends Alkaline{
 		elseif($pile['pile_type'] == 'static'){
 			if(!empty($pile['pile_photos'])){
 				$this->sql_conds[] = 'photos.photo_id IN (' . $pile['pile_photos'] . ')';
+				$this->photo_order = $this->convertToIntegerArray($pile['pile_photos']);
 			}
 			else{
 				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
@@ -950,7 +952,7 @@ class Find extends Alkaline{
 				$this->sql_group_by .= ', ' . implode(', ', $sql_sorts);
 			}
 		}
-		else{
+		elseif(empty($this->photo_order)){
 			$this->sql_order_by = ' ORDER BY photos.photo_uploaded DESC';
 			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
 				$this->sql_group_by .= ', photos.photo_uploaded';
@@ -1025,6 +1027,24 @@ class Find extends Alkaline{
 		$this->photo_ids = array();
 		foreach($photos as $photo){
 			$this->photo_ids[] = intval($photo['photo_id']);
+		}
+		
+		if(!empty($this->photo_order)){
+			$replacement_photo_ids = array();
+			foreach($this->photo_order as $photo_id){
+				if(in_array($photo_id, $this->photo_ids)){
+					$replacement_photo_ids[] = $photo_id;
+				}
+			}
+			
+			$replacement_append_photo_ids = array();
+			foreach($this->photo_ids as $photo_id){
+				if(!in_array($photo_id, $this->photo_order)){
+					$replacement_append_photo_ids[] = $photo_id;
+				}
+			}
+			
+			$this->photo_ids = array_merge($replacement_photo_ids, $replacement_append_photo_ids);
 		}
 		
 		// Count photos

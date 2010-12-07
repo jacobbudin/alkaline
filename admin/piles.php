@@ -31,6 +31,11 @@ if(!empty($_POST['pile_id'])){
 			'pile_title_url' => $pile_title_url,
 			'pile_type' => $_POST['pile_type'],
 			'pile_description' => $alkaline->makeUnicode($_POST['pile_description']));
+		
+		if(isset($_POST['pile_photos'])){
+			$fields['pile_photos'] = $_POST['pile_photos'];
+		}
+		
 		$alkaline->updateRow($fields, 'piles', $pile_id);
 	}
 	unset($pile_id);
@@ -127,7 +132,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE . 'piles' . URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE . 'pile' . URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	
@@ -152,9 +157,33 @@ else{
 				<td class="right"><label for="pile_type">Type:</label></td>
 				<td>
 					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; } if(empty($pile['pile_call'])){ echo 'disabled="disabled"'; } ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new photos that meet the pile&#8217;s criteria<br />
-					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the photos originally selected<br /><br />
+					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the photos originally selected
 				</td>
 			</tr>
+			<?php if($pile['pile_type'] == 'static'){ ?>
+				<tr>
+					<td class="right"><label>Sort:</label></td>
+					<td>
+						<p>
+							<span class="switch">&#9656;</span> <a href="#" class="show">Show pile</a> <span class="quiet">(sort photos by dragging and dropping)</span>
+						</p>
+
+						<div class="reveal" id="pile_photo_sort">
+							<?php
+						
+							$photos = new Photo($pile['pile_photos']);
+							$photos->getImgUrl('square');
+						
+							foreach($photos->photos as $photo){
+								echo '<img src="' . $photo['photo_src_square'] .'" alt="" class="frame" id="photo-' . $photo['photo_id'] . '" />';
+							}
+						
+							?><br /><br />
+						</div>
+						<input type="hidden" id="pile_photos" name="pile_photos" value="<?php echo $pile['pile_photos']; ?>" />
+					</td>
+				</tr>
+			<?php } ?>
 			<tr>
 				<td class="right"><input type="checkbox" id="pile_delete" name="pile_delete" value="delete" /></td>
 				<td><strong><label for="pile_delete">Delete this pile.</label></strong> This action cannot be undone.</td>
