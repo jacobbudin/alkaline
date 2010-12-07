@@ -58,25 +58,20 @@ class Stat extends Alkaline{
 		$this->stats = array();
 		$next = date('Y-m', strtotime('+1 month', $this->stat_end_ts));
 		
-		$next_month = substr($next, 5, 2);
-		$next_year = substr($next, 0, 4);
+		$next_month = intval(substr($next, 5, 2));
+		$next_year = intval(substr($next, 0, 4));
 		
-		$current_month = substr($this->stat_begin, 5, 2);
-		$current_year = substr($this->stat_begin, 0, 4);
+		$current_month = intval(substr($this->stat_begin, 5, 2));
+		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
-		while(!(($next_month == $current_month) and ($next_year == $current_year))){
-			if($current_month < 13){
-				$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
-				$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-				$current_month++;
-			}
-			else{
+		while(!(($next_month <= $current_month) and ($next_year <= $current_year))){
+			if($current_month == 13){
 				$current_year++;
 				$current_month = 1;
-				$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
-				$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-				$current_month++;
 			}
+			$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
+			$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_month++;
 		}
 		
 		foreach($this->stats as &$monthly){
@@ -128,30 +123,18 @@ class Stat extends Alkaline{
 		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
 		while(!(($next_day <= $current_day) and ($next_month <= $current_month) and ($next_year <= $current_year))){
-			if(checkdate($current_month, $current_day, $current_year)){
-				$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-				$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-				$current_day++;
-			}
-			else{
+			if(!checkdate($current_month, $current_day, $current_year)){
 				$current_month++;
 				$current_day = 1;
-				if(checkdate($current_month, $current_day, $current_year)){
-					$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-					$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-					$current_day++;
-				}
-				else{
+				if(!checkdate($current_month, $current_day, $current_year)){
 					$current_year++;
 					$current_month = 1;
-					$current_day = 1;
-					if(checkdate($current_month, $current_day, $current_year)){
-						$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-						$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-						$current_day++;
-					}
 				}
 			}
+			
+			$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
+			$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_day++;
 		}
 		
 		foreach($this->stats as &$daily){
@@ -194,41 +177,32 @@ class Stat extends Alkaline{
 		$this->stats = array();
 		$next = date('Y-m-d H', $this->stat_end_ts + 3600);
 		
-		$next_hour = substr($next, 11, 2);
-		$next_day = substr($next, 8, 2);
-		$next_month = substr($next, 5, 2);
-		$next_year = substr($next, 0, 4);
+		$next_hour = intval(substr($next, 11, 2));
+		$next_day = intval(substr($next, 8, 2));
+		$next_month = intval(substr($next, 5, 2));
+		$next_year = intval(substr($next, 0, 4));
 		
-		$current_hour = substr($this->stat_begin, 11, 2);
-		$current_day = substr($this->stat_begin, 8, 2);
-		$current_month = substr($this->stat_begin, 5, 2);
-		$current_year = substr($this->stat_begin, 0, 4);
+		$current_hour = intval(substr($this->stat_begin, 11, 2));
+		$current_day = intval(substr($this->stat_begin, 8, 2));
+		$current_month = intval(substr($this->stat_begin, 5, 2));
+		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
 		while(!(($next_hour == $current_hour) and ($next_day == $current_day) and ($next_month == $current_month) and ($next_year == $current_year))){
-			if(checkdate($current_month, $current_day, $current_year) and ($current_hour < 24)){
-				$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-				$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-				$current_hour++;
-			}
-			else{
-				$current_day++;
+			if($current_hour == 24){
 				$current_hour = 0;
-				if(checkdate($current_month, $current_day, $current_year)){
-					$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-					$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-					$current_hour++;
-				}
-				else{
+				$current_day++;
+				if(!checkdate($current_month, $current_day, $current_year)){
 					$current_month++;
 					$current_day = 1;
-					$current_hour = 0;
-					if(checkdate($current_month, $current_day, $current_year)){
-						$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-						$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-						$current_hour++;
+					if(!checkdate($current_month, $current_day, $current_year)){
+						$current_year++;
+						$current_month = 1;
 					}
 				}
 			}
+			$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
+			$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_hour++;
 		}
 		
 		foreach($this->stats as &$hourly){

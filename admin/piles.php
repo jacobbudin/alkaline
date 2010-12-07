@@ -79,7 +79,7 @@ if(empty($pile_id)){
 
 	<h1>Piles (<?php echo $pile_count; ?>)</h1>
 	
-	<p>Piles are collections of photos. You can build automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
+	<p>Piles are collections of photos. You can build an automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
 	<table>
 		<tr>
