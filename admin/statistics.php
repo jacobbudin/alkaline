@@ -12,55 +12,64 @@ $user->perm(true);
 
 $then = strtotime('-24 hours');
 
-$stats = new Stat($then);
-$stats->getHourly();
+$hourly = new Stat($then);
+$hourly->getHourly();
+
+$h_views = number_format($hourly->views);
+$h_visitors = number_format($hourly->visitors);
 
 $views = array();
 $visitors = array();
 
-foreach($stats->stats as $stat){
+foreach($hourly->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
 
-$h_views = json_encode($views);
-$h_visitors = json_encode($visitors);
+$h_views_json = json_encode($views);
+$h_visitors_json = json_encode($visitors);
 
 // PAST 30 DAYS
 
 $then = strtotime('-30 days');
 
-$stats = new Stat($then);
-$stats->getDaily();
+$daily = new Stat($then);
+$daily->getDaily();
+
+$d_views = number_format($daily->views);
+$d_visitors = number_format($daily->visitors);
 
 $views = array();
 $visitors = array();
 
-foreach($stats->stats as $stat){
+foreach($daily->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
 
-$d_views = json_encode($views);
-$d_visitors = json_encode($visitors);
+$d_views_json = json_encode($views);
+$d_visitors_json = json_encode($visitors);
 
 // PAST 12 MONTHS
 
 $then = strtotime('-12 months');
 
-$stats = new Stat($then);
-$stats->getMonthly();
+$monthly = new Stat($then);
+$monthly->getMonthly();
+
+$m_views = number_format($monthly->views);
+$m_visitors = number_format($monthly->visitors);
 
 $views = array();
 $visitors = array();
 
-foreach($stats->stats as $stat){
+foreach($monthly->stats as $stat){
 	$views[] = array($stat['stat_ts_js'], $stat['stat_views']);
 	$visitors[] = array($stat['stat_ts_js'], $stat['stat_visitors']);
 }
 
-$m_views = json_encode($views);
-$m_visitors = json_encode($visitors);
+$m_views_json = json_encode($views);
+$m_visitors_json = json_encode($visitors);
 
 // DURATIONS
 
@@ -134,19 +143,24 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-15 append-1">
+		<div class="actions quiet"><strong><?php echo $h_views; ?></strong> views  &#0160;&#0160; <strong><?php echo $h_visitors; ?></strong> visitors</div>
+		
 		<h3>Past 24 Hours</h3>
-		<div id="h_views" title="<?php echo $h_views; ?>"></div>
-		<div id="h_visitors" title="<?php echo $h_visitors; ?>"></div>
+		<div id="h_views" title="<?php echo $h_views_json; ?>"></div>
+		<div id="h_visitors" title="<?php echo $h_visitors_json; ?>"></div>
 		<div id="h_holder" class="statistics_holder"></div>
-
+		
+		
+		<div class="actions quiet"><strong><?php echo $d_views; ?></strong> views  &#0160;&#0160; <strong><?php echo $d_visitors; ?></strong> visitors</div>
 		<h3>Past 30 Days</h3>
-		<div id="d_views" title="<?php echo $d_views; ?>"></div>
-		<div id="d_visitors" title="<?php echo $d_visitors; ?>"></div>
+		<div id="d_views" title="<?php echo $d_views_json; ?>"></div>
+		<div id="d_visitors" title="<?php echo $d_visitors_json; ?>"></div>
 		<div id="d_holder" class="statistics_holder"></div>
-
+		
+		<div class="actions quiet"><strong><?php echo $m_views; ?></strong> views  &#0160;&#0160; <strong><?php echo $m_visitors; ?></strong> visitors</div>
 		<h3>Past 12 Months</h3>
-		<div id="m_views" title="<?php echo $m_views; ?>"></div>
-		<div id="m_visitors" title="<?php echo $m_visitors; ?>"></div>
+		<div id="m_views" title="<?php echo $m_views_json; ?>"></div>
+		<div id="m_visitors" title="<?php echo $m_visitors_json; ?>"></div>
 		<div id="m_holder" class="statistics_holder"></div>
 	</div>
 	<div class="span-8 last">

@@ -11,6 +11,8 @@ class Stat extends Alkaline{
 	public $stat_begin_ts;
 	public $stat_end;
 	public $stat_end_ts;
+	public $views;
+	public $visitors;
 	
 	public function __construct($stat_begin=null, $stat_end=null){
 		parent::__construct();
@@ -46,6 +48,9 @@ class Stat extends Alkaline{
 	// STAT-TO-ARRAY FUNCTIONS
 	
 	public function getMonthly(){
+		$this->views = 0;
+		$this->visitors = 0;
+		
 		$query = $this->prepare('SELECT MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
@@ -98,10 +103,16 @@ class Stat extends Alkaline{
 			}
 		}
 		
+		$this->views = $this->getCumulative($this->stats, 'stat_views');
+		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
+		
 		return true;
 	}
 	
 	public function getDaily(){
+		$this->views = 0;
+		$this->visitors = 0;
+		
 		$query = $this->prepare('SELECT DAY(stat_date) as stat_day, MONTH(stat_date) as stat_month, YEAR(stat_date) as stat_year, COUNT(*) as stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC;');		
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
@@ -161,10 +172,16 @@ class Stat extends Alkaline{
 			}
 		}
 		
+		$this->views = $this->getCumulative($this->stats, 'stat_views');
+		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
+		
 		return true;
 	}
 	
 	public function getHourly(){
+		$this->views = 0;
+		$this->visitors = 0;
+		
 		$query = $this->prepare('SELECT HOUR(stat_date) AS stat_hour, DAY(stat_date) AS stat_day, MONTH(stat_date) AS stat_month, YEAR(stat_date) as stat_year, COUNT(*) AS stat_views FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_hour, stat_day, stat_month, stat_year ORDER BY stat_year DESC, stat_month DESC, stat_day DESC, stat_hour DESC;');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
@@ -229,7 +246,18 @@ class Stat extends Alkaline{
 			}
 		}
 		
+		$this->views = $this->getCumulative($this->stats, 'stat_views');
+		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
+		
 		return true;
+	}
+	
+	protected function getCumulative($array, $key){
+		$count = 0;
+		foreach($array as $value){
+			$count += $value[$key];
+		}
+		return $count;
 	}
 	
 	public function getDurations(){
