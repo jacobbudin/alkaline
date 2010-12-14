@@ -163,10 +163,24 @@ class AlkalineCS{
 				</tr>
 				<tr>
 					<td>
+						<h5>GD image library</h5>
+						<span class="small quiet">GD allows Alkaline to create and manipulate image files.</span>
+					</td>
+					<?php echo $test->boolToHTML($test->isExt('gd')); ?>
+				</tr>
+				<tr>
+					<td>
 						<h5>PHP 5.2+</h5>
 						<span class="small quiet">PHP allows Alkaline to produce dynamic Web pages.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isVer('/^(5\.2|5\.3).+/is', $test->php_version), $test->php_version, $test->php_version); ?>
+				</tr>
+				<tr>
+					<td>
+						<h5>PHP JSON support</h5>
+						<span class="small quiet">PHP JSON allows Alkaline to provide real-time functionality.</span>
+					</td>
+					<?php echo $test->boolToHTML($test->isExt('json')); ?>
 				</tr>
 				<tr>
 					<td>
@@ -177,10 +191,10 @@ class AlkalineCS{
 				</tr>
 				<tr>
 					<td>
-						<h5>GD image library</h5>
-						<span class="small quiet">GD allows Alkaline to create and manipulate image files.</span>
+						<h5>PHP SimpleXML support</h5>
+						<span class="small quiet">PHP SimpleXML allows Alkaline to process new themes and extensions.</span>
 					</td>
-					<?php echo $test->boolToHTML($test->isExt('gd')); ?>
+					<?php echo $test->boolToHTML($test->isExt('SimpleXML')); ?>
 				</tr>
 				<tr>
 					<td>
