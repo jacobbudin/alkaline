@@ -17,18 +17,22 @@ $photos = new Photo($photo_ids);
 $photos->getImgUrl('medium');
 $photos->formatTime('c');
 
-$photos->photos = $alkaline->makeHTMLSafe($photos->photos);
+// $photos->photos = $alkaline->makeHTMLSafe($photos->photos);
 
 $entries = new Canvas('
 {block:Photos}
 	<entry>
-		<title type="text">{Photo_Title}</title>
+		<title type="text">{if:Photo_Title}{Photo_Title}{else:Photo_Title}(Untitled){/if:Photo_Title}</title>
 		<link href="" />
 		<id>{LOCATION}{BASE}{PHOTO_ID}</id>
 		<updated>{PHOTO_UPDATED}</updated>
 		<published>{PHOTO_PUBLISHED}</published>
 		{if:PHOTO_DESCRIPTION}
-			<summary type="text">{PHOTO_DESCRIPTION}</summary>
+			<summary type="xhtml">
+				<div xmlns="http://www.w3.org/1999/xhtml">
+					{PHOTO_DESCRIPTION}
+				</div>
+			</summary>
 		{/if:PHOTO_DESCRIPTION}
 		<content type="xhtml">
 			<div xmlns="http://www.w3.org/1999/xhtml">

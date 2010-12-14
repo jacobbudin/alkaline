@@ -13,7 +13,6 @@ body{
 a{
 	color: #222;
 	cursor: pointer;
-	cursor: hand;
 }
 
 a:hover, a:active{
@@ -105,7 +104,7 @@ h4{
 .center{ text-align: center; }
 .right{ text-align: right; }
 .none{ display: none; }
-.preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
+.preload{ visibility: hidden; position: absolute; top: -9999px; left: -9999px; }
 .quiet a{ color: #666; }
 .full {width:100%;}
 
@@ -117,7 +116,7 @@ a.page_no:hover, a.page_no:active { border: 2px solid #5eb0e5; background-color:
 
 ul{
 	margin: .3em 2.1em 1.5em 1.75em;
-	list-style-type: block;
+	list-style-type: square;
 }
 
 img.frame{
