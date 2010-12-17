@@ -539,7 +539,7 @@ class Alkaline{
 				break;
 			case($seconds < 29030400):
 				$months = intval($seconds / 2419200);
-				if($months < 2){ $months = 'a month ago'; }
+				if($months < 2){ $span = 'a month ago'; }
 				else{ $span = $months . ' months ago'; }
 				break;
 			default:
