@@ -171,16 +171,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="span-5 colborderr">
-		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="/images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="/images/icons/piles.png" alt="" /> Piles &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="/images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="/images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="/images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>
-	</div>
-	<div class="span-18 colborderl last">
+	<div class="span-18 colborder">
 		<div class="actions">
-			<form action="" method="post">
+			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a>
+		</div>
+		
+		<h1>Editor (<span id="photo_count_selected">0</span> of <?php echo number_format($photo_ids->photo_count); ?>)</h1>
+		
+		<form action="" method="post">
+			<p>
 				<select name="act" id="act">
 					<option value="tag_add">Add tag</option>
 					<option value="tag_remove">Remove tag</option>
@@ -196,14 +195,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
 				<input type="hidden" name="photo_ids" id="photo_ids" value="" />
 				<input name="do" type="submit" value="Do" />
-			</form>
-		</div>
-		
-		<h1>Editor (<span id="photo_count_selected">0</span> of <?php echo number_format($photo_ids->photo_count); ?>)</h1>
-		
-		<p>
-			<a href="#select_all" id="select_all">Select all</a> &#0183; <a href="#deselect_all" id="deselect_all">Deselect all</a>
-		</p>
+			</p>
+		</form>
 		
 		<p>
 			<?php
@@ -250,6 +243,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<p class="quiet">
 			<em>Tip: Hold down the Shift key to select a series of photos.</em>
 		</p>
+	</div>
+	<div class="span-5 last">
+		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="/images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="/images/icons/piles.png" alt="" /> Piles &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="/images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="/images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="/images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>
 	</div>
 </div>
 

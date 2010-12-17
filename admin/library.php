@@ -42,26 +42,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="span-5 colborderr">
-		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="/images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
-		<hr />
-
-		<h3>Find</h3>
-		
-		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic photos</a></li>
-		</ul>
-		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged photos</a></li>
-		</ul>
-	</div>
-	<div class="span-18 colborderl last">
+	<div class="span-18 colborder">
 		<h1>Search</h1>
 		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
 			<p style="margin-bottom: 0;">
@@ -244,6 +225,25 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php
 		}
 		?>
+	</div>
+	<div class="span-5 last">
+		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="/images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
+		<hr />
+
+		<h3>Find</h3>
+		
+		<ul>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic photos</a></li>
+		</ul>
+		<ul>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged photos</a></li>
+		</ul>
 	</div>
 </div>
 

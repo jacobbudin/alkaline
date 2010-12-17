@@ -34,7 +34,49 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="span-5 colborderr">
+	<div class="span-18 colborder">
+		<h1>Vitals</h1>
+		
+		<div id="statistics_holder" class="statistics_holder"></div>
+		<div id="statistics_views" title="<?php echo $views; ?>"></div>
+		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+		
+		<?php
+		// Preference: recent_photos
+		if($user->returnPref('recent_photos') === true){
+			?>
+			<hr />
+			<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
+			<h1>Recent</h1>
+			<p>
+				<?php
+			
+				// Preference: recent_photos_limit
+				if(!$max = $user->returnPref('recent_photos_limit')){
+					$max = 10;
+				}
+			
+				$photo_ids = new Find;
+				$photo_ids->page(1,$max);
+				$photo_ids->sort('photos.photo_uploaded', 'DESC');
+				$photo_ids->find();
+				$photos = new Photo($photo_ids);
+				$photos->getImgUrl('square');
+
+				foreach($photos->photos as $photo){
+					?>
+					<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
+						<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+					</a>
+					<?php
+				}
+				?>
+			</p>
+			<?php
+		}
+		?>
+	</div>
+	<div class="span-5 last">
 		<h2><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="/images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="/images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
 		
@@ -85,48 +127,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<h3>Alkaline</h3>
 		<p>You are running Alkaline <?php echo Alkaline::version; ?>.</p>
-	</div>
-	<div class="span-18 colborderl last">
-		<h1>Vitals</h1>
-		
-		<div id="statistics_holder" class="statistics_holder"></div>
-		<div id="statistics_views" title="<?php echo $views; ?>"></div>
-		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
-		
-		<?php
-		// Preference: recent_photos
-		if($user->returnPref('recent_photos') === true){
-			?>
-			<hr />
-			<div class="actions"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">Go to library</a></div>
-			<h1>Recent</h1>
-			<p>
-				<?php
-			
-				// Preference: recent_photos_limit
-				if(!$max = $user->returnPref('recent_photos_limit')){
-					$max = 10;
-				}
-			
-				$photo_ids = new Find;
-				$photo_ids->page(1,$max);
-				$photo_ids->sort('photos.photo_uploaded', 'DESC');
-				$photo_ids->find();
-				$photos = new Photo($photo_ids);
-				$photos->getImgUrl('square');
-
-				foreach($photos->photos as $photo){
-					?>
-					<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
-						<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
-					</a>
-					<?php
-				}
-				?>
-			</p>
-			<?php
-		}
-		?>
 	</div>
 </div>
 
