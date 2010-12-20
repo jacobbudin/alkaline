@@ -10,6 +10,7 @@ $user->perm(true);
 
 if(!empty($_POST['preferences_save'])){
 	$user->setPref('page_limit', @$_POST['page_limit']);
+	$user->setPref('home_target', @$_POST['home_target']);
 	$user->setPref('recent_photos', @$_POST['recent_photos']);
 	$user->setPref('recent_photos_limit', @$_POST['recent_photos_limit']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
@@ -49,6 +50,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				Determines pagination in photo library, search results, and bulk editor
 			</td>
 		</tr>
+		<tr>
+			<td class="input middle"><input type="checkbox" id="home_target" name="home_target" <?php echo $user->readPref('home_target'); ?> value="true"  /></td>
+			<td class="description">
+				<label for="home_target">Open the home page in new tab or window when using the link in the header</label>
+			</td>
+		</tr>
+		
 	</table>
 	
 	<h3>Dashboard</h3>
@@ -63,6 +71,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="25" <?php echo $user->readPref('recent_photos_limit', 25); ?>>25</option>
 					<option value="50" <?php echo $user->readPref('recent_photos_limit', 50); ?>>50</option>
 					<option value="100" <?php echo $user->readPref('recent_photos_limit', 100); ?>>100</option>
+					<option value="250" <?php echo $user->readPref('recent_photos_limit', 250); ?>>250</option>
 				</select>
 				most recent photos on my dashboard</label>
 			</td>

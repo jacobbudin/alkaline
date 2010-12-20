@@ -37,7 +37,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<h3>Instructions</h3>
 		
-		<p>Drag photos from a folder on your computer or from most applications including iPhoto and Aperture into the grey retaining area.</p>
+		<p>Drag images from a folder on your computer or from most applications including iPhoto and Aperture into the grey retaining area.</p>
 		
 		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		

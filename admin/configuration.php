@@ -330,7 +330,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="maint_debug" name="maint_debug" <?php echo $alkaline->readConf('maint_debug'); ?> value="true" /></td>
 			<td class="description">
 				<label for="maint_debug">Enable debug mode</label><br />
-				Incorporates technical data to the footer of every page
+				Appends technical data to the footer of pages
 			</td>
 		</tr>
 		<tr>
