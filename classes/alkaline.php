@@ -642,6 +642,18 @@ class Alkaline{
 		return $string;
 	}
 	
+	public function stripTags($var){
+		if(is_string($var)){
+			$var = strip_tags($var);
+		}
+		elseif(is_array($var)){
+			foreach($var as $key => $value){
+				$var[$key] = self::stripTags($value);
+			}
+		}
+		return $var;
+	}
+	
 	public function countWords($str){
 		$str = strip_tags($str);
 		preg_match_all("/\S+/", $str, $matches); 

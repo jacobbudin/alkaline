@@ -103,6 +103,8 @@ if(empty($comment_id)){
 		</div>
 	</form>
 	
+	<hr />
+	
 	<h1>Comments (<?php echo $comment_count; ?>)</h1>
 	
 	<table>

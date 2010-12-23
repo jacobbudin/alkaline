@@ -60,6 +60,7 @@ define('TAB', 'features');
 if(empty($right_id)){
 	$alkaline->updateCounts('photos', 'rights', 'right_photo_count');
 	$rights = $alkaline->getTable('rights');
+	$rights = $alkaline->stripTags($rights);
 	$right_count = @count($rights);
 	
 	define('TITLE', 'Alkaline Right Sets');
