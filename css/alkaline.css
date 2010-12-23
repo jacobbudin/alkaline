@@ -24,11 +24,6 @@ textarea{
 	height: 10em;
 }
 
-ul{
-	padding-left: 0;
-	list-style-type: square;
-}
-
 #tasks ul li{
 	margin-bottom: .5em;
 }
@@ -115,9 +110,12 @@ a.page_no { color: #333; font-weight: bold; border: 2px solid #ccc; padding: .1e
 a.page_no:hover, a.page_no:active { border: 2px solid #5eb0e5; background-color: #c0ddea; color: #00539f; }
 
 ul{
-	margin: .3em 2.1em 1.5em 1.75em;
+	margin: .3em 0 1.5em 1.75em;
+	padding-left: .5em;
 	list-style-type: square;
 }
+
+p.slim { margin-bottom: .75em; }
 
 img.frame{
 	border: solid 3px #fff;

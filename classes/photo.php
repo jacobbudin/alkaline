@@ -53,6 +53,7 @@ class Photo extends Alkaline{
 			// Store photo_file
 			for($i = 0; $i < $this->photo_count; ++$i){
 				$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
+				$this->photos[$i]['photo_src'] = BASE . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
 			}
 		}
 	}
@@ -1266,17 +1267,16 @@ class Photo extends Alkaline{
 	// Generate image URLs for images
 	public function getImgUrl($sizes=null){
 		$sizes = $this->convertToArray($sizes);
-		$sizes = array_map('strtolower', $sizes);
-		
-		$value_slots = array_fill(0, count($sizes)*2, '?');
 		
 		// Find size's prefix and suffix
 		if(!empty($size)){
+			$sizes = array_map('strtolower', $sizes);
+			$value_slots = array_fill(0, count($sizes)*2, '?');
 			$query = $this->prepare('SELECT size_label, size_prepend, size_append FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots));
 			$query->execute($sizes);
 		}
 		else{
-			$query = $this->prepare('SELECT size_label, size_prepend, size_append FROM sizes');
+			$query = $this->prepare('SELECT size_label, size_prepend, size_append, size_title FROM sizes');
 			$query->execute();
 		}
 		
@@ -1294,6 +1294,8 @@ class Photo extends Alkaline{
 			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'] . ' alt="" />';
 			}
 		}
+		
+		return $sizes;
 	}
 	
 	// Generate EXIF for images

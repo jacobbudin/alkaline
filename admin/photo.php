@@ -59,7 +59,7 @@ if(!empty($_POST['photo_id'])){
 }
 
 $photos = new Photo($photo_id);
-$photos->getImgUrl('admin');
+$sizes = $photos->getImgUrl();
 $photos->getTags();
 
 if(!$photo = @$photos->photos[0]){
@@ -131,6 +131,22 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showRights('right_id', $photo['right_id']); ?>
 			</p>
 			
+			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show image files</a></p>
+			
+			<div class="reveal">
+				<ul>
+					<li><a href="<?php echo $photo['photo_src']; ?>">Original</a> <span class="quiet">(<?php echo $photo['photo_width']; ?> &#0215; <?php echo $photo['photo_height']; ?>)</span></li>
+					<?php
+
+					foreach($sizes as $size){
+						$field = 'photo_src_' . $size['size_label'];
+						echo '<li><a href="' . $photo[$field] . '">' . $size['size_title'] . '</a></li>';
+					}
+
+					?>
+				</ul>
+			</div>
+			
 			<?php
 			
 			$exifs = $photos->getEXIF();
@@ -155,7 +171,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td>
 					<td>
-						<strong><label for="photo_delete">Delete this photo.</label></strong><br />
+						<strong><label for="photo_delete">Delete this image.</label></strong><br />
 						This action cannot be undone.
 					</td>
 				</tr>
