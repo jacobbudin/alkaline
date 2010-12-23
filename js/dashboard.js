@@ -281,21 +281,26 @@ $(document).ready(function(){
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
-	var original = $("a.show").text();
-	var re = /Show(.*)/;
-	var modified = 'Hide' + original.replace(re, "$1");
 	
 	$("a.show").toggle(
 		function(){
-			$(this).parent().siblings(".reveal").slideDown();
+			var original = $(this).text();
+			var re = /Show(.*)/;
+			var modified = 'Hide' + original.replace(re, "$1");
+			
+			$(this).parent().next(".reveal").slideDown();
 			$(this).siblings(".switch").html('&#9662;');
 			$(this).text(modified);
 			event.preventDefault();
 		},
 		function(){
-			$(this).parent().siblings(".reveal").slideUp();
+			var new_original = $(this).text();
+			var new_re = /Hide(.*)/;
+			var new_modified = 'Show' + new_original.replace(new_re, "$1");
+			
+			$(this).parent().next(".reveal").slideUp();
 			$(this).siblings(".switch").html('&#9656;');
-			$(this).text(original);
+			$(this).text(new_modified);
 			event.preventDefault();
 		}
 	);
