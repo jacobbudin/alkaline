@@ -67,6 +67,19 @@ if(!$photo = @$photos->photos[0]){
 	$alkaline->callback();
 }
 
+
+$photo_colors = unserialize($photo['photo_colors']);
+
+$photo_colors_colors = array();
+$photo_colors_percents = array();
+
+foreach($photo_colors as $color => $percent){
+	$photo_colors_colors[] = $color;
+	$photo_colors_percents[] = $percent;
+}
+
+$photo_colors_colors = json_encode($photo_colors_colors);
+$photo_colors_percents = json_encode($photo_colors_percents);
 $photo = $alkaline->makeHTMLSafe($photo);
 
 define('TAB', 'library');
@@ -131,7 +144,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showRights('right_id', $photo['right_id']); ?>
 			</p>
 			
-			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show image files</a></p>
+			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show color palette</a></p>
+			
+			<div class="reveal">
+				<div class="colorkey none">
+					<div class="colors"><?php echo $photo_colors_colors; ?></div>
+					<div class="percents"><?php echo $photo_colors_percents; ?></div>
+				</div>
+				<canvas width="300" height="40" class="colorkey"></canvas>
+			</div>
+			
+			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show thumbnail files</a></p>
 			
 			<div class="reveal">
 				<ul>

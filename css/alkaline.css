@@ -115,6 +115,13 @@ ul{
 	list-style-type: square;
 }
 
+canvas.colorkey{
+	border: solid 3px #fff;
+	margin-bottom: 1.5em;
+	-moz-box-shadow: 0 0 3px #ddd;
+	-webkit-box-shadow: 0 0 3px #ddd;
+}
+
 p.slim { margin-bottom: .75em; }
 
 img.frame{
