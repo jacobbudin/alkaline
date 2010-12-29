@@ -1401,6 +1401,25 @@ class Photo extends Alkaline{
 		return $this->pages;
 	}
 	
+	// Retrieve alpha sequence
+	public function getSeries($start=null){
+		if(!isset($start)){
+			$start = 1;
+		}
+		else{
+			$start = intval($start);
+		}
+		
+		$values = range($start, $start+$this->photo_count);
+		
+		for($i = 0; $i < $this->photo_count; ++$i){
+			$this->photos[$i]['photo_numeric'] = $values[$i];
+			$this->photos[$i]['photo_alpha'] = ucwords($this->numberToWords($values[$i]));
+		}
+		
+		return true;
+	}
+	
 	// Retrieve image comments
 	public function addSequence($label, $frequency, $start_first=false){
 		if($start_first === false){
@@ -1420,6 +1439,8 @@ class Photo extends Alkaline{
 				$i++;
 			}
 		}
+		
+		return true;
 	}
 		
 	// Retrieve image comments

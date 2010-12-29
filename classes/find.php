@@ -9,6 +9,7 @@ class Find extends Alkaline{
 	public $photo_count_result;
 	public $photo_offset_length;
 	public $photo_order;
+	public $photo_start;
 	public $page;
 	public $page_begin;
 	public $page_count;
@@ -874,6 +875,9 @@ class Find extends Alkaline{
 		if($page == 1){ $limit = $first; }
 		$this->page_begin = (($page - 1) * $limit) - $limit + $first;
 		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
+		
+		// Determine key of first photo
+		$this->photo_start = $this->page_begin + 1;
 		
 		return true;
 	}
