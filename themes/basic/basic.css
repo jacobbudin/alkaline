@@ -2,6 +2,10 @@
 	width: 670px;
 }
 
+.none{
+	display: none;
+}
+
 body{
 	background-color: #eee;
 	font-family: Verdana, sans-serif;

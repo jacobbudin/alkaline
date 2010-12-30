@@ -61,25 +61,15 @@ if(!empty($_POST['photo_id'])){
 $photos = new Photo($photo_id);
 $sizes = $photos->getImgUrl();
 $photos->getTags();
+$photos->getColorkey(300, 40);
+$exifs = $photos->getEXIF();
 
 if(!$photo = @$photos->photos[0]){
 	$alkaline->addNotification('The photo you requested could not be found.', 'error');
 	$alkaline->callback();
 }
 
-
-$photo_colors = unserialize($photo['photo_colors']);
-
-$photo_colors_colors = array();
-$photo_colors_percents = array();
-
-foreach($photo_colors as $color => $percent){
-	$photo_colors_colors[] = $color;
-	$photo_colors_percents[] = $percent;
-}
-
-$photo_colors_colors = json_encode($photo_colors_colors);
-$photo_colors_percents = json_encode($photo_colors_percents);
+$photo_colorkey = @$photo['photo_colorkey'];
 $photo = $alkaline->makeHTMLSafe($photo);
 
 define('TAB', 'library');
@@ -144,15 +134,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showRights('right_id', $photo['right_id']); ?>
 			</p>
 			
+			<?php if(!empty($photo_colorkey)){ ?>
 			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show color palette</a></p>
 			
 			<div class="reveal">
-				<div class="colorkey none">
-					<div class="colors"><?php echo $photo_colors_colors; ?></div>
-					<div class="percents"><?php echo $photo_colors_percents; ?></div>
-				</div>
-				<canvas width="300" height="40" class="colorkey"></canvas>
+				<?php echo $photo_colorkey; ?>
 			</div>
+			<?php } ?>
 			
 			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show thumbnail files</a></p>
 			
@@ -171,8 +159,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 			
 			<?php
-			
-			$exifs = $photos->getEXIF();
 			
 			if(count($exifs) > 0){
 				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';

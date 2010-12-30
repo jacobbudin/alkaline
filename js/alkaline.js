@@ -181,6 +181,35 @@ $(document).ready(function(){
 	});
 	
 	$(window).resize(function () { reset(); });
+	
+	// PRIMARY - COLORKEY
+	
+	$("div.colorkey").each(function(){
+		colors = $(this).children('.colors').text();
+		colors = $.evalJSON(colors);
+	
+		percents = $(this).children('.percents').text();
+		percents = $.evalJSON(percents);
+	
+		canvas = $(this).siblings('canvas');
+		canvas_width = canvas.attr("width");
+		canvas_height = canvas.attr("height");
+		canvas_var = canvas.get(0);
+	
+		context = canvas_var.getContext("2d");
+	
+		x_pos = 0;
+	
+		for (var i = 0; i < colors.length; i++) {
+			context.fillStyle = "rgb(" + colors[i] + ")";
+			width = parseInt((percents[i] * canvas_width) / 100);
+			if(i == (colors.length - 1)){
+				width += 1000;
+			}
+			context.fillRect(x_pos, 0, width, canvas_height);
+			x_pos += width;
+		}
+	});
 });
 
 $(window).load(function(){

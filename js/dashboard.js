@@ -331,34 +331,6 @@ $(document).ready(function(){
 		showAnim: null
 	});
 	
-	// PRIMARY - COLORKEY
-	
-	$("div.colorkey").each(function(){
-		colors = $(this).children('.colors').text();
-		colors = $.evalJSON(colors);
-		
-		percents = $(this).children('.percents').text();
-		percents = $.evalJSON(percents);
-		
-		canvas = $(this).siblings('canvas');
-		canvas_var = canvas.get(0);
-		
-		context = canvas_var.getContext("2d");
-		
-		x_pos = 0;
-		
-		for (var i = 0; i < colors.length; i++) {
-			context.fillStyle = "rgb(" + colors[i] + ")";
-			width = parseInt(percents[i] * 3);
-			if(i == (colors.length - 1)){
-				width += 1000;
-			}
-			context.fillRect(x_pos, 0, width, 40);
-			x_pos += width;
-		}
-		
-	});
-	
 	// PRIMARY - GEO HINTING
 	$(".photo_geo").live('focus', function(){
 		$(this).autocomplete({

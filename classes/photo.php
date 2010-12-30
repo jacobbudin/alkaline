@@ -1420,6 +1420,34 @@ class Photo extends Alkaline{
 		return true;
 	}
 	
+	// Retrieve Colorkey
+	public function getColorkey($width=null, $height=null){
+		for($i = 0; $i < $this->photo_count; ++$i){
+			$photo_colors = unserialize($this->photos[$i]['photo_colors']);
+			
+			if(empty($photo_colors)){ continue; }
+
+			$photo_colors_colors = array();
+			$photo_colors_percents = array();
+
+			foreach($photo_colors as $color => $percent){
+				$photo_colors_colors[] = $color;
+				$photo_colors_percents[] = $percent;
+			}
+
+			$photo_colors_colors = json_encode($photo_colors_colors);
+			$photo_colors_percents = json_encode($photo_colors_percents);
+			
+			$this->photos[$i]['photo_colorkey'] = '<div class="colorkey none">
+				<div class="colors">' . $photo_colors_colors . '</div>
+				<div class="percents">' . $photo_colors_percents . '</div>
+			</div>
+			<canvas width="' . intval(@$width) . '" height="' . intval(@$height) . '" class="colorkey"></canvas>';
+		}
+		
+		return true;
+	}
+	
 	// Retrieve image comments
 	public function addSequence($label, $frequency, $start_first=false){
 		if($start_first === false){
