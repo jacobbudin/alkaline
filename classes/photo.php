@@ -1469,7 +1469,7 @@ class Photo extends Alkaline{
 	}
 	
 	// Retrieve alpha sequence
-	public function getSeries($start=null){
+	public function getSeries($start=null, $asc=true){
 		if(!isset($start)){
 			$start = 1;
 		}
@@ -1477,7 +1477,12 @@ class Photo extends Alkaline{
 			$start = intval($start);
 		}
 		
-		$values = range($start, $start+$this->photo_count);
+		if($asc === true){
+			$values = range($start, $start+$this->photo_count);
+		}
+		else{
+			$values = range($start, $start-$this->photo_count);
+		}
 		
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_numeric'] = $values[$i];

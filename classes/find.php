@@ -10,12 +10,15 @@ class Find extends Alkaline{
 	public $photo_offset_length;
 	public $photo_order;
 	public $photo_first;
+	public $photo_first_reverse;
 	public $photo_last;
+	public $photo_last_reverse;
 	public $page;
 	public $page_begin;
 	public $page_count;
-	public $page_first;
 	public $page_limit;
+	public $page_limit_current;
+	public $page_limit_first;
 	public $page_next;
 	public $page_previous;
 	public $piles;
@@ -46,7 +49,7 @@ class Find extends Alkaline{
 		$this->photo_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
-		$this->page_first = LIMIT;
+		$this->page_limit_first = LIMIT;
 		$this->sql = 'SELECT photos.photo_id AS photo_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
@@ -870,16 +873,13 @@ class Find extends Alkaline{
 		// Store data to object
 		$this->page = $page;
 		$this->page_limit = intval($limit);
-		$this->page_first = intval($first);
+		$this->page_limit_first = intval($first);
 		
 		// Set SQL limit
-		if($page == 1){ $limit = $first; }
-		$this->page_begin = (($page - 1) * $limit) - $limit + $first;
+		if($page == 1){ $this->page_limit_curent = $this->page_limit_first; }
+		else{ $this->page_limit_curent = $this->page_limit; }
+		$this->page_begin = (($page - 1) * $this->page_limit_curent) - $this->page_limit_curent + $this->page_limit_first;
 		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
-		
-		// Determine key of first photo
-		$this->photo_first = $this->page_begin + 1;
-		$this->photo_last = $this->page_begin + $limit;
 		
 		return true;
 	}
@@ -998,21 +998,21 @@ class Find extends Alkaline{
 			}
 			
 			if(empty($this->page_limit)){ $this->page_limit = LIMIT; }
-			if(empty($this->page_first)){ $this->page_first = $this->page_limit; }
+			if(empty($this->page_limit_first)){ $this->page_limit_first = $this->page_limit; }
 			
-			if($key < $this->page_first){
+			if($key < $this->page_limit_first){
 				$page = 1;
 			}
 			else{
-				$page = intval(ceil((($key + 1) - $this->page_first) / $this->page_limit) + 1);
+				$page = intval(ceil((($key + 1) - $this->page_limit_first) / $this->page_limit) + 1);
 			}
 			
-			$this->page($page, $this->page_limit, $this->page_first);
+			$this->page($page, $this->page_limit, $this->page_limit_first);
 		}
 		
 		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil(($this->photo_count - $this->page_first) / $this->page_limit) + 1;
+			$this->page_count = ceil(($this->photo_count - $this->page_limit_first) / $this->page_limit) + 1;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
@@ -1073,7 +1073,7 @@ class Find extends Alkaline{
 				$this->photo_ids_before = array_reverse($this->photo_ids_before);
 				
 				if($this->page == 1){
-					$offset = $this->page_begin + $this->page_first;
+					$offset = $this->page_begin + $this->page_limit_first;
 				}
 				else{
 					$offset = $this->page_begin + $this->page_limit;
@@ -1085,7 +1085,7 @@ class Find extends Alkaline{
 				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin, true);
 				
 				if($this->page == 1){
-					$offset = $this->page_begin + $this->page_first;
+					$offset = $this->page_begin + $this->page_limit_first;
 				}
 				else{
 					$offset = $this->page_begin + $this->page_limit;
@@ -1093,6 +1093,12 @@ class Find extends Alkaline{
 				$this->photo_ids_after = array_slice($photo_ids, $offset, null, true);
 			}
 		}
+		
+		// Determine keys of photos
+		$this->photo_first = $this->page_begin + 1;
+		$this->photo_last = $this->page_begin + $this->page_limit;
+		$this->photo_first_reverse = $this->photo_count - $this->photo_first + 1;
+		$this->photo_last_reverse = $this->page_begin + $this->page_limit;
 		
 		// Return photos.photo_ids
 		return $this->photo_ids;

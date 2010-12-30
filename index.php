@@ -36,7 +36,7 @@ $photos->formatTime();
 $photos->getImgUrl('square');
 $photos->getImgUrl('medium');
 $photos->getExif();
-$photos->getSeries($photo_ids->photo_first);
+$photos->getSeries($photo_ids->photo_first_reverse, false);
 $photos->getColorkey(670, 10);
 $photos->getPiles();
 $photos->getTags();
