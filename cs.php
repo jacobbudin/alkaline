@@ -120,35 +120,37 @@ class AlkalineCS{
 	<link rel="stylesheet" href="http://www.alkalineapp.com/remote/cs/css/blueprint/print.css" type="text/css" media="print" />	
 	<!--[if lt IE 8]><link rel="stylesheet" href="http://www.alkalineapp.com/remote/cs/css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
 	<style>
-		.container{ width: 670px; }
-		body { margin: 5em auto 2em auto; background-image: url(http://www.alkalineapp.com/remote/cs/images/bg.png); background-repeat: repeat-x; font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, sans-serif; }
+		.container{ width: 710px; }
+		body { margin: 5em auto 2em auto; }
 		a { color: #222; }
 		a:hover, a:active { text-decoration: none; }
-		h4 { padding-bottom: 5px; border-bottom: 1px solid #ddd; }
-		h5 { margin-bottom: 0; }
+		h3 { font-size: 1.9em; font-weight: 500; }
+		h4 { padding-bottom: .5em; font-size: 1.4em; border-bottom: 1px solid #ddd; }
+		h5 { margin-bottom: .25em; font-size: 1.2em; }
+		table, tr, td { font-size: inherit; } 
 		#header { text-align: center; }
 		#icon { margin-top: 10px; margin-bottom: 4em; }
-		#result { margin-top: 1.5em; font-size: 1.25em; text-align: center; }
-		#footer { margin-top: 3em; color: #999; font-size: .9em;  }
+		#result { margin-top: 3em; font-size: 1.25em; text-align: center; }
+		#footer { margin-top: 3em; color: #999; text-align: center; }
 		#footer a { color: #999; }
-		.test_result { text-align: center; width: 20%; font-size: .9em; font-weight: bold; text-transform: uppercase; }
+		.test_result { text-align: center; width: 22%; font-size: .9em; font-weight: bold; text-transform: uppercase; }
 		.test_result.positive { background-color: #c0ddea; color: #021e2f; }
 		.test_result.negative { color: #555; }
 		.test_result.unknown { color: #555; }
-		.light { text-align: center; font-size: .9em; font-weight: normal; text-transform: none; }
+		.light { text-align: center; font-weight: normal; text-transform: none; }
 		.result_icon { margin-bottom: 10px; }
 	</style>
 </head>
 <body>
 	<div class="container">
-		<div id="header" class="span-17 last">
+		<div id="header" class="span-18 last">
 			<img id="icon" src="http://www.alkalineapp.com/remote/cs/images/alkaline.png" alt="" />
-		</div>
-		<div class="span-17 last">
+			
 			<h3>Alkaline Compatibility Suite</h3>
 			
 			<p>The Alkaline Compatibility Suite tests your Web server to ensure it&#8217;s compatible with <a href="http://www.alkalineapp.com/">Alkaline</a>.</p><br />
-			
+		</div>
+		<div class="span-18 last">
 			<?php $test = new AlkalineCS(); ?>
 			
 			<h4>Required</h4>
@@ -157,49 +159,49 @@ class AlkalineCS{
 				<tr>
 					<td>
 						<h5>Internet connectivity</h5>
-						<span class="small quiet">An Internet connection is required to activate Alkaline.</span>
+						<span class="quiet">An Internet connection is required to activate Alkaline.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isNet(), 'Connected', 'Disconnected'); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>GD image library</h5>
-						<span class="small quiet">GD allows Alkaline to create and manipulate image files.</span>
+						<span class="quiet">GD allows Alkaline to create and manipulate raster image files (GIF, JPG, and PNG).</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('gd')); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP 5.2+</h5>
-						<span class="small quiet">PHP allows Alkaline to produce dynamic Web pages.</span>
+						<span class="quiet">PHP allows Alkaline to produce dynamic Web pages.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isVer('/^(5\.2|5\.3).+/is', $test->php_version), $test->php_version, $test->php_version); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP JSON support</h5>
-						<span class="small quiet">PHP JSON allows Alkaline to provide real-time functionality.</span>
+						<span class="quiet">PHP JSON allows Alkaline to provide real-time functionality.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('json')); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP PDO support</h5>
-						<span class="small quiet">PHP PDO allows Alkaline to connect to various database types.</span>
+						<span class="quiet">PHP PDO allows Alkaline to connect to various database types.</span>
 					</td>
 					<?php echo $test->boolToHTML(($test->isExt('PDO') and (count($test->php_pdo_drivers) > 0)), 'Installed<br /><span class="light">(' . implode(', ', $test->php_pdo_drivers) . ')</span>'); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP SimpleXML support</h5>
-						<span class="small quiet">PHP SimpleXML allows Alkaline to process new themes and extensions.</span>
+						<span class="quiet">PHP SimpleXML allows Alkaline to process new themes and extensions.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('SimpleXML')); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>Zend Optimizer</h5>
-						<span class="small quiet">Zend Optimizer is used to verify the authenticity of Alkaline.</span>
+						<span class="quiet">Zend Optimizer is used to verify the authenticity of Alkaline.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('Zend Optimizer')); ?>
 				</tr>
@@ -212,7 +214,7 @@ class AlkalineCS{
 					<tr>
 						<td>
 							<h5>Apache mod_rewrite module</h5>
-							<span class="small quiet">Apache mod_rewite allows Alkaline to use clean, semantic URLs.</span>
+							<span class="quiet">Apache mod_rewite allows Alkaline to use clean, semantic URLs.</span>
 						</td>
 						<?php echo $test->boolToHTML($test->isThere('mod_rewrite')); ?>
 					</tr>
@@ -220,21 +222,21 @@ class AlkalineCS{
 				<tr>
 					<td>
 						<h5>ImageMagick library</h5>
-						<span class="small quiet">ImageMagick allows Alkaline to create higher-quality image files.</span>
+						<span class="quiet">ImageMagick allows Alkaline to create and manipulate vector image files (PDF and SVG).</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('imagick', false)); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP EXIF support</h5>
-						<span class="small quiet">PHP EXIF allows Alkaline to read EXIF data from your photos.</span>
+						<span class="quiet">PHP EXIF allows Alkaline to read EXIF data from your photos.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isExt('exif', false)); ?>
 				</tr>
 				<tr>
 					<td>
 						<h5>PHP SQLite support</h5>
-						<span class="small quiet">PHP SQLite allows Alkaline to operate without a traditional database.</span>
+						<span class="quiet">PHP SQLite allows Alkaline to operate without a traditional database.</span>
 					</td>
 					<?php echo $test->boolToHTML($test->isThere('PDO Driver for SQLite 3.x')); ?>
 				</tr>
