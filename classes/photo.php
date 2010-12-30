@@ -178,6 +178,7 @@ class Photo extends Alkaline{
 				$size_append = $size['size_append'];
 				$size_watermark = $size['size_watermark'];
 				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext']);
+				
 				switch($size_type){
 					case 'fill':
 						$this->imageFill($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
@@ -534,24 +535,21 @@ class Photo extends Alkaline{
 		
 		if(function_exists('exif_imagetype')){
 			$type = exif_imagetype($file);
-		}
-		else{
-			preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
-			$type = $matches[1];
-			if($type == 'jpeg'){ return 'jpg'; }
-			else{ return $type; }
+			
+			switch($type){
+				case 1:
+					return 'gif'; break;
+				case 2:
+					return 'jpg'; break;
+				case 3:
+					return 'png'; break;
+			}
 		}
 		
-		switch($type){
-			case 1:
-				return 'gif'; break;
-			case 2:
-				return 'jpg'; break;
-			case 3:
-				return 'png'; break;
-			default:
-				return false; break;
-		}
+		preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
+		$type = $matches[1];
+		if($type == 'jpeg'){ return 'jpg'; }
+		else{ return $type; }
 	}
 	
 	// Detemine image MIME type
@@ -563,27 +561,25 @@ class Photo extends Alkaline{
 		
 		if(function_exists('exif_imagetype')){
 			$type = exif_imagetype($file);
-		}
-		else{
-			preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
-			$type = $matches[1];
-			if($type == 'jpg'){ return 'image/jpeg'; }
-			else{ return 'image/' . $type; }
+			switch($type){
+				case 1:
+					return 'image/gif'; break;
+				case 2:
+					return 'image/jpeg'; break;
+				case 3:
+					return 'image/png'; break;
+			}
 		}
 		
-		switch($type){
-			case 1:
-				return 'image/gif'; break;
-			case 2:
-				return 'image/jpeg'; break;
-			case 3:
-				return 'image/png'; break;
-			default:
-				return false; break;
-		}
+		preg_match('#\.([a-z0-9]*)$#si', $file, $matches);
+		$type = $matches[1];
+		if($type == 'jpg'){ return 'image/jpeg'; }
+		elseif($type == 'svg'){ return 'image/svg+xml'; }
+		elseif($type == 'eps'){ return 'image/x-eps'; }
+		else{ return 'image/' . $type; }
 	}
 	
-	// Detemine image MIME type
+	// Determine image dimensions
 	public function getSize($file){
 		// Error checking
 		if(empty($file)){
@@ -591,9 +587,19 @@ class Photo extends Alkaline{
 		}
 		
 		$size = array();
-		$info = getimagesize($file);
-		$size['width'] = $info[0];
-		$size['height'] = $info[1];
+		
+		// ImageMagick version
+		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
+			$image = new Imagick($file);
+			$size['width'] = $image->getImageWidth();
+			$size['height'] = $image->getImageHeight();
+		}
+		// GD version
+		else{
+			$info = getimagesize($file);
+			$size['width'] = $info[0];
+			$size['height'] = $info[1];
+		}
 		
 		return $size;
 	}
@@ -618,6 +624,14 @@ class Photo extends Alkaline{
 				case 'png':
 					break;
 				case 'gif':
+					break;
+				case 'eps':
+					$image->setImageFormat('png');
+					$dest = $this->changeExt($dest, 'png');
+					break;
+				case 'svg':
+					$image->setImageFormat('png');
+					$dest = $this->changeExt($dest, 'png');
 					break;
 			}
 			
@@ -716,11 +730,22 @@ class Photo extends Alkaline{
 		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
 			$image = new Imagick($src);
 			
-			list($width_orig, $height_orig) = getimagesize($src);
+			$size = $this->getSize($src);
+			$width_orig = $size['width'];
+			$height_orig = $size['height'];
 			
 			if(($width_orig <= $width) and ($height_orig <= $height)){
-				copy($src, $dest);
-				return true;	
+				switch($ext){
+					case 'jpg':
+						copy($src, $dest);
+						break;
+					case 'png':
+						copy($src, $dest);
+						break;
+					case 'gif':
+						copy($src, $dest);
+						break;
+				}
 			}
 
 			$ratio_orig = $width_orig / $height_orig;
@@ -737,6 +762,14 @@ class Photo extends Alkaline{
 				case 'png':
 					break;
 				case 'gif':
+					break;
+				case 'eps':
+					$image->setImageFormat('png');
+					$dest = $this->changeExt($dest, 'png');
+					break;
+				case 'svg':
+					$image->setImageFormat('png');
+					$dest = $this->changeExt($dest, 'png');
 					break;
 			}
 			
@@ -1290,8 +1323,14 @@ class Photo extends Alkaline{
 			
 			// Attach photo_src_ to photos array
 			for($i = 0; $i < $this->photo_count; ++$i){
-			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'];
-			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $this->photos[$i]['photo_ext'] . ' alt="" />';
+				$photo_ext = $this->photos[$i]['photo_ext'];
+
+				if(in_array($photo_ext, array('eps', 'svg'))){
+					$photo_ext = 'png';
+				}
+				
+			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext;
+			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext . ' alt="" />';
 			}
 		}
 		

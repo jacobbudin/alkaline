@@ -347,7 +347,7 @@ class Alkaline{
 				
 				if(!empty($ext)){
 					// Find files with proper extensions
-					if(preg_match('([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})', $filename)){
+					if(preg_match('#([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})#si', $filename)){
 						$files[] = $dir . $filename;
 					}
 				}
@@ -483,6 +483,11 @@ class Alkaline{
 			$input = intval($input);
 		}
 		return $input;
+	}
+	
+	public function changeExt($file, $ext){
+		$file = preg_replace('#\.([a-z0-9]*)$#si', '.' . $ext, $file);
+		return $file;
 	}
 	
 	// FORMAT TIME

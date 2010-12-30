@@ -34,7 +34,7 @@ $url_rewrite = false;
 //
 
 // Valid extensions, separate by |
-$img_ext = 'gif|GIF|jpg|JPG|jpeg|JPEG|png|PNG';
+$img_ext = 'gif|jpg|jpeg|png|eps|svg';
 
 // Length, an integer in seconds, to remember a user's previous login
 $user_remember = 1209600;
