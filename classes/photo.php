@@ -575,7 +575,7 @@ class Photo extends Alkaline{
 		$type = $matches[1];
 		if($type == 'jpg'){ return 'image/jpeg'; }
 		elseif($type == 'svg'){ return 'image/svg+xml'; }
-		elseif($type == 'eps'){ return 'image/x-eps'; }
+		elseif($type == 'pdf'){ return 'application/pdf'; }
 		else{ return 'image/' . $type; }
 	}
 	
@@ -620,22 +620,36 @@ class Photo extends Alkaline{
 				case 'jpg':
 					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
 					$image->setImageCompressionQuality($quality);
+					$image->cropThumbnailImage($width, $height);
 					break;
 				case 'png':
+					$image->cropThumbnailImage($width, $height);
 					break;
 				case 'gif':
+					$image->cropThumbnailImage($width, $height);
 					break;
-				case 'eps':
+				case 'pdf':
+					$res = $image->getImageResolution();
+					$x_ratio = $res['x'] / $image->getImageWidth();
+					$y_ratio = $res['y'] / $image->getImageHeight();
+					$image->removeImage();
+					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->readImage($src);
 					$image->setImageFormat('png');
 					$dest = $this->changeExt($dest, 'png');
 					break;
 				case 'svg':
+					$res = $image->getImageResolution();
+					$x_ratio = $res['x'] / $image->getImageWidth();
+					$y_ratio = $res['y'] / $image->getImageHeight();
+					$image->removeImage();
+					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->readImage($src);
 					$image->setImageFormat('png');
 					$dest = $this->changeExt($dest, 'png');
 					break;
 			}
 			
-			$image->cropThumbnailImage($width, $height);
 			$image->writeImage($dest);
 			$image->clear();
 			$image->destroy();
@@ -758,22 +772,36 @@ class Photo extends Alkaline{
 				case 'jpg':
 					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
 					$image->setImageCompressionQuality($quality);
+					$image->thumbnailImage($width, $height);
 					break;
 				case 'png':
+					$image->thumbnailImage($width, $height);
 					break;
 				case 'gif':
+					$image->thumbnailImage($width, $height);
 					break;
-				case 'eps':
+				case 'pdf':
+					$res = $image->getImageResolution();
+					$x_ratio = $res['x'] / $image->getImageWidth();
+					$y_ratio = $res['y'] / $image->getImageHeight();
+					$image->removeImage();
+					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->readImage($src);
 					$image->setImageFormat('png');
 					$dest = $this->changeExt($dest, 'png');
 					break;
 				case 'svg':
+					$res = $image->getImageResolution();
+					$x_ratio = $res['x'] / $image->getImageWidth();
+					$y_ratio = $res['y'] / $image->getImageHeight();
+					$image->removeImage();
+					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->readImage($src);
 					$image->setImageFormat('png');
 					$dest = $this->changeExt($dest, 'png');
 					break;
 			}
 			
-			$image->thumbnailImage($width, $height);
 			$image->writeImage($dest);
 			$image->clear();
 			$image->destroy();
@@ -1325,7 +1353,7 @@ class Photo extends Alkaline{
 			for($i = 0; $i < $this->photo_count; ++$i){
 				$photo_ext = $this->photos[$i]['photo_ext'];
 
-				if(in_array($photo_ext, array('eps', 'svg'))){
+				if(in_array($photo_ext, array('pdf', 'svg'))){
 					$photo_ext = 'png';
 				}
 				
