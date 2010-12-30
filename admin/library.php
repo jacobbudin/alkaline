@@ -189,7 +189,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<hr />
 		
-		<h1>Photos (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
+		<h1>Images (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
 		<p>
 			<?php
 
@@ -234,15 +234,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h3>Find</h3>
 		
 		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed images</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated images</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed images</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic images</a></li>
 		</ul>
 		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled photos</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged photos</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished images</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled images</a></li>
+			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged images</a></li>
 		</ul>
 	</div>
 </div>

@@ -41,7 +41,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
-		<p>Once you&#8217;re done uploading, proceed to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your photos.</p>
+		<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
 	</div>
 	<div class="span-18 colborderl last">
 		<h1>Upload</h1>

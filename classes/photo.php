@@ -614,6 +614,10 @@ class Photo extends Alkaline{
 		
 		// ImageMagick version
 		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
+			$size = $this->getSize($src);
+			$width_orig = $size['width'];
+			$height_orig = $size['height'];
+			
 			$image = new Imagick($src);
 			
 			switch($ext){
@@ -633,9 +637,10 @@ class Photo extends Alkaline{
 					$x_ratio = $res['x'] / $image->getImageWidth();
 					$y_ratio = $res['y'] / $image->getImageHeight();
 					$image->removeImage();
-					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
 					$image->readImage($src);
 					$image->setImageFormat('png');
+					$image->cropThumbnailImage($width, $height);
 					$dest = $this->changeExt($dest, 'png');
 					break;
 				case 'svg':
@@ -643,9 +648,10 @@ class Photo extends Alkaline{
 					$x_ratio = $res['x'] / $image->getImageWidth();
 					$y_ratio = $res['y'] / $image->getImageHeight();
 					$image->removeImage();
-					$image->setResolution($width * $x_ratio, $height * $y_ratio);
+					$image->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
 					$image->readImage($src);
 					$image->setImageFormat('png');
+					$image->cropThumbnailImage($width, $height);
 					$dest = $this->changeExt($dest, 'png');
 					break;
 			}
