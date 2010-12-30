@@ -18,6 +18,7 @@ else{
 	$photo = new Photo();
 	$photo->attachUser($user);
 	$photo->import(base64_decode($_POST['photo_file']));
+	$photo->getImgUrl('admin');
 	$tags = $photo->getTags();
 	$photo = $photo->photos[0];
 	$tag_names = array();
