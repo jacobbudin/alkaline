@@ -36,6 +36,16 @@ class Page extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->pages = $orbit->hook('page', $this->pages, $this->pages);
+		return true;
+	}
+	
 	public function create(){
 		
 	}

@@ -138,6 +138,16 @@ class Find extends Alkaline{
         return implode(', ', $this->photo_ids);
     }
 
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->photo_ids = $orbit->hook('find', $this->photo_ids, $this->photo_ids);
+		return true;
+	}
+
 	// FIND BY DATE TAKEN
 	public function taken($begin=null, $end=null){
 		// Error checking

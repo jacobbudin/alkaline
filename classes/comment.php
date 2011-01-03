@@ -63,6 +63,16 @@ class Comment extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->comments = $orbit->hook('comment', $this->comments, $this->comments);
+		return true;
+	}
+	
 	// FIND BY SEARCH
 	public function search($search=null){
 		// Error checking

@@ -36,6 +36,16 @@ class Pile extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->piles = $orbit->hook('pile', $this->piles, $this->piles);
+		return true;
+	}
+	
 	public function create(){
 		
 	}

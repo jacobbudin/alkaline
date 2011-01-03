@@ -7,10 +7,7 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('photo');
 $alkaline->addComments();
 
-$orbit = new Orbit;
-
 $id = $alkaline->findID($_GET['id'], true);
-
 if(!$id){ $alkaline->error('No photo was found.', 404); }
 
 $photo_ids = new Find($id);
@@ -25,8 +22,7 @@ $photos->getExif();
 $photos->getTags();
 $photos->getRights();
 $photos->getComments();
-
-$photos->photos = $orbit->hook('photo', $photos->photos, $photos->photos);
+$photos->hook();
 
 $header = new Canvas;
 $header->load('header');

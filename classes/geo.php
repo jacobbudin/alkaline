@@ -272,6 +272,16 @@ class Geo extends Alkaline{
 		return trim($str);
     }
 
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->city = $orbit->hook('geo', $this->city, $this->city);
+		return true;
+	}
+
 	public function hint($hint){
 		$hint_lower = strtolower($hint);
 		

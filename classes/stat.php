@@ -45,6 +45,16 @@ class Stat extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->stats = $orbit->hook('stat', $this->stats, $this->stats);
+		return true;
+	}
+	
 	// STAT-TO-ARRAY FUNCTIONS
 	
 	public function getMonthly(){

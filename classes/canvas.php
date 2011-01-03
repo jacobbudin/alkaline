@@ -345,36 +345,36 @@ class Canvas extends Alkaline{
 		}
 	}
 	
-	// BLOCKS
-	// Find Canvas blocks and process them
-	protected function initBlocks(){
+	// INCLUDES
+	// Find Canvas includes and process them
+	protected function initIncludes(){
 		$matches = array();
-		preg_match_all('#{canvas:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{include:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
-			$blocks = array();
+			$includes = array();
 			
 			foreach($matches as $match){
-				$block = strtolower($match[1]);
-				$blocks[] = array('replace' => $match[0], 'block' => $block);
+				$include = strtolower($match[1]);
+				$includes[] = array('replace' => $match[0], 'include' => $include);
 			}
 		}
 		else{
 			return false;
 		}
 		
-		foreach($blocks as $block){
-			$path = PATH . BLOCKS . $block['block'] . '.php';
+		foreach($includes as $include){
+			$path = PATH . includeS . $include['include'] . '.php';
 			
 			if(is_file($path)){
 				ob_start();
 
-				// Include block
+				// Include include
 				include($path);
 				$content = ob_get_contents();
 				
 				// Replace contents
-				$this->template = str_ireplace($block['replace'], $content, $this->template);
+				$this->template = str_ireplace($include['replace'], $content, $this->template);
 				ob_end_clean();
 			}
 		}

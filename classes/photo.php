@@ -62,6 +62,17 @@ class Photo extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->photos = $orbit->hook('photo', $this->photos, $this->photos);
+		return true;
+	}
+	
+	// Add images to library
 	public function import($files){
 		if(empty($files)){
 			return false;

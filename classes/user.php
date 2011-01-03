@@ -27,6 +27,16 @@ class User extends Alkaline{
 		parent::__destruct();
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->user = $orbit->hook('user', $this->user, $this->user);
+		return true;
+	}
+	
 	// AUTHENTICATE (LOGIN)
 	// Login user by username, password
 	public function auth($username, $password, $remember=false){
