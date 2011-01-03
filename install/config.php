@@ -99,12 +99,12 @@ define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
 
 define('ADMIN', FOLDER_PREFIX . 'admin/');
-define('BLOCKS', FOLDER_PREFIX . 'blocks/');
 define('CLASSES', FOLDER_PREFIX . 'classes/');
 define('CSS', FOLDER_PREFIX . 'css/');
 define('DB', FOLDER_PREFIX . 'db/');
 define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
+define('INCLUDES', FOLDER_PREFIX . 'includes/');
 define('JS', FOLDER_PREFIX . 'js/');
 define('IMAGES', FOLDER_PREFIX . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');

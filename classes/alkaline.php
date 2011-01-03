@@ -1020,15 +1020,15 @@ class Alkaline{
 		return $tags;
 	}
 	
-	// Display all blocks
-	public function getBlocks(){
-		$blocks = self::seekDirectory(PATH . BLOCKS, '.*');
+	// Gather all includes
+	public function getIncludes(){
+		$includes = self::seekDirectory(PATH . INCLUDES, '.*');
 		
-		foreach($blocks as &$block){
-			$block = self::getFilename($block);
+		foreach($includes as &$include){
+			$include = self::getFilename($include);
 		}
 		
-		return $blocks;
+		return $includes;
 	}
 	
 	// PROCESS COMMENTS

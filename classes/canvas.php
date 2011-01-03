@@ -24,6 +24,16 @@ class Canvas extends Alkaline{
 		return $this->template;
 	}
 	
+	// Perform object Orbit hook
+	public function hook($orbit=null){
+		if(!is_object($orbit)){
+			$orbit = new Orbit;
+		}
+		
+		$this->template = $orbit->hook('canvas', $this->template, $this->template);
+		return true;
+	}
+	
 	// APPEND
 	// Append a string to the template
 	public function append($template){
@@ -376,7 +386,7 @@ class Canvas extends Alkaline{
 		$this->assign('Copyright', parent::copyright);
 		
 		// Process Blocks, Orbit
-		$this->initBlocks();
+		$this->initIncludes();
 		$this->initOrbit();
 		
 		// Remove unused conditionals, replace with ELSEIF as available
