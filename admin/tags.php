@@ -23,7 +23,7 @@ if(!empty($_POST['tag_id'])){
 	
 	// Update tags set
 	else{
-		$query = $alkaline->prepare('SELECT FROM tags WHERE tag_name = :tag_name AND tag_id != ' . $tag_id);
+		$query = $alkaline->prepare('SELECT tag_id FROM tags WHERE tag_name = :tag_name AND tag_id != ' . $tag_id);
 		$query->execute(array(':tag_name' => $tag_name));
 		$tags = $query->fetchAll();
 		$tag = @$tags[0];
