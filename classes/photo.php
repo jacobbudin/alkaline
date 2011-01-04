@@ -1518,6 +1518,10 @@ class Photo extends Alkaline{
 	
 	// Retrieve Colorkey
 	public function getColorkey($width=null, $height=null){
+		// Error handling
+		if(!isset($width)){ $width = 300; }
+		if(!isset($height)){ $height = 40; }
+		
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$photo_colors = unserialize($this->photos[$i]['photo_colors']);
 			
