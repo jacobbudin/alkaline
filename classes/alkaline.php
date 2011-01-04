@@ -2,7 +2,7 @@
 
 /*
 // Alkaline
-// Copyright (c) 2010 by Budin Ltd. All rights reserved.
+// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
 // Do not redistribute this code without written permission from Budin Ltd.
 // http://www.alkalinenapp.com/
 */
@@ -13,8 +13,8 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 564;
-	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
+	const build = 605;
+	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const licensee = 'Jacob Budin, Budin Ltd.';
 	const product = 'Alkaline';
