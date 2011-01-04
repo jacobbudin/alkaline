@@ -1,5 +1,12 @@
 <?php
 
+/*
+// Alkaline
+// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
+// Do not redistribute this code without written permission from Budin Ltd.
+// http://www.alkalinenapp.com/
+*/
+
 require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
@@ -35,7 +42,7 @@ $photos = new Photo($photo_ids);
 $photos->formatTime();
 $photos->getImgUrl('square');
 $photos->getImgUrl('medium');
-$photos->getExif();
+$photos->getEXIF();
 $photos->getSeries($photo_ids->photo_first_reverse, false);
 $photos->getColorkey(670, 10);
 $photos->getPiles();

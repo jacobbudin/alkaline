@@ -1390,7 +1390,7 @@ class Photo extends Alkaline{
 	}
 	
 	// Generate EXIF for images
-	public function getExif(){
+	public function getEXIF(){
 		$query = $this->prepare('SELECT exifs.* FROM exifs, photos' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
 		$query->execute();
 		$exifs = $query->fetchAll();

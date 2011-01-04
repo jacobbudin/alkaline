@@ -1,5 +1,12 @@
 <?php
 
+/*
+// Alkaline
+// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
+// Do not redistribute this code without written permission from Budin Ltd.
+// http://www.alkalinenapp.com/
+*/
+
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
@@ -32,11 +39,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<hr />
 		
 		<h3>Status</h3>
-		
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
 		<h3>Instructions</h3>
-		
 		<p>Drag images from a folder on your computer or from most applications including iPhoto and Aperture into the grey retaining area.</p>
 		
 		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
