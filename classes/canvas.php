@@ -92,6 +92,27 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	public function setTitle($title){
+		$source = $this->returnConf('web_title');
+		
+		if(empty($title)){
+			$title = $source;
+		}
+		else{
+			$format = $this->returnConf('web_title_format');
+			if($format == 'emdash'){
+				$title .= ' &#8212; ' . $source;
+			}
+			else{
+				$title = $source . ': ' . $title;
+			}
+		}
+		
+		// Set variable
+		$this->assign('TITLE', $title);
+		return true;
+	}
+	
 	// LOOPS
 	// Set photo array to loop
 	public function loop($array){

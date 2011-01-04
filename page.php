@@ -17,7 +17,7 @@ $page['page_modified'] = $alkaline->formatTime($page['page_modified']);
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('Title', $page['page_title'] . ' &#8212; ' . $alkaline->returnConf('web_title'));
+$header->setTitle($page['page_title']);
 $header->display();
 
 $index = new Canvas;

@@ -49,7 +49,7 @@ $pages->fetchAll();
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
+$header->setTitle('Welcome');
 $header->display();
 
 $index = new Canvas;

@@ -21,7 +21,6 @@ $photos->getComments();
 
 $header = new Canvas;
 $header->load('slide_header');
-$header->assign('TITLE', 'Welcome &#8212; ' . $alkaline->returnConf('web_title'));
 $header->display();
 
 $slideshow = new Canvas;

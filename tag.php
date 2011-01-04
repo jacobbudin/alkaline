@@ -8,7 +8,7 @@ $alkaline->recordStat('tag');
 
 $id = $alkaline->findID($_GET['id']);
 $tag = $alkaline->getRow('tags', $id);
-if(!$tag){ $alkaline->error('No tag was found.', 404); }
+if(!$tag){ $alkaline->error('No tag was not found.', 404); }
 
 $photo_ids = new Find;
 $photo_ids->page(null,5,4);
@@ -21,12 +21,13 @@ $photos = new Photo($photo_ids);
 $photos->formatTime();
 $photos->getImgUrl('medium');
 $photos->getExif();
+$photos->getColorkey(670, 10);
 $photos->getTags();
 $photos->getRights();
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('Title', '#' . $tag['tag_name'] . ' &#8212; ' . $alkaline->returnConf('web_title'));
+$header->setTitle('#' . $tag['tag_name']);
 $header->display();
 
 $index = new Canvas;

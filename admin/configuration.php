@@ -21,6 +21,7 @@ if(!empty($_POST['configuration_save'])){
 	
 	$alkaline->setConf('web_name', @$_POST['web_name']);
 	$alkaline->setConf('web_title', @$_POST['web_title']);
+	$alkaline->setConf('web_title_format', @$_POST['web_title_format']);
 	$alkaline->setConf('web_description', @$_POST['web_description']);
 	$alkaline->setConf('web_email', @$_POST['web_email']);
 	$alkaline->setConf('web_timezone', @$_POST['web_timezone']);
@@ -83,8 +84,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td><input type="text" id="web_name" name="web_name" value="<?php echo $alkaline->returnConf('web_name'); ?>" class="m" /></td>
 		</tr>
 		<tr>
-			<td class="right middle"><label for="web_title">Title:</label></td>
+			<td class="right middle"><label for="web_title">Source:</label></td>
 			<td><input type="text" id="web_title" name="web_title" value="<?php echo $alkaline->returnConf('web_title'); ?>" class="m" /></td>
+		</tr>
+		<tr>
+			<td class="right middle"><label for="web_title_format">Title formatting:</label></td>
+			<td>
+				<select name="web_title_format">
+					<option value="" <?php echo $user->readConf('web_title_format', ''); ?>>Source: Title</option>
+					<option value="emdash" <?php echo $user->readConf('web_title_format', 'emdash'); ?>>Title &#8212; Source</option>
+				</select>
+			</td>
 		</tr>
 		<tr>
 			<td class="right pad"><label for="web_description">Description:</label></td>

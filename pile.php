@@ -31,7 +31,7 @@ $photos->getRights();
 
 $header = new Canvas;
 $header->load('header');
-$header->assign('Title', $pile['pile_title'] . ' &#8212; ' . $alkaline->returnConf('web_title'));
+$header->setTitle(@$pile['pile_title']);
 $header->display();
 
 $index = new Canvas;
