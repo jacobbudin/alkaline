@@ -346,7 +346,7 @@ class Canvas extends Alkaline{
 		$orbit = new Orbit();
 		
 		$matches = array();
-		preg_match_all('#{orbit:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{hook:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$hooks = array();
