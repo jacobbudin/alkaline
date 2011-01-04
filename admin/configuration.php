@@ -52,6 +52,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
+	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
@@ -321,7 +322,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="stat_enabled" name="stat_enabled" <?php echo $alkaline->readConf('stat_enabled'); ?> value="true" /></td>
 			<td class="description">
-				<label for="stat_enabled">Enable statistics</label>
+				<label for="stat_enabled">Enable statistics</label><br />
+				Affects only Alkaline&#8217;s built-in visitor tracking, can be disabled if using a third-party stat program
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Canvas</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="canvas_remove_unused" name="canvas_remove_unused" <?php echo $alkaline->readConf('canvas_remove_unused'); ?> value="true" /></td>
+			<td class="description">
+				<label for="canvas_remove_unused">Remove unused insertions before displaying templates</label>
 			</td>
 		</tr>
 	</table>

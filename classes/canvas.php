@@ -337,6 +337,10 @@ class Canvas extends Alkaline{
 			$template = str_replace($loop['replace'], $loop['replacement'], $template);
 		}
 		
+		if($this->returnConf('canvas_remove_unused')){
+			$template = preg_replace('#\{[a-z0-9_\-]*}#si', '', $template);
+		}
+		
 		return $template;
 	}
 	
@@ -417,7 +421,7 @@ class Canvas extends Alkaline{
 		$this->initIncludes();
 		$this->initOrbit();
 		
-		// Remove unused conditionals, replace with ELSEIF as available
+		// Remove unused conditionals and insertions
 		$this->template = $this->scrubEmpty($this->template);
 		
 		return true;
