@@ -28,7 +28,7 @@ if(!empty($_POST['photo_id'])){
 	$photo_id = $alkaline->findID($_POST['photo_id']);
 	if(@$_POST['photo_delete'] == 'delete'){
 		if($photos->delete()){
-			$alkaline->addNotification('Your photo has been deleted.', 'success');
+			$alkaline->addNote('Your photo has been deleted.', 'success');
 		}
 
 	}
@@ -72,7 +72,7 @@ $photos->getColorkey(300, 40);
 $exifs = $photos->getEXIF();
 
 if(!$photo = @$photos->photos[0]){
-	$alkaline->addNotification('The photo you requested could not be found.', 'error');
+	$alkaline->addNote('The photo you requested could not be found.', 'error');
 	$alkaline->callback();
 }
 

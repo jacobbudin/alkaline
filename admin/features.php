@@ -47,7 +47,7 @@ if(@$_POST['do'] == 'Do'){
 					$notification .= $tag_name;
 				}
 				$notification .= '&#8221;.';
-				$alkaline->addNotification($notification, 'success');
+				$alkaline->addNote($notification, 'success');
 			}
 		}
 		elseif($act == 'tag_remove'){
@@ -63,7 +63,7 @@ if(@$_POST['do'] == 'Do'){
 					$notification .= $tag_name;
 				}
 				$notification .= '&#8221;.';
-				$alkaline->addNotification($notification, 'success');
+				$alkaline->addNote($notification, 'success');
 			}
 		}
 		elseif($act == 'pile_add'){
@@ -86,7 +86,7 @@ if(@$_POST['do'] == 'Do'){
 		
 			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
 			if($bool === true){
-				$alkaline->addNotification('You successfully added to the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . @$pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
+				$alkaline->addNote('You successfully added to the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . @$pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
 			}
 		}
 		elseif($act == 'pile_remove'){
@@ -115,7 +115,7 @@ if(@$_POST['do'] == 'Do'){
 		
 			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
 			if($bool === true){
-				$alkaline->addNotification('You successfully removed from the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
+				$alkaline->addNote('You successfully removed from the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
 			}
 		}
 		elseif($act == 'right'){
@@ -124,7 +124,7 @@ if(@$_POST['do'] == 'Do'){
 				$photos = new Photo($photo_ids);
 				$bool = $photos->updateFields(array('right_id' => $right_id));
 				if($bool === true){
-					$alkaline->addNotification('You successfully changed rights sets.', 'success');
+					$alkaline->addNote('You successfully changed rights sets.', 'success');
 				}
 			}
 		}
@@ -134,7 +134,7 @@ if(@$_POST['do'] == 'Do'){
 				$photos = new Photo($photo_ids);
 				$bool = $photos->updateFields(array('photo_privacy' => $privacy_id));
 				if($bool === true){
-					$alkaline->addNotification('You successfully changed privacy levels.', 'success');
+					$alkaline->addNote('You successfully changed privacy levels.', 'success');
 				}
 			}
 		}
@@ -151,7 +151,7 @@ if(@$_POST['do'] == 'Do'){
 				}
 			}
 			if($bool === true){
-				$alkaline->addNotification('The photos were succesfully published.', 'success');
+				$alkaline->addNote('The photos were succesfully published.', 'success');
 			}
 		}
 	}

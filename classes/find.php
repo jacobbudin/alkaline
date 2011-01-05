@@ -854,7 +854,7 @@ class Find extends Alkaline{
 				$this->pages(@intval($_GET['id']));
 				break;
 			default:
-				$this->addNotification('There is no smart search by that name.', 'notice');
+				$this->addNote('There is no smart search by that name.', 'notice');
 				return false;
 				break;
 		}

@@ -17,13 +17,13 @@ $_POST = array_map('strip_tags', $_POST);
 // Diagnostic checks
 
 if($alkaline->checkPerm(PATH . DB) != '0777'){
-	$alkaline->addNotification('Database (db/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Database (db/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
-	$alkaline->addNotification('Photos (photos/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Photos (photos/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNotification('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
 } 
 
 // Configuration setup
@@ -35,7 +35,7 @@ if(@$_POST['install'] == 'Install'){
 	$password = $_POST['install_db_pass'];
 	
 	if(!$config = file_get_contents(PATH . INSTALL . 'config.php', false)){
-		$alkaline->addNotification('Cannot find configuration file.', 'error');
+		$alkaline->addNote('Cannot find configuration file.', 'error');
 	}
 	
 	if($_POST['install_server'] == 'win'){
@@ -44,10 +44,10 @@ if(@$_POST['install'] == 'Install'){
 	
 	if($_POST['install_db_type'] == 'mysql'){
 		if(empty($name)){
-			$alkaline->addNotification('A database name is required for MySQL.', 'error');
+			$alkaline->addNote('A database name is required for MySQL.', 'error');
 		}
 		if(empty($username)){
-			$alkaline->addNotification('A database username is required for MySQL.', 'error');
+			$alkaline->addNote('A database username is required for MySQL.', 'error');
 		}
 		
 		$dsn = 'mysql:';
@@ -86,15 +86,15 @@ if(@$_POST['install'] == 'Install'){
 		$config = $alkaline->replaceVar('$db_type', '$db_type = \'sqlite\';', $config);
 		
 		if($alkaline->checkPerm($path) != '0777'){
-			$alkaline->addNotification('Your SQLite database is not writable (CHMOD 777).', 'error');
+			$alkaline->addNote('Your SQLite database is not writable (CHMOD 777).', 'error');
 		}
 	}
 	elseif($_POST['install_db_type'] == 'pgsql'){
 		if(empty($name)){
-			$alkaline->addNotification('A database name is required for PostgreSQL.', 'error');
+			$alkaline->addNote('A database name is required for PostgreSQL.', 'error');
 		}
 		if(empty($username)){
-			$alkaline->addNotification('A database username is required for PostgreSQL.', 'error');
+			$alkaline->addNote('A database username is required for PostgreSQL.', 'error');
 		}
 		
 		$dsn = 'pgsql:';
@@ -130,10 +130,10 @@ if(@$_POST['install'] == 'Install'){
 
 // Database setup
 
-if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)){	
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){	
 	// Check to see if can connect
 	if(!$db = new PDO($dsn, $username, $password)){
-		$alkaline->addNotification('The database could not be contacted. Check your settings.', 'error');
+		$alkaline->addNote('The database could not be contacted. Check your settings.', 'error');
 	}
 	else{
 		function appendTableName($query){
@@ -198,7 +198,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)
 define('TAB', 'Installation');
 define('TITLE', 'Alkaline Installation');
 
-if((@$_POST['install'] == 'Install') and ($alkaline->isNotification() === false)){
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 	
 	?>

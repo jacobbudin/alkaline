@@ -119,5 +119,5 @@
 			</ul>
 		</div>
 		<div id="content" class="span-24 last">
-			<?php if(!empty($alkaline)){ $alkaline->viewNotification(); } ?>
+			<?php if(!empty($alkaline)){ echo $alkaline->returnNotes(); } ?>
 			

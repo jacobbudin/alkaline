@@ -29,14 +29,14 @@ if(!empty($username) or !empty($password)){
 		// Check for updates
 		$latest = @$alkaline->boomerang('latest');
 		if($latest['build'] > Alkaline::build){
-			$alkaline->addNotification('A new version of Alkaline is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
+			$alkaline->addNote('A new version of Alkaline is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
 		}
 		
 		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
 		exit();
 	}
 	else{
-		$alkaline->addNotification('Your username or password is invalid. Please try again.', 'error');
+		$alkaline->addNote('Your username or password is invalid. Please try again.', 'error');
 	}
 }
 

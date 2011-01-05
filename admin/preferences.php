@@ -23,7 +23,7 @@ if(!empty($_POST['preferences_save'])){
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
 	$user->savePref();
 	
-	$alkaline->addNotification('Your prefences have been saved.', 'success');
+	$alkaline->addNote('Your prefences have been saved.', 'success');
 	
 	header('Location: ' . BASE . ADMIN . 'dashboard' . URL_CAP);
 	exit();

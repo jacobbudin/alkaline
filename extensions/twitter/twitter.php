@@ -101,7 +101,7 @@ class Twitter extends Orbit{
 					
 					$this->savePref();
 					
-					$this->addNotification('You successfully linked your Twitter account.', 'success');
+					$this->addNote('You successfully linked your Twitter account.', 'success');
 					header('Location: ' . $this->location());
 					exit();
 					
@@ -136,7 +136,7 @@ class Twitter extends Orbit{
 					$this->setPref('twitter_oauth_secret', '');
 					$this->savePref();
 					
-					$this->addNotification('You successfully unlinked your Twitter account.', 'success');
+					$this->addNote('You successfully unlinked your Twitter account.', 'success');
 					header('Location: ' . $this->location());
 					exit();
 					

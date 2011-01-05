@@ -36,7 +36,7 @@ if(!empty($_POST['size_id'])){
 		
 		if(count($sizes) > 0){
 			$size_title = $sizes[0]['size_title'];
-			$alkaline->addNotification('The thumbnail &#8220;' . $size_title . '&#8221; already uses these prepend and append to filename settings.', 'error');
+			$alkaline->addNote('The thumbnail &#8220;' . $size_title . '&#8221; already uses these prepend and append to filename settings.', 'error');
 		}
 		else{
 			if(@$_POST['size_watermark'] == 'watermark'){
@@ -60,7 +60,7 @@ if(!empty($_POST['size_id'])){
 	}
 	
 	// Build size
-	if((@$_POST['size_build'] == 'build') and !$alkaline->isNotification('error')){
+	if((@$_POST['size_build'] == 'build') and ($alkaline->countNotes('error') == 0)){
 		// Store to build thumbnails
 		$_SESSION['alkaline']['maintenance']['size_id'] = $size_id;
 		
@@ -70,7 +70,7 @@ if(!empty($_POST['size_id'])){
 		exit();
 	}
 	
-	if(!$alkaline->isNotification('error')){
+	if($alkaline->countNotes('error') == 0){
 		unset($size_id);
 	}
 }
@@ -132,7 +132,7 @@ else{
 	
 	// Dashboard thumbnail warning
 	if(($size['size_label'] == 'admin') or ($size['size_label'] == 'square')){
-		$alkaline->addNotification('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'notice');
+		$alkaline->addNote('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'notice');
 	}
 	
 	if(!empty($size['size_title'])){	

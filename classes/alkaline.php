@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 function __autoload($class){
 	$file = strtolower($class) . '.php';
 	require_once(PATH . CLASSES . $file);
@@ -27,6 +33,11 @@ class Alkaline{
 	protected $db;
 	protected $notifications;
 	
+	/**
+	 * Initiates Alkaline
+	 *
+	 * @return void
+	 **/
 	public function __construct(){
 		@header('Cache-Control: no-cache, must-revalidate');
 		@header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
@@ -100,12 +111,23 @@ class Alkaline{
 		}
 	}
 	
+	/**
+	 * Terminates Alkaline, closes the database connection
+	 *
+	 * @return void
+	 **/
 	public function __destruct(){
-		// Close database connection
 		$this->db = null;
 	}
 	
 	// DATABASE
+	
+	/**
+	 * Prepares and executes SQL statement
+	 *
+	 * @param string $query Query
+	 * @return int Number of affected rows
+	 */
 	public function exec($query){
 		if(!$this->db){ $this->error('No database connection.'); }
 		
@@ -116,6 +138,12 @@ class Alkaline{
 		return $response;
 	}
 	
+	/**
+	 * Prepares a statement for execution and returns a statement object
+	 *
+	 * @param string $query Query
+	 * @return PDOStatement
+	 */
 	public function prepare($query){
 		if(!$this->db){ $this->error('No database connection.'); }
 		
@@ -128,6 +156,12 @@ class Alkaline{
 		return $response;
 	}
 	
+	/**
+	 * Translate query for different database types
+	 *
+	 * @param string $query Query
+	 * @return string Translated query
+	 */
 	public function prequery(&$query){
 		$_SESSION['alkaline']['debug']['queries']++;
 		
@@ -178,6 +212,12 @@ class Alkaline{
 		$query = trim($query);
 	}
 	
+	/**
+	 * Append table prefix to table names (before executing query)
+	 *
+	 * @param string $tables Comma-separated tables
+	 * @return string Comma-separated tables
+	 */
 	protected function appendTablePrefix($tables){
 		if(strpos($tables, ',') === false){
 			$tables = trim($tables);
@@ -194,6 +234,13 @@ class Alkaline{
 		return $tables;
 	}
 	
+	/**
+	 * Determine if query was successful; if not, log it using report()
+	 *
+	 * @param string $query
+	 * @param string $db 
+	 * @return bool True if successful
+	 */
 	public function postquery(&$query, $db=null){
 		if(empty($db)){ $db = $this->db; }
 		
@@ -208,27 +255,46 @@ class Alkaline{
 			}
 			elseif($code == '23000'){
 				$this->report($message, $code);
+				return false;
 			}
 			else{
 				$this->report($message, $code);
+				return false;
 			}
 		}
+		
+		return true;
 	}
 	
-	// REMOVE NULL FROM JSON
+	/**
+	 * Remove nulls from a JSON string
+	 *
+	 * @param string $input JSON input
+	 * @return string JSON ouput
+	 */
 	public function removeNull($input){
 		return str_replace(':null', ':""', $input);
 	}
 	
-	// BOOMERANG
-	// Receive updates from alkalineapp.com
+	/**
+	 * Retrieve data from http://www.alkalineapp.com/
+	 *
+	 * @param string $request Request
+	 * @return string Response
+	 */
 	public function boomerang($request){
 		$reply = self::removeNull(json_decode(file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/'), true));
 		return $reply;
 	}	
 	
 	// GUESTS
-	// Authenticate guest
+	
+	/**
+	 * Authenticate guest access
+	 *
+	 * @param string $key Guest access key
+	 * @return void Redirects if unsuccessful
+	 */
 	public function access($key=null){
 		// Error checking
 		if(empty($key)){ return false; }
@@ -245,19 +311,28 @@ class Alkaline{
 		}
 		
 		$_SESSION['alkaline']['guest'] = $guest;
-		
-		return true;
 	}
 	
 	// NOTIFICATIONS
-	// Add notification
-	public function addNotification($message, $type=null){
+	
+	/**
+	 * Add a notification
+	 *
+	 * @param string $message Message
+	 * @param string $type Notification type (usually 'success', 'error', or 'notice')
+	 * @return void
+	 */
+	public function addNote($message, $type=null){
 		$_SESSION['alkaline']['notifications'][] = array('type' => $type, 'message' => $message);
-		return true;
 	}
 	
-	// Check notifications
-	public function isNotification($type=null){
+	/**
+	 * Check notifications
+	 *
+	 * @param string $type Notification type
+	 * @return int Number of notifications
+	 */
+	public function countNotes($type=null){
 		if(!empty($type)){
 			$notifications = @$_SESSION['alkaline']['notifications'];
 			$count = @count($notifications);
@@ -279,12 +354,20 @@ class Alkaline{
 				return $count;
 			}
 		}
-		return false;
+		
+		return 0;
 	}
 	
-	// View notification
-	public function viewNotification($type=null){
+	/**
+	 * View notifications
+	 *
+	 * @param string $type Notification type
+	 * @return string HTML-formatted notifications 
+	 */
+	public function returnNotes($type=null){
 		$count = @count($_SESSION['alkaline']['notifications']);
+		
+		$return = '';
 		
 		if($count > 0){
 			// Determine unique types
@@ -296,30 +379,34 @@ class Alkaline{
 			
 			// Produce HTML for display
 			foreach($types as $type){
-				echo '<p class="' . $type . '">';
+				$return = '<p class="' . $type . '">';
 				$messages = array();
 				foreach($_SESSION['alkaline']['notifications'] as $notification){
 					if($notification['type'] == $type){
 						$messages[] = $notification['message'];
 					}
 				}
-				echo implode(' ', $messages) . '</p>';
+				$return .= implode(' ', $messages) . '</p>';
 			}
 			
-			echo '<br />';
+			$return .= '<br />';
 
 			// Dispose of messages
 			unset($_SESSION['alkaline']['notifications']);
-			
-			return $count;
 		}
-		else{
-			return false;
-		}
+		
+		return $return;
 	}
 	
 	// FILE HANDLING
-	// Seek directory
+	
+	/**
+	 * Browse a local directory (non-recursive) for filenames
+	 *
+	 * @param string $dir Full path to directory
+	 * @param string $ext File extensions to seek
+	 * @return array Full paths of files
+	 */
 	public function seekDirectory($dir=null, $ext=IMG_EXT){
 		// Error checking
 		if(empty($dir)){
@@ -363,20 +450,30 @@ class Alkaline{
 		return $files;
 	}
 	
-	// Count compatible photos in shoebox
-	public function countDirectory($dir=null){
+	/**
+	 * Browse a local directory (non-recursive) for file count
+	 *
+	 * @param string $dir Full path to directory
+	 * @param string $ext File extensions to seek
+	 * @return int Number of files
+	 */
+	public function countDirectory($dir=null, $ext=IMG_EXT){
 		// Error checking
 		if(empty($dir)){
 			return false;
 		}
 		
-		$files = self::seekDirectory($dir);
-		$count = count($files);
+		$files = self::seekDirectory($dir, $ext);
 		
-		return $count;
+		return count($files);
 	}
 	
-	// Get filename
+	/**
+	 * Determine a filename from a path
+	 *
+	 * @param string $file Full or relative file path
+	 * @return string|false Filename (including extension) or error
+	 */
 	public function getFilename($file){
 		$matches = array();
 		
@@ -391,7 +488,12 @@ class Alkaline{
 		return $filename;
 	}
 	
-	// Empty directory
+	/**
+	 * Empty a directory
+	 *
+	 * @param string $dir Full path to directory
+	 * @return void
+	 */
 	public function emptyDirectory($dir=null){
 		// Error checking
 		if(empty($dir)){
@@ -421,22 +523,38 @@ class Alkaline{
 	
 		// Close listing
 		closedir($handle);
-		
-		return true;
 	}
 	
-	// Check permissions
+	/**
+	 * Check file permissions
+	 *
+	 * @param string $file Full path to file
+	 * @return string Octal value (e.g., 0644)
+	 */
 	public function checkPerm($file){
 		return substr(sprintf('%o', @fileperms($file)), -4);
 	}
 	
-	// Replace variable
+	/**
+	 * Replace a variable's value in a PHP file (for installation)
+	 *
+	 * @param string $var Variable (e.g., $var)
+	 * @param string $replacement Full line replacement (e.g., $var = 'dog';)
+	 * @param string $subject Subject input
+	 * @return string Subject output
+	 */
 	public function replaceVar($var, $replacement, $subject){
 		return preg_replace('#^\s*' . str_replace('$', '\$', $var) . '\s*=(.*)$#mi', $replacement, $subject);
 	}
 	
-	// CONVERT TO ARRAY
-	// Convert a possible string or integer into an array
+	// TYPE CONVERSION
+	
+	/**
+	 * Convert a possible string or integer into an array
+	 *
+	 * @param mixed $input
+	 * @return array
+	 */
 	public function convertToArray(&$input){
 		if(is_string($input)){
 			$find = strpos($input, ',');
@@ -454,8 +572,12 @@ class Alkaline{
 		return $input;
 	}
 	
-	// CONVERT TO INTEGER ARRAY
-	// Convert a possible string or integer into an array of integers
+	/**
+	 * Convert a possible string or integer into an array of integers
+	 *
+	 * @param mixed $input 
+	 * @return array
+	 */
 	public function convertToIntegerArray(&$input){
 		if(is_int($input)){
 			$input = array($input);
@@ -473,25 +595,28 @@ class Alkaline{
 		return $input;
 	}
 	
-	// CONVERT INTEGER-LIKE STRINGS TO INTEGERS
-	// Convert a possible string or integer into an array of integers
-	public function makeStringInt(&$input){
-		if(!is_string($input)){
-			break;
-		}
-		if(preg_match('#^[0-9]+$#s', $input)){
-			$input = intval($input);
-		}
-		return $input;
-	}
-	
+	/**
+	 * Change filename extension
+	 *
+	 * @param string $file Filename
+	 * @param string $ext Desired extension
+	 * @return string Changed filename
+	 */
 	public function changeExt($file, $ext){
 		$file = preg_replace('#\.([a-z0-9]*)$#si', '.' . $ext, $file);
 		return $file;
 	}
 	
-	// FORMAT TIME
-	// Make time more human-readable
+	// TIME FORMATTING
+	
+	/**
+	 * Make time more human-readable
+	 *
+	 * @param string $time Time
+	 * @param string $format Format (as in date();)
+	 * @param string $empty If null or empty input time, return this string
+	 * @return string|false Time or error
+	 */
 	public function formatTime($time, $format=null, $empty=false){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
@@ -513,7 +638,14 @@ class Alkaline{
 		return $time;
 	}
 	
-	// Turn time into relative
+	/**
+	 * Make time relative
+	 *
+	 * @param string $time Time
+	 * @param string $format Format (as in date();)
+	 * @param string $empty If null or empty input time, return this string
+	 * @return string|false Time or error
+	 */
 	public function formatRelTime($time, $format=null, $empty=false){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
@@ -551,9 +683,16 @@ class Alkaline{
 				$span = date($format, $time);
 				break;
 		}
+		
 		return $span;
 	}
 	
+	/**
+	 * Convert numerical month to written month (U.S. English)
+	 *
+	 * @param string|int $num Numerical month (e.g., 01)
+	 * @return string|false Written month (e.g., January) or error
+	 */
 	public function numberToMonth($num){
 		$int = intval($num);
 		switch($int){
@@ -592,23 +731,24 @@ class Alkaline{
 				break;
 			case 12:
 				return 'December';
-				break;	
+				break;
+			default:
+				return false;
+				break;
 		}
 	}
 	
-	// PEAR Numbers_Words
+	/**
+	 * Convert number to words (U.S. English)
+	 *
+	 * @param string $num
+	 * @param string $power
+	 * @param string $powsuffix
+	 * @return string
+	 */
 	public function numberToWords($num, $power = 0, $powsuffix = ''){
 		$_minus = 'minus'; // minus sign
-
-	    /**
-	     * The sufixes for exponents (singular and plural)
-	     * Names partly based on:
-	     * http://home.earthlink.net/~mrob/pub/math/largenum.html
-	     * http://mathforum.org/dr.math/faq/faq.large.numbers.html
-	     * http://www.mazes.com/AmericanNumberingSystem.html
-	     * @array
-	     * @access private
-	     */
+		
 	    $_exponent = array(
 	        0 => array(''),
 	        3 => array('thousand'),
@@ -725,23 +865,13 @@ class Alkaline{
 	     3003 => array('millillion'),
 	     3000003 => array('milli-millillion')
 	        );
-
-	    /**
-	     * The array containing the digits (indexed by the digits themselves).
-	     * @array
-	     * @access private
-	     */
+		
 	    $_digits = array(
 	        0 => 'zero', 'one', 'two', 'three', 'four',
 	        'five', 'six', 'seven', 'eight', 'nine'
 	    );
-
-	    /**
-	     * The word separator
-	     * @string
-	     * @access private
-	     */
-	    $_sep = ' ';
+		
+	    $_sep = ' '; // word seperator
 	
         $ret = '';
 
@@ -907,17 +1037,33 @@ class Alkaline{
     }
 	
 	// FORMAT STRINGS
-	// Convert to Unicode (UTF-8)
+	
+	/**
+	 * Convert to Unicode (UTF-8)
+	 *
+	 * @param string $string 
+	 * @return string
+	 */
 	public function makeUnicode($string){
 		return mb_detect_encoding($string, 'UTF-8') == 'UTF-8' ? $string : utf8_encode($string);
 	}
 	
-	// Sanitize table, column names, other data
+	/**
+	 * Sanitize table and column names (to prevent SQL injection attacks)
+	 *
+	 * @param string $string 
+	 * @return string
+	 */
 	public function sanitize($string){
 		return preg_replace('#(?:(?![a-z0-9_\.-\s]).)*#si', '', $string);
 	}
 	
-	// Make HTML-safe quotations
+	/**
+	 * Make HTML-safe quotations
+	 *
+	 * @param string $input 
+	 * @return string
+	 */
 	public function makeHTMLSafe($input){
 		if(is_string($input)){
 			$input = self::makeHTMLSafeHelper($input);
@@ -937,7 +1083,12 @@ class Alkaline{
 		return $string;
 	}
 	
-	// Reverse HTML-safe quotations
+	/**
+	 * Reverse HTML-safe quotations
+	 *
+	 * @param string $input 
+	 * @return string
+	 */
 	public function reverseHTMLSafe($input){
 		if(is_string($input)){
 			$input = self::reverseHTMLSafeHelper($input);
@@ -957,6 +1108,12 @@ class Alkaline{
 		return $string;
 	}
 	
+	/**
+	 * Strip tags from string or array
+	 *
+	 * @param string|array $var
+	 * @return string|array
+	 */
 	public function stripTags($var){
 		if(is_string($var)){
 			$var = strip_tags($var);
@@ -969,69 +1126,25 @@ class Alkaline{
 		return $var;
 	}
 	
-	public function countWords($str){
-		$str = strip_tags($str);
-		preg_match_all("/\S+/", $str, $matches); 
+	/**
+	 * Count the number of words in a string (more reliable than str_word_count();)
+	 *
+	 * @param string $string 
+	 * @return int Word count
+	 */
+	public function countWords($string){
+		$string = strip_tags($string);
+		preg_match_all("/\S+/", $string, $matches); 
 	    return count($matches[0]);
 	}
 	
-	// SHOW TAGS
-	// Display all tags
-	public function getTags(){
-		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_name;');
-		}
-		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_id ASC;');
-		}
-		$query->execute();
-		$tags = $query->fetchAll();
-		
-		$tag_ids = array();
-		$tag_names = array();
-		$tag_counts = array();
-		$tag_uniques = array();
-		
-		foreach($tags as $tag){
-			$tag_names[] = $tag['tag_name'];
-			$tag_ids[$tag['tag_name']] = $tag['tag_id'];
-		}
-		
-		$tag_counts = array_count_values($tag_names);
-		$tag_count_values = array_values($tag_counts);
-		$tag_count_high = 0;
-		
-		foreach($tag_count_values as $value){
-			if($value > $tag_count_high){
-				$tag_count_high = $value;
-			}
-		}
-		
-		$tag_uniques = array_unique($tag_names);
-		$tags = array();
-		
-		foreach($tag_uniques as $tag){
-			$tags[] = array('id' => $tag_ids[$tag],
-				'size' => round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2),
-				'name' => $tag,
-				'count' => $tag_counts[$tag]);
-		}
-		
-		return $tags;
-	}
+	// COMMENTS
 	
-	// Gather all includes
-	public function getIncludes(){
-		$includes = self::seekDirectory(PATH . INCLUDES, '.*');
-		
-		foreach($includes as &$include){
-			$include = self::getFilename($include);
-		}
-		
-		return $includes;
-	}
-	
-	// PROCESS COMMENTS
+	/**
+	 * Add comments from $_POST data
+	 *
+	 * @return bool True if successful
+	 */
 	public function addComments(){
 		// Configuration: comm_enabled
 		if(!$this->returnConf('comm_enabled')){
@@ -1092,6 +1205,17 @@ class Alkaline{
 		return true;
 	}
 	
+	// TABLE COUNTING
+	
+	/**
+	 * Update count of single field
+	 *
+	 * @param string $count_table 
+	 * @param string $result_table 
+	 * @param string $result_field 
+	 * @param string $result_id 
+	 * @return bool True if successful
+	 */
 	public function updateCount($count_table, $result_table, $result_field, $result_id){
 		$result_id = intval($result_id);
 		
@@ -1121,6 +1245,14 @@ class Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Update count of entire column
+	 *
+	 * @param string $count_table 
+	 * @param string $result_table 
+	 * @param string $result_field 
+	 * @return bool True if successful
+	 */
 	public function updateCounts($count_table, $result_table, $result_field){
 		$count_table = $this->sanitize($count_table);
 		$result_table = $this->sanitize($result_table);
@@ -1153,7 +1285,114 @@ class Alkaline{
 		return true;
 	}
 	
-	// SHOW RIGHTS
+	// RETRIEVE LIBRARY DATA
+	
+	/**
+	 * Get all table row counts
+	 *
+	 * @return array Tables and their row counts
+	 */
+	public function getInfo(){
+		$info = array();
+		
+		// Get tables
+		$tables = $this->tables;
+		
+		// Exclude tables
+		unset($tables['rights']);
+		unset($tables['exifs']);
+		unset($tables['extensions']);
+		unset($tables['themes']);
+		unset($tables['sizes']);
+		unset($tables['rights']);
+		
+		// Run helper function
+		foreach($tables as $table => $selector){
+			$info[] = array('table' => $table, 'count' => self::countTable($table));
+		}
+		
+		foreach($info as &$table){
+			if($table['count'] == 1){
+				$table['display'] = preg_replace('#s$#si', '', $table['table']);
+			}
+			else{
+				$table['display'] = $table['table'];
+			}
+		}
+		
+		return $info;
+	}
+	
+	/**
+	 * Get array of tags
+	 *
+	 * @return array Associative array of tags
+	 */
+	public function getTags(){
+		if($this->returnConf('tag_alpha')){
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_name;');
+		}
+		else{
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_id ASC;');
+		}
+		$query->execute();
+		$tags = $query->fetchAll();
+		
+		$tag_ids = array();
+		$tag_names = array();
+		$tag_counts = array();
+		$tag_uniques = array();
+		
+		foreach($tags as $tag){
+			$tag_names[] = $tag['tag_name'];
+			$tag_ids[$tag['tag_name']] = $tag['tag_id'];
+		}
+		
+		$tag_counts = array_count_values($tag_names);
+		$tag_count_values = array_values($tag_counts);
+		$tag_count_high = 0;
+		
+		foreach($tag_count_values as $value){
+			if($value > $tag_count_high){
+				$tag_count_high = $value;
+			}
+		}
+		
+		$tag_uniques = array_unique($tag_names);
+		$tags = array();
+		
+		foreach($tag_uniques as $tag){
+			$tags[] = array('id' => $tag_ids[$tag],
+				'size' => round(((($tag_counts[$tag] - 1) * 3) / $tag_count_high) + 1, 2),
+				'name' => $tag,
+				'count' => $tag_counts[$tag]);
+		}
+		
+		return $tags;
+	}
+	
+	/**
+	 * Get array of all includes
+	 *
+	 * @return array Array of includes
+	 */
+	public function getIncludes(){
+		$includes = self::seekDirectory(PATH . INCLUDES, '.*');
+		
+		foreach($includes as &$include){
+			$include = self::getFilename($include);
+		}
+		
+		return $includes;
+	}
+	
+	/**
+	 * Get HTML <select> of all rights
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $right_id Default or selected right_id
+	 * @return string
+	 */
 	public function showRights($name, $right_id=null){
 		if(empty($name)){
 			return false;
@@ -1178,7 +1417,13 @@ class Alkaline{
 		return $html;
 	}
 	
-	// SHOW PRIVACY
+	/**
+	 * Get HTML <select> of all privacy levels
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $privacy_id Default or selected privacy_id
+	 * @return string
+	 */
 	public function showPrivacy($name, $privacy_id=1){
 		if(empty($name)){
 			return false;
@@ -1201,7 +1446,14 @@ class Alkaline{
 		return $html;
 	}
 	
-	// SHOW PILES
+	/**
+	 * Get HTML <select> of all piles
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $pile_id Default or selected pile_id
+	 * @param bool $static_only Display on static piles
+	 * @return string
+	 */
 	public function showPiles($name, $pile_id=null, $static_only=false){
 		if(empty($name)){
 			return false;
@@ -1232,7 +1484,13 @@ class Alkaline{
 		return $html;
 	}
 	
-	// SHOW THEMES
+	/**
+	 * Get HTML <select> of all themes
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $theme_id Default or selected theme_id
+	 * @return string
+	 */
 	public function showThemes($name, $theme_id=null){
 		if(empty($name)){
 			return false;
@@ -1257,7 +1515,13 @@ class Alkaline{
 		return $html;
 	}
 	
-	// SHOW EXIF NAMES
+	/**
+	 * Get HTML <select> of all EXIF names
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $theme_id Default or selected exif_name
+	 * @return string
+	 */
 	public function showEXIFNames($name, $exif_name=null){
 		if(empty($name)){
 			return false;
@@ -1283,7 +1547,18 @@ class Alkaline{
 	}
 	
 	
-	// TABLE AND ROW FUNCTIONS
+	// TABLE AND ROW MANIPULATION
+	
+	/**
+	 * Get table
+	 *
+	 * @param string $table Table name
+	 * @param string|int|array $ids Row IDs
+	 * @param string $limit
+	 * @param string $page 
+	 * @param string $order_by 
+	 * @return array
+	 */
 	public function getTable($table, $ids=null, $limit=null, $page=1, $order_by=null){
 		if(empty($table)){
 			return false;
@@ -1333,6 +1608,13 @@ class Alkaline{
 		return $table;
 	}
 	
+	/**
+	 * Get row
+	 *
+	 * @param string $table Table name
+	 * @param string|int $id Row ID
+	 * @return array
+	 */
 	public function getRow($table, $id){
 		// Error checking
 		if(empty($id)){ return false; }
@@ -1343,6 +1625,13 @@ class Alkaline{
 		return $table[0];
 	}
 	
+	/**
+	 * Add row (includes updating default fields)
+	 *
+	 * @param array $fields Associative array of key (column) and value (field)
+	 * @param string $table Table name
+	 * @return int|false Row ID or error
+	 */
 	public function addRow($fields=null, $table){
 		// Error checking
 		if(empty($table) or (!is_array($fields) and isset($fields))){
@@ -1419,6 +1708,15 @@ class Alkaline{
 		return $id;
 	}
 	
+	/**
+	 * Update row
+	 *
+	 * @param string $fields Associative array of key (column) and value (field)
+	 * @param string $table Table name
+	 * @param string|array $ids Row IDs
+	 * @param string $default Include default fields (e.g., update modified dates)
+	 * @return bool True if successful
+	 */
 	public function updateRow($fields, $table, $ids=null, $default=true){
 		// Error checking
 		if(empty($fields) or empty($table) or !is_array($fields)){
@@ -1457,6 +1755,13 @@ class Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Delete row
+	 *
+	 * @param string $table Table name
+	 * @param string|int|array $ids Row IDs
+	 * @return bool True if successful
+	 */
 	public function deleteRow($table, $ids=null){
 		if(empty($table) or empty($ids)){
 			return false;
@@ -1477,6 +1782,13 @@ class Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Delete empty rows
+	 *
+	 * @param string $table Table name
+	 * @param string|array $fields Fields to check for empty values (if any are empty, deletion will occur) 
+	 * @return bool True if successful
+	 */
 	public function deleteEmptyRow($table, $fields){
 		if(empty($table) or empty($fields)){
 			return false;
@@ -1503,38 +1815,12 @@ class Alkaline{
 		return true;
 	}
 	
-	// GET LIBRARY INFO
-	public function getInfo(){
-		$info = array();
-		
-		// Get tables
-		$tables = $this->tables;
-		
-		// Exclude tables
-		unset($tables['rights']);
-		unset($tables['exifs']);
-		unset($tables['extensions']);
-		unset($tables['themes']);
-		unset($tables['sizes']);
-		unset($tables['rights']);
-		
-		// Run helper function
-		foreach($tables as $table => $selector){
-			$info[] = array('table' => $table, 'count' => self::countTable($table));
-		}
-		
-		foreach($info as &$table){
-			if($table['count'] == 1){
-				$table['display'] = preg_replace('#s$#si', '', $table['table']);
-			}
-			else{
-				$table['display'] = $table['table'];
-			}
-		}
-		
-		return $info;
-	}
-	
+	/**
+	 * Count table rows
+	 *
+	 * @param string $table Table name
+	 * @return int Number of rows
+	 */
 	function countTable($table){
 		$field = @$this->tables[$table];
 		if(empty($field)){ return false; }
@@ -1580,7 +1866,15 @@ class Alkaline{
 	}
 	
 	// FORM HANDLING
-	// Set form option
+	
+	/**
+	 * Set form option
+	 *
+	 * @param string $array 
+	 * @param string $name 
+	 * @param string $unset 
+	 * @return void
+	 */
 	public function setForm(&$array, $name, $unset=''){
 		@$value = $_POST[$name];
 		if(!isset($value)){
@@ -1597,7 +1891,14 @@ class Alkaline{
 		}
 	}
 	
-	// Retrieve form option (HTML)
+	/**
+	 * Retrieve HTML-formatted form option
+	 *
+	 * @param string $array 
+	 * @param string $name 
+	 * @param string $check 
+	 * @return string
+	 */
 	public function readForm($array=null, $name, $check=true){
 		if(is_array($array)){
 			@$value = $array[$name];
@@ -1624,7 +1925,14 @@ class Alkaline{
 		}
 	}
 	
-	// Return form option
+	/**
+	 * Return form option
+	 *
+	 * @param string $array 
+	 * @param string $name 
+	 * @param string $default 
+	 * @return string
+	 */
 	public function returnForm($array, $name, $default=null){
 		@$value = $array[$name];
 		if(!isset($value)){
@@ -1639,28 +1947,57 @@ class Alkaline{
 	}
 	
 	// CONFIGURATION HANDLING
-	// Set configuration key
+	
+	/**
+	 * Set configuration key
+	 *
+	 * @param string $name 
+	 * @param string $unset 
+	 * @return void
+	 */
 	public function setConf($name, $unset=''){
 		return self::setForm($_SESSION['alkaline']['config'], $name, $unset);
 	}
 	
-	// Read configuration key and return value in HTML
+	/**
+	 * Return HTML-formatted configuration key
+	 *
+	 * @param string $name 
+	 * @param string $check 
+	 * @return string
+	 */
 	public function readConf($name, $check=true){
 		return self::readForm($_SESSION['alkaline']['config'], $name, $check);
 	}
 	
-	// Read configuration key and return value
+	/**
+	 * Return configuration key
+	 *
+	 * @param string $name 
+	 * @return string
+	 */
 	public function returnConf($name){
 		return self::makeHTMLSafe(self::returnForm($_SESSION['alkaline']['config'], $name));
 	}
 	
-	// Save configuration
+	/**
+	 * Save configuration
+	 *
+	 * @return int|false Bytes written or error
+	 */
 	public function saveConf(){
 		return file_put_contents($this->correctWinPath(PATH . 'config.json'), json_encode(self::reverseHTMLSafe($_SESSION['alkaline']['config'])));
 	}
 	
 	// URL HANDLING
-	// Find ID number from string
+	
+	/**
+	 * Find ID number from string
+	 *
+	 * @param string $string Input string
+	 * @param string $numeric_required If true, will return false if number not found
+	 * @return int|string|false ID, string, or error
+	 */
 	public function findID($string, $numeric_required=false){
 		$matches = array();
 		if(is_numeric($string)){
@@ -1678,7 +2015,12 @@ class Alkaline{
 		return $id;
 	}
 	
-	// Find photo ID references from a string
+	/**
+	 * Find photo IDs (in <a>, <img>, etc.) from a string
+	 *
+	 * @param string $str Input string
+	 * @return array Photo IDs
+	 */
 	public function findIDRef($str){
 		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $str, $matches, PREG_SET_ORDER);
 		
@@ -1693,7 +2035,12 @@ class Alkaline{
 		return $photo_ids;
 	}
 	
-	// Make a URL-friendly string
+	/**
+	 * Make a URL-friendly string (removes special characters, replaces spaces)
+	 *
+	 * @param string $string
+	 * @return string
+	 */
 	public function makeURL($string){
 		$string = html_entity_decode($string, 1, 'UTF-8');
 		$string = strtolower($string);
@@ -1703,7 +2050,12 @@ class Alkaline{
 		return $string;
 	}
 	
-	// Minimize non-unique elements of a URL
+	/**
+	 * Minimize URL for display purposes
+	 *
+	 * @param string $url
+	 * @return string
+	 */
 	public function minimizeURL($url){
 		$url = preg_replace('#^http\:\/\/www\.#s', '', $url);
 		$url = preg_replace('#^http\:\/\/#s', '', $url);
@@ -1712,7 +2064,13 @@ class Alkaline{
 		return $url;
 	}
 	
-	// Trim long strings
+	/**
+	 * Trim long strings
+	 *
+	 * @param string $string 
+	 * @param string $length Maximum character length
+	 * @return string
+	 */
 	public function fitString($string, $length=50){
 		$length = intval($length);
 		if($length < 3){ return false; }
@@ -1724,7 +2082,13 @@ class Alkaline{
 		return $string;
 	}
 	
-	// Trim long strings by word
+	/**
+	 * Trim strings, end on a whole word
+	 *
+	 * @param string $string 
+	 * @param string $length Maximum character length
+	 * @return string 
+	 */
 	public function fitStringByWord($string, $length=50){
 		$length = intval($length);
 		if($length < 3){ return false; }
@@ -1739,7 +2103,14 @@ class Alkaline{
 		return $string;
 	}
 	
-	// Chose between singular and plural nouns
+	/**
+	 * Choose between singular and plural forms of a string
+	 *
+	 * @param string $count Count
+	 * @param string $singular Singular form
+	 * @param string $plural Plural form
+	 * @return string Correct form
+	 */
 	public function echoCount($count, $singular, $plural=null){
 		if(empty($plural)){
 			$plural = $singular . 's';
@@ -1753,13 +2124,25 @@ class Alkaline{
 		}
 	}
 	
-	// Chose between singular and plural nouns
+	/**
+	 * Choose between singular and plural forms of a string and include count
+	 *
+	 * @param string $count Count
+	 * @param string $singular Singular form
+	 * @param string $plural Plural form
+	 * @return string Correct form
+	 */
 	public function echoFullCount($count, $singular, $plural=null){
 		$count =  number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
 		return $count;
 	}
 	
-	// Change path to Windows-friendly
+	/**
+	 * If Windows Server, make path Windows-friendly
+	 *
+	 * @param string $path
+	 * @return string
+	 */
 	public function correctWinPath($path){
 		if(SERVER_TYPE == 'win'){
 			$path = str_replace('/', '\\', $path);
@@ -1768,7 +2151,12 @@ class Alkaline{
 	}
 	
 	// REDIRECT HANDLING
-	// Current page for redirects
+	
+	/**
+	 * Current page for redirects (removes all GET variables except page)
+	 *
+	 * @return string
+	 */
 	public function location(){
 		$location = LOCATION;
 		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
@@ -1782,24 +2170,47 @@ class Alkaline{
 		return $location;
 	}
 	
+	/**
+	 * Current page for redirects
+	 *
+	 * @param string $append Append to URL (GET variables)
+	 * @return void
+	 */
 	public function locationFull($append=null){
 		$location = LOCATION . $_SERVER['REQUEST_URI'];
 		if(!empty($append)){
 			if(preg_match('#\?.*$#si', $location)){
-				$location .= '&' . $append;
+				$location .= '&' . urlencode($append);
 			}
 			else{
-				$location .= '?' . $append;
+				$location .= '?' . urlencode($append);
 			}
 		}
 		
 		return $location;
 	}
 	
+	/**
+	 * Set callback location
+	 *
+	 * @param string $page 
+	 * @return void
+	 */
 	public function setCallback($page=null){
-		$_SESSION['alkaline']['callback'] = self::location();
+		if(!empty($page)){
+			$_SESSION['alkaline']['callback'] = $page;
+		}
+		else{
+			$_SESSION['alkaline']['callback'] = self::location();
+		}
 	}
 	
+	/**
+	 * Send to callback location
+	 *
+	 * @param string $url Fallback URL if callback URL isn't set
+	 * @return void
+	 */
 	public function callback($url=null){
 		if(!empty($_SESSION['alkaline']['callback'])){
 			header('Location: ' . $_SESSION['alkaline']['callback']);
@@ -1813,7 +2224,11 @@ class Alkaline{
 		exit();
 	}
 	
-	// Go back (for cancel links)
+	/**
+	 * Send back (for cancel links)
+	 *
+	 * @return void
+	 */
 	public function back(){
 		if(!empty($_SESSION['alkaline']['back'])){
 			echo $_SESSION['alkaline']['back'];
@@ -1826,7 +2241,16 @@ class Alkaline{
 		}
 	}
 	
-	// MAIL	
+	// MAIL
+	
+	/**
+	 * Send email
+	 *
+	 * @param int|string $to If integer, looks up email address from users table; else, an email address
+	 * @param string $subject 
+	 * @param string $message 
+	 * @return True if successful
+	 */
 	protected function email($to=0, $subject, $message){
 		if(empty($subject) or empty($message)){ return false; }
 		
@@ -1850,7 +2274,15 @@ class Alkaline{
 		return mail($to, $subject, $message, $headers);
 	}
 	
-	// DEBUG
+	// DEBUGGING AND LOGGING
+	
+	/**
+	 * Set critical error (redirects to error.php)
+	 *
+	 * @param string $message 
+	 * @param string $number 
+	 * @return void
+	 */
 	public function error($message, $number=null){
 		$_SESSION['alkaline']['error']['message'] = $message;
 		$_SESSION['alkaline']['error']['number'] = $number;
@@ -1858,13 +2290,23 @@ class Alkaline{
 		exit();
 	}
 	
-	// Ouput debug info
+	/**
+	 * Return debug array
+	 *
+	 * @return array
+	 */
 	public function debug(){
 		$_SESSION['alkaline']['debug']['execution_time'] = microtime(true) - $_SESSION['alkaline']['debug']['start_time'];
 		return $_SESSION['alkaline']['debug'];
 	}
 	
-	// Add report to log
+	/**
+	 * Add message to error log
+	 *
+	 * @param string $message 
+	 * @param string $number 
+	 * @return void
+	 */
 	public function report($message, $number=null){
 		if(@$_SESSION['alkaline']['warning'] == $message){ return false; }
 		
@@ -1881,8 +2323,6 @@ class Alkaline{
 			$this->error('Cannot write to report file.');
 		}
 		fclose($handle);
-		
-		return true;
 	}
 }
 

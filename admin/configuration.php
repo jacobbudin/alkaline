@@ -65,10 +65,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
 	
 	if($alkaline->saveConf()){
-		$alkaline->addNotification('The configuration has been saved.', 'success');
+		$alkaline->addNote('The configuration has been saved.', 'success');
 	}
 	else{
-		$alkaline->addNotification('The configuration could not be saved.', 'error');
+		$alkaline->addNote('The configuration could not be saved.', 'error');
 	}
 	
 	header('Location: ' . BASE . ADMIN . 'settings' . URL_CAP);

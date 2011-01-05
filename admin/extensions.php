@@ -27,7 +27,7 @@ if(!empty($_POST['extension_id'])){
 		$fields = array('extension_preferences' => '');
 		$bool = $alkaline->updateRow($fields, 'extensions', $extension_id);
 		if($bool === true){
-			$alkaline->addNotification('You successfully reset the extension.', 'success');
+			$alkaline->addNote('You successfully reset the extension.', 'success');
 			$reset = 1;
 		}
 	}
@@ -37,7 +37,7 @@ if(!empty($_POST['extension_id'])){
 		$fields = array('extension_status' => 0);
 		$bool = $alkaline->updateRow($fields, 'extensions', $extension_id);
 		if($bool === true){
-			$alkaline->addNotification('You successfully disabled the extension.', 'success');
+			$alkaline->addNote('You successfully disabled the extension.', 'success');
 			$disable = 1;
 		}
 	}
@@ -47,7 +47,7 @@ if(!empty($_POST['extension_id'])){
 		$fields = array('extension_status' => 1);
 		$bool = $alkaline->updateRow($fields, 'extensions', $extension_id);
 		if($bool === true){
-			$alkaline->addNotification('You successfully enabled the extension.', 'success');
+			$alkaline->addNote('You successfully enabled the extension.', 'success');
 			$enable = 1;
 		}
 	}
@@ -66,7 +66,7 @@ if(!empty($_POST['extension_id'])){
 
 // Configuration: maint_disable
 if($alkaline->returnConf('maint_disable')){
-	$alkaline->addNotification('All extensions have been disabled.', 'notice');
+	$alkaline->addNote('All extensions have been disabled.', 'notice');
 }
 
 // Load current extensions
@@ -92,7 +92,7 @@ foreach($seek_extensions as &$extension_folder){
 		$xml = new SimpleXMLElement($data);
 		
 		if(in_array($xml->class, $extension_classes)){
-			$alkaline->addNotification('Alkaline could not install a new extension. Its class name interferes with an preexisting extension.', 'error');
+			$alkaline->addNote('Alkaline could not install a new extension. Its class name interferes with an preexisting extension.', 'error');
 		}
 		
 		require_once(PATH . EXTENSIONS . $extension_folder . '/' . $xml->file . '.php');
@@ -132,7 +132,7 @@ if($extensions_installed_count > 0){
 		$notification = 'You have succesfully installed ' . $extensions_installed_count . ' extensions.';
 	}
 	
-	$alkaline->addNotification($notification, 'success');
+	$alkaline->addNote($notification, 'success');
 }
 
 define('TAB', 'settings');

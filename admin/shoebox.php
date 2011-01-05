@@ -26,7 +26,7 @@ if(!empty($_POST['photo_ids'])){
 		$photo = new Photo($photo_id);
 		if(@$_POST['photo-' . $photo_id . '-delete'] == 'delete'){
 			if($photo->delete()){
-				$alkaline->addNotification('Your photo has been deleted.', 'success');
+				$alkaline->addNote('Your photo has been deleted.', 'success');
 			}
 
 		}
@@ -42,7 +42,7 @@ if(!empty($_POST['photo_ids'])){
 		}
 	}
 	
-	$alkaline->addNotification('Your shoebox has been processed.', 'success');
+	$alkaline->addNote('Your shoebox has been processed.', 'success');
 	
 	header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
 	exit();
@@ -53,7 +53,7 @@ $photos = $alkaline->seekDirectory(PATH . SHOEBOX);
 $photo_count = count($photos);
 
 if(!($photo_count > 0)){
-	$alkaline->addNotification('There are no photos in your shoebox.', 'notice');
+	$alkaline->addNote('There are no photos in your shoebox.', 'notice');
 	header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
 	exit();
 }
