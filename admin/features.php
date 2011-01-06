@@ -20,7 +20,7 @@ if(!empty($_GET['id'])){
 	$_GET['page'] = $_GET['id'];
 }
 
-if(@$_GET['act'] != 'bulk'){
+if(!empty($_GET['act']) and ($_GET['act'] != 'bulk')){
 	Find::clearMemory();
 }
 
@@ -29,7 +29,7 @@ $_GET = array_map('strip_tags', $_GET);
 $_POST = array_map('strip_tags', $_POST);
 
 // Process actions
-if(@$_POST['do'] == 'Do'){
+if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 	$act = $_POST['act'];
 	$photo_ids = $alkaline->convertToIntegerArray($_POST['photo_ids']);
 	
@@ -164,7 +164,13 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$photo_ids = new Find(@$_SESSION['alkaline']['search']['results']);
+if(isset($_SESSION['alkaline']['search']['results'])){
+	$photo_ids = new Find($_SESSION['alkaline']['search']['results']);
+}
+else{
+	$photo_ids = new Find();
+}
+
 $photo_ids->page(null, $max);
 $photo_ids->find();
 

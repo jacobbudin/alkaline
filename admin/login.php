@@ -13,9 +13,9 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-@$username = strip_tags($_POST['login_user']);
-@$password = strip_tags($_POST['login_pass']);
-@$remember = strip_tags($_POST['login_remember']);
+$username = strip_tags($_POST['login_user']);
+$password = strip_tags($_POST['login_pass']);
+$remember = strip_tags($_POST['login_remember']);
 
 if($remember == 1){ $remember = true; }
 

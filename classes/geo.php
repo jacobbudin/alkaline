@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Geo extends Alkaline{
 	public $city;
 	public $lat;
@@ -26,6 +32,12 @@ class Geo extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
+	/**
+	 * Initiate Geo class
+	 *
+	 * @param string $geo Search string 
+	 * @param int $radius Search radius (in miles)
+	 */
 	public function __construct($geo=null, $radius=1){
 		parent::__construct();
 		
@@ -263,6 +275,11 @@ class Geo extends Alkaline{
 		parent::__destruct();
 	}
 	
+	/**
+	 * Return an formatted Geo string
+	 *
+	 * @return string Formatted string
+	 */
 	public function __toString(){
 		$str = '';
 		if(!empty($this->city)){
@@ -279,16 +296,26 @@ class Geo extends Alkaline{
 		return trim($str);
     }
 
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->city = $orbit->hook('geo', $this->city, $this->city);
-		return true;
 	}
-
+	
+	/**
+	 * List cities in internal database by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
 	public function hint($hint){
 		$hint_lower = strtolower($hint);
 		
@@ -317,6 +344,12 @@ class Geo extends Alkaline{
 		return $cities_list;
 	}
 	
+	/**
+	 * Convert common abbreviations
+	 *
+	 * @param string $var 
+	 * @return string
+	 */
 	protected function convertAbbrev($var){
 		$countries_abbrev = array('USA', 'US', 'America', 'UK', 'UAE', 'Holland', 'The');
 		$countries = array('United States', 'United States', 'United States', 'United Kingdom', 'United Arab Emirates', 'Netherlands', '');

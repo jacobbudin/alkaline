@@ -15,7 +15,9 @@ $user = new User;
 
 $user->perm(true);
 
-$theme_id = @$alkaline->findID($_GET['id']);
+if(!empty($_GET['id'])){
+	$theme_id = $alkaline->findID($_GET['id']);
+}
 
 // SAVE CHANGES
 if(!empty($_POST['theme_id'])){

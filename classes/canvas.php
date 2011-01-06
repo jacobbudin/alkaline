@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Canvas extends Alkaline{
 	public $form_wrap;
 	public $slideshow;
@@ -14,6 +20,11 @@ class Canvas extends Alkaline{
 	public $template;
 	protected $value;
 	
+	/**
+	 * Initiates Canvas class
+	 *
+	 * @param string $template Template
+	 */
 	public function __construct($template=null){
 		parent::__construct();
 		
@@ -24,6 +35,11 @@ class Canvas extends Alkaline{
 		parent::__destruct();
 	}
 	
+	/**
+	 * Return template unevaluated
+	 *
+	 * @return string
+	 */
 	public function __toString(){
 		self::generate();
 		
@@ -31,35 +47,53 @@ class Canvas extends Alkaline{
 		return $this->template;
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->template = $orbit->hook('canvas', $this->template, $this->template);
-		return true;
 	}
 	
-	// APPEND
-	// Append a string to the template
+	/**
+	 * Append a string to the template
+	 *
+	 * @param string $template String to append
+	 * @return void
+	 */
 	public function append($template){
 		 $this->template .= $template . "\n";
 	}
 	
-	// APPEND LOAD
-	// Append a file to the template
-	public function load($file){
+	/**
+	 * Append a file's contents to the template
+	 *
+	 * @param string $filename Filename (pulled from the installation's theme folder)
+	 * @return void
+	 */
+	public function load($filename){
 		$theme_folder = $this->returnConf('theme_folder');
 		
 		if(empty($theme_folder)){
 			$this->error('No default theme selected.');
 		}
 		
-		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $file . TEMP_EXT)) . "\n";
+		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT)) . "\n";
 	}
 	
-	// VARIABLES
+	/**
+	 * Assign a template variable
+	 *
+	 * @param string $var
+	 * @param string $value
+	 * @return bool True if successful
+	 */
 	public function assign($var, $value){
 		// Error checking
 		if(empty($value)){
@@ -72,6 +106,12 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Assign template variables via an associative array
+	 *
+	 * @param array $array
+	 * @return bool True if successful
+	 */
 	public function assignArray($array){
 		// Error checking
 		if(empty($array)){
@@ -92,6 +132,12 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Set the <title> variable (specially formatted)
+	 *
+	 * @param string $title
+	 * @return bool True if successful
+	 */
 	public function setTitle($title){
 		$source = $this->returnConf('web_title');
 		
@@ -109,13 +155,16 @@ class Canvas extends Alkaline{
 		}
 		
 		// Set variable
-		$this->assign('TITLE', $title);
-		return true;
+		return $this->assign('TITLE', $title);
 	}
 	
-	// LOOPS
-	// Set photo array to loop
-	public function loop($array){
+	/**
+	 * Set a photo object to process blocks and nested blocks
+	 *
+	 * @param Photo $object Photo object
+	 * @return bool True if successful
+	 */
+	public function loop($object){
 		$loops = array();
 		
 		$table_regex = implode('|', array_keys($this->tables));
@@ -151,10 +200,10 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
-			if(!isset($array->$loops[$j]['reel'])){ continue; }
+			if(!isset($object->$loops[$j]['reel'])){ continue; }
 			
 			$replacement = '';
-			$reel = $array->$loops[$j]['reel'];
+			$reel = $object->$loops[$j]['reel'];
 			
 			$reel_count = count($reel);
 			
@@ -184,7 +233,7 @@ class Canvas extends Alkaline{
 						
 						// If tied to photo array (either sub or super), execute inner blocks
 						if(!empty($reel[$i]['photo_id'])){
-							$loop_template = self::loopSub($array, $loop_template, $reel[$i]['photo_id']);
+							$loop_template = self::loopSub($object, $loop_template, $reel[$i]['photo_id']);
 						}
 						$done_once[] = $reel[$i][$field];
 					}
@@ -205,6 +254,12 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Set template as a slideshow
+	 *
+	 * @param bool $bool True if slideshow
+	 * @return bool True if successful
+	 */
 	public function slideshow($bool=true){
 		if(!is_bool($bool)){ return false; }
 		
@@ -212,6 +267,12 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Set a template to accept comments
+	 *
+	 * @param bool $bool True if wrap in <form> for comments
+	 * @return bool True if successful
+	 */
 	public function wrapForm($bool=true){
 		if(!is_bool($bool)){ return false; }
 		
@@ -219,7 +280,14 @@ class Canvas extends Alkaline{
 		return true;
 	}
 	
-	// Set subarrays to loop
+	/**
+	 * Process nested blocks
+	 *
+	 * @param string $array 
+	 * @param string $template 
+	 * @param string $photo_id 
+	 * @return void
+	 */
 	protected function loopSub($array, $template, $photo_id){
 		$loops = array();
 		
@@ -293,16 +361,35 @@ class Canvas extends Alkaline{
 		return $template;
 	}
 	
+	// FILTERS
+	
+	/**
+	 * Perform urlencode() filter
+	 *
+	 * @return string
+	 */
 	public function urlencode(){
 		return urlencode($this->value);
 	}
 	
+	/**
+	 * Perform Alkaline::makeURL filter
+	 *
+	 * @return string
+	 */
 	public function makeURL(){
 		return Alkaline::makeURL($this->value);
 	}
 	
-	// PREPROCESS
-	// Remove conditionals after successful variable, loop placement
+	// PREPROCESSING
+	
+	/**
+	 * Remove conditionals after successful variable, loop placement
+	 *
+	 * @param string $var Variable
+	 * @param string $template Template
+	 * @return string Template
+	 */
 	public function scrub($var, $template){
 		$template = str_ireplace('{if:' . $var . '}', '', $template);
 		if(stripos($template, '{else:' . $var . '}')){
@@ -312,7 +399,12 @@ class Canvas extends Alkaline{
 		return $template;
 	}
 	
-	// Remove unmatched conditionals before displaying
+	/**
+	 * Remove unmatched conditionals before displaying
+	 *
+	 * @param string $template Template
+	 * @return string Template
+	 */
 	public function scrubEmpty($template){
 		preg_match_all('#{if:([A-Z0-9_]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
 		
@@ -344,8 +436,11 @@ class Canvas extends Alkaline{
 		return $template;
 	}
 	
-	// ORBIT
-	// Find Orbit hooks and process them
+	/**
+	 * Process Orbit hooks as insertions {hook:Hookname}
+	 *
+	 * @return bool True if successful
+	 */
 	protected function initOrbit(){
 		$orbit = new Orbit();
 		
@@ -377,8 +472,11 @@ class Canvas extends Alkaline{
 		}
 	}
 	
-	// INCLUDES
-	// Find Canvas includes and process them
+	/**
+	 * Process Canvas includes as insertions {include:Filename}
+	 *
+	 * @return bool True if successful
+	 */
 	protected function initIncludes(){
 		$matches = array();
 		preg_match_all('#{include:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
@@ -412,7 +510,13 @@ class Canvas extends Alkaline{
 		}
 	}
 	
-	// PROCESS
+	// PROCESSING
+	
+	/**
+	 * Generate template
+	 *
+	 * @return void
+	 */
 	public function generate(){
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
@@ -423,11 +527,13 @@ class Canvas extends Alkaline{
 		
 		// Remove unused conditionals and insertions
 		$this->template = $this->scrubEmpty($this->template);
-		
-		return true;
 	}
 	
-	// DISPLAY
+	/**
+	 * Generate template, execute PHP, and echo results
+	 *
+	 * @return string
+	 */
 	public function display(){
 		self::generate();
 		

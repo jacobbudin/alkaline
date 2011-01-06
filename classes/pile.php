@@ -7,11 +7,22 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Pile extends Alkaline{
 	public $pile_id;
 	public $pile_count;
 	public $piles;
 	
+	/**
+	 * Initiate Pile object
+	 *
+	 * @param array|int|string $pile Search piles (pile IDs, pile titles)
+	 */
 	public function __construct($pile=null){
 		parent::__construct();
 		
@@ -43,20 +54,29 @@ class Pile extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->piles = $orbit->hook('pile', $this->piles, $this->piles);
-		return true;
 	}
 	
 	public function create(){
 		
 	}
 	
+	/**
+	 * Fetch all pages
+	 *
+	 * @return void
+	 */
 	public function fetchAll(){
 		$query = $this->prepare('SELECT * FROM piles;');
 		$query->execute();
@@ -69,6 +89,12 @@ class Pile extends Alkaline{
 		
 	}
 	
+	/**
+	 * Update pages
+	 *
+	 * @param array $fields Associate array of columns and fields
+	 * @return void
+	 */
 	public function update($fields){
 		$ids = array();
 		foreach($this->piles as $pile){

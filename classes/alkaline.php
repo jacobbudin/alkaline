@@ -39,8 +39,13 @@ class Alkaline{
 	 * @return void
 	 **/
 	public function __construct(){
-		@header('Cache-Control: no-cache, must-revalidate');
-		@header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+		if(!headers_sent()){
+			header('Cache-Control: no-cache, must-revalidate', false);
+			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
+		}
+		
+		// Set error handler
+		set_error_handler(array($this, 'addError'), E_ALL);
 		
 		// Determine class
 		$class = get_class($this);
@@ -112,7 +117,7 @@ class Alkaline{
 	}
 	
 	/**
-	 * Terminates Alkaline, closes the database connection
+	 * Terminates object, closes the database connection
 	 *
 	 * @return void
 	 **/
@@ -365,35 +370,37 @@ class Alkaline{
 	 * @return string HTML-formatted notifications 
 	 */
 	public function returnNotes($type=null){
-		$count = @count($_SESSION['alkaline']['notifications']);
+		if(!isset($_SESSION['alkaline']['notifications'])){ return; }
+		
+		$count = count($_SESSION['alkaline']['notifications']);
+		
+		if($count == 0){ return; }
 		
 		$return = '';
 		
-		if($count > 0){
-			// Determine unique types
-			$types = array();
-			foreach($_SESSION['alkaline']['notifications'] as $notifications){
-				$types[] = $notifications['type'];
-			}
-			$types = array_unique($types);
-			
-			// Produce HTML for display
-			foreach($types as $type){
-				$return = '<p class="' . $type . '">';
-				$messages = array();
-				foreach($_SESSION['alkaline']['notifications'] as $notification){
-					if($notification['type'] == $type){
-						$messages[] = $notification['message'];
-					}
-				}
-				$return .= implode(' ', $messages) . '</p>';
-			}
-			
-			$return .= '<br />';
-
-			// Dispose of messages
-			unset($_SESSION['alkaline']['notifications']);
+		// Determine unique types
+		$types = array();
+		foreach($_SESSION['alkaline']['notifications'] as $notifications){
+			$types[] = $notifications['type'];
 		}
+		$types = array_unique($types);
+		
+		// Produce HTML for display
+		foreach($types as $type){
+			$return = '<p class="' . $type . '">';
+			$messages = array();
+			foreach($_SESSION['alkaline']['notifications'] as $notification){
+				if($notification['type'] == $type){
+					$messages[] = $notification['message'];
+				}
+			}
+			$return .= implode(' ', $messages) . '</p>';
+		}
+		
+		$return .= '<br />';
+
+		// Dispose of messages
+		unset($_SESSION['alkaline']['notifications']);
 		
 		return $return;
 	}
@@ -2109,7 +2116,7 @@ class Alkaline{
 	 * @param string $count Count
 	 * @param string $singular Singular form
 	 * @param string $plural Plural form
-	 * @return string Correct form
+	 * @return void
 	 */
 	public function echoCount($count, $singular, $plural=null){
 		if(empty($plural)){
@@ -2130,11 +2137,10 @@ class Alkaline{
 	 * @param string $count Count
 	 * @param string $singular Singular form
 	 * @param string $plural Plural form
-	 * @return string Correct form
+	 * @return void
 	 */
 	public function echoFullCount($count, $singular, $plural=null){
-		$count =  number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
-		return $count;
+		$count = number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
 	}
 	
 	/**
@@ -2277,17 +2283,87 @@ class Alkaline{
 	// DEBUGGING AND LOGGING
 	
 	/**
-	 * Set critical error (redirects to error.php)
+	 * Set errors
 	 *
+	 * @param int $severity 
 	 * @param string $message 
-	 * @param string $number 
+	 * @param string $filename
+	 * @param int $line_number
 	 * @return void
 	 */
-	public function error($message, $number=null){
-		$_SESSION['alkaline']['error']['message'] = $message;
-		$_SESSION['alkaline']['error']['number'] = $number;
-		require_once(PATH . '/error.php');
-		exit();
+	public function addError($severity, $message, $filename, $line_number){
+		if(!(error_reporting() & $severity)){
+			// This error code is not included in error_reporting
+			// return;
+		}
+		
+		switch($severity){
+			case E_USER_NOTICE:
+				$_SESSION['alkaline']['errors'][] = array('severity' => 'notice', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				break;
+			case E_USER_WARNING:
+				$_SESSION['alkaline']['errors'][] = array('severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				break;
+			case E_USER_ERROR:
+				$_SESSION['alkaline']['errors'][] = array('severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				require_once(LOCATION . '/error.php');
+				break;
+			default:
+				$_SESSION['alkaline']['errors'][] = array('severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				break;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Display errors
+	 *
+	 * @return void|string HTML-formatted notifications 
+	 */
+	public function returnErrors(){
+		if(!isset($_SESSION['alkaline']['errors'])){ return; }
+		
+		$count = @count($_SESSION['alkaline']['errors']);
+		
+		if(empty($count)){ return; }
+		
+		// Determine unique types
+		$types = array();
+		foreach($_SESSION['alkaline']['errors'] as $error){
+			$types[] = $error['severity'];
+		}
+		$types = array_unique($types);
+		
+		$overview = array();
+		$list = array();
+		
+		// Produce HTML for display
+		foreach($types as $type){
+			$i = 0;
+			
+			foreach($_SESSION['alkaline']['errors'] as $error){
+				if($error['severity'] == $type){
+					$i++;
+				}
+			}
+			
+			if($i == 1){
+				$overview[] = $i . ' ' . $type;
+			}
+			else{
+				$overview[] = $i . ' ' . $type . 's';
+			}
+		}
+		
+		foreach($_SESSION['alkaline']['errors'] as $error){
+			$list[] = '<li><strong>' . ucwords($error['severity']) .':</strong> ' . $error['message'] . ' (' . $error['filename'] . ', line ' . $error['line_number'] .').</li>';
+		}
+		
+		// Dispose of messages
+		unset($_SESSION['alkaline']['errors']);
+		
+		return '<span>(<a href="#" class="show">' . implode(' ,', $overview) . '</a>)</span><div class="reveal"><ol class="errors">' . implode("\n", $list) . '</ol></div>';
 	}
 	
 	/**

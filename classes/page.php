@@ -7,11 +7,22 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Page extends Alkaline{
 	public $page_id;
 	public $page_count;
 	public $pages;
 	
+	/**
+	 * Initiate Page object
+	 *
+	 * @param int|array|string $page Page search (IDs or page title)
+	 */
 	public function __construct($page=null){
 		parent::__construct();
 		
@@ -43,20 +54,29 @@ class Page extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param string $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->pages = $orbit->hook('page', $this->pages, $this->pages);
-		return true;
 	}
 	
 	public function create(){
 		
 	}
 	
+	/**
+	 * Fetch all pages
+	 *
+	 * @return void
+	 */
 	public function fetchAll(){
 		$query = $this->prepare('SELECT * FROM pages;');
 		$query->execute();
@@ -69,6 +89,12 @@ class Page extends Alkaline{
 		
 	}
 	
+	/**
+	 * Update page fields
+	 *
+	 * @param string $fields Associative array of columns and fields
+	 * @return PDOStatement
+	 */
 	public function update($fields){
 		$ids = array();
 		foreach($this->pages as $page){

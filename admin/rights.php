@@ -15,8 +15,13 @@ $user = new User;
 
 $user->perm(true);
 
-$right_id = @$alkaline->findID($_GET['id']);
-$right_act = @$_GET['act'];
+if(!empty($_GET['id'])){
+	$right_id = $alkaline->findID($_GET['id']);
+}
+
+if(!empty($_GET['act'])){
+	$right_act = $_GET['act'];
+}
 
 // SAVE CHANGES
 if(!empty($_POST['right_id'])){

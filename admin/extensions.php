@@ -15,8 +15,13 @@ $user = new User;
 
 $user->perm(true);
 
-$extension_id = @$alkaline->findID($_GET['id']);
-$extension_act = @$_GET['act'];
+if(!empty($_GET['id'])){
+	$extension_id = $alkaline->findID($_GET['id']);
+}
+
+if(!empty($_GET['act'])){
+	$extension_act = $_GET['act'];
+}
 
 // SAVE CHANGES
 if(!empty($_POST['extension_id'])){

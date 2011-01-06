@@ -76,7 +76,7 @@ if(!$photo = @$photos->photos[0]){
 	$alkaline->callback();
 }
 
-$photo_colorkey = @$photo['photo_colorkey'];
+$photo_colorkey = $photo['photo_colorkey'];
 $photo = $alkaline->makeHTMLSafe($photo);
 
 define('TAB', 'library');

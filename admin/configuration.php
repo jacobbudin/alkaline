@@ -138,7 +138,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						$continent = $parts[0];
 						if(in_array($continent, $continents)){
 							$city = str_replace('_', ' ', $parts[1]);
-							$district = @str_replace('_', ' ', $parts[2]);
+							
+							if(isset($parts[2])){
+								$district = str_replace('_', ' ', $parts[2]);
+							}
+							else{
+								$district = '';
+							}
+							
 							if(empty($district)){
 								$places[$continent][$timezone_id] = $city;
 							}

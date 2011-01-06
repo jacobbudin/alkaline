@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Stat extends Alkaline{
 	public $durations;
 	public $pages;
@@ -21,6 +27,12 @@ class Stat extends Alkaline{
 	public $views;
 	public $visitors;
 	
+	/**
+	 * Initiate Stat object
+	 *
+	 * @param int|string $stat_begin Date begin
+	 * @param int|string $stat_end Date end
+	 */
 	public function __construct($stat_begin=null, $stat_end=null){
 		parent::__construct();
 		
@@ -52,18 +64,25 @@ class Stat extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->stats = $orbit->hook('stat', $this->stats, $this->stats);
-		return true;
 	}
 	
-	// STAT-TO-ARRAY FUNCTIONS
-	
+	/**
+	 * Get monthly views and visitors
+	 *
+	 * @return void
+	 */
 	public function getMonthly(){
 		$this->views = 0;
 		$this->visitors = 0;
@@ -122,10 +141,13 @@ class Stat extends Alkaline{
 		
 		$this->views = $this->getCumulative($this->stats, 'stat_views');
 		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
-		
-		return true;
 	}
 	
+	/**
+	 * Get daily views and visitors
+	 *
+	 * @return void
+	 */
 	public function getDaily(){
 		$this->views = 0;
 		$this->visitors = 0;
@@ -191,10 +213,13 @@ class Stat extends Alkaline{
 		
 		$this->views = $this->getCumulative($this->stats, 'stat_views');
 		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
-		
-		return true;
 	}
 	
+	/**
+	 * Get hourly views and visitors
+	 *
+	 * @return void
+	 */
 	public function getHourly(){
 		$this->views = 0;
 		$this->visitors = 0;
@@ -265,10 +290,15 @@ class Stat extends Alkaline{
 		
 		$this->views = $this->getCumulative($this->stats, 'stat_views');
 		$this->visitors = $this->getCumulative($this->stats, 'stat_visitors');
-		
-		return true;
 	}
 	
+	/**
+	 * Calculate a cumulative count of an array key's values
+	 *
+	 * @param string $array 
+	 * @param string $key 
+	 * @return int Cumulative count
+	 */
 	protected function getCumulative($array, $key){
 		$count = 0;
 		foreach($array as $value){
@@ -277,24 +307,50 @@ class Stat extends Alkaline{
 		return $count;
 	}
 	
+	/**
+	 * Calculate visitor durations
+	 *
+	 * @return void
+	 */
 	public function getDurations(){
 		$query = $this->prepare('SELECT MAX(stat_duration) AS stat_duration FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_session');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->durations = $query->fetchAll();
 	}
 	
-	public function getPages(){
-		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, 10');
+	/**
+	 * Get most popular pages
+	 *
+	 * @param int $limit Number of results
+	 * @return void
+	 */
+	public function getPages($limit=10){
+		$limit = intval($limit);
+		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page ORDER BY stat_count DESC LIMIT 0, ' . $limit . ';');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->pages = $query->fetchAll();
 	}
 	
-	public function getPageTypes(){
-		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, 10');
+	/**
+	 * Get most popular page types
+	 *
+	 * @param int $limit Number of results
+	 * @return void
+	 */
+	public function getPageTypes($limit=10){
+		$limit = intval($limit);
+		$query = $this->prepare('SELECT COUNT(stat_page) as stat_count, stat_page_type FROM stats WHERE stat_date >= :stat_date_begin AND stat_date <= :stat_date_end GROUP BY stat_page_type ORDER BY stat_count DESC LIMIT 0, ' . $limit . ';');
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->page_types = $query->fetchAll();
 	}
 	
+	/**
+	 * Get recent referrers
+	 *
+	 * @param string $limit Number of results
+	 * @param string $include_local Include local refferers
+	 * @return void
+	 */
 	public function getRecentReferrers($limit=20, $include_local=true){
 		$limit = intval($limit);
 		if($include_local === false){
@@ -305,6 +361,13 @@ class Stat extends Alkaline{
 		$this->referrers_recent = $query->fetchAll();
 	}
 	
+	/**
+	 * Get most popular referrers
+	 *
+	 * @param string $limit Number of results
+	 * @param string $include_local Include local refferers
+	 * @return void
+	 */
 	public function getPopularReferrers($limit=20, $include_local=true){
 		$limit = intval($limit);
 		if($include_local === false){

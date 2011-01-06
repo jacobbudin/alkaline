@@ -292,8 +292,13 @@ $(document).ready(function(){
 	$("a.show").toggle(
 		function(){
 			var original = $(this).text();
-			var re = /Show(.*)/;
-			var modified = 'Hide' + original.replace(re, "$1");
+			if(original.match('Show')){
+				var re = /Show(.*)/;
+				var modified = 'Hide' + original.replace(re, "$1");
+			}
+			else{
+				var modified = original;
+			}
 			
 			$(this).parent().next(".reveal").slideDown();
 			$(this).siblings(".switch").html('&#9662;');
@@ -302,8 +307,13 @@ $(document).ready(function(){
 		},
 		function(){
 			var new_original = $(this).text();
-			var new_re = /Hide(.*)/;
-			var new_modified = 'Show' + new_original.replace(new_re, "$1");
+			if(new_original.match('Hide')){
+				var new_re = /Hide(.*)/;
+				var new_modified = 'Show' + new_original.replace(new_re, "$1");
+			}
+			else{
+				var new_modified = new_original;
+			}
 			
 			$(this).parent().next(".reveal").slideUp();
 			$(this).siblings(".switch").html('&#9656;');

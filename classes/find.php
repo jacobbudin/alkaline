@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Find extends Alkaline{
 	private $memory;
 	public $photo_ids;
@@ -48,6 +54,12 @@ class Find extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
+	/**
+	 * Initiates Find class
+	 *
+	 * @param string|array|int $photo_ids Limit results to select photo IDs
+	 * @param string $auto_guest Set guest access restrictions
+	 */
 	public function __construct($photo_ids=null, $auto_guest=true){
 		parent::__construct();
 		
@@ -83,7 +95,7 @@ class Find extends Alkaline{
 		
 		if($auto_guest == true){
 			// Guest access
-			if(@$_SESSION['alkaline']['guest']){
+			if(isset($_SESSION['alkaline']['guest'])){
 				$this->privacy(2);
 				if(!empty($_SESSION['alkaline']['guest']['guest_piles'])){
 					$this->pile(intval($_SESSION['alkaline']['guest']['guest_piles']));
@@ -96,7 +108,13 @@ class Find extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// SAVE TO MEMORY
+	/**
+	 * Save methods (by appending an underscore to the method name) to memory for saving methods to piles, saved searches, etc.
+	 *
+	 * @param string $method Method name
+	 * @param array $arguments Method arguments
+	 * @return mixed
+	 */
 	public function __call($method, $arguments){
 		// Error checking
 		if(substr($method, 0, 1) != '_'){
@@ -141,21 +159,36 @@ class Find extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Translate $this->photo_ids array to comma-separated string
+	 *
+	 * @return string Comma-separated photo IDs
+	 */
 	public function __toString(){
         return implode(', ', $this->photo_ids);
     }
 
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->photo_ids = $orbit->hook('find', $this->photo_ids, $this->photo_ids);
-		return true;
 	}
 
-	// FIND BY DATE TAKEN
+	/**
+	 * Find by date taken
+	 *
+	 * @param string $begin Date begin
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
 	public function taken($begin=null, $end=null){
 		// Error checking
 		if(empty($begin) and empty($end)){ return false; }
@@ -181,7 +214,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY DATE UPLOADED
+	/**
+	 * Find by date uploaded
+	 *
+	 * @param string $begin Date begin
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
 	public function uploaded($begin=null, $end=null){
 		// Error checking
 		if(empty($begin) and empty($end)){ return false; }
@@ -207,7 +246,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY VIEWS
+	/**
+	 * Find by number of views
+	 *
+	 * @param string $min Minimum views
+	 * @param string $max Maximum views
+	 * @return bool True if successful
+	 */
 	public function views($min=null, $max=null){
 		// Error checking
 		if(empty($max) and empty($min)){ return false; }
@@ -228,7 +273,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY TAGS
+	/**
+	 * Find by tag search
+	 *
+	 * @param string $tags Tag search, can include boolean operators
+	 * @return bool True if successful
+	 */
 	public function tags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
@@ -266,6 +316,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Find by string|int|array joined by OR
+	 *
+	 * @param string $tags Tags to search for
+	 * @param string $count Minimum number of tags to find
+	 * @return bool True if successful
+	 */
 	protected function anyTags($tags=null, $count=1){
 		// Error checking
 		if(empty($tags)){ return false; }
@@ -313,6 +370,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Find by tags joined by AND
+	 *
+	 * @param string|int|array $tags Tags to search for
+	 * @return bool True if successful
+	 */
 	protected function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
@@ -372,6 +435,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Find by tags joined by NOT
+	 *
+	 * @param string|int|array $tags Tags to search for
+	 * @return bool True if successful
+	 */
 	protected function notTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
@@ -414,7 +483,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY PILE
+	/**
+	 * Find by pile
+	 *
+	 * @param int|string $pile Pile ID or pile title
+	 * @return void
+	 */
 	public function pile($pile=null){
 		// Error checking
 		if(empty($pile)){ return false; }
@@ -476,11 +550,15 @@ class Find extends Alkaline{
 				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
 			}
 		}
-		
-		return true;
 	}
 	
-	// FIND BY MEMORY
+	// MEMORY
+	
+	/**
+	 * Recall memory
+	 *
+	 * @return bool True if successful
+	 */
 	public function memory(){
 		if(!eval($this->recentMemory())){
 			return false;
@@ -489,7 +567,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY RIGHTS SET
+	/**
+	 * Find by rights set
+	 *
+	 * @param int|string $right Right ID or right title
+	 * @return void
+	 */
 	public function rights($right=null){
 		// Error checking
 		if(empty($right)){ return false; }
@@ -520,7 +603,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY USER
+	/**
+	 * Find by user (who uploaded the image)
+	 *
+	 * @param int|array $users User IDs
+	 * @return bool True if successful
+	 */
 	public function user($users=null){
 		// Error checking
 		if(empty($users)){ return false; }
@@ -538,7 +626,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY SEARCH
+	/**
+	 * Find by search (photo title, photo description, photo geography, and photo tags)
+	 *
+	 * @param string $search 
+	 * @return bool True if successful
+	 */
 	public function search($search=null){
 		// Error checking
 		if(empty($search)){ return false; }
@@ -579,7 +672,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY PRIVACY LEVEL
+	/**
+	 * Find by privacy levels
+	 *
+	 * @param int|string $privacy Privacy ID or string
+	 * @param string $all Also include all photos of lower privacy levels
+	 * @return bool True if successful
+	 */
 	public function privacy($privacy=null, $all=false){
 		// Error checking
 		if(empty($privacy)){ return false; }
@@ -636,7 +735,17 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY COLOR (HSL)
+	/**
+	 * Find by color (HSL)
+	 *
+	 * @param string $h_min 
+	 * @param string $h_max 
+	 * @param string $s_min 
+	 * @param string $s_max 
+	 * @param string $l_min 
+	 * @param string $l_max 
+	 * @return bool True if successful
+	 */
 	public function hsl($h_min, $h_max, $s_min, $s_max, $l_min, $l_max){
 		// Error checking
 		if(!isset($h_min) and !isset($h_max) and !isset($s_min) and !isset($s_max) and !isset($l_min) and !isset($l_max)){ return false; }
@@ -668,7 +777,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY PUBLISHED
+	/**
+	 * Find by publish status
+	 *
+	 * @param bool $published
+	 * @return void
+	 */
 	public function published($published=true){
 		// Admin checking
 		$user = new User;
@@ -687,11 +801,16 @@ class Find extends Alkaline{
 			$this->sql_conds[] = '(photos.photo_published > :photo_published OR photo_published IS NULL)';
 			$this->sql_params[':photo_published'] = $now;
 		}
-		
-		return true;
 	}
 	
-	// FIND BY IMAGE RATIO
+	/**
+	 * Find by image ratio (width/height)
+	 *
+	 * @param string|float|int $min Minimum ratio (0)
+	 * @param string|float|int $max Maximum ratio (infinite)
+	 * @param string|float|int $equal Search for precise ratio (1 = square)
+	 * @return bool True if successful
+	 */
 	public function ratio($min=null, $max=null, $equal=null){
 		if(empty($min) and empty($max) and empty($equal)){
 			return false;
@@ -728,7 +847,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY PAGES CONTENT
+	/**
+	 * Find by pages
+	 *
+	 * @param int|array $id Page IDs
+	 * @return bool True if successful
+	 */
 	public function pages($id=null){
 		if(empty($id)){ return false; }
 		
@@ -755,7 +879,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY EXIFS CONTENT
+	/**
+	 * Find by EXIF value
+	 *
+	 * @param string $value EXIF value
+	 * @param string $name EXIF name (key)
+	 * @return bool True if successful
+	 */
 	public function exifs($value, $name=null){
 		if(empty($value)){ return false; }
 		
@@ -777,7 +907,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY GUEST SIMULATION
+	/**
+	 * Find by guest similuation
+	 *
+	 * @param int $id Guest ID
+	 * @return bool True if successful
+	 */
 	public function guest($id=null){
 		if(empty($id)){ return false; }
 		
@@ -797,7 +932,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// SMART SEARCH
+	/**
+	 * Specialized smart searches, use GET[id] values where necessary
+	 *
+	 * @param string $kind Untagged, unpublished, displayed, updated, nonpublic, untitled, views, tags, guests, piles, me, users, rights, pages
+	 * @return bool True if successful
+	 */
 	protected function smart($kind){
 		if(empty($kind)){
 			return false;
@@ -862,7 +1002,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// FIND PAGE BY PHOTO ID
+	/**
+	 * Locate page that contains a particular photo ID
+	 *
+	 * @param int $photo_id Photo ID
+	 * @return bool True if successful
+	 */
 	public function with($photo_id){
 		// Error checking
 		if(empty($photo_id)){ return false; }
@@ -873,7 +1018,14 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// PAGINATE RESULTS
+	/**
+	 * Paginate results
+	 *
+	 * @param int $page Page number
+	 * @param int $limit Number of photos per page
+	 * @param int $first Number of photos on the first page (if different)
+	 * @return bool True if successful
+	 */
 	public function page($page, $limit=null, $first=null){
 		// Error checking
 		if(empty($page)){
@@ -901,7 +1053,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// OFFSET PHOTOS
+	/**
+	 * Set number of offset photos (photos that appear just before and after the requested page)
+	 *
+	 * @param int $length Number of photos
+	 * @return bool True if successful
+	 */
 	public function offset($length){
 		// Error checking
 		if(!($length = intval($length))){ return false; }
@@ -909,7 +1066,13 @@ class Find extends Alkaline{
 		$this->photo_offset_length = $length;
 	}
 	
-	// NEARBY LOCATOIN
+	/**
+	 * Find by location
+	 *
+	 * @param string $geo City name or latitude, longitude
+	 * @param string $radius Search radius (in miles)
+	 * @return bool True if successful
+	 */
 	public function location($geo, $radius){
 		$place = new Geo($geo);
 		
@@ -927,7 +1090,13 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// SORT RESULTS
+	/**
+	 * Sort results by photo column
+	 *
+	 * @param string $column Photo column
+	 * @param string $sort Sort order (ASC or DESC)
+	 * @return bool True if successful
+	 */
 	public function sort($column, $sort='ASC'){
 		// Error checking
 		if(empty($column)){ return false; }
@@ -948,6 +1117,12 @@ class Find extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Find by photo fields not null
+	 *
+	 * @param string $field Photo field
+	 * @return bool True if successful
+	 */
 	public function notnull($field){
 		if(empty($field)){ return false; }
 		
@@ -958,7 +1133,11 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// EXECUTE QUERY
+	/**
+	 * Execute Find class to determine class variables
+	 *
+	 * @return array Photo IDs
+	 */
 	public function find(){
 		// Prepare SQL
 		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);
@@ -1122,7 +1301,12 @@ class Find extends Alkaline{
 	}
 	
 	// SEARCH MEMORY
-	// Retrieve memory
+	
+	/**
+	 * Retrieve memory
+	 *
+	 * @return string|false Methods that make up the memory or error
+	 */
 	public function getMemory(){
 		if(count($this->memory) > 0){
 			return false;
@@ -1132,7 +1316,11 @@ class Find extends Alkaline{
 	}
 	
 	
-	// Save memory
+	/**
+	 * Save memory (after executing)
+	 *
+	 * @return bool True if successful
+	 */
 	public function saveMemory(){
 		if(count($this->memory) < 1){
 			return false;
@@ -1144,7 +1332,11 @@ class Find extends Alkaline{
 		return true;
 	}
 	
-	// Most recent saved memory
+	/**
+	 * Execute recent memory
+	 *
+	 * @return string|false
+	 */
 	public function recentMemory(){
 		if(empty($_SESSION['alkaline']['search']['memory'])){
 			return false;
@@ -1153,12 +1345,14 @@ class Find extends Alkaline{
 		return implode(' ', $_SESSION['alkaline']['search']['memory']);
 	}
 	
-	// Clear memory
+	/**
+	 * Clear the memory
+	 *
+	 * @return void
+	 */
 	public function clearMemory(){
 		unset($_SESSION['alkaline']['search']['memory']);
 		unset($_SESSION['alkaline']['search']['results']);
-		
-		return true;
 	}
 }
 

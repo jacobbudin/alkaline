@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Orbit extends Alkaline{
 	public $id;
 	public $uid;
@@ -23,6 +29,11 @@ class Orbit extends Alkaline{
 	
 	private $db_safe;
 	
+	/**
+	 * Initiate Orbit object
+	 *
+	 * @param int|array $id Orbit IDs (otherwise all)
+	 */
 	public function __construct($id=null){
 		parent::__construct();
 		
@@ -115,6 +126,11 @@ class Orbit extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Terminates object, saves extension data
+	 *
+	 * @return void
+	 */
 	public function __destruct(){
 		// Save extension data
 		$_SESSION['alkaline']['extensions'] = $this->extensions;
@@ -122,43 +138,74 @@ class Orbit extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// DATABASE
-	// public function exec($query){ }
-	// public function prepare($query){ }
-	
-	// Set preference key
+	/**
+	 * Set extension preference
+	 *
+	 * @param string $name 
+	 * @param string $value 
+	 * @return void
+	 */
 	public function setPref($name, $value){
 		return $this->preferences[$name] = $value;
 	}
 	
-	// Read preference key and return value
+	/**
+	 * Read preference key and return value
+	 *
+	 * @param string $name 
+	 * @param string $default 
+	 * @return void
+	 */
 	public function returnPref($name, $default=null){
 		return parent::returnForm($this->preferences, $name, $default);
 	}
 	
-	// Read preference key, return form data
+	/**
+	 * Read preference key, return form data
+	 *
+	 * @param string $name 
+	 * @param string $check 
+	 * @return void
+	 */
 	public function readPref($name, $check=true){
 		return parent::readForm($this->preferences, $name, $check);
 	}
 	
-	// Save preferences to database
+	/**
+	 * Save preferences to database
+	 *
+	 * @return void
+	 */
 	public function savePref(){
 		$query = $this->prepare('UPDATE extensions SET extension_preferences = :extension_preferences WHERE extension_uid = :extension_uid;');
 		return $query->execute(array(':extension_preferences' => serialize($this->preferences), ':extension_uid' => $this->uid));
 	}
 	
-	// Current page for redirects
+	/**
+	 * Current page for redirects
+	 *
+	 * @return void
+	 */
 	public function location(){
 		return parent::location();
 	}
 	
-	// Set preference key
+	/**
+	 * Reset preferences
+	 *
+	 * @return PDOStatement
+	 */
 	public function reset(){
 		$query = $this->prepare('UPDATE extensions SET extension_preferences = "" WHERE extension_uid = :extension_uid;');
 		return $this->execute(array(':extension_uid' => $this->uid));
 	}
 	
-	// Execute extensions at hook
+	/**
+	 * Execute Orbit hook
+	 *
+	 * @param string $hook Hook name
+	 * @return mixed Default value
+	 */
 	public function hook($hook){
 		// Configuration: maint_disable
 		$safe_hooks = array('config', 'config_load', 'config_save');

@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Comment extends Alkaline{
 	public $comments;
 	public $comment_ids;
@@ -33,6 +39,11 @@ class Comment extends Alkaline{
 	protected $sql_order_by;
 	protected $sql_where;
 	
+	/**
+	 * Initiate Comment class
+	 *
+	 * @param string|int|array $comment_ids Limit results to select comment IDs
+	 */
 	public function __construct($comment_ids=null){
 		parent::__construct();
 		
@@ -70,17 +81,26 @@ class Comment extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->comments = $orbit->hook('comment', $this->comments, $this->comments);
-		return true;
 	}
 	
-	// FIND BY SEARCH
+	/**
+	 * Find by search (text, author)
+	 *
+	 * @param string $search Search string
+	 * @return bool True if successful
+	 */
 	public function search($search=null){
 		// Error checking
 		if(empty($search)){ return false; }
@@ -110,7 +130,12 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY STATUS
+	/**
+	 * Find by comment status
+	 *
+	 * @param int|string $status Comment status
+	 * @return bool True if successful
+	 */
 	public function status($status=null){
 		// Error checking
 		if(empty($status)){ return false; }
@@ -145,7 +170,13 @@ class Comment extends Alkaline{
 		return true;
 	}
 
-	// FIND BY DATE UPLOADED
+	/**
+	 * Find by date created
+	 *
+	 * @param string $begin Date begin 
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
 	public function created($begin=null, $end=null){
 		// Error checking
 		if(empty($begin) and empty($end)){ return false; }
@@ -171,7 +202,12 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// FIND BY PHOTO ASSOCIATION
+	/**
+	 * Find by photo association
+	 *
+	 * @param int|array $photo_ids Photo IDs
+	 * @return bool True if successful
+	 */
 	public function photo($photo_ids=null){
 		// Error checking
 		if(empty($photo_ids)){ return false; }
@@ -183,7 +219,13 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// SORT RESULTS
+	/**
+	 * Sort results
+	 *
+	 * @param string $column Comment table column
+	 * @param string $sort Sort order (ASC or DESC)
+	 * @return void
+	 */
 	public function sort($column, $sort='ASC'){
 		// Error checking
 		if(empty($column)){ return false; }
@@ -204,6 +246,12 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
+	/**
+	 * Find by field not null
+	 *
+	 * @param string $field Table field
+	 * @return bool True if successful
+	 */
 	public function notnull($field){
 		if(empty($field)){ return false; }
 		
@@ -214,7 +262,14 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// PAGINATE RESULTS
+	/**
+	 * Paginate results
+	 *
+	 * @param string $page Page number
+	 * @param string $limit Number of photos per page
+	 * @param string $first Number of photos on first page
+	 * @return bool True if successful
+	 */
 	public function page($page, $limit=null, $first=null){
 		// Error checking
 		if(empty($page)){
@@ -241,7 +296,12 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// Format time
+	/**
+	 * Format time
+	 *
+	 * @param string $format Format as in date();
+	 * @return void
+	 */
 	public function formatTime($format=null){
 		for($i = 0; $i < $this->comment_count; ++$i){
 			$this->comments[$i]['comment_created'] = parent::formatTime($this->comments[$i]['comment_created'], $format);
@@ -249,7 +309,11 @@ class Comment extends Alkaline{
 		return true;
 	}
 	
-	// EXECUTE QUERY
+	/**
+	 * Execute Comment class to determine class variables
+	 *
+	 * @return void
+	 */
 	public function fetch(){
 		// Prepare SQL
 		$this->sql_from = ' FROM ' . implode(', ', $this->sql_tables);

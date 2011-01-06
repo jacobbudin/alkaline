@@ -15,7 +15,9 @@ $user = new User;
 
 $user->perm(true);
 
-$tag_id = $alkaline->findID(@$_GET['id']);
+if(!empty($_GET['id'])){
+	$tag_id = $alkaline->findID($_GET['id']);
+}
 
 // SAVE CHANGES
 if(!empty($_POST['tag_id'])){

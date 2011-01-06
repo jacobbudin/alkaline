@@ -7,6 +7,12 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class Photo extends Alkaline{
 	public $db;
 	public $photos = array();
@@ -21,6 +27,11 @@ class Photo extends Alkaline{
 	public $user;
 	protected $sql;
 	
+	/**
+	 * Initiates Photo object
+	 *
+	 * @param array|int|string $photo_ids Photo IDs (use Find class to locate them)
+	 */
 	public function __construct($photo_ids=null){
 		parent::__construct();
 		
@@ -69,17 +80,36 @@ class Photo extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Object hook
+	 *
+	 * @param Object $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->photos = $orbit->hook('photo', $this->photos, $this->photos);
-		return true;
 	}
 	
-	// Add images to library
+	/**
+	 * Attribute actions to user
+	 *
+	 * @param User $user User object
+	 * @return void
+	 */
+	public function attachUser($user){
+		$this->user = $user->user;
+	}
+	
+	/**
+	 * Import files into image library
+	 *
+	 * @param array|string $files Full path to image files
+	 * @return void
+	 */
 	public function import($files){
 		if(empty($files)){
 			return false;
@@ -154,12 +184,13 @@ class Photo extends Alkaline{
 		self::__construct($this->photo_ids);
 	}
 	
-	// USER ATTRIBUTION
-	public function attachUser($user){
-		$this->user = $user->user;
-	}
-	
-	// Generate photo thumbnails based on sizes in database
+	/**
+	 * Generate photo thumbnails based on sizes in database (and apply watermark if selected)
+	 *
+	 * @param array $photos Photo array
+	 * @param array|int $size_ids Size IDs (else all sizes)
+	 * @return void
+	 */
 	public function sizePhoto($photos=null, $size_ids=null){
 		if(empty($photos)){
 			$photos = $this->photos;
@@ -216,7 +247,13 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// UPDATE PHOTO TABLE
+	/**
+	 * Update photo table
+	 *
+	 * @param array $array Associative array of columns and fields
+	 * @param bool $overwrite 
+	 * @return void
+	 */
 	public function updateFields($array, $overwrite=true){
 		// Error checking
 		if(!is_array($array)){
@@ -300,7 +337,12 @@ class Photo extends Alkaline{
 		return true;
 	}
 	
-	// UPDATE TAGS & LINKS TABLES
+	/**
+	 * Update tags (update tags and links tables)
+	 *
+	 * @param array $tags 
+	 * @return void
+	 */
 	public function updateTags($tags){
 		// Error checking
 		if(!is_array($tags)){
@@ -403,7 +445,12 @@ class Photo extends Alkaline{
 		return true;
 	}
 	
-	// ADD TAGS
+	/**
+	 * Add tags
+	 *
+	 * @param array|string $tags Tags names
+	 * @return array Affected tag IDs
+	 */
 	public function addTags($tags){
 		// Error checking
 		if(!is_array($tags)){
@@ -499,7 +546,12 @@ class Photo extends Alkaline{
 		return $tag_db_ids;
 	}
 	
-	// UPDATE TAGS & LINKS TABLES
+	/**
+	 * Remove tags
+	 *
+	 * @param array|string $tags Tags names
+	 * @return array Affected tag IDs
+	 */
 	public function removeTags($tags){
 		// Error checking
 		if(!is_array($tags)){
@@ -544,7 +596,12 @@ class Photo extends Alkaline{
 		return $tags_db_ids;
 	}
 	
-	// Determine image extension
+	/**
+	 * Determine image extension
+	 *
+	 * @param string $file Full path to file
+	 * @return string|false Extension
+	 */
 	public function getExt($file){
 		// Error checking
 		if(empty($file)){
@@ -570,7 +627,12 @@ class Photo extends Alkaline{
 		else{ return $type; }
 	}
 	
-	// Detemine image MIME type
+	/**
+	 * Determine image MIME type
+	 *
+	 * @param string $file Full path to file
+	 * @return string|false MIME type
+	 */
 	public function getMIME($file){
 		// Error checking
 		if(empty($file)){
@@ -597,7 +659,12 @@ class Photo extends Alkaline{
 		else{ return 'image/' . $type; }
 	}
 	
-	// Determine image dimensions
+	/**
+	 * Determine image dimensions
+	 *
+	 * @param string $file Full path to file
+	 * @return array Associative array with heigh and width keys
+	 */
 	public function getSize($file){
 		// Error checking
 		if(empty($file)){
@@ -622,7 +689,17 @@ class Photo extends Alkaline{
 		return $size;
 	}
 	
-	// Fill image
+	/**
+	 * Resize image by fill
+	 *
+	 * @param string $src Source full path
+	 * @param string $dest Destination full path
+	 * @param int $height 
+	 * @param int $width 
+	 * @param int $quality 1-100
+	 * @param string $ext 
+	 * @return bool True if successful
+	 */
 	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
@@ -756,7 +833,17 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Scale image
+	/**
+	 * Resize image by scale
+	 *
+	 * @param string $src Source full path
+	 * @param string $dest Destination full path
+	 * @param int $height 
+	 * @param int $width 
+	 * @param int $quality 1-100
+	 * @param string $ext 
+	 * @return bool True if successful
+	 */
 	private function imageScale($src, $dest, $height, $width, $quality=null, $ext=null){
 		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
 		if(empty($ext)){ $ext = self::getExt($src); }
@@ -892,7 +979,12 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Create Colorkey data
+	/**
+	 * Generate Colorkey data
+	 *
+	 * @param array $photos 
+	 * @return void
+	 */
 	public function findColors($photos=null){
 		if(empty($photos)){
 			$photos = $this->photos;
@@ -1058,6 +1150,12 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Read and import EXIF data from images
+	 *
+	 * @param array $photos 
+	 * @return void
+	 */
 	public function readEXIF($photos=null){
 		if(!function_exists('exif_read_data')){ return false; }
 		
@@ -1104,6 +1202,12 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Read and import IPTC data from images (for tags)
+	 *
+	 * @param array $photos 
+	 * @return void
+	 */
 	public function readIPTC($photos=null){
 		if(empty($photos)){
 			$photos = $this->photos;
@@ -1191,7 +1295,12 @@ class Photo extends Alkaline{
 		return true;
 	}
 	
-	// Find location from EXIF, IPTC
+	/**
+	 * Read and import geolocation data (via any mix of EXIF and IPTC) from images
+	 *
+	 * @param array $photos 
+	 * @return void
+	 */
 	public function readGeo($photos=null){
 		if(empty($photos)){
 			$photos = $this->photos;
@@ -1330,7 +1439,11 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Increase photos.photo_views by 1
+	/**
+	 * Increase photo_views field by 1
+	 *
+	 * @return void
+	 */
 	public function updateViews(){
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_views']++;
@@ -1338,7 +1451,11 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Delete photos
+	/**
+	 * Delete photos (and remove photo from photos, comments, exifs, and links tables)
+	 *
+	 * @return void
+	 */
 	public function delete(){
 		$this->deSizePhoto(true);
 		for($i = 0; $i < $this->photo_count; ++$i){
@@ -1349,7 +1466,12 @@ class Photo extends Alkaline{
 		}
 	}
 	
-	// Generate image URLs for images
+	/**
+	 * Generate image URLs for images
+	 *
+	 * @param array|string $sizes Size titles (or else all sizes)
+	 * @return void
+	 */
 	public function getImgUrl($sizes=null){
 		$sizes = $this->convertToArray($sizes);
 		
@@ -1389,7 +1511,11 @@ class Photo extends Alkaline{
 		return $sizes;
 	}
 	
-	// Generate EXIF for images
+	/**
+	 * Get EXIF data and append to photo array
+	 *
+	 * @return array Associative array of EXIFs
+	 */
 	public function getEXIF(){
 		$query = $this->prepare('SELECT exifs.* FROM exifs, photos' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
 		$query->execute();
@@ -1406,7 +1532,11 @@ class Photo extends Alkaline{
 		return $exifs;
 	}
 	
-	// Retrieve image tags
+	/**
+	 * Get image tags and append to photo array
+	 *
+	 * @return array Associative array of tags
+	 */
 	public function getTags(){
 		// Sort by tag name
 		if($this->returnConf('tag_alpha')){
@@ -1436,7 +1566,11 @@ class Photo extends Alkaline{
 		return $tags;
 	}
 	
-	// Retrieve image rights
+	/**
+	 * Get rights set data and append to photo array
+	 *
+	 * @return array Associative array of rights sets
+	 */
 	public function getRights(){
 		$query = $this->prepare('SELECT rights.*, photos.photo_id FROM rights, photos' . $this->sql . ' AND rights.right_id = photos.right_id;');
 		$query->execute();
@@ -1455,7 +1589,11 @@ class Photo extends Alkaline{
 		return $rights;
 	}
 	
-	// Retrieve image piles
+	/**
+	 * Get piles data and append to photo array
+	 *
+	 * @return array Associative array of piles
+	 */
 	public function getPiles(){
 		$piles = $this->getTable('piles');
 		
@@ -1472,7 +1610,11 @@ class Photo extends Alkaline{
 		return $this->piles;
 	}
 	
-	// Retrieve image pages
+	/**
+	 * Get pages data and append to photo array
+	 *
+	 * @return array Associative array of pages
+	 */
 	public function getPages(){
 		$pages = $this->getTable('pages');
 		
@@ -1492,7 +1634,13 @@ class Photo extends Alkaline{
 		return $this->pages;
 	}
 	
-	// Retrieve alpha sequence
+	/**
+	 * Get word and numerical sequencing of images
+	 *
+	 * @param int $start First number on page
+	 * @param bool $asc Sequence order (false if DESC)
+	 * @return void
+	 */
 	public function getSeries($start=null, $asc=true){
 		if(!isset($start)){
 			$start = 1;
@@ -1512,11 +1660,15 @@ class Photo extends Alkaline{
 			$this->photos[$i]['photo_numeric'] = $values[$i];
 			$this->photos[$i]['photo_alpha'] = ucwords($this->numberToWords($values[$i]));
 		}
-		
-		return true;
 	}
 	
-	// Retrieve Colorkey
+	/**
+	 * Get Colorkey data and append <canvas> to photo array
+	 *
+	 * @param int $width Width (in pixels)
+	 * @param int $height Height (in pixels) 
+	 * @return void
+	 */
 	public function getColorkey($width=null, $height=null){
 		// Error handling
 		if(!isset($width)){ $width = 300; }
@@ -1525,7 +1677,7 @@ class Photo extends Alkaline{
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$photo_colors = unserialize($this->photos[$i]['photo_colors']);
 			
-			if(empty($photo_colors)){ continue; }
+			if(empty($photo_colors)){ $this->photos[$i]['photo_colorkey'] = ''; continue; }
 
 			$photo_colors_colors = array();
 			$photo_colors_percents = array();
@@ -1544,11 +1696,16 @@ class Photo extends Alkaline{
 			</div>
 			<canvas width="' . intval(@$width) . '" height="' . intval(@$height) . '" class="colorkey"></canvas>';
 		}
-		
-		return true;
 	}
 	
-	// Retrieve image comments
+	/**
+	 * Add string notation to particular sequence, good for CSS columns
+	 *
+	 * @param string $label String notation
+	 * @param int $frequency 
+	 * @param bool $start_first True if first image should be selected and begin sequence
+	 * @return void
+	 */
 	public function addSequence($label, $frequency, $start_first=false){
 		if($start_first === false){
 			$i = 1;
@@ -1560,7 +1717,12 @@ class Photo extends Alkaline{
 		// Store photo comment fields
 		foreach($this->photos as &$photo){
 			if($i == $frequency){
-				$photo['photo_sequence'] = $label;
+				if(empty($photo['photo_sequence'])){
+					$photo['photo_sequence'] = $label;
+				}
+				else{
+					$photo['photo_sequence'] .= ' ' . $label;
+				}
 				$i = 1;
 			}
 			else{
@@ -1571,7 +1733,11 @@ class Photo extends Alkaline{
 		return true;
 	}
 		
-	// Retrieve image comments
+	/**
+	 * Get comments data, append comment <input> HTML data
+	 *
+	 * @return array Associative array of comments
+	 */
 	public function getComments(){
 		$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
 		$query->execute();
@@ -1600,8 +1766,12 @@ class Photo extends Alkaline{
 		return $this->comments;
 	}
 	
-	// Delete photo thumbnails
-	// Param: delete: delete original photos too?
+	/**
+	 * Delete photo thumbnail files
+	 *
+	 * @param string $original Delete original photo
+	 * @return void
+	 */
 	public function deSizePhoto($original=false){
 		// Open photo directory
 		$dir = parent::correctWinPath(PATH . PHOTOS);
@@ -1628,9 +1798,14 @@ class Photo extends Alkaline{
 		foreach($photos as $photo){
 			unlink($photo);
 		}
-		return true;
 	}
 	
+	/**
+	 * Format time
+	 *
+	 * @param string $format Same format as date();
+	 * @return void
+	 */
 	public function formatTime($format=null){
 		for($i = 0; $i < $this->photo_count; ++$i){
 			$this->photos[$i]['photo_taken'] = parent::formatTime($this->photos[$i]['photo_taken'], $format);
@@ -1638,9 +1813,20 @@ class Photo extends Alkaline{
 			$this->photos[$i]['photo_published'] = parent::formatTime($this->photos[$i]['photo_published'], $format);
 			$this->photos[$i]['photo_updated'] = parent::formatTime($this->photos[$i]['photo_updated'], $format);
 		}
-		return true;
 	}
 	
+	/**
+	 * Watermark image
+	 *
+	 * @param string $src Source full path
+	 * @param string $dest Destination full path
+	 * @param string $watermark Watermark full path
+	 * @param int $margin Margin (in pixels)
+	 * @param string $position Watermark position
+	 * @param int $quality 1-100
+	 * @param string $ext Extension
+	 * @return void
+	 */
 	private function watermark($src, $dest, $watermark, $margin=null, $position=null, $quality=null, $ext=null){
 		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
 		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
@@ -1758,6 +1944,17 @@ class Photo extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Determine watermark position
+	 *
+	 * @param int $photo_height Photo height (in pixels)
+	 * @param int $photo_width Photo width (in pixels)
+	 * @param int $water_height Watermark height (in pixels)
+	 * @param int $water_width Watermark width (in pixels)
+	 * @param int $margin Margin (in pixels)
+	 * @param string $position 'nw', 'ne', 'sw', '00', 'n0', 's0', '0e', '0w'
+	 * @return void
+	 */
 	private function watermarkPosition($photo_height, $photo_width, $water_height, $water_width, $margin=null, $position=null){
 		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
 		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }

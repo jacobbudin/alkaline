@@ -7,9 +7,19 @@
 // http://www.alkalinenapp.com/
 */
 
+/**
+ * @author Budin Ltd. <contact@budinltd.com>
+ * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @version 1.0
+ */
+
 class User extends Alkaline{
 	public $user;
 	
+	/**
+	 * Initiate User object
+	 *
+	 */
 	public function __construct(){
 		parent::__construct();
 		
@@ -25,6 +35,11 @@ class User extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Terminate User object, save user in session
+	 *
+	 * @return void
+	 */
 	public function __destruct(){
 		// Store user to session data
 		if(self::perm() == true){
@@ -34,18 +49,30 @@ class User extends Alkaline{
 		parent::__destruct();
 	}
 	
-	// Perform object Orbit hook
+	/**
+	 * Perform Orbit hook
+	 *
+	 * @param Orbit $orbit 
+	 * @return void
+	 */
 	public function hook($orbit=null){
 		if(!is_object($orbit)){
 			$orbit = new Orbit;
 		}
 		
 		$this->user = $orbit->hook('user', $this->user, $this->user);
-		return true;
 	}
 	
-	// AUTHENTICATE (LOGIN)
-	// Login user by username, password
+	// AUTHENTICATION
+	
+	/**
+	 * Login user by username, password
+	 *
+	 * @param string $username 
+	 * @param string $password 
+	 * @param bool $remember 
+	 * @return bool True if successful
+	 */
 	public function auth($username, $password, $remember=false){
 		// Error checking
 		if(empty($username) or empty($password)){
@@ -64,7 +91,14 @@ class User extends Alkaline{
 		return true;
 	}
 	
-	// Login user by ID, key
+	/**
+	 * Login user by ID, key
+	 *
+	 * @param string $user_id 
+	 * @param string $user_key 
+	 * @param bool $remember 
+	 * @return bool True if successful
+	 */
 	protected function authByCookie($user_id, $user_key, $remember=true){
 		// Error checking
 		if(empty($user_id) or empty($user_key)){ return false ; }
@@ -80,7 +114,12 @@ class User extends Alkaline{
 		return true;
 	}
 	
-	// Prepare user for functionality
+	/**
+	 * Prepare user for functionality
+	 *
+	 * @param bool $remember 
+	 * @return bool True if successful
+	 */
 	private function prep($remember=false){
 		// If overlapping users exist, destroy object
 		if(count($this->user) != 1){
@@ -114,20 +153,28 @@ class User extends Alkaline{
 		return $this->updateRow($fields, 'users', $this->user['user_id']);
 	}
 	
-	// DEAUTHENTICATE (LOGOUT)
-	// Logout user, destroy "remember me" data
+	/**
+	 * Logout user, destroy "remember me" data
+	 *
+	 * @return void
+	 */
 	public function deauth(){
 		unset($this->user);
 		session_destroy();
 		setcookie('uid', '', time()-3600, '/');
 		setcookie('key', '', time()-3600, '/');
 		session_start();
-		
-		return true;
 	}
 	
 	// PERMISSIONS
-	// Verify user has permission to access module
+	
+	/**
+	 * Verify user has permission to access module
+	 *
+	 * @param bool $required Redirects (on failure) if true
+	 * @param string $permission Permission string
+	 * @return void
+	 */
 	public function perm($required=false, $permission=null){
 		if(empty($this->user)){
 			if($required === true){
@@ -152,28 +199,51 @@ class User extends Alkaline{
 	}
 	
 	// PREFERENCES
-	// Set preference key
+	
+	/**
+	 * Set preference key
+	 *
+	 * @param string $name 
+	 * @param string $unset 
+	 * @return void
+	 */
 	public function setPref($name, $unset=''){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
 	}
 	
-	// Read preference key and return value in HTML
+	/**
+	 * Read preference key and return value in HTML
+	 *
+	 * @param string $name 
+	 * @param string $check 
+	 * @return void
+	 */
 	public function readPref($name, $check=true){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::readForm($this->user['user_preferences'], $name, $check);
 	}
 	
-	// Read preference key and return value
+	/**
+	 * Read preference key and return value
+	 *
+	 * @param string $name 
+	 * @param string $default 
+	 * @return void
+	 */
 	public function returnPref($name, $default=null){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::returnForm($this->user['user_preferences'], $name, $default);
 	}
 	
-	// Save preferences
+	/**
+	 * Save preferences
+	 *
+	 * @return void
+	 */
 	public function savePref(){
 		if(!$this->perm(true)){ return false; }
 		
@@ -183,7 +253,13 @@ class User extends Alkaline{
 		return $this->updateFields($fields);
 	}
 	
-	// UPDATE USER
+	/**
+	 * Update user table
+	 *
+	 * @param string $fields Associative array of columns and fields
+	 * @param bool $overwrite 
+	 * @return void
+	 */
 	public function updateFields($fields, $overwrite=true){
 		if(!$this->perm(true)){ return false; }
 		
@@ -204,7 +280,15 @@ class User extends Alkaline{
 		return $this->updateRow($fields, 'users', $this->user['user_id']);
 	}
 	
-	// MAIL	
+	// MAIL
+	
+	/**
+	 * Send email to user
+	 *
+	 * @param string $subject 
+	 * @param string $message 
+	 * @return void
+	 */
 	public function email($subject, $message){
 		if(!$this->perm(true)){ return false; }
 		

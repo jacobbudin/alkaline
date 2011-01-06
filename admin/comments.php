@@ -15,8 +15,13 @@ $user = new User;
 
 $user->perm(true);
 
-$comment_id = @$alkaline->findID($_GET['id']);
-$comment_act = @$_GET['act'];
+if(!empty($_GET['id'])){
+	$comment_id = $alkaline->findID($_GET['id']);
+}
+
+if(!empty($_GET['act'])){
+	$comment_act = $_GET['act'];
+}
 
 // SAVE CHANGES
 if(!empty($_POST['comment_id'])){
