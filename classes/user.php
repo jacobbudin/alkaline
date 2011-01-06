@@ -26,6 +26,7 @@ class User extends Alkaline{
 		// Login user by session data
 		if(!empty($_SESSION['alkaline']['user'])){
 			$this->user = $_SESSION['alkaline']['user'];
+			unset($_SESSION['alkaline']['guest']);
 		}
 		// Login user by ID, key
 		elseif(!empty($_COOKIE['uid']) and !empty($_COOKIE['key'])){
@@ -129,6 +130,9 @@ class User extends Alkaline{
 		
 		// If user exists, store their row
 		$this->user = $this->user[0];
+		
+		// Remove guest access
+		unset($_SESSION['alkaline']['guest']);
 		
 		$key = '';
 		

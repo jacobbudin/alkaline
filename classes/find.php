@@ -686,16 +686,14 @@ class Find extends Alkaline{
 		// Guest, admin checking
 		$user = new User;
 		
-		if($user->perm(false)){
-			return;
-		}
-		elseif(@$_SESSION['alkaline']['guest']){
+		if(@$_SESSION['alkaline']['guest']){
 			$privacy = 2;
 			$all = false;
 		}
 		
 		// Convert strings
 		if(is_string($privacy)){
+			$privacy = strtolower($privacy);
 			$levels = array('public' => 1, 'protected' => 2, 'private' => 3);
 			if(array_key_exists($privacy, $levels)){
 				$privacy = $levels[$privacy];
@@ -908,7 +906,7 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Find by guest similuation
+	 * Find by guest simulation
 	 *
 	 * @param int $id Guest ID
 	 * @return bool True if successful
@@ -922,11 +920,12 @@ class Find extends Alkaline{
 			return false;
 		}
 		
-		if(empty($guest['guest_piles'])){	
+		if(empty($guest['guest_piles'])){
 			$this->privacy('protected');
 		}
 		else{
 			$this->pile(intval($guest['guest_piles']));
+			$this->privacy('protected');
 		}
 		
 		return true;
