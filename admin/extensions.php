@@ -87,13 +87,28 @@ foreach($extensions as $extension){
 	$extension_classes[] = $extension['extension_class'];
 }
 
-$extensions_installed = array();
+
+// Determine which themes have been removed, delete rows from table
+$extension_deleted = array();
+
+foreach($extensions as $extension){
+	$extension_folder = PATH . EXTENSIONS . $extension['extension_folder'];
+	if(!in_array($extension_folder, $seek_extensions)){
+		$extension_deleted[] = $extension['extension_id'];
+	}
+}
+
+$alkaline->deleteRow('extensions', $extension_deleted);
 
 // Determine which extensions are new, intall them
+$extensions_installed = array();
+
 foreach($seek_extensions as &$extension_folder){
 	$extension_folder = $alkaline->getFilename($extension_folder);
 	if(!in_array($extension_folder, $extension_folders)){
 		$data = file_get_contents(PATH . EXTENSIONS . $extension_folder . '/extension.xml');
+		if(empty($data)){ $alkaline->addNote('Alkaline could not install a new extension. Its XML file is missing or corrupted.', 'error'); continue; }
+		
 		$xml = new SimpleXMLElement($data);
 		
 		if(in_array($xml->class, $extension_classes)){
@@ -131,10 +146,10 @@ foreach($seek_extensions as &$extension_folder){
 $extensions_installed_count = count($extensions_installed);
 if($extensions_installed_count > 0){
 	if($extensions_installed_count == 1){
-		$notification = 'You have succesfully installed 1 extension.';
+		$notification = 'You have successfully installed 1 extension.';
 	}
 	else{
-		$notification = 'You have succesfully installed ' . $extensions_installed_count . ' extensions.';
+		$notification = 'You have successfully installed ' . $extensions_installed_count . ' extensions.';
 	}
 	
 	$alkaline->addNote($notification, 'success');

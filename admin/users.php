@@ -45,7 +45,7 @@ else{
 }
 
 // CREATE User
-if($user_db_act == 'add'){
+if(!empty($user_db_act) and ($user_db_act == 'add')){
 	$user_db_id = $alkaline->addRow(null, 'users');
 }
 

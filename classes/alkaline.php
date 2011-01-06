@@ -488,10 +488,17 @@ class Alkaline{
 		$file = str_replace('\\', '/', $file);
 		
 		preg_match('#^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))#si', $file, $matches);
+		
 		if(count($matches) < 1){
 			return false;
 		}
-		$filename = $matches[2] . @$matches[3];
+		
+		$filename = $matches[2];
+		
+		if(isset($matches[3])){
+			$filename .= $matches[3];
+		}
+		
 		return $filename;
 	}
 	

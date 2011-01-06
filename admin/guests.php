@@ -26,7 +26,7 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['guest_id'])){
 	$guest_id = $alkaline->findID($_POST['guest_id']);
-	if(@$_POST['guest_delete'] == 'delete'){
+	if($_POST['guest_delete'] == 'delete'){
 		$alkaline->deleteRow('guests', $guest_id);
 	}
 	else{
@@ -45,6 +45,7 @@ if(!empty($_POST['guest_id'])){
 		if(@$_POST['guest_reset_view_count'] == 'reset_view_count'){
 			$fields['guest_views'] = 0;
 		}
+		
 		$alkaline->updateRow($fields, 'guests', $guest_id);
 	}
 	unset($guest_id);
@@ -54,7 +55,7 @@ else{
 }
 
 // CREATE GUEST
-if($guest_act == 'add'){
+if(!empty($guest_act) and ($guest_act == 'add')){
 	$guest_id = $alkaline->addRow(null, 'guests');
 }
 
@@ -118,7 +119,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">View photos</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
 	
 	<h1>Guest</h1>
 	

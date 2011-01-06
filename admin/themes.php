@@ -15,108 +15,115 @@ $user = new User;
 
 $user->perm(true);
 
-if(!empty($_GET['id'])){
-	$theme_id = $alkaline->findID($_GET['id']);
+// Load current themes
+$themes = $alkaline->getTable('themes');
+$theme_folders = array();
+
+foreach($themes as $theme){
+	$theme_folders[] = $theme['theme_folder'];
 }
 
-// SAVE CHANGES
-if(!empty($_POST['theme_id'])){
-	$theme_id = $alkaline->findID($_POST['theme_id']);
-	
-	if(@$_POST['theme_remove'] == 'remove'){
-		$alkaline->deleteRow('themes', $theme_id);
+// Seek all themes
+$seek_themes = $alkaline->seekDirectory(PATH . THEMES, '');
+
+$theme_deleted = array();
+
+// Determine which themes have been removed, delete rows from table
+foreach($themes as $theme){
+	$theme_folder = PATH . THEMES . $theme['theme_folder'];
+	if(!in_array($theme_folder, $seek_themes)){
+		$theme_deleted[] = $theme['theme_id'];
+	}
+}
+
+$alkaline->deleteRow('themes', $theme_deleted);
+
+// Determine which themes are new, install them
+$themes_installed = array();
+
+foreach($seek_themes as &$theme_folder){
+	$theme_folder = $alkaline->getFilename($theme_folder);
+	if(!in_array($theme_folder, $theme_folders)){
+		$data = file_get_contents(PATH . THEMES . $theme_folder . '/theme.xml');
+		if(empty($data)){ $alkaline->addNote('Alkaline could not install a new theme. Its XML file is missing or corrupted.', 'error'); continue; }
+		
+		$xml = new SimpleXMLElement($data);
+		
+		$fields = array('theme_uid' => $xml->uid,
+			'theme_title' => $xml->title,
+			'theme_folder' => $theme_folder,
+			'theme_build' => $xml->build,
+			'theme_version' => $xml->version,
+			'theme_creator_name' => $xml->creator->name,
+			'theme_creator_uri' => $xml->creator->uri);
+		$theme_intalled_id = $alkaline->addRow($fields, 'themes');
+		$themes_installed[] = $theme_intalled_id;
+	}
+}
+
+$themes_installed_count = count($themes_installed);
+if($themes_installed_count > 0){
+	if($themes_installed_count == 1){
+		$notification = 'You have successfully installed 1 theme.';
+	}
+	else{
+		$notification = 'You have successfully installed ' . $themes_installed_count . ' themes.';
 	}
 	
-	unset($theme_id);
+	$alkaline->addNote($notification, 'success');
 }
 
 define('TAB', 'settings');
 
-if(empty($theme_id)){
-	$themes = $alkaline->getTable('themes');
-	$theme_count = @count($themes);
-	
-	define('TITLE', 'Alkaline Themes');
-	require_once(PATH . ADMIN . 'includes/header.php');
+$themes = $alkaline->getTable('themes');
+$theme_count = @count($themes);
 
-	?>
-	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_ID; ?>install<?php echo URL_RW; ?>">Install theme</a></div>
+define('TITLE', 'Alkaline Themes');
+require_once(PATH . ADMIN . 'includes/header.php');
 
-	<h1>Themes (<?php echo $theme_count; ?>)</h1>
-	
-	<p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
+?>
 
-	<table>
-		<tr>
-			<th>Theme</th>
-			<th class="center">Version</th>
-			<th class="center">Update</th>
-		</tr>
-		<?php
+<div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">Change theme</a></div>
 
-		foreach($themes as $theme){
-			echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'themes' . URL_ID . $theme['theme_id'] . URL_RW . '">' . $theme['theme_title'] . '</a></strong>';
-			if(!empty($theme['theme_creator'])){
-				echo ' \ ';
-				if(!empty($theme['theme_creator_url'])){
-					echo '<a href="' . $theme['theme_creator_url'] . '" class="nu">' . $theme['theme_creator'] . '</a>';
-				}
-				else{
-					echo $theme['theme_creator'];
-				}
+<h1>Themes (<?php echo $theme_count; ?>)</h1>
+
+<p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
+
+<table>
+	<tr>
+		<th>Theme</th>
+		<th class="center">Preview</th>
+		<th class="center">Version</th>
+		<th class="center">Update</th>
+	</tr>
+	<?php
+
+	foreach($themes as $theme){
+		echo '<tr>';
+		echo '<td><strong>' . $theme['theme_title'] . '</strong>';
+		
+		if(!empty($theme['theme_creator_name'])){
+			echo ' \ ';
+			if(!empty($theme['theme_creator_uri'])){
+				echo '<a href="' . $theme['theme_creator_uri'] . '" class="nu">' . $theme['theme_creator_name'] . '</a>';
 			}
-			echo '</td>';
-			echo '<td class="center">' . $theme['theme_version'] . ' <span class="small">(' . $theme['theme_build'] . ')</span></td>';
-			echo '<td class="center quiet">&#8212;</td>';
-			echo '</tr>';
+			else{
+				echo $theme['theme_creator_name'];
+			}
 		}
-
-		?>
-	</table>
-	
-	<?php
-
-	require_once(PATH . ADMIN . 'includes/footer.php');
-	
-}
-else{
-	// Get pile
-	$theme = $alkaline->getRow('themes', $theme_id);
-	$theme = $alkaline->makeHTMLSafe($theme);
-
-	if(!empty($theme['theme_title'])){	
-		define('TITLE', 'Alkaline Theme: &#8220;' . $theme['theme_title']  . '&#8221;');
+		
+		echo '</td>';
+		echo '<td class="center"><a href="' . BASE . '?theme=' . $theme['theme_folder'] . '">Preview</a></td>';
+		echo '<td class="center">' . $theme['theme_version'] . ' <span class="small">(' . $theme['theme_build'] . ')</span></td>';
+		echo '<td class="center quiet">&#8212;</td>';
+		echo '</tr>';
 	}
-	else{
-		define('TITLE', 'Alkaline Theme');
-	}
-	
-	require_once(PATH . ADMIN . 'includes/header.php');
-	
+
 	?>
-	
-	<div style="float: right; margin: 1em 0;"><a href="<?php echo BASE; ?>?theme=<?php echo $theme['theme_id']; ?>/" class="button">Preview theme</a></div>
-	
-	<h1><?php echo $theme['theme_title']; ?></h1>
-	
-	<form id="theme" action="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right"><input type="checkbox" id="theme_remove" name="theme_remove" value="remove" <?php if($theme['theme_default'] == 1){ echo 'disabled="disabled"'; } ?> /></td>
-				<td><strong><label for="theme_remove">Remove this theme.</label></strong></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><?php if($theme['theme_default'] == 1){ echo '<input type="hidden" name="theme_default" value="default" />'; } ?><input type="hidden" name="theme_id" value="<?php echo $theme['theme_id']; ?>" /><input type="hidden" name="theme_folder" value="<?php echo $theme['theme_folder']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
-	</form>
-	
-	<?php
-	
-	require_once(PATH . ADMIN . 'includes/footer.php');
-	
-}
+</table>
+
+<?php
+
+require_once(PATH . ADMIN . 'includes/footer.php');
+
 ?>

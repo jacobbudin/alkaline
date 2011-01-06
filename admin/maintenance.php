@@ -31,7 +31,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<h3>Files</h3>
 		
-	<ul>
+	<ul class="tasks">
 		<li>
 			<strong><a href="#rebuild-thumbnails">Rebuild all photo thumbnails</a></strong><br />
 			Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files

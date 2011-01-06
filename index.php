@@ -37,7 +37,7 @@ $photo_ids->find();
 
 // echo $photo_ids->getMemory();
 
-$photos = new Photo($phot_ids);
+$photos = new Photo($photo_ids);
 // $photos->updateViews();
 $photos->formatTime();
 $photos->getImgUrl('square');

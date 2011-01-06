@@ -84,7 +84,7 @@ else{
 }
 
 // CREATE SIZE
-if($size_act == 'build'){
+if(!empty($size_act) and ($size_act == 'build')){
 	$size_id = $alkaline->addRow(null, 'sizes');
 }
 
