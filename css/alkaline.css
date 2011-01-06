@@ -9,9 +9,6 @@
 	width: 950px;
 }
 
-.colborderl { padding-left:24px; margin-left:25px; border-left: 1px solid #eee; }
-.colborderr { padding-right:0; margin-right:0; }
-
 body{
 	font-size: .75em;
 	text-rendering: optimizeLegibility;
@@ -31,10 +28,6 @@ textarea{
 	height: 10em;
 }
 
-#tasks ul li{
-	margin-bottom: .5em;
-}
-
 input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }
 input[type=text], input.text { padding:.35em; width: 60%; }
 
@@ -51,10 +44,6 @@ input.title{
 
 input.full{
 	width: 100%;
-}
-
-.large{
-	line-height: 1.5em;
 }
 
 div#progress{
@@ -102,31 +91,21 @@ h4{
 	margin-bottom: .25em;
 }
 
-.error, .notice, .success { padding: 1em 15px; width: 916px; margin: 0; }
-.center{ text-align: center; }
-.right{ text-align: right; }
-.none{ display: none; }
-.preload{ visibility: hidden; position: absolute; top: -9999px; left: -9999px; }
-.quiet a{ color: #666; }
-.full {width:100%;}
-
-.code{ font-family: "Anonymous Pro", "Courier New", Courier, serif; background-color: #eee; }
-
-.page_no { color: #666; font-weight: bold; padding: .1em .4em; }
-a.page_no { color: #333; font-weight: bold; border: 2px solid #ccc; padding: .1em .4em; margin: 0 .2em; text-decoration: none; }
-a.page_no:hover, a.page_no:active { border: 2px solid #5eb0e5; background-color: #c0ddea; color: #00539f; }
-
 ul{
 	margin: .3em 0 1.5em 1.75em;
 	padding-left: .5em;
 	list-style-type: square;
 }
 
-canvas.colorkey{
-	border: solid 3px #fff;
-	margin-bottom: 1.5em;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+td{
+	vertical-align: top;
+}
+
+th{
+	border: solid #ccc;
+	border-width: 0 0 1px 0;
+	font-weight: bold;
+	color: #777;
 }
 
 p.slim { margin-bottom: .75em; }
@@ -134,6 +113,20 @@ p.slim { margin-bottom: .75em; }
 img.frame{
 	border: solid 3px #fff;
 	margin: .2em .4em .2em 0;
+	-moz-box-shadow: 0 0 3px #ddd;
+	-webkit-box-shadow: 0 0 3px #ddd;
+}
+
+img.frame_selected{
+	border: solid 3px #fbde42;
+	margin: .2em .4em .2em 0;
+	-moz-box-shadow: 0 0 3px #ddd;
+	-webkit-box-shadow: 0 0 3px #ddd;
+}
+
+canvas.colorkey{
+	border: solid 3px #fff;
+	margin-bottom: 1.5em;
 	-moz-box-shadow: 0 0 3px #ddd;
 	-webkit-box-shadow: 0 0 3px #ddd;
 }
@@ -318,39 +311,16 @@ td.pad{
 	padding-top: .8em;
 }
 
+a.tag{
+	text-decoration: none;
+}
+
 .statistics_holder{
 	position: relative;
 	width: 100%;
 	height: 300px;
 	margin: 1em 0 3em 0;
 	z-index: 1;
-}
-
-
-a.wrapper{
-	padding: .6em;
-	background-color: #CFE1FF;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-
-a.x{
-	padding: 0 .3em .2em .3em;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	color: #ccc;
-	font-family: Verdana, sans-serif;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-a.tag{
-	text-decoration: none;
-}
-
-a.x:hover, a.x:active{
-	background-color: #ccc;
-	color: #fff;
 }
 
 .statistics_holder .legend td.legendColorBox{
@@ -362,7 +332,7 @@ a.x:hover, a.x:active{
 	width: 15em;
 }
 
-#d_holder .xAxis.x1Axis .tickLabel {
+#statistics_holder .xAxis.x1Axis .tickLabel, #d_holder .xAxis.x1Axis .tickLabel {
 	margin-left: 4px;
 }
 
@@ -385,13 +355,6 @@ a.x:hover, a.x:active{
 	width: 25px;
 }
 
-table th{
-	border: solid #ccc;
-	border-width: 0 0 1px 0;
-	font-weight: bold;
-	color: #777;
-}
-
 a.nu{
 	text-decoration: none;
 }
@@ -407,10 +370,6 @@ a.nu{
 
 #configuration table, #preferences table{
 	width: 0;
-}
-
-td{
-	vertical-align: top;
 }
 
 img.ui-datepicker-trigger{
@@ -432,22 +391,6 @@ img.ui-datepicker-trigger{
 
 #footer, #footer a{
 	color: #777;
-}
-
-.ui-autocomplete {
-	max-height: 100px;
-	overflow-y: auto;
-}
-/* IE 6 doesn't support max-height
- * we use height instead, but this forces the menu to always be this tall
- */
-* html .ui-autocomplete {
-	height: 100px;
-}
-
-li.ui-menu-item{
-	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
-	font-size: .8em;
 }
 
 .actions{
@@ -486,11 +429,8 @@ li.ui-menu-item{
 	color: #444;
 }
 
-img.frame_selected{
-	border: solid 3px #fbde42;
-	margin: .2em .4em .2em 0;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+ul.tasks li{
+	margin-bottom: .5em;
 }
 
 ol.errors{
@@ -499,4 +439,34 @@ ol.errors{
 
 ol.errors li{
 	margin-bottom: .25em;
+}
+
+.large{ line-height: 1.5em; }
+.error, .notice, .success { padding: 1em 15px; width: 916px; margin: 0; }
+.center{ text-align: center; }
+.right{ text-align: right; }
+.none{ display: none; }
+.preload{ visibility: hidden; position: absolute; top: -9999px; left: -9999px; }
+.quiet a{ color: #666; }
+.full { width:100%; }
+.code{ font-family: "Anonymous Pro", "Courier New", Courier, serif; background-color: #eee; }
+
+.page_no { color: #666; font-weight: bold; padding: .1em .4em; }
+a.page_no { color: #333; font-weight: bold; border: 2px solid #ccc; padding: .1em .4em; margin: 0 .2em; text-decoration: none; }
+a.page_no:hover, a.page_no:active { border: 2px solid #5eb0e5; background-color: #c0ddea; color: #00539f; }
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+li.ui-menu-item{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: .8em;
 }
