@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<theme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="theme.xsd" xmlns:p="http://www.alkalineapp.com/themes">
+	<uid>569b4a40b50c4228244d10f69b713d692ffa0ea4</uid>
+	<title>Basic</title>
+	<build>1</build>
+	<version>1.0</version>
+	<creator>
+		<name>Wilkes &#0038; Barre</name>
+		<uri>http://www.wilkesandbarre.com/</uri>
+	</creator>
+</theme>
