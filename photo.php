@@ -15,7 +15,7 @@ $alkaline->recordStat('photo');
 $alkaline->addComments();
 
 $id = $alkaline->findID($_GET['id'], true);
-if(!$id){ $alkaline->error('No photo was found.', 404); }
+if(!$id){ $alkaline->addError(E_USER_WARNING, 'No photo was found'); }
 
 $photo_ids = new Find($id);
 $photo_ids->privacy('public');

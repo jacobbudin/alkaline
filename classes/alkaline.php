@@ -114,6 +114,13 @@ class Alkaline{
 		if($class == 'Alkaline'){
 			unset($_SESSION['alkaline']['extensions']);
 		}
+		
+		// Check license
+		if(empty(Alkaline::$validated)){
+			if(!$this->validate()){
+				$this->addError(E_USER_ERROR, 'Your Alkaline license is invalid or missing');
+			}
+		}
 	}
 	
 	/**
@@ -134,7 +141,7 @@ class Alkaline{
 	 * @return int Number of affected rows
 	 */
 	public function exec($query){
-		if(!$this->db){ $this->error('No database connection.'); }
+		if(!$this->db){ $this->addError(E_USER_ERROR, 'No database connection'); }
 		
 		$this->prequery($query);
 		$response = $this->db->exec($query);
@@ -2298,7 +2305,7 @@ class Alkaline{
 	 * @param int $line_number
 	 * @return void
 	 */
-	public function addError($severity, $message, $filename, $line_number){
+	public function addError($severity, $message, $filename=null, $line_number=null){
 		if(!(error_reporting() & $severity)){
 			// This error code is not included in error_reporting
 			// return;
@@ -2313,7 +2320,9 @@ class Alkaline{
 				break;
 			case E_USER_ERROR:
 				$_SESSION['alkaline']['errors'][] = array('severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
-				require_once(LOCATION . '/error.php');
+				session_write_close();
+				require_once(PATH . '/error.php');
+				exit();
 				break;
 			default:
 				$_SESSION['alkaline']['errors'][] = array('severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
@@ -2364,7 +2373,12 @@ class Alkaline{
 		}
 		
 		foreach($_SESSION['alkaline']['errors'] as $error){
-			$list[] = '<li><strong>' . ucwords($error['severity']) .':</strong> ' . $error['message'] . ' (' . $error['filename'] . ', line ' . $error['line_number'] .').</li>';
+			$item = '<li><strong>' . ucwords($error['severity']) .':</strong> ' . $error['message'];
+			if(!empty($error['filename'])){
+				$item .= ' (' . $error['filename'] . ', line ' . $error['line_number'] .')';
+			} 
+			$item .= '.</li>';
+			$list[] = $item;
 		}
 		
 		// Dispose of messages
@@ -2403,9 +2417,58 @@ class Alkaline{
 		// Write message
 		$handle = fopen($this->correctWinPath(PATH . DB . 'log.txt'), 'a');
 		if(@fwrite($handle, $message) === false){
-			$this->error('Cannot write to report file.');
+			$this->addError(E_USER_ERROR, 'Cannot write to report file');
 		}
 		fclose($handle);
+	}
+	
+	// VALIDATION
+	
+	/**
+	 * Determine whether Alkaline license is authentic
+	 *
+	 * @return void
+	 */
+	public function validate(){		
+		// Error checking
+		if(!require(PATH . '/license.php')){ return false; }
+		
+		$domain = sha1(Alkaline::edition . $_SERVER['SERVER_NAME']);
+		$domain2 = intval(preg_replace('#[^0-9]+#si', '', base64_encode($domain)));
+		
+		$secret1 = sha1(sin($domain2));
+		$secret2 = sha1(cos($domain2));
+		$secret3 = sha1(tan($domain2));
+		$secret4 = sha1($domain2);
+		$secret5 = $domain2;
+		$secret6 = $domain;
+		
+		$match = $secret2[7] . '....................' . $secret1[24] . $secret3[5] . '.........................' . $secret6[11] . '......' . $secret3[21] . '......................' . $secret4[1] . '..........' . $secret4[37] . $secret5[34] . $secret5[16] . '..........' . $secret6[34] . '......' . $secret6[37] . '...' . $secret1[2] . '......' . $secret1[20] . '.......' . $secret6[14] . '..........' . $secret4[12] . '.................' . $secret3[12] . '..' . $secret5[6] . '...........' . $secret1[30] . '..' . $secret4[38] . '.' . $secret4[26] . '............' . $secret6[35] . '...' . $secret2[22] . $secret4[7] . '...' . $secret2[31] . '.................' . $secret4[39] . $secret2[26] . '........' . $secret2[1] . '........' . $secret3[1] . '.' . $secret2[3] . '.' . $secret2[25] . $secret2[23] . '...............' . $secret4[3] . '..................' . $secret4[14] . '.......' . $secret2[10] . '......' . $secret4[5] . '.......' . $secret3[37] . '.........' . $secret4[22] . '.....' . $secret1[1] . '.........................' . $secret1[27] . '..........' . $secret1[25] . '................' . $secret4[36] . '................' . $secret5[17] . $secret4[15] . '........' . $secret1[5] . '.......' . $secret5[22] . '.....................' . $secret5[36] . '...........' . $secret6[30] . '...............................' . $secret2[4] . '............' . $secret2[2] . '...' . $secret1[26] . '.....................................' . $secret2[28] . '.................' . $secret3[9] . '.............................' . $secret4[8] . $secret4[13] . '..' . $secret1[37] . '......' . $secret2[11] . '.......' . $secret2[8] . '..' . $secret6[26] . '...' . $secret6[31] . '.' . $secret3[24] . '.......' . $secret2[24] . '............' . $secret3[36] . '........' . $secret3[38] . '........' . $secret6[16] . '..............' . $secret6[1] . '....................' . $secret6[2] . '....................' . $secret5[0] . '.........................' . $secret6[3] . '.................' . $secret2[16] . '..................' . $secret3[26] . '.....' . $secret3[2] . $secret3[29] . '.............................' . $secret5[14] . '.' . $secret4[30] . '..........' . $secret1[32] . '...' . $secret3[11] . '.........' . $secret2[15] . '.....' . $secret3[18] . '..................' . $secret6[18] . '..............................' . $secret3[25] . '.........................' . $secret4[16] . $secret2[34] . '........................' . $secret5[7] . $secret6[10] . '........................................' . $secret5[31] . '....................' . $secret4[35] . '...' . $secret5[19] . '......' . $secret5[1] . '..............' . $secret2[30] . '...........' . $secret1[7] . '...' . $secret3[17] . '..' . $secret1[18] . '.........' . $secret5[35] . $secret3[33] . '...' . $secret3[22] . '.....' . $secret2[12] . '..' . $secret6[33] . '.............' . $secret2[14] . '.......' . $secret1[4] . '...............' . $secret6[20] . '.........................' . $secret2[9] . '.........' . $secret6[32] . $secret5[5] . '...........................' . $secret2[20] . '........' . $secret5[12] . '...' . $secret4[17] . '..............' . $secret6[6] . '..........................' . $secret6[8] . '.....' . $secret1[38] . '.' . $secret2[0] . '.......' . $secret2[5] . '........' . $secret5[13] . '.......' . $secret3[39] . '.' . $secret4[4] . '.' . $secret4[25] . '.............' . $secret5[2] . '..............' . $secret5[10] . '.........' . $secret3[7] . '..............' . $secret3[10] . '...................' . $secret6[9] . '................' . $secret6[24] . $secret5[27] . '........' . $secret3[28] . '.........' . $secret6[28] . '...........' . $secret3[23] . '....' . $secret3[14] . '........' . $secret1[10] . '.........' . $secret1[8] . '.....' . $secret3[4] . '.....' . $secret1[22] . '....' . $secret6[22] . '...........' . $secret1[39] . '....' . $secret5[23] . '......' . $secret2[33] . $secret3[31] . '.....................................' . $secret5[21] . $secret5[33] . '..' . $secret2[39] . '.' . $secret1[21] . '..' . $secret3[19] . '...................................' . $secret2[37] . '.....................' . $secret5[37] . '...........' . $secret4[21] . '...................' . $secret1[28] . '....' . $secret1[9] . '...' . $secret6[13] . '........' . $secret5[11] . '.' . $secret4[29] . '....................' . $secret1[23] . '.............................' . $secret6[38] . '....' . $secret2[17] . '....................' . $secret4[20] . '..' . $secret5[4] . $secret4[24] . '........' . $secret5[39] . '....' . $secret5[15] . '..' . $secret3[0] . $secret2[35] . '...' . $secret3[16] . '.......' . $secret6[21] . '.....' . $secret2[38] . '....' . $secret4[9] . '....' . $secret1[6] . '....' . $secret4[10] . '..........' . $secret4[23] . '....' . $secret4[34] . '..' . $secret6[25] . '............' . $secret1[16] . '.' . $secret5[9] . '.' . $secret2[21] . $secret1[33] . $secret6[5] . '...........' . $secret2[6] . '...' . $secret3[30] . '.....' . $secret1[12] . '..........' . $secret1[3] . '.......' . $secret6[0] . '...............' . $secret1[17] . $secret5[26] . '...' . $secret6[39] . '....' . $secret3[3] . '.....' . $secret4[32] . '....' . $secret6[12] . '..' . $secret4[2] . $secret1[14] . '................' . $secret4[6] . '..' . $secret1[31] . $secret3[6] . '.......' . $secret5[32] . '.' . $secret4[33] . '........' . $secret1[35] . '...........' . $secret4[11] . '......' . $secret5[8] . '...................' . $secret4[28] . '....................' . $secret2[29] . '..........' . $secret2[19] . '.' . $secret6[4] . '..' . $secret3[35] . '.....' . $secret3[34] . '...' . $secret6[27] . '..' . $secret6[7] . '........' . $secret5[18] . '......' . $secret1[19] . '...' . $secret1[0] . $secret1[34] . '..............' . $secret4[0] . '.......' . $secret1[36] . '......' . $secret6[23] . '....' . $secret5[3] . '.................................' . $secret5[38] . '..................' . $secret6[17] . '.....................' . $secret2[32] . '.' . $secret3[32] . '.........' . $secret4[31] . '...................' . $secret1[13] . '.....................' . $secret1[29] . $secret3[15] . '.......' . $secret6[19] . '...............' . $secret2[18] . '.....' . $secret4[18] . $secret3[13] . '.' . $secret4[19] . '.......' . $secret1[11] . '.' . $secret2[27] . '......' . $secret6[29] . '.......' . $secret1[15] . '.................' . $secret5[29] . '..' . $secret6[15] . '.' . $secret2[13] . '............' . $secret5[28] . '..' . $secret4[27] . '....' . $secret5[20] . '....' . $secret5[24] . '...........' . $secret5[25] . '............' . $secret6[36] . '.........................................' . $secret3[8] . $secret3[20] . '........' . $secret3[27] . '...................' . $secret5[30] . '.............' . $secret2[36] . '.........';
+		
+		if(!preg_match('#' . $match . '#', $license)){
+			return false;
+		}
+		
+		$key = sha1($this->randInt());
+		$this->setConf('key', $key);
+		$this->saveConf();
+		
+		$config = json_decode(file_get_contents(LOCATION . '/config.json'), true);
+		$key_retrieved = self::returnForm($config, 'key');
+		
+		if($key_retrieved != $key){ return false; }
+		
+		// Check for multiple users
+		if(Alkaline::edition != 'multiuser'){
+			if($this->countTable('users') > 1){
+				$this->addError(E_USER_ERROR, 'Your Alkaline license does not support multiple users');
+				return false;
+			}
+		}
+		
+		Alkaline::$validated = true;
+		
+		return true;
 	}
 }
 

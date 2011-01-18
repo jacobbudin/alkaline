@@ -81,7 +81,7 @@ class Canvas extends Alkaline{
 		$theme_folder = $this->returnConf('theme_folder');
 		
 		if(empty($theme_folder)){
-			$this->error('No default theme selected.');
+			$this->addError(E_USER_ERROR, 'No default theme selected');
 		}
 		
 		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT)) . "\n";

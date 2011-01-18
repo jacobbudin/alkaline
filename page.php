@@ -17,7 +17,7 @@ $id = $alkaline->findID($_GET['id']);
 $page = new Page($id);
 $page = @$page->pages[0];
 
-if(!$page){ $alkaline->error('No page was found.', 404); }
+if(!$page){ $alkaline->addError(E_USER_WARNING, 'No page was found'); }
 
 $page['page_created'] = $alkaline->formatTime($page['page_created']);
 $page['page_modified'] = $alkaline->formatTime($page['page_modified']);

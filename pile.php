@@ -17,7 +17,7 @@ $id = $alkaline->findID($_GET['id']);
 $pile = new Pile($id);
 $pile = @$pile->piles[0];
 
-if(!$pile){ $alkaline->error('No pile was found.', 404); }
+if(!$pile){ $alkaline->addError(E_USER_WARNING, 'No pile was found.'); }
 
 $pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);
 $pile['pile_modified'] = $alkaline->formatTime($pile['pile_modified']);

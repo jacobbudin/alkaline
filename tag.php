@@ -15,7 +15,7 @@ $alkaline->recordStat('tag');
 
 $id = $alkaline->findID($_GET['id']);
 $tag = $alkaline->getRow('tags', $id);
-if(!$tag){ $alkaline->error('No tag was not found.', 404); }
+if(!$tag){ $alkaline->addError(E_USER_WARNING, 'No tag was not found.'); }
 
 $photo_ids = new Find;
 $photo_ids->page(null,5,4);
