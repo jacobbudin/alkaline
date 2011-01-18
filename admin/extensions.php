@@ -153,11 +153,36 @@ if($extensions_installed_count > 0){
 	}
 	
 	$alkaline->addNote($notification, 'success');
+	
+	$extensions = $alkaline->getTable('extensions');
 }
 
 define('TAB', 'settings');
 
 if(empty($extension_id)){
+	// Check for updates
+	$latest_extensions = @$alkaline->boomerang('latest-extensions');
+	if(!empty($latest_extensions)){
+		foreach($latest_extensions as $latest_extension){
+			foreach($extensions as &$extension){
+				if($extension['extension_uid'] == $latest_extension['extension_uid']){
+					if($latest_extension['extension_build'] > $extension['extension_build']){
+						$fields = array('extension_build_latest' => $latest_extension['extension_build'],
+							'extension_version_latest' => $latest_extension['extension_version']);
+						$alkaline->updateRow($fields, 'extensions', $extension['extension_id']);
+					}
+					else{
+						if(!empty($extension['extension_build_latest']) or !empty($extension['extension_version_latest'])){
+							$fields = array('extension_build_latest' => '',
+								'extension_version_latest' => '');
+							$alkaline->updateRow($fields, 'extensions', $extension['extension_id']);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	$extensions = $alkaline->getTable('extensions', null, null, null, array('extension_status DESC', 'extension_title ASC'));
 	$extensions_count = @count($extensions);
 	
@@ -201,7 +226,16 @@ if(empty($extension_id)){
 			}
 			echo '</td>';
 			echo '<td class="center">' . $extension['extension_version'] . '</td>';
-			echo '<td class="center quiet">&#8212;</td>';
+			if(!empty($extension['extension_build_latest'])){
+				echo '<td class="center"><a href="http://www.alkalineapp.com/users/extensions/">Download</a>';
+				if(!empty($extension['extension_version_latest'])){
+					echo ' (v' . $extension['extension_version_latest'] .')';
+				}
+				echo '</td>';
+			}
+			else{
+				echo '<td class="center quiet">&#8212;</td>';
+			}
 			echo '</tr>';
 		}
 	

@@ -295,7 +295,15 @@ class Alkaline{
 	 * @return string Response
 	 */
 	public function boomerang($request){
-		$reply = self::removeNull(json_decode(file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/'), true));
+		ini_set('default_socket_timeout', 1);
+		$contents = @file_get_contents('http://www.alkalineapp.com/boomerang/' . $request . '/');
+		ini_restore('default_socket_timeout');
+		
+		if(empty($contents)){
+			$this->addNote('Alkaline could not connect to <a href="http://www.alkalineapp.com/">alkalineapp.com</a> to retrieve data.', 'notice');
+		}
+		
+		$reply = self::removeNull(json_decode($contents, true));
 		return $reply;
 	}	
 	

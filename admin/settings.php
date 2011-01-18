@@ -15,6 +15,12 @@ $user = new User;
 
 $user->perm(true);
 
+// Check for updates
+$latest = @$alkaline->boomerang('latest');
+if($latest['build'] > Alkaline::build){
+	$alkaline->addNote('A new version of Alkaline (v' . $latest['version'] . ') is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
+}
+
 define('TAB', 'settings');
 define('TITLE', 'Alkaline Settings');
 require_once(PATH . ADMIN . 'includes/header.php');

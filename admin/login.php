@@ -13,11 +13,11 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$username = strip_tags($_POST['login_user']);
-$password = strip_tags($_POST['login_pass']);
-$remember = strip_tags($_POST['login_remember']);
+if(!empty($_POST['login_user'])){ $username = strip_tags($_POST['login_user']); }
+if(!empty($_POST['login_pass'])){ $password = strip_tags($_POST['login_pass']); }
+if(!empty($_POST['login_remember'])){ $remember = strip_tags($_POST['login_remember']); }
 
-if($remember == 1){ $remember = true; }
+if(!empty($remember) and ($remember == 1)){ $remember = true; }
 
 if($user->perm()){
 	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
@@ -29,7 +29,7 @@ if(!empty($username) or !empty($password)){
 		// Check for updates
 		$latest = @$alkaline->boomerang('latest');
 		if($latest['build'] > Alkaline::build){
-			$alkaline->addNote('A new version of Alkaline is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
+			$alkaline->addNote('A new version of Alkaline (v' . $latest['version'] . ') is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
 		}
 		
 		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);

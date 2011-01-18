@@ -71,13 +71,37 @@ if($themes_installed_count > 0){
 	}
 	
 	$alkaline->addNote($notification, 'success');
+	
+	$themes = $alkaline->getTable('themes');
 }
 
-define('TAB', 'settings');
+// Check for updates
+$latest_themes = @$alkaline->boomerang('latest-themes');
+if(!empty($latest_themes)){
+	foreach($latest_themes as $latest_theme){
+		foreach($themes as $theme){
+			if($theme['theme_uid'] == $latest_theme['theme_uid']){
+				if($latest_theme['theme_build'] > $theme['theme_build']){
+					$fields = array('theme_build_latest' => $latest_theme['theme_build'],
+						'theme_version_latest' => $latest_theme['theme_version']);
+					$alkaline->updateRow($fields, 'themes', $theme['theme_id']);
+				}
+				else{
+					if(!empty($theme['theme_build_latest']) or !empty($theme['theme_version_latest'])){
+						$fields = array('theme_build_latest' => '',
+							'theme_version_latest' => '');
+						$alkaline->updateRow($fields, 'themes', $theme['theme_id']);
+					}
+				}
+			}
+		}
+	}
+}
 
 $themes = $alkaline->getTable('themes');
 $theme_count = @count($themes);
 
+define('TAB', 'settings');
 define('TITLE', 'Alkaline Themes');
 require_once(PATH . ADMIN . 'includes/header.php');
 
@@ -115,7 +139,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		echo '</td>';
 		echo '<td class="center"><a href="' . BASE . '?theme=' . $theme['theme_folder'] . '">Preview</a></td>';
 		echo '<td class="center">' . $theme['theme_version'] . ' <span class="small">(' . $theme['theme_build'] . ')</span></td>';
-		echo '<td class="center quiet">&#8212;</td>';
+		if(!empty($theme['theme_build_latest'])){
+			echo '<td class="center"><a href="http://www.alkalineapp.com/users/themes/">Download</a>';
+			if(!empty($theme['theme_version_latest'])){
+				echo ' (v' . $theme['theme_version_latest'] .')';
+			}
+			echo '</td>';
+		}
+		else{
+			echo '<td class="center quiet">&#8212;</td>';
+		}
 		echo '</tr>';
 	}
 
