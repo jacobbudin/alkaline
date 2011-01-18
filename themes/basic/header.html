@@ -7,7 +7,8 @@
 	<meta name="generator" content="Alkaline 1.0" />
 	<meta name="base" content="<?php echo LOCATION . BASE; ?>" />
 	<meta name="folder_prefix" content="<?php echo FOLDER_PREFIX; ?>" />
-	<title>{if:Title}{Title}{else:Title}Jacob Budin{/if:Title}</title>
+	<title>{if:Title}{Title}{/if:Title}</title>
+	{if:Canonical}<link rel="canonical" href="{Canonical}"/>{/if:Canonical}
 	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/screen.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/print.css" type="text/css" media="print" />	
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo BASE . CSS; ?>blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
