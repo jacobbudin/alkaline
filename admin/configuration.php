@@ -186,19 +186,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="shoe_exif" name="shoe_exif" <?php echo $alkaline->readConf('shoe_exif'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_exif">Import EXIF camera data</label> (when available)
+				<label for="shoe_exif">Import EXIF camera data</label> (as available)
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="shoe_iptc" name="shoe_iptc" <?php echo $alkaline->readConf('shoe_iptc'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_iptc">Import IPTC keyword data</label> (when available)
+				<label for="shoe_iptc">Import IPTC keyword data</label> (as available)
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="shoe_geo" name="shoe_geo" <?php echo $alkaline->readConf('shoe_geo'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_geo">Import geolocation data</label> (when available)
+				<label for="shoe_geo">Import geolocation data</label> (as available)
 			</td>
 		</tr>
 	</table>
