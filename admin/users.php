@@ -61,10 +61,14 @@ if(empty($user_db_id)){
 	
 	define('TITLE', 'Alkaline Users');
 	require_once(PATH . ADMIN . 'includes/header.php');
-
-	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>">Add user</a></div>
+	if(Alkaline::edition == 'multiuser'){
+		?>
+		<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>">Add user</a></div>
+		<?php
+	}
+	
+	?>
 
 	<h1>Users (<?php echo $user_db_count; ?>)</h1>
 	

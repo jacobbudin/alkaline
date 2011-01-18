@@ -22,7 +22,6 @@ class Alkaline{
 	const build = 605;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
-	const licensee = 'Jacob Budin, Budin Ltd.';
 	const product = 'Alkaline';
 	const version = '1.0';
 	
@@ -33,12 +32,15 @@ class Alkaline{
 	protected $db;
 	protected $notifications;
 	
+	private static $validated;
+	
 	/**
 	 * Initiates Alkaline
 	 *
 	 * @return void
 	 **/
 	public function __construct(){
+		// Send browser headers
 		if(!headers_sent()){
 			header('Cache-Control: no-cache, must-revalidate', false);
 			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
@@ -1699,6 +1701,9 @@ class Alkaline{
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
 				break;
 			case 'users':
+				if(Alkaline::edition != 'multiuser'){
+					return false;
+				}
 				$fields['user_created'] = date('Y-m-d H:i:s');
 				break;
 			default:

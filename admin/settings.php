@@ -38,10 +38,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<td><?php echo Alkaline::product ?></td>
 			</tr>
 			<tr>
-				<td class="right">Licensee:</td>
-				<td><?php echo Alkaline::licensee; ?></td>
-			</tr>
-			<tr>
 				<td class="right">Version:</td>
 				<td><?php echo Alkaline::version; ?> <span class="small">(<?php echo Alkaline::build; ?>)</span></td>
 			</tr>
