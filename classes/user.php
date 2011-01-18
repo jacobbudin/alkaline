@@ -82,7 +82,7 @@ class User extends Alkaline{
 		
 		// Check database
 		$query = $this->prepare('SELECT * FROM users WHERE user_user = :username AND user_pass = :password;');
-		$query->execute(array(':username' => $username, ':password' => sha1($password)));
+		$query->execute(array(':username' => $username, ':password' => sha1($password . SALT)));
 		$this->user = $query->fetchAll();
 		
 		if(!self::prep($remember)){
@@ -139,7 +139,7 @@ class User extends Alkaline{
 		// Store "remember me" data
 		if($remember == true){
 			$key = $this->user['user_id'] . $this->user['user_user'] . $this->user['user_pass'] . DB_DSN . time();
-			$key = sha1($key);
+			$key = sha1($key . SALT);
 			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, '/');
 			setcookie('key', $key, time()+USER_REMEMBER, '/');
 		}

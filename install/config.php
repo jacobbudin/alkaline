@@ -35,6 +35,9 @@ $folder_prefix = '';
 // URL rewriting (supports Apache mod_rewrite, Microsoft URL Rewrite 2, and compatible)
 $url_rewrite = false;
 
+// Global password salt
+$salt = '';
+
 
 //
 // DO NOT MODIFY BELOW THIS LINE
@@ -97,6 +100,7 @@ define('DB_TYPE', $db_type);
 @define('DB_PASS', $db_pass);
 define('TABLE_PREFIX', $table_prefix);
 define('FOLDER_PREFIX', $folder_prefix);
+define('SALT', $salt);
 define('IMG_EXT', $img_ext);
 define('USER_REMEMBER', $user_remember);
 define('TEMP_EXT', $temp_ext);
