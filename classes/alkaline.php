@@ -159,13 +159,13 @@ class Alkaline{
 	 * @return PDOStatement
 	 */
 	public function prepare($query){
-		if(!$this->db){ $this->error('No database connection.'); }
+		if(!$this->db){ $this->addError(E_USER_ERROR, 'No database connection'); }
 		
 		$this->prequery($query);
 		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 		$this->postquery($query);
 		
-		if(!$response){ $this->error('Invalid query, check database connection.'); }
+		if(!$response){ $this->addError(E_USER_ERROR, 'Invalid query, check database connection'); }
 		
 		return $response;
 	}
@@ -329,7 +329,7 @@ class Alkaline{
 		$guest = $guests[0];
 		
 		if(!$guest){
-			$this->error('You are not authorized.');
+			$this->addError(E_USER_ERROR, 'You are not authorized');
 		}
 		
 		$_SESSION['alkaline']['guest'] = $guest;
@@ -1169,6 +1169,25 @@ class Alkaline{
 	    return count($matches[0]);
 	}
 	
+	
+	/**
+	 * Return random integer using best-available algorithm
+	 *
+	 * @param string $min 
+	 * @param string $max 
+	 * @return void
+	 */
+	public function randInt($min=null, $max=null){
+		if(function_exists('mt_rand')){
+			$num = mt_rand($min, $max);
+		}
+		else{
+			$num = rand($min, $max);
+		}
+		
+		return $num;
+	}
+	
 	// COMMENTS
 	
 	/**
@@ -1856,7 +1875,9 @@ class Alkaline{
 	 * @return int Number of rows
 	 */
 	function countTable($table){
-		$field = @$this->tables[$table];
+		$table = $this->sanitize($table);
+		
+		$field = $this->tables[$table];
 		if(empty($field)){ return false; }
 		
 		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
@@ -1910,18 +1931,20 @@ class Alkaline{
 	 * @return void
 	 */
 	public function setForm(&$array, $name, $unset=''){
-		@$value = $_POST[$name];
-		if(!isset($value)){
-			$array[$name] = $unset;
-		}
-		elseif(empty($value)){
-			$array[$name] = '';
-		}
-		elseif($value == 'true'){
-			$array[$name] = true;
+		if(isset($_POST[$name])){
+			$value = $_POST[$name];
+			if(empty($value)){
+				$array[$name] = '';
+			}
+			elseif($value == 'true'){
+				$array[$name] = true;
+			}
+			else{
+				$array[$name] = $value;
+			}
 		}
 		else{
-			$array[$name] = $value;
+			$array[$name] = $unset;
 		}
 	}
 	
