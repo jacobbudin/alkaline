@@ -439,7 +439,7 @@ class Canvas extends Alkaline{
 	/**
 	 * Process Orbit hooks as insertions {hook:Hookname}
 	 *
-	 * @return bool True if successful
+	 * @return void
 	 */
 	protected function initOrbit(){
 		$orbit = new Orbit();
@@ -473,9 +473,39 @@ class Canvas extends Alkaline{
 	}
 	
 	/**
+	 * Process configuration insertions {config:Configname}
+	 *
+	 * @return void
+	 */
+	protected function initConfig(){
+		$matches = array();
+		preg_match_all('#{config:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			$configs = array();
+			
+			foreach($matches as $match){
+				$config = strtolower($match[1]);
+				$configs[] = array('replace' => $match[0], 'config' => $config);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		foreach($configs as $config){
+			// Return configuration
+			$content = $this->returnConf($config['config']);
+			
+			// Replace contents
+			$this->template = str_ireplace($config['replace'], $content, $this->template);
+		}
+	}
+	
+	/**
 	 * Process Canvas includes as insertions {include:Filename}
 	 *
-	 * @return bool True if successful
+	 * @return void
 	 */
 	protected function initIncludes(){
 		$matches = array();
@@ -494,7 +524,7 @@ class Canvas extends Alkaline{
 		}
 		
 		foreach($includes as $include){
-			$path = PATH . includeS . $include['include'] . '.php';
+			$path = PATH . INCLUDES . $include['include'] . '.php';
 			
 			if(is_file($path)){
 				ob_start();
@@ -521,9 +551,10 @@ class Canvas extends Alkaline{
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
 		
-		// Process Blocks, Orbit
+		// Process Blocks, Orbit, Config
 		$this->initIncludes();
 		$this->initOrbit();
+		$this->initConfig();
 		
 		// Remove unused conditionals and insertions
 		$this->template = $this->scrubEmpty($this->template);
