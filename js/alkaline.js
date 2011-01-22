@@ -191,7 +191,7 @@ $(document).ready(function(){
 	
 	// PRIMARY - COLORKEY
 	
-	$("div.colorkey").each(function(){
+	$("div.colorkey_data").each(function(){
 		colors = $(this).children('.colors').text();
 		colors = $.evalJSON(colors);
 	

@@ -1690,7 +1690,7 @@ class Photo extends Alkaline{
 			$photo_colors_colors = json_encode($photo_colors_colors);
 			$photo_colors_percents = json_encode($photo_colors_percents);
 			
-			$this->photos[$i]['photo_colorkey'] = '<div class="colorkey none">
+			$this->photos[$i]['photo_colorkey'] = '<div class="colorkey_data none">
 				<div class="colors">' . $photo_colors_colors . '</div>
 				<div class="percents">' . $photo_colors_percents . '</div>
 			</div>
