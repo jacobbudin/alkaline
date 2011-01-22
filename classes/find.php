@@ -1046,8 +1046,9 @@ class Find extends Alkaline{
 		// Set SQL limit
 		if($page == 1){ $this->page_limit_curent = $this->page_limit_first; }
 		else{ $this->page_limit_curent = $this->page_limit; }
+		
 		$this->page_begin = (($page - 1) * $this->page_limit_curent) - $this->page_limit_curent + $this->page_limit_first;
-		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
+		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $this->page_limit_curent;
 		
 		return true;
 	}
