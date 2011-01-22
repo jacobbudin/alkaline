@@ -8,9 +8,9 @@
 */
 
 class AlkalineCS{
-	const build = 1;
-	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
-	const version = 'Alpha (May 19)';
+	const build = 2;
+	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
+	const version = 'Beta 1';
 	
 	public $compatible;
 	
@@ -104,6 +104,32 @@ class AlkalineCS{
 		else{
 			echo '<td class="test_result unknown">Unknown</td>';
 		}
+	}
+	
+	public function quantifyRAM(){
+		$ram = ini_get('memory_limit');
+		$value = substr($ram, 1, -1);
+		$unit = substr($ram, -1, 1);
+		
+		if($unit == 'm'){
+			$unit = 'MB';
+			if($value < 16){ return 'Your Web server has insufficient RAM allocated to PHP processes.'; $this->compatible = false; }
+			if($value >= 16){ $res = '1.5 megapixel'; }
+			if($value >= 32){ $res = '3 megapixel'; }
+			if($value >= 48){ $res = '4.5 megapixel'; }
+			if($value >= 64){ $res = '6 megapixel'; }
+			if($value >= 128){ $res = '12 megapixel'; }
+			if($value >= 256){ $res = '24 megapixel'; }
+			if($value >= 512){ $res = '48 megapixel'; }
+			if($value >= 1024){ $res = '96 megapixel'; }
+		}
+		if($unit == 'g'){
+			if($value >= 1){ $res = '96 megapixel'; }
+		}
+		
+		if(empty($res)){ return false; }
+		
+		return '<p>Your Web server allocates ' . $value . ' ' . $unit . ' to PHP processes. This is enough to process images of up to approx. ' . $res . ' resolution.</p>';
 	}
 }
 
@@ -241,6 +267,8 @@ class AlkalineCS{
 					<?php echo $test->boolToHTML($test->isThere('PDO Driver for SQLite 3.x')); ?>
 				</tr>
 			</table>
+			
+			<?php echo $test->quantifyRAM(); ?>
 			
 			<div id="result">
 				<?php

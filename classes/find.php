@@ -492,6 +492,7 @@ class Find extends Alkaline{
 	public function pile($pile=null){
 		// Error checking
 		if(empty($pile)){ return false; }
+		if(intval($pile)){ $pile = intval($pile); }
 		
 		// Determine input type
 		if(is_string($pile)){
@@ -576,6 +577,7 @@ class Find extends Alkaline{
 	public function rights($right=null){
 		// Error checking
 		if(empty($right)){ return false; }
+		if(intval($right)){ $right = intval($right); }
 		
 		// Determine input type
 		if(is_string($right)){
@@ -682,7 +684,8 @@ class Find extends Alkaline{
 	public function privacy($privacy=null, $all=false){
 		// Error checking
 		if(empty($privacy)){ return false; }
-		
+		if(intval($privacy)){ $privacy = intval($privacy); }
+	
 		// Guest, admin checking
 		$user = new User;
 		
@@ -853,6 +856,9 @@ class Find extends Alkaline{
 	 */
 	public function pages($id=null){
 		if(empty($id)){ return false; }
+		if(!intval($id)){ return false; }
+		
+		$id = intval($id);
 		
 		$pages = $this->getTable('pages', $id);
 		

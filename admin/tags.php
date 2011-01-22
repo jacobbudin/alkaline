@@ -102,7 +102,7 @@ else{
 	
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/tags/<?php echo $tag['tag_id']; ?>/">View photos (<?php echo $photo_ids->photo_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a></div>
 	
 	<h1>Tag</h1>
 	

@@ -2463,7 +2463,7 @@ class Alkaline{
 	/**
 	 * Determine whether Alkaline license is authentic
 	 *
-	 * @return void
+	 * @return bool True if validate
 	 */
 	public function validate(){		
 		// Error checking

@@ -24,7 +24,7 @@ $photo_ids = new Find;
 // $photo_ids->sort('photos.photo_published', 'DESC');
 // $photo_ids->_tags('beach');
 
-$photo_ids->page(null,2);
+$photo_ids->page(null,10,1);
 // $photo_ids->with(201);
 // $photo_ids->offset(1);
 $photo_ids->published();

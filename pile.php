@@ -23,10 +23,10 @@ $pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);
 $pile['pile_modified'] = $alkaline->formatTime($pile['pile_modified']);
 
 $photo_ids = new Find;
-$photo_ids->page(null,5);
+$photo_ids->page(null,0);
 $photo_ids->published();
 $photo_ids->privacy('public');
-$photo_ids->pile($id);
+$photo_ids->pile($pile['pile_id']);
 $photo_ids->find();
 
 $photos = new Photo($photo_ids);
