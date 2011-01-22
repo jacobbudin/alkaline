@@ -1,7 +1,14 @@
-<h3>Pile: {Pile_Title}</h3>
+<br /><br />
+<hr />
 
-<p>{Pile_Description}</p>
+<div class="page"><br />
+	<h2>{Pile_Title}</h2>
 
-{block:Photos}
-	<a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Square}" alt="" class="frame" /></a>
-{/block:Photos}
+	<p>{Pile_Description}</p>
+
+	{block:Photos}
+		<a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Square}" alt="" class="frame" /></a>
+	{/block:Photos}<br /><br />
+</div>
+
+<hr />

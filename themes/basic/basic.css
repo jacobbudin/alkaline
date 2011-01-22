@@ -8,53 +8,55 @@
 
 body{
 	background-color: #eee;
-	font-family: Verdana, sans-serif;
+	font-family: "Arvo", Verdana, sans-serif;
 	font-size: .7em;
 	margin: 4em auto;
 }
 
-h1, h2, h3, h4, h5, h6 { color: #888; }
+h1, h2, h3, h4, h5, h6 { color: #222; }
 
 table td{
 	vertical-align: top;
 }
 
-#slideshow{
+h2{
+	text-shadow: 1px 1px 2px #fff;
+	font-family: "Arvo", Georgia, serif;
+	font-size: 2.4em;
+	font-weight: 500;
+	color: #444;
+	text-align: left;
 }
 
-ul#slides{
-	position: absolute;
-	display: block;
-	margin: 0;
-	padding: 0;
-	list-style: none inside;
-	height: 670px;
-	width: 670px;
-	vertical-align: middle;
+#header{
+	margin: 3em 0;
+	font-size: 1.5em;
+	text-align: center;
 }
 
-ul#slides li{
-	position: relative;
-	display: none;
-	margin: 0;
-	padding: 0;
+#header a{
+	color: inherit;
+	text-decoration: inherit;
 }
 
-ul#slides li.selected{
-	display: block;
+#navigation{
+	text-align: center;
 }
 
-#controls{
-	position: absolute;
-	font-weight: bold;
-	z-index: 10;
+#navigation input[type="search"]{
+	width: 20em;
 }
 
-#controls a:link, #controls a:visited, #controls a:hover, #controls a:active {
-	color: #fff;
-	text-decoration: none;
-	text-shadow: 0 0 5px #000;
-	text-transform: uppercase;
+#footer{
+	text-align: center;
+}
+
+.photo{
+	padding: 3em 0;
+}
+
+.colorkey{
+	margin-bottom: 1.5em;
 }
 
 a#next{
@@ -90,21 +92,9 @@ a#prev{
 	margin: 0;
 }
 
-.title{
-	text-shadow: 1px 1px 2px #fff;
-	font-family: "Vollkorn", Georgia, serif;
-	font-style: italic;
-	font-size: 2.4em;
-	font-weight: 500;
-	color: #444;
-	line-height: 1.4em;
-	padding-bottom: .75em;
-	text-align: left;
-}
-
 p.description{
 	color: #555;
-	font-family: "Vollkorn", Georgia, serif;
+	font-family: "Arvo", Georgia, serif;
 	font-size: 1.3em;
 }
 
@@ -130,7 +120,11 @@ p.description{
 	text-transform: uppercase;
 }
 
-.right{
+.right{ text-align: right }
+
+.page { font-size: 1.2em; line-height: 1.6em; }
+
+.right_set{
 	color: #aaa;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 1.1em;
@@ -154,6 +148,10 @@ p.description{
 .copyright, .copyright a{
 	color: #777;
 }
+
+/*
+
+*/
 
 .preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
 
