@@ -315,6 +315,8 @@ a.tag{
 	text-decoration: none;
 }
 
+tbody tr:nth-child(even) td, tbody tr.even td { background: inherit; }
+
 .statistics_holder{
 	position: relative;
 	width: 100%;
