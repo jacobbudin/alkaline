@@ -12,16 +12,12 @@
 	RewriteEngine on
 	RewriteBase /
 	
-	RewriteCond %{HTTP_COOKIE} !^.*preview.*$ [NC]
-	RewriteRule ^$ http://www.alkalineapp.com/ [L]
-	
 	RewriteRule ^admin/search/([a-z0-9-_]+)(/)?$						admin/search.php?act=$1 [NC]
 	RewriteRule ^admin/search/([a-z0-9-_]+)/([0-9]+)(/)?$				admin/search.php?act=$1&id=$2 [NC]
 	RewriteRule ^admin/([a-z0-9-_]+)(/)?$								admin/$1.php [NC]
 	RewriteRule ^admin/([a-z0-9-_]+)/([0-9]+)(/)?$						admin/$1.php?id=$2 [NC,QSA]
 	RewriteRule ^admin/([a-z0-9-_]+)/([a-z0-9-_]+)(/)?$					admin/$1.php?act=$2 [NC,QSA]
 	
-	RewriteRule ^fault(/)?$												fault.php [NC]
 	RewriteRule ^access/([a-z0-9-_]+)(/)?$								access.php?key=$1 [NC]
 	RewriteRule ^page([0-9]+)(/)?$										index.php?page=$1 [NC]
 	RewriteRule ^photo/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$			photo.php?id=$1&page=$4 [NC]
