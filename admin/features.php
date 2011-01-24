@@ -258,11 +258,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</p>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="/images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="/images/icons/piles.png" alt="" /> Piles &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="/images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="/images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="/images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/tags.png" alt="" /> Tags &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/piles.png" alt="" /> Piles &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/comments.png" alt="" /> Comments &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/pages.png" alt="" /> Pages &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/rights.png" alt="" /> Rights &#9656;</a></h2>
 	</div>
 </div>
 

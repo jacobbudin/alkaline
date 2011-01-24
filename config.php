@@ -117,7 +117,7 @@ define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
 define('INCLUDES', FOLDER_PREFIX . 'includes/');
 define('JS', FOLDER_PREFIX . 'js/');
-define('IMAGES', FOLDER_PREFIX . 'images/');
+define('IMAGES', ADMIN . FOLDER_PREFIX . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');
 define('PHOTOS', FOLDER_PREFIX . 'photos/');
 define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');

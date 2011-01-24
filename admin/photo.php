@@ -120,7 +120,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				if(!empty($photo['photo_geo_lat'])){
 					?>
 					<br />
-					<img src="/images/icons/geo.png" alt="" /> <?php echo round($photo['photo_geo_lat'], 5); ?>, <?php echo round($photo['photo_geo_long'], 5); ?>
+					<img src="<?php echo BASE . IMAGES; ?>icons/geo.png" alt="" /> <?php echo round($photo['photo_geo_lat'], 5); ?>, <?php echo round($photo['photo_geo_long'], 5); ?>
 					<?php
 				}
 				?>

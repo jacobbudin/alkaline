@@ -28,14 +28,14 @@
 		<div class="container">
 			<div id="header" class="span-24 last">
 				<div class="span-12 append-1">
-					<a href="<?php echo BASE . ADMIN; ?>"><img src="/images/shutter.png" alt="Alkaline" /></a>
+					<a href="<?php echo BASE . ADMIN; ?>"><img src="<?php echo BASE . IMAGES; ?>shutter.png" alt="Alkaline" /></a>
 				</div>
 				<div id="panels" class="span-11 last">
 					<?php
 					if(!empty($user) and $user->perm()){
 						?>
 						<div id="user_panel" class="span-5 append-1">
-							<strong><img src="/images/icons/user.png" alt="" /> <?php echo $user->user['user_user']; ?></strong><br />
+							<strong><img src="<?php echo BASE . IMAGES; ?>icons/user.png" alt="" /> <?php echo $user->user['user_user']; ?></strong><br />
 							<span class="small">
 								<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Photos</a> &#0183;
 								<a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>">Preferences</a> &#0183;
@@ -43,7 +43,7 @@
 							</span>
 						</div>
 						<div id="site_panel" class="span-5 last">
-							<strong><img src="/images/icons/home.png" alt="" /> <?php echo ((BASE == '/') ? DOMAIN : DOMAIN . BASE ); ?></strong><br />
+							<strong><img src="<?php echo BASE . IMAGES; ?>icons/home.png" alt="" /> <?php echo ((BASE == '/') ? DOMAIN : DOMAIN . BASE ); ?></strong><br />
 							<span class="small"><a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>"><?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : 'Launch'); ?></a></span>
 						</div>
 						<?php
@@ -82,35 +82,35 @@
 
 				if(@TAB == 'dashboard'){
 					?>
-					<li><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="/images/minis/stats.png" alt="" /> Statistics</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="/images/minis/preferences.png" alt="" /> Preferences</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/stats.png" alt="" /> Statistics</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/preferences.png" alt="" /> Preferences</a></li>
 					<?php
 				}
 				elseif(@TAB == 'library'){
 					?>
-					<li><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="/images/minis/upload.png" alt="" /> Upload</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="/images/minis/shoebox.png" alt="" /> Shoebox</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/upload.png" alt="" /> Upload</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/shoebox.png" alt="" /> Shoebox</a></li>
 					<?php
 				}
 				elseif(@TAB == 'features'){
 					?>
-					<li><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="/images/minis/tags.png" alt="" /> Tags</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="/images/minis/piles.png" alt="" /> Piles</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="/images/minis/comments.png" alt="" /> Comments</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="/images/minis/pages.png" alt="" /> Pages</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="/images/minis/rights.png" alt="" /> Rights</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/tags.png" alt="" /> Tags</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/piles.png" alt="" /> Piles</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/comments.png" alt="" /> Comments</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/pages.png" alt="" /> Pages</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/rights.png" alt="" /> Rights</a></li>
 					<?php
 					
 				}
 				elseif(@TAB == 'settings'){
 					?>
-					<li><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="/images/minis/users.png" alt="" /> Users</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="/images/minis/guests.png" alt="" /> Guests</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="/images/minis/thumbnails.png" alt="" /> Thumbnails</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="/images/minis/themes.png" alt="" /> Themes</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="/images/minis/extensions.png" alt="" /> Extensions</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="/images/minis/configuration.png" alt="" /> Configuration</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="/images/minis/maintenance.png" alt="" /> Maintenance</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/users.png" alt="" /> Users</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/guests.png" alt="" /> Guests</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/thumbnails.png" alt="" /> Thumbnails</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/themes.png" alt="" /> Themes</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/extensions.png" alt="" /> Extensions</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/configuration.png" alt="" /> Configuration</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>minis/maintenance.png" alt="" /> Maintenance</a></li>
 					<?php
 				}
 				

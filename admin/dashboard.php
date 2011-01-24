@@ -84,8 +84,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		?>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="/images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="/images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN . 'statistics' . URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
 		
 		<hr />
 		
