@@ -19,6 +19,7 @@ class Canvas extends Alkaline{
 	public $tables;
 	public $template;
 	protected $value;
+	protected $objects;
 	
 	/**
 	 * Initiates Canvas class
@@ -28,6 +29,7 @@ class Canvas extends Alkaline{
 	public function __construct($template=null){
 		parent::__construct();
 		
+		$this->objects = array();
 		$this->template = (empty($template)) ? '' : $template . "\n";
 	}
 	
@@ -165,7 +167,7 @@ class Canvas extends Alkaline{
 	 * @return bool True if successful
 	 */
 	public function loop($object){
-		$loops = array();
+		$this->objects[] = $object;
 		
 		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
@@ -204,6 +206,8 @@ class Canvas extends Alkaline{
 			
 			$replacement = '';
 			$reel = $object->$loops[$j]['reel'];
+			
+			// var_dump($loops[$j]['reel']);
 			
 			$reel_count = count($reel);
 			
@@ -278,6 +282,46 @@ class Canvas extends Alkaline{
 		
 		$this->form_wrap = $bool;
 		return true;
+	}
+	
+	/**
+	 * Process block counts
+	 *
+	 * @return void
+	 */
+	public function initCounts(){
+		$loops = array();
+		
+		$table_regex = implode('|', array_keys($this->tables));
+		$table_regex = strtoupper($table_regex);
+		
+		$matches = array();
+		preg_match_all('#{count:(' . $table_regex . ')}#si', $this->template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			foreach($matches as $match){
+				$reel = strtolower($match[1]);
+				$loops[] = $reel;
+			}
+		}
+		
+		$loops = array_unique($loops);
+		
+		foreach($loops as $reel){
+			$count = 0;
+			foreach($this->objects as $object){
+				if(is_array($object->$reel)){
+					$replacement = count($object->$reel);
+				}
+				else{
+					$replacement = 0;
+				}
+				if($replacement > $count){
+					$count = $replacement;
+				}
+			}
+			$this->template = str_ireplace('{count:' . $reel . '}', $count, $this->template);
+		}
 	}
 	
 	/**
@@ -551,7 +595,8 @@ class Canvas extends Alkaline{
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
 		
-		// Process Blocks, Orbit, Config
+		// Process Counts, Blocks, Orbit, Config
+		$this->initCounts();
 		$this->initIncludes();
 		$this->initOrbit();
 		$this->initConfig();
