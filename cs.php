@@ -194,7 +194,7 @@ $test = new AlkalineCS();
 						<strong>Internet connectivity</strong><br />
 						<span class="quiet">An Internet connection is required.</span>
 					</td>
-					<?php echo $test->boolToHTML($result, '<strong>Connected</strong><br />(via ' . $_SERVER["SERVER_NAME"] . ')', '<strong>Disconnected</strong>'); ?>
+					<?php echo $test->boolToHTML($result, '<strong>Connected</strong><br />(via ' . $_SERVER['SERVER_NAME'] . ')', '<strong>Disconnected</strong>'); ?>
 				</tr>
 				<tr>
 					<?php $result = $test->isExt('gd'); echo $test->boolToIMG($result); ?>
@@ -305,6 +305,30 @@ $test = new AlkalineCS();
 				}
 				?>
 			</p>
+			
+			<?php
+			if($test->compatible == true){
+				?>
+				
+				<div style="background-color: #eee; padding: 20px 20px 1px 20px;">
+					<h2>Beta Registration</h2>
+			
+					<p>
+						Learn more about the Alkaline Beta at <a href="http://www.alkalineapp.com/beta/">alkalineapp.com/beta</a>.
+					</p>
+			
+					<form action="http://www.alkalineapp.com/beta/" method="post">
+						<p>
+							<label for="email">Your email address:</label> &#0160;
+							<input type="hidden" name="time" value="<?php echo time(); ?>" />
+							<input type="text" name="email" id="email" value="" style="width: 200px;" />
+							<input type="submit" value="Submit" />
+						</p>
+					</form>
+				</div>
+				<?php
+			}
+			?>
 			
 		<hr />
 		
