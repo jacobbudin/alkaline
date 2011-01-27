@@ -7,7 +7,46 @@
 // http://www.alkalinenapp.com/
 */
 
-require_once('./../config.php');
+if($_SERVER['SCRIPT_FILENAME'][0] == '/'){
+	define('SERVER_TYPE', '');
+	$path = explode('/', __FILE__);
+	$path = array_splice($path, 0, -2);
+	$path = implode('/', $path);
+	define('PATH', $path . '/');
+}
+else{
+	define('SERVER_TYPE', 'win');
+	$path = explode('\\', __FILE__);
+	$path = array_splice($path, 1, -2);
+	$path = implode('\\', $path);
+	define('PATH', $path . '\\');
+}
+
+preg_match_all('#(?:/)?(.*)/(?:.*)admin/install#si', $_SERVER['SCRIPT_NAME'], $matches);
+if(!empty($matches[1][0])){
+	$dir = $matches[1][0] . '/';
+}
+else{
+	$dir = '';
+}
+
+define('BASE', '/' . $dir);
+define('FOLDER_PREFIX', '');
+
+define('ADMIN', FOLDER_PREFIX . 'admin/');
+define('CLASSES', FOLDER_PREFIX . 'classes/');
+define('CSS', FOLDER_PREFIX . 'css/');
+define('DB', FOLDER_PREFIX . 'db/');
+define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
+define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
+define('INCLUDES', FOLDER_PREFIX . 'includes/');
+define('JS', FOLDER_PREFIX . 'js/');
+define('IMAGES', ADMIN . 'images/');
+define('INSTALL', FOLDER_PREFIX . 'install/');
+define('PHOTOS', FOLDER_PREFIX . 'photos/');
+define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
+define('THEMES', FOLDER_PREFIX . 'themes/');
+
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
@@ -34,7 +73,10 @@ if(@$_POST['install'] == 'Install'){
 	$username = $_POST['install_db_user'];
 	$password = $_POST['install_db_pass'];
 	
-	if(!$config = file_get_contents(PATH . INSTALL . 'config.php', false)){
+	$config = $alkaline->replaceVar('$base', '$base = \'' . $_POST['install_base'] . '\';', $config);
+	$config = $alkaline->replaceVar('$path', '$path = \'' . $_POST['install_path'] . '\';', $config);
+	
+	if(!$config = file_get_contents(PATH . '/config.php', false)){
 		$alkaline->addNote('Cannot find configuration file.', 'error');
 	}
 	
@@ -121,10 +163,6 @@ if(@$_POST['install'] == 'Install'){
 	if(!empty($_POST['install_db_prefix'])){
 		$config = $alkaline->replaceVar('$table_prefix', '$table_prefix = \'' . $_POST['install_db_prefix'] . '\';', $config);
 	}
-	
-	if(!empty($_POST['install_base'])){
-		$config = $alkaline->replaceVar('$folder_base', '$folder_base = \'' . $_POST['install_base'] . '\';', $config);
-	}
 }
 
 
@@ -147,7 +185,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		
 		// Import empty DB SQL
 		if(@$_POST['install_db_empty'] == 1){
-			$queries = file_get_contents(PATH . INSTALL . 'empty.sql');
+			$queries = file_get_contents(PATH . DB . 'empty.sql');
 			$queries = explode("\n", $queries);
 
 			foreach($queries as $query){
@@ -160,7 +198,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		}
 		
 		// Import default SQL
-		$queries = file_get_contents(PATH . INSTALL . $type . '.sql');
+		$queries = file_get_contents(PATH . DB . $type . '.sql');
 		$queries = explode("\n", $queries);
 		
 		foreach($queries as $query){
@@ -218,24 +256,24 @@ else{
 
 	<form input="" method="post">
 		<h3>Your Server OS</h3>
-	
-		<p>Not sure? Keep the default option&#8212;it&#8217;ll work in the majority of cases.</p>
+		
+		<p>Not sure? We&#8217;ve automatically determined your server OS for you.</p>
 	
 		<table>
 			<tr>
 				<td class="right middle">
-					<input type="radio" name="install_server" id="install_server_x" value="x" <?php if(@$_POST['install_server'] != 'win'){ echo 'checked="checked"'; } ?> />
+					<input type="radio" name="install_server" id="install_server_x" value="x" <?php if(SERVER_TYPE != 'win'){ echo 'checked="checked"'; } ?> />
 				</td>
 				<td>
-					<label for="install_server_x"><strong>Linux, BSD, OS X Server, or similar</strong></label>
+					<label for="install_server_x">Linux, UNIX, OS X Server, or similar</label>
 				</td>
 			</tr>
 			<tr>
 				<td class="right middle">
-					<input type="radio" name="install_server" id="install_server_win" value="win" <?php if(@$_POST['install_server'] == 'win'){ echo 'checked="checked"'; } ?> />
+					<input type="radio" name="install_server" id="install_server_win" value="win" <?php if(SERVER_TYPE == 'win'){ echo 'checked="checked"'; } ?> />
 				</td>
 				<td>
-					<label for="install_server_win" style="font-weight: normal;">Windows&#0174; Server 2008 or similar</label>
+					<label for="install_server_win">Windows&#0174; Server 2008 or similar</label>
 				</td>
 			</tr>
 		</table>
@@ -247,11 +285,20 @@ else{
 		<table>
 			<tr>
 				<td class="right pad">
-					<label for="install_base">Base path:</label>
+					<label for="install_path">Full path:</label>
 				</td>
 				<td>
-					<input type="text" name="install_base" id="install_base" class="s" value="<?php preg_match_all('#(?:/)?(.*)/(?:.*)admin/install#si', $_SERVER['SCRIPT_NAME'], $matches); if(!empty($matches[1][0])){ echo $matches[1][0] . '/'; } ?>" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet">For example, http://www.yourdomain.com/photos/ would be <strong>photos/</strong></span>
+					<input type="text" name="install_path" id="install_path" class="m" value="<?php echo PATH; ?>" /><br />
+					<span class="quiet">For example, /var/www/<em>yourdomain.com</em>/</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="right pad">
+					<label for="install_base">URL base:</label>
+				</td>
+				<td>
+					<input type="text" name="install_base" id="install_base" class="s" value="<?php echo BASE; ?>" /><br />
+					<span class="quiet">For example, http://<em>www.yourdomain.com</em>/photos/ would be <strong>/photos/</strong></span>
 				</td>
 			</tr>
 		</table>

@@ -14,6 +14,12 @@
 // Server type
 $server_type = '';
 
+// Folder path
+$path = '/var/www/vhosts/alkalineapp.com/beta/';
+
+// URL base path (if installed at top-level of domain, use '/')
+$base = '/';
+
 // Database data source name (DSN including protocol)
 $db_dsn = 'mysql:host=localhost;dbname=alkaline';
 
@@ -82,18 +88,11 @@ else{
 	define('URL_RW', '');
 }
 
-if($server_type == 'win'){
-	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '\\');
-}
-else{
-	define('PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
-}
-
-define('BASE', '/');
+define('SERVER_TYPE', $server_type);
+define('PATH', $path);
+define('BASE', $base);
 define('DOMAIN', $_SERVER['SERVER_NAME']);
 define('LOCATION', 'http://' . DOMAIN);
-
-define('SERVER_TYPE', $server_type);
 define('DB_DSN', $db_dsn);
 define('DB_TYPE', $db_type);
 @define('DB_USER', $db_user);
@@ -117,7 +116,7 @@ define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
 define('INCLUDES', FOLDER_PREFIX . 'includes/');
 define('JS', FOLDER_PREFIX . 'js/');
-define('IMAGES', ADMIN . FOLDER_PREFIX . 'images/');
+define('IMAGES', ADMIN . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');
 define('PHOTOS', FOLDER_PREFIX . 'photos/');
 define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
