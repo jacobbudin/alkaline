@@ -311,7 +311,7 @@ class Canvas extends Alkaline{
 			$count = 0;
 			foreach($this->objects as $object){
 				if(is_array($object->$reel)){
-					$replacement = count($object->$reel);
+					$replacement = count(array_unique($object->$reel));
 				}
 				else{
 					$replacement = 0;
