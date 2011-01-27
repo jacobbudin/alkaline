@@ -21,7 +21,6 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.ajaxq-0.0.1.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>dashboard.js" type="text/javascript"></script>
 </head>
 <body>
 	<div id="header_holder">
