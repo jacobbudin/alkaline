@@ -145,7 +145,7 @@ table.census a{
 
 #header_holder{
 	padding: 2em 0 0 0;
-	background: #ccc url(/images/header_bg.png) bottom left repeat-x;
+	background: #ccc url(/admin/images/header_bg.png) bottom left repeat-x;
 }
 
 #panels{
@@ -176,7 +176,7 @@ table.census a{
 }
 
 #user_panel{
-	background: transparent url(/images/hr_vertical.png) repeat-y 210px 0;
+	background: transparent url(/admin/images/hr_vertical.png) repeat-y 210px 0;
 }
 
 #footer{

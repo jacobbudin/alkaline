@@ -9,7 +9,7 @@ var BASE = $('meta[name="base"]').attr('content');
 var FOLDER_PREFIX = $('meta[name="folder_prefix"]').attr('content');
 
 var ADMIN = FOLDER_PREFIX + 'admin/';
-var IMAGES = FOLDER_PREFIX + 'images/';
+var IMAGES = ADMIN + 'images/';
 var PHOTOS = FOLDER_PREFIX + 'photos/';
 
 var slideshow;
