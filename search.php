@@ -197,7 +197,7 @@ $header->setTitle('Search Results (' . $photo_ids->photo_count . ')');
 $header->display();
 
 $index = new Canvas;
-$index->load('index');
+$index->load('search');
 $index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);

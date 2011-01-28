@@ -51,13 +51,22 @@ $photos->getRights();
 $photos->getPages();
 $photos->getComments();
 
-$pages = new Page;
-$pages->fetchAll();
-
 $header = new Canvas;
 $header->load('header');
 $header->setTitle('Welcome');
 $header->display();
+
+$pages = new Page;
+$pages->fetchAll();
+
+$piles = new Pile;
+$piles->fetchAll();
+
+$directory = new Canvas;
+$directory->load('directory');
+$directory->loop($pages);
+$directory->loop($piles);
+$directory->display();
 
 $index = new Canvas;
 $index->load('index');
@@ -65,7 +74,6 @@ $index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
-$index->loop($pages);
 $index->loop($photos);
 $index->display();
 

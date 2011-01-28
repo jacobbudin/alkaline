@@ -1,0 +1,31 @@
+<br /><br />
+
+<hr />
+
+<div class="span-8 colborder">
+	<h3>Collections ({count:Piles})</h3>
+	{if:Piles}
+		<ul>
+		{block:Piles}
+			<li><a href="/pile.php?id={Pile_Title_Url}">{Pile_Title}</a></li>
+		{/block:Piles}
+		</ul>
+	{else:Piles}
+		There are no collections.
+	{/if:Piles}
+</div>
+
+<div class="span-8 last">
+	<h3>Notes ({count:Pages})</h3>
+	{if:Pages}
+		<ul>
+		{block:Pages}
+			<li><a href="/page.php?id={Page_Title_Url}">{Page_Title}</a></li>
+		{/block:Pages}
+		</ul>
+	{else:Pages}
+		There are no pages.
+	{/if:Pages}
+</div>
+
+<hr />

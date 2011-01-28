@@ -30,16 +30,12 @@
 	{/if:Tags}
 	{if:Piles}
 		<p>
-		{block:Piles}
-			<em>As seen in the pile:</em> {Pile_Title}
-		{/block:Piles}
+			<em>As seen in the collection:</em> {block:Piles}{Pile_Title}{/block:Piles}
 		</p>
 	{/if:Piles}
 	{if:Pages}
 		<p>
-		{block:Pages}
-			<em>As seen on the page:</em> {Page_Title}
-		{/block:Pages}
+			<em>As seen on the page:</em> {block:Pages}{Page_Title}{/block:Pages}
 		</p>
 	{/if:Pages}
 </div>
@@ -47,40 +43,12 @@
 
 <hr />
 
-<div class="span-8 colborder">
-	<h3>Collections ({count:Piles})</h3>
-	{if:Piles}
-		<ul>
-		{block:Piles}
-			<li><a href="/pile.php?id={Pile_Title_Url}">{Pile_Title}</a></li>
-		{/block:Piles}
-		</ul>
-	{else:Piles}
-		There are no collections.
-	{/if:Piles}
-</div>
-
-<div class="span-8 last">
-	<h3>Notes ({count:Pages})</h3>
-	{if:Pages}
-		<ul>
-		{block:Pages}
-			<li><a href="/page.php?id={Page_Title_Url}">{Page_Title}</a></li>
-		{/block:Pages}
-		</ul>
-	{else:Pages}
-		There are no pages.
-	{/if:Pages}
-</div>
-
-<hr />
-
 <div class="span-5">
-	{if:Page_Previous}<strong><a href="/page{PAGE_PREVIOUS}/">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+	{if:Page_Previous}<strong><a href="/page{Page_Previous}/">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
 </div>
 <div class="span-7 center">
 	Page #{Page_Current} of {Page_Count}
 </div>
 <div class="span-5 right last">
-	&#0160;{if:Page_Next}<strong><a href="/page{PAGE_NEXT}/">Next page &#8594;</a></strong>{/if:Page_Next}
+	&#0160;{if:Page_Next}<strong><a href="/page{Page_Next}/">Next page &#8594;</a></strong>{/if:Page_Next}
 </div>

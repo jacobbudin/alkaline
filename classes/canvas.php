@@ -167,7 +167,8 @@ class Canvas extends Alkaline{
 	 * @return bool True if successful
 	 */
 	public function loop($object){
-		$this->objects[] = $object;
+		$class = strtolower(get_class($object));
+		$this->objects[$class] = $object;
 		
 		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
@@ -352,7 +353,12 @@ class Canvas extends Alkaline{
 			$count = 0;
 			foreach($this->objects as $object){
 				if(is_array($object->$reel)){
-					$replacement = count(array_unique($object->$reel));
+					$field = $this->tables[$reel];
+					$ids = array();
+					foreach($object->$reel as $item){
+						$ids[] = $item[$field];
+					}
+					$replacement = count(array_unique($ids));
 				}
 				else{
 					$replacement = 0;
