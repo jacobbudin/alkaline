@@ -28,6 +28,7 @@ class Page extends Alkaline{
 		
 		if(!empty($page)){
 			$sql_params = array();
+			
 			if(is_int($page)){
 				$page_id = $page;
 				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . $page_id . ';');
@@ -37,7 +38,7 @@ class Page extends Alkaline{
 				$sql_params[':page_title_url'] = '%' . strtolower($page) . '%';
 			}
 			elseif(is_array($page)){
-				$page_ids = convertToIntegerArray($page);
+				$page_ids = $this->convertToIntegerArray($page);
 				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . implode(' OR page_id = ', $page_ids) . ';');
 			}
 			
@@ -46,6 +47,16 @@ class Page extends Alkaline{
 				$this->pages = $query->fetchAll();
 				
 				$this->page_count = count($this->pages);
+			}
+		}
+		
+		// Attach additional fields
+		for($i = 0; $i < $this->page_count; ++$i){
+			if(empty($this->pages[$i]['page_title_url'])){
+				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
+			}
+			else{
+				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
 			}
 		}
 	}
@@ -78,11 +89,18 @@ class Page extends Alkaline{
 	 * @return void
 	 */
 	public function fetchAll(){
-		$query = $this->prepare('SELECT * FROM pages;');
+		$query = $this->prepare('SELECT page_id FROM pages;');
 		$query->execute();
-		$this->pages = $query->fetchAll();
+		$pages = $query->fetchAll();
 		
-		$this->page_count = count($this->pages);
+		$page_ids = array();
+		
+		foreach($pages as $page){
+			$page_ids[] = $page['page_id'];
+		}
+		
+		// Reconstruct
+		self::__construct($page_ids);
 	}
 	
 	public function search($search=null){

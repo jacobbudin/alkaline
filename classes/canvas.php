@@ -668,6 +668,8 @@ class Canvas extends Alkaline{
 	public function generate(){
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
+		$this->assign('Search_Uri', LOCATION . BASE . 'search' . URL_CAP);
+		$this->assign('Results_Uri', LOCATION . BASE . 'results' . URL_CAP);
 		
 		// Process Counts, Blocks, Orbit, Config
 		$this->initDefines();

@@ -20,6 +20,7 @@ class Photo extends Alkaline{
 	public $pages;
 	public $piles;
 	public $tags;
+	public $tag_count;
 	public $photo_columns;
 	public $photo_count;
 	public $photo_import_ids = array();
@@ -68,10 +69,11 @@ class Photo extends Alkaline{
 			// Store photo count as integer
 			$this->photo_count = count($this->photos);
 		
-			// Store photo_file
+			// Attach additional fields
 			for($i = 0; $i < $this->photo_count; ++$i){
 				$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
 				$this->photos[$i]['photo_src'] = BASE . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
+				$this->photos[$i]['photo_uri'] = LOCATION . BASE . 'photo' . URL_ID . $this->photos[$i]['photo_id'] . URL_RW;
 			}
 		}
 	}
@@ -1549,6 +1551,19 @@ class Photo extends Alkaline{
 		$query->execute();
 		$tags = $query->fetchAll();
 		$this->tags = $tags;
+		
+		$this->tag_count = count($this->tags);
+		
+		// Attach additional fields
+		for($i = 0; $i < $this->tag_count; ++$i){
+			$title_url = $this->makeURL($this->tags[$i]['tag_name']);
+			if(empty($title_url)){
+				$this->tags[$i]['tag_uri'] = LOCATION . BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . URL_RW;
+			}
+			else{
+				$this->tags[$i]['tag_uri'] = LOCATION . BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . '-' . $title_url . URL_RW;
+			}
+		}
 		
 		foreach($tags as $tag){
 			$photo_id = intval($tag['photo_id']);

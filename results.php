@@ -10,45 +10,40 @@
 require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
-$alkaline = new Alkaline();
-$alkaline->recordStat('tag');
-
-$id = $alkaline->findID($_GET['id']);
-$tag = $alkaline->getRow('tags', $id);
-if(!$tag){ $alkaline->addError(E_USER_WARNING, 'No tag was not found.'); }
+$alkaline = new Alkaline;
+$alkaline->recordStat('home');
 
 $photo_ids = new Find;
-$photo_ids->page(null,5,4);
-$photo_ids->published();
+$photo_ids->sort('photos.photo_published', 'DESC');
 $photo_ids->privacy('public');
-$photo_ids->tags($id);
 $photo_ids->find();
 
 $photos = new Photo($photo_ids);
+// $photos->updateViews();
 $photos->formatTime();
+$photos->getImgUrl('square');
 $photos->getImgUrl('medium');
 $photos->getEXIF();
-$photos->getColorkey(670, 10);
+$photos->getPiles();
 $photos->getTags();
 $photos->getRights();
+$photos->getComments();
 
 $header = new Canvas;
 $header->load('header');
-$header->setTitle('#' . $tag['tag_name']);
+$header->setTitle('Search Results (' . $photo_ids->photo_count . ')');
 $header->display();
 
 $index = new Canvas;
-$index->load('index');
+$index->load('results');
+$index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Previous', $photo_ids->page_previous);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
 $index->loop($photos);
-$index->assignArray($tag);
 $index->display();
 
 $footer = new Canvas;
 $footer->load('footer');
 $footer->display();
-
-?>

@@ -7,7 +7,7 @@
 	{if:Piles}
 		<ul>
 		{block:Piles}
-			<li><a href="/pile.php?id={Pile_Title_Url}">{Pile_Title}</a></li>
+			<li><a href="{Pile_Uri}">{Pile_Title}</a></li>
 		{/block:Piles}
 		</ul>
 	{else:Piles}
@@ -20,7 +20,7 @@
 	{if:Pages}
 		<ul>
 		{block:Pages}
-			<li><a href="/page.php?id={Page_Title_Url}">{Page_Title}</a></li>
+			<li><a href="{Page_Uri}">{Page_Title}</a></li>
 		{/block:Pages}
 		</ul>
 	{else:Pages}

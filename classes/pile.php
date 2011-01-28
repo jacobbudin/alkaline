@@ -28,6 +28,7 @@ class Pile extends Alkaline{
 		
 		if(!empty($pile)){
 			$sql_params = array();
+			
 			if(is_int($pile)){
 				$pile_id = $pile;
 				$query = $this->prepare('SELECT * FROM piles WHERE pile_id = ' . $pile_id . ';');
@@ -37,7 +38,7 @@ class Pile extends Alkaline{
 				$sql_params[':pile_title_url'] = '%' . strtolower($pile) . '%';
 			}
 			elseif(is_array($pile)){
-				$pile_ids = convertToIntegerArray($pile);
+				$pile_ids = $this->convertToIntegerArray($pile);
 				$query = $this->prepare('SELECT * FROM piles WHERE pile_id = ' . implode(' OR pile_id = ', $pile_ids) . ';');
 			}
 			
@@ -46,6 +47,16 @@ class Pile extends Alkaline{
 				$this->piles = $query->fetchAll();
 				
 				$this->pile_count = count($this->piles);
+			}
+		}
+		
+		// Attach additional fields
+		for($i = 0; $i < $this->pile_count; ++$i){
+			if(empty($this->piles[$i]['pile_title_url'])){
+				$this->piles[$i]['pile_uri'] = LOCATION . BASE . 'pile' . URL_ID . $this->piles[$i]['pile_id'] . URL_RW;
+			}
+			else{
+				$this->piles[$i]['pile_uri'] = LOCATION . BASE . 'pile' . URL_ID . $this->piles[$i]['pile_id'] . '-' . $this->piles[$i]['pile_title_url'] . URL_RW;
 			}
 		}
 	}
@@ -78,11 +89,18 @@ class Pile extends Alkaline{
 	 * @return void
 	 */
 	public function fetchAll(){
-		$query = $this->prepare('SELECT * FROM piles;');
+		$query = $this->prepare('SELECT pile_id FROM piles;');
 		$query->execute();
-		$this->piles = $query->fetchAll();
+		$piles = $query->fetchAll();
 		
-		$this->pile_count = count($this->piles);
+		$pile_ids = array();
+		
+		foreach($piles as $pile){
+			$pile_ids[] = $pile['pile_id'];
+		}
+		
+		// Reconstruct
+		self::__construct($pile_ids);
 	}
 	
 	public function search($search=null){
