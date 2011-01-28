@@ -2,7 +2,7 @@
 // Alkaline
 // Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
 // Do not redistribute this code without written permission from Budin Ltd.
-// http://www.alkalinenapp.com/
+// http://www.alkalineapp.com/
 */
 
 var BASE = $('meta[name="base"]').attr('content');
@@ -560,7 +560,7 @@ $(document).ready(function(){
 	
 	$(".date").datepicker({
 		showOn: 'button',
-		buttonImage: BASE + ADMIN + IMAGES + '/icons/calendar.png',
+		buttonImage: BASE + IMAGES + '/icons/calendar.png',
 		buttonImageOnly: true,
 		changeMonth: true,
 		changeYear: true,

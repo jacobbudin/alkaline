@@ -102,6 +102,167 @@ class Find extends Alkaline{
 				}
 			}
 		}
+		
+		// Process browser requests
+		$_REQUEST = array_map('strip_tags', $_REQUEST);
+
+		if(empty($_REQUEST) and empty($_REQUEST)){
+			$this->memory();
+		}
+
+		// Smart search
+		if(!empty($_REQUEST['act'])){
+			$this->smart($_REQUEST['act']);
+		}
+
+		// Title and description
+		if(!empty($_REQUEST['q'])){
+			$this->search($_REQUEST['q']);
+		}
+
+		// Tags
+		if(!empty($_REQUEST['tags'])){
+			$this->tags($_REQUEST['tags']);
+		}
+
+		// Rights set
+		if(!empty($_REQUEST['rights'])){
+			$this->rights(intval($_REQUEST['rights']));
+		}
+
+		// Date taken
+		if(!empty($_REQUEST['taken_begin']) or !empty($_REQUEST['taken_end'])){
+			$this->taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
+		}
+
+		// Date uploaded
+		if(!empty($_REQUEST['uploaded_begin']) or !empty($_REQUEST['uploaded_end'])){
+			$this->uploaded($_REQUEST['uploaded_begin'], $_REQUEST['uploaded_end']);
+		}
+
+		// Location
+		if(!empty($_REQUEST['location'])){
+			$this->location($_REQUEST['location'], $_REQUEST['location_proximity']);
+		}
+
+		// Primary color
+		if(!empty($_REQUEST['color'])){
+			switch($_REQUEST['color']){
+				case 'blue':
+					$this->hsl(170, 235, 1, 100, 1, 100);
+					break;
+				case 'red':
+					$this->hsl(345, 10, 1, 100, 1, 100);
+					break;
+				case 'yellow':
+					$this->hsl(50, 75, 1, 100, 1, 100);
+					break;
+				case 'green':
+					$this->hsl(75, 170, 1, 100, 1, 100);
+					break;
+				case 'purple':
+					$this->hsl(235, 300, 1, 100, 1, 100);
+					break;
+				case 'orange':
+					$this->hsl(10, 50, 1, 100, 1, 100);
+					break;
+				case 'brown':
+					$this->hsl(null, null, null, null, 1, 20);
+					break;
+				case 'pink':
+					$this->hsl(300, 345, 1, 100, 1, 100);
+					break;
+				default:
+					break;
+			}
+		}
+
+		// Views
+		if(!empty($_REQUEST['views'])){
+			switch($_REQUEST['views_operator']){
+				case 'greater':
+					$this->views($_REQUEST['views'], null);
+					break;
+				case 'less':
+					$this->views(null, $_REQUEST['views']);
+					break;
+				case 'equal':
+					$this->views($_REQUEST['views'], $_REQUEST['views']);
+					break;
+			}
+		}
+
+		// Orientation
+		if(!empty($_REQUEST['orientation'])){
+			switch($_REQUEST['orientation']){
+				case 'portrait':
+					$this->ratio(1, null, null);
+					break;
+				case 'landscape':
+					$this->ratio(null, 1, null);
+					break;
+				case 'square':
+					$this->ratio(null, null, 1);
+					break;
+			}
+		}
+
+		// Privacy
+		if(!empty($_REQUEST['privacy'])){
+			switch($_REQUEST['privacy']){
+				case 'public':
+					$this->privacy(1);
+					break;
+				case 'protected':
+					$this->privacy(2);
+					break;
+				case 'private':
+					$this->privacy(3);
+					break;
+			}
+		}
+
+		// Published
+		if(!empty($_REQUEST['published'])){
+			switch($_REQUEST['published']){
+				case 'published':
+					$this->published(true);
+					break;
+				case 'unpublished':
+					$this->published(false);
+					break;
+			}
+		}
+
+		// Sort
+		if(!empty($_REQUEST['sort'])){
+			switch($_REQUEST['sort']){
+				case 'taken':
+					$this->sort('photos.photo_taken', $_REQUEST['sort_direction']);
+					$this->notnull('photos.photo_taken');
+					break;
+				case 'published':
+					$this->sort('photos.photo_published', $_REQUEST['sort_direction']);
+					$this->notnull('photos.photo_published');
+					break;
+				case 'uploaded':
+					$this->sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
+					break;
+				case 'updated':
+					$this->sort('photos.photo_updated', $_REQUEST['sort_direction']);
+					$this->notnull('photos.photo_updated');
+					break;
+				case 'title':
+					$this->sort('photos.photo_title', $_REQUEST['sort_direction']);
+					$this->notnull('photos.photo_title');
+					break;
+				case 'views':
+					$this->sort('photos.photo_views', $_REQUEST['sort_direction']);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
 	public function __destruct(){
