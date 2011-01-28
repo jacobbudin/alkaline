@@ -4,7 +4,7 @@
 // Alkaline
 // Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
 // Do not redistribute this code without written permission from Budin Ltd.
-// http://www.alkalinenapp.com/
+// http://www.alkalineapp.com/
 */
 
 require_once('./../config.php');
@@ -53,7 +53,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h1>Search</h1>
 		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
 			<p style="margin-bottom: 0;">
-				<input type="search" name="search" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
+				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 			</p>
 
 			<p>

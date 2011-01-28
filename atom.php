@@ -4,7 +4,7 @@
 // Alkaline
 // Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
 // Do not redistribute this code without written permission from Budin Ltd.
-// http://www.alkalinenapp.com/
+// http://www.alkalineapp.com/
 */
 
 require_once('config.php');
