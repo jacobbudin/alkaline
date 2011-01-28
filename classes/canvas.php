@@ -285,6 +285,45 @@ class Canvas extends Alkaline{
 	}
 	
 	/**
+	 * Process PHP definitions
+	 *
+	 * @return void
+	 */
+	public function initDefines(){
+		$loops = array();
+		
+		$matches = array();
+		preg_match_all('#{define:([a-z0-9\_\-]+)}#si', $this->template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			foreach($matches as $match){
+				$loops[] = $match[1];
+			}
+		}
+		else{
+			return;
+		}
+		
+		$loops = array_unique($loops);
+		
+		foreach($loops as $define){
+			if(defined($define)){
+				$definition = constant($define);
+			}
+			elseif(defined(strtoupper($define))){
+				$definition = constant(strtoupper($define));
+			}
+			elseif(defined(strtolower($define))){
+				$definition = constant(strtolower($define));
+			}
+			
+			if(isset($definition)){
+				$this->template = str_ireplace('{define:' . $define . '}', $definition, $this->template);
+			}
+		}
+	}
+	
+	/**
 	 * Process block counts
 	 *
 	 * @return void
@@ -300,9 +339,11 @@ class Canvas extends Alkaline{
 		
 		if(count($matches) > 0){
 			foreach($matches as $match){
-				$reel = strtolower($match[1]);
-				$loops[] = $reel;
+				$loops[] = strtolower($match[1]);
 			}
+		}
+		else{
+			return;
 		}
 		
 		$loops = array_unique($loops);
@@ -596,6 +637,7 @@ class Canvas extends Alkaline{
 		$this->assign('Copyright', parent::copyright);
 		
 		// Process Counts, Blocks, Orbit, Config
+		$this->initDefines();
 		$this->initCounts();
 		$this->initIncludes();
 		$this->initOrbit();
