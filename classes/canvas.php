@@ -377,7 +377,6 @@ class Canvas extends Alkaline{
 		$loops = array();
 		
 		$table_regex = implode('|', array_keys($this->tables));
-		$table_regex = strtoupper($table_regex);
 		
 		$matches = array();
 		
@@ -438,9 +437,37 @@ class Canvas extends Alkaline{
 			$loops[$j]['replacement'] = $replacement;
 		}
 		
+		$reels = array();
+		
+		foreach($loops as $loop){
+			if(!empty($loop['replacement'])){
+				$template = str_replace($loop['replace'], $loop['replacement'], $template);
+				$template = self::scrub($loop['reel'], $template);
+			}
+		}
+		
+		$table_regex = implode('|', array_keys($this->tables));
+		preg_match_all('#{if:(' . $table_regex . ')}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
+		
+		$loops = array();
+		
+		if(count($matches) > 0){
+			foreach($matches as $match){
+				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
+			}
+		}
+		
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
+			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
+				$loops[$j]['replacement'] = $loops[$j]['template'];
+				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
+			}
+		}
+		
 		foreach($loops as $loop){
 			$template = str_replace($loop['replace'], $loop['replacement'], $template);
-			$template = self::scrub($loop['reel'], $template);
 		}
 		
 		return $template;
@@ -491,7 +518,7 @@ class Canvas extends Alkaline{
 	 * @return string Template
 	 */
 	public function scrubEmpty($template){
-		preg_match_all('#{if:([A-Z0-9_]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{if:([a-z0-9_\-]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
 		
 		$loops = array();
 		
@@ -530,7 +557,7 @@ class Canvas extends Alkaline{
 		$orbit = new Orbit();
 		
 		$matches = array();
-		preg_match_all('#{hook:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{hook:([a-z0-9_\-]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$hooks = array();
@@ -564,7 +591,7 @@ class Canvas extends Alkaline{
 	 */
 	protected function initConfig(){
 		$matches = array();
-		preg_match_all('#{config:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{config:([a-z0-9_\-]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$configs = array();
@@ -594,7 +621,7 @@ class Canvas extends Alkaline{
 	 */
 	protected function initIncludes(){
 		$matches = array();
-		preg_match_all('#{include:([A-Z0-9_]*)}#is', $this->template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{include:([a-z0-9_\-]*)}#is', $this->template, $matches, PREG_SET_ORDER);
 		
 		if(count($matches) > 0){
 			$includes = array();
