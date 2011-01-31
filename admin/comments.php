@@ -21,6 +21,9 @@ if(!empty($_GET['id'])){
 
 if(!empty($_GET['act'])){
 	$comment_act = $_GET['act'];
+	if($comment_act == 'unpublished'){
+		$_REQUEST['status'] = 'unpublished';
+	}
 }
 
 // SAVE CHANGES
@@ -49,29 +52,15 @@ if(!$alkaline->returnConf('comm_enabled')){
 
 define('TAB', 'features');
 
-// GET PILES TO VIEW OR PILE TO EDIT
+// GET COMMENTS TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
 	$comments = new Comment();
-	
-	if($comment_act == 'search'){
-		if(!empty($_POST['search'])){
-			$comments->search($_POST['search']);
-		}
-		if(!empty($_POST['created_begin']) or !empty($_POST['created_end'])){
-			$comments->created($_POST['created_begin'], $_POST['created_end']);
-		}
-		if(!empty($_POST['status'])){
-			$comments->created($_POST['status']);
-		}
-	}
-	
+	$comments->page(null);
 	$comments->fetch();
 	$comments->formatTime();
+	$comments->comments = $alkaline->stripTags($comments->comments);
 	
 	$photo_ids = $comments->photo_ids;
-	$comment_count = $comments->comment_count;
-	$comments = $comments->comments;
-	
 	$photos = new Photo($photo_ids);
 	$photos->getImgUrl('square');
 	
@@ -84,7 +73,7 @@ if(empty($comment_id)){
 	
 	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
 		<p style="margin-bottom: 0;">
-			<input type="search" name="search" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
+			<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 		</p>
 
 		<p>
@@ -117,7 +106,7 @@ if(empty($comment_id)){
 	
 	<hr />
 	
-	<h1>Comments (<?php echo $comment_count; ?>)</h1>
+	<h1>Comments (<?php echo $comments->comment_count; ?>)</h1>
 	
 	<table>
 		<tr>
@@ -126,10 +115,10 @@ if(empty($comment_id)){
 			<th style="width: 30%;">Created</th>
 		</tr>
 		<?php
-
-		foreach($comments as $comment){
+		
+		foreach($comments->comments as $comment){
 			echo '<tr>';
-				echo '<td>';
+				echo '<td class="right">';
 				$key = array_search($comment['photo_id'], $photo_ids);
 				if(is_int($key)){
 					echo '<a href="' . BASE . ADMIN . 'photo' . URL_ID . $photos->photos[$key]['photo_id'] . URL_RW . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
@@ -142,7 +131,7 @@ if(empty($comment_id)){
 				else{
 					echo '<em>(Unsigned)</em>';
 				}
-				echo '</a></strong> wrote &#8220;' . $alkaline->fitString($comment['comment_text'], 225) . '&#8221;</td>';
+				echo '</a></strong> wrote:<br />&#8220;' . $alkaline->fitString($comment['comment_text'], 225) . '&#8221;</div></td>';
 				echo '<td>' . $comment['comment_created'] . '</td>';
 			echo '</tr>';
 		}
@@ -150,6 +139,28 @@ if(empty($comment_id)){
 		?>
 	</table>
 	<?php
+	
+	if($comments->page_count > 1){
+		?>
+		<p>
+			<?php
+			if(!empty($comments->page_previous)){
+				for($i = 1; $i <= $comments->page_previous; ++$i){
+					echo '<a href="' . BASE . ADMIN . 'comments' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+				}
+			}
+			?>
+			<span class="page_no">Page <?php echo $comments->page; ?> of <?php echo $comments->page_count; ?></span>
+			<?php
+			if(!empty($comments->page_next)){
+				for($i = $comments->page_next; $i <= $comments->page_count; ++$i){
+					echo '<a href="' . BASE . ADMIN . 'comments' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+				}
+			}
+			?>
+		</p>
+		<?php
+	}
 	
 	require_once(PATH . ADMIN . 'includes/footer.php');
 	
@@ -181,15 +192,13 @@ else{
 						echo '<em>(Unsigned)</em>';
 					}
 					
-					echo '<br />';
-					
 					
 					if(!empty($comment['comment_author_email'])){
-						echo '<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a><br />';
+						echo ' (<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a>)<br />';
 					}
 					
 					if(!empty($comment['comment_author_uri'])){
-						echo '<a href="' . $comment['comment_author_uri'] . '">' . $comment['comment_author_uri'] . '</a>';
+						echo '<a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a>';
 					}
 					
 					?>
