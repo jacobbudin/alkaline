@@ -1751,10 +1751,16 @@ class Photo extends Alkaline{
 	/**
 	 * Get comments data, append comment <input> HTML data
 	 *
+	 * @param bool Published (true) or all (false)
 	 * @return array Associative array of comments
 	 */
-	public function getComments(){
-		$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
+	public function getComments($published=true){
+		if($published == true){
+			$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id AND comments.comment_status > 0;');
+		}
+		else{
+			$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
+		}
 		$query->execute();
 		$this->comments = $query->fetchAll();
 		
@@ -1767,7 +1773,7 @@ class Photo extends Alkaline{
 		
 		// Store photo comment fields
 		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_comment_text'] = '<textarea id="comment_' . $this->photos[$i]['photo_id'] . '_text" name="comment_' . $this->photos[$i]['photo_id'] . '_text" class="comment"></textarea>';
+			$this->photos[$i]['photo_comment_text'] = '<textarea id="comment_' . $this->photos[$i]['photo_id'] . '_text" name="comment_' . $this->photos[$i]['photo_id'] . '_text" class="comment_text"></textarea>';
 			
 			$this->photos[$i]['photo_comment_author_name'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_name" name="comment_' . $this->photos[$i]['photo_id'] . '_author_name" class="comment_author_name" />';
 			
@@ -1822,11 +1828,11 @@ class Photo extends Alkaline{
 	 * @return void
 	 */
 	public function formatTime($format=null){
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_taken'] = parent::formatTime($this->photos[$i]['photo_taken'], $format);
-			$this->photos[$i]['photo_uploaded'] = parent::formatTime($this->photos[$i]['photo_uploaded'], $format);
-			$this->photos[$i]['photo_published'] = parent::formatTime($this->photos[$i]['photo_published'], $format);
-			$this->photos[$i]['photo_updated'] = parent::formatTime($this->photos[$i]['photo_updated'], $format);
+		foreach($this->photos as &$photo){
+			$photo['photo_taken'] = parent::formatTime($photo['photo_taken'], $format);
+			$photo['photo_uploaded'] = parent::formatTime($photo['photo_uploaded'], $format);
+			$photo['photo_published'] = parent::formatTime($photo['photo_published'], $format);
+			$photo['photo_updated'] = parent::formatTime($photo['photo_updated'], $format);
 		}
 	}
 	

@@ -1982,8 +1982,7 @@ class Alkaline{
 	 * @return string
 	 */
 	public function returnForm($array, $name, $default=null){
-		@$value = $array[$name];
-		if(!isset($value)){
+		if(!isset($array[$name])){
 			if(isset($default)){
 				return $default;
 			}
@@ -1991,6 +1990,7 @@ class Alkaline{
 				return false;
 			}
 		}
+		$value = $array[$name];
 		return $value;
 	}
 	

@@ -149,9 +149,32 @@ p.description{
 	color: #777;
 }
 
-/*
+table.comments td.right{
+	text-align: right;
+	font-weight: bold;
+	padding-top: 1em;
+}
 
-*/
+input[type=text]{
+	padding: .25em;
+	font-size: 1.1em;
+	width: 15em;
+}
+
+input.comment_author_uri{
+	width: 25em;
+}
+
+textarea.comment_text{
+	width: 40em;
+	height: 10em;
+}
+
+
+/*
+ * Alkaline
+ * Required for normal operation
+ */
 
 .preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
 

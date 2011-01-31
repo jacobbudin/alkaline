@@ -32,32 +32,34 @@
 				{/block:Tags}
 				</p>
 			{/if:Tags}
+			<hr />
 			{if:Comments}
 				<table>
 				{block:Comments}
 					<tr>
-						<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<br /><br />{if:Comment_Author_Name}<p>&#8212; {Comment_Author_Name} on {/if:Comment_Author_Name}{Comment_Created}</p></td>
+						<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<br /><br />{if:Comment_Author_Name}<p>&#8212; {Comment_Author_Name}, on {/if:Comment_Author_Name}{Comment_Created}</p></td>
 					</tr>
 				{/block:Comments}
 				</table>
 			{else:Comments}
-				<p><strong>No comments.</strong></p>
+				<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
 			{/if:Comments}
-			<table>
+			<hr />
+			<table class="comments">
 				<tr>
-					<td>Author:</td>
+					<td class="right">Author:</td>
 					<td>{Photo_Comment_Author_Name}</td>
 				</tr>
 				<tr>
-					<td>Email:</td>
+					<td class="right">Email:</td>
 					<td>{Photo_Comment_Author_Email}</td>
 				</tr>
 				<tr>
-					<td>URL:</td>
+					<td class="right">URL:</td>
 					<td>{Photo_Comment_Author_Uri}</td>
 				</tr>
 				<tr>
-					<td>Comment:</td>
+					<td class="right">Comment:</td>
 					<td>{Photo_Comment_Text}</td>
 				</tr>
 				<tr>

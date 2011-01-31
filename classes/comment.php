@@ -21,8 +21,8 @@ class Comment extends Alkaline{
 	public $page;
 	public $page_begin;
 	public $page_count;
-	public $page_first;
 	public $page_limit;
+	public $page_limit_first;
 	public $page_next;
 	public $page_previous;
 	public $photo_ids;
@@ -74,6 +74,16 @@ class Comment extends Alkaline{
 		if(!empty($comment_ids)){
 			$comment_ids = parent::convertToIntegerArray($comment_ids);
 			$this->sql_conds[] = 'comments.comment_id IN (' . implode(', ', $comment_ids) . ')';
+		}
+		
+		if(!empty($_REQUEST['q'])){
+			$this->search($_REQUEST['q']);
+		}
+		if(!empty($_REQUEST['created_begin']) or !empty($_REQUEST['created_end'])){
+			$this->created($_REQUEST['created_begin'], $_REQUEST['created_end']);
+		}
+		if(!empty($_REQUEST['status'])){
+			$this->status($_REQUEST['status']);
 		}
 	}
 	
@@ -138,7 +148,7 @@ class Comment extends Alkaline{
 	 */
 	public function status($status=null){
 		// Error checking
-		if(empty($status)){ return false; }
+		if(!isset($status)){ return false; }
 		
 		// Convert strings
 		if(is_string($status)){
@@ -265,9 +275,9 @@ class Comment extends Alkaline{
 	/**
 	 * Paginate results
 	 *
-	 * @param string $page Page number
-	 * @param string $limit Number of photos per page
-	 * @param string $first Number of photos on first page
+	 * @param int $page Page number
+	 * @param int $limit Number of photos per page
+	 * @param int $first Number of photos on the first page (if different)
 	 * @return bool True if successful
 	 */
 	public function page($page, $limit=null, $first=null){
@@ -286,12 +296,14 @@ class Comment extends Alkaline{
 		// Store data to object
 		$this->page = $page;
 		$this->page_limit = intval($limit);
-		$this->page_first = intval($first);
+		$this->page_limit_first = intval($first);
 		
 		// Set SQL limit
-		if($page == 1){ $limit = $first; }
-		$this->page_begin = (($page - 1) * $limit) - $limit + $first;
-		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $limit;
+		if($page == 1){ $this->page_limit_curent = $this->page_limit_first; }
+		else{ $this->page_limit_curent = $this->page_limit; }
+		
+		$this->page_begin = (($page - 1) * $this->page_limit_curent) - $this->page_limit_curent + $this->page_limit_first;
+		$this->sql_limit = ' LIMIT ' . $this->page_begin . ', ' . $this->page_limit_curent;
 		
 		return true;
 	}
@@ -303,8 +315,8 @@ class Comment extends Alkaline{
 	 * @return void
 	 */
 	public function formatTime($format=null){
-		for($i = 0; $i < $this->comment_count; ++$i){
-			$this->comments[$i]['comment_created'] = parent::formatTime($this->comments[$i]['comment_created'], $format);
+		foreach($this->comments as &$comment){
+			$comment['comment_created'] = parent::formatTime($comment['comment_created'], $format);
 		}
 		return true;
 	}
@@ -357,8 +369,9 @@ class Comment extends Alkaline{
 		$this->comment_count = count($comments);
 		
 		// Determine pagination
+		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil(($this->comment_count - $this->page_first) / $this->page_limit) + 1;
+			$this->page_count = ceil(($this->comment_count - $this->page_limit_first) / $this->page_limit) + 1;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
