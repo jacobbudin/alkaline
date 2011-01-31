@@ -42,17 +42,23 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-		<h1>Vitals</h1>
+		<?php
+		if($user->returnConf('stat_enabled') !== false){
+			?>
+			<h1>Vitals</h1>
 		
-		<div id="statistics_holder" class="statistics_holder"></div>
-		<div id="statistics_views" title="<?php echo $views; ?>"></div>
-		<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+			<div id="statistics_holder" class="statistics_holder"></div>
+			<div id="statistics_views" title="<?php echo $views; ?>"></div>
+			<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
+			<hr />
+			<?php
+		}
+		?>
 		
 		<?php
 		// Preference: recent_photos
 		if($user->returnPref('recent_photos') === true){
 			?>
-			<hr />
 			<div class="actions"><a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">Go to library</a></div>
 			<h1>Recent</h1>
 			<p>
@@ -99,6 +105,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		$comments = new Comment();
 		$comments->status(0);
+		$comments->fetch();
 
 		if(($shoebox_count > 0) or ($comments->comment_count > 0)){
 			?>
