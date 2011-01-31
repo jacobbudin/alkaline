@@ -1226,7 +1226,7 @@ class Alkaline{
 			'comment_text' => $comment_text,
 			'comment_text_raw' => $comment_text_raw,
 			'comment_markup' => $comm_markup_ext,
-			'comment_author_name' => $comment_text,
+			'comment_author_name' => strip_tags($_POST['comment_' . $id .'_author_name']),
 			'comment_author_uri' => strip_tags($_POST['comment_' . $id .'_author_uri']),
 			'comment_author_email' => strip_tags($_POST['comment_' . $id .'_author_email']),
 			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);

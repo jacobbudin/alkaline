@@ -37,6 +37,7 @@ $header->setTitle(@$photos->photos[0]['photo_title']);
 $header->display();
 
 $index = new Canvas;
+$index->wrapForm();
 $index->load('photo');
 $index->loop($photos);
 $index->display();
