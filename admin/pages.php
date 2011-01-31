@@ -94,36 +94,37 @@ if(empty($page_id)){
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>">Add page</a></div>
 	
 	<h1>Pages (<?php echo $pages->page_count; ?>)</h1>
-
-	<?php
 	
-	if($pages->page_count > 0){
-		?>
-		<table>
-			<tr>
-				<th>Title</th>
-				<th class="center">Views</th>
-				<th class="center">Words</th>
-				<th>Created</th>
-				<th>Last modified</th>
-			</tr>
-			<?php
-
-			foreach($pages->pages as $page){
-				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
-					echo '<td class="center">' . number_format($page['page_views']) . '</td>';
-					echo '<td class="center">' . number_format($page['page_words']) . '</td>';
-					echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
-					echo '<td>' . $pages->formatTime($page['page_modified']) . '</td>';
-				echo '</tr>';
-			}
-
-			?>
-		</table>
+	<p>Pages are freeform areas for text-based content.</p>
+	
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
+		<tr>
+			<th>Title</th>
+			<th class="center">Views</th>
+			<th class="center">Words</th>
+			<th>Created</th>
+			<th>Last modified</th>
+		</tr>
 		<?php
-	}
 
+		foreach($pages->pages as $page){
+			echo '<tr>';
+				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
+				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
+				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
+				echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
+				echo '<td>' . $pages->formatTime($page['page_modified']) . '</td>';
+			echo '</tr>';
+		}
+
+		?>
+	</table>
+	
+	<?php
 	require_once(PATH . ADMIN . 'includes/footer.php');
 }
 else{

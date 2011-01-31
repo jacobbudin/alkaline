@@ -66,17 +66,21 @@ if(empty($tag_id)){
 	?>
 
 	<h1>Tags (<?php echo $tag_count; ?>)</h1>
+	
+	<p>Tags help you organize your image library.</p>
+	
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
 
-	<p id="tags" class="center">
+	<p class="center tags filter">
 		<?php
 	
 		$tags_html = array();
 	
 		foreach($tags as $tag){
-			$tags_html[] = '<a href="' . BASE . ADMIN . 'tags' . URL_ID . $tag['id'] . URL_RW . '" style="font-size: ' . $tag['size'] . 'em;">' . $tag['name'] . '</a></span> <span class="small quiet">(<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['id'] . URL_RW . '">' . $tag['count'] . '</a>)</span>';
+			echo '<span class="tag"><a href="' . BASE . ADMIN . 'tags' . URL_ID . $tag['id'] . URL_RW . '" style="font-size: ' . $tag['size'] . 'em;">' . $tag['name'] . '</a>&#0160;<span class="small quiet">(<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['id'] . URL_RW . '">' . $tag['count'] . '</a>)</span></span> ';
 		}
-	
-		echo implode($tags_html, ', ');
 	
 		?>
 	</p>

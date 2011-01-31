@@ -77,8 +77,11 @@ if(empty($guest_id)){
 	
 	<p>Guests can use an access key to view some or all protected photos in your Alkaline library.</p>
 	
-	<table>
-		<tr>
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">		<tr>
 			<th>Title</th>
 			<th class="center">Views</th>
 			<th>Last login</th>

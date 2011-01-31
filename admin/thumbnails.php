@@ -103,8 +103,14 @@ if(empty($size_id)){
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build thumbnial</a></div>
 
 	<h1>Thumbnails (<?php echo $size_count; ?>)</h1>
-
-	<table>
+	
+	<p>Thumbnails are resized versions of each image in your library.</p>
+	
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
 		<tr>
 			<th>Title</th>
 			<th class="center">Dimensions (W&#0215;H)</th>

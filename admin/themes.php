@@ -113,7 +113,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 
-<table>
+<p>
+	<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+</p>
+
+<table class="filter">
 	<tr>
 		<th>Theme</th>
 		<th class="center">Preview</th>

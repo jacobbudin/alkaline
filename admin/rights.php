@@ -86,7 +86,11 @@ if(empty($right_id)){
 	
 	<p>Right sets clarify which copyrights you retain on your photography to discourage illicit use.</p>
 	
-	<table>
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
 		<tr>
 			<th style="width: 60%;">Title</th>
 			<th class="center">Photos</th>

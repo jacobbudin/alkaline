@@ -195,7 +195,11 @@ if(empty($extension_id)){
 	
 	<p>Extensions add new functionality to your Alkaline installation. You can browse and download additional extensions at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 	
-	<table>
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
 		<tr>
 			<th>Extension</th>
 			<th class="center">Status</th>

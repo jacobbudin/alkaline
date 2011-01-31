@@ -98,7 +98,11 @@ if(empty($pile_id)){
 	
 	<p>Piles are collections of photos. You can build an automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
-	<table>
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
 		<tr>
 			<th style="width: 60%;">Title</th>
 			<th class="center">Views</th>

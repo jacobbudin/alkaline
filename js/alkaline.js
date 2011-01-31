@@ -18,6 +18,10 @@ var slideshow_photo_prev;
 var slideshow_working = 0;
 var slideshow_play = 1;
 
+$.expr[':'].containsIgnoreCase = function(n,i,m){
+	return jQuery(n).text().toUpperCase().indexOf(m[3].toUpperCase())>=0;
+};
+
 function slideshow_first(){
 	if(slideshow_working == 1){ return; }
 	slideshow_photo = slideshow_photos.first('li');
@@ -566,6 +570,33 @@ $(document).ready(function(){
 		changeYear: true,
 		constrainInput: false,
 		showAnim: null
+	});
+	
+	// PRIMARY - TABLE FILTERING
+	
+	$("input[name='filter']").bind('keyup click', function(){
+	    table = $('table.filter');
+		list = $('p.filter');
+		if(table){
+			table.find('tr:has(td)').hide();
+		    var data = this.value.split(" ");
+		    var match = table.find("tr");
+		    $.each(data, function(i, v){
+		         //Use the new containsIgnoreCase function instead
+		         match = match.filter("*:containsIgnoreCase('"+v+"')");
+		    });
+		    match.show();
+		}
+		if(list){
+			list.find('span.tag').hide();
+		    var data = this.value.split(" ");
+		    var match = list.find('span.tag');
+		    $.each(data, function(i, v){
+		         //Use the new containsIgnoreCase function instead
+		         match = match.filter("*:containsIgnoreCase('"+v+"')");
+		    });
+		    match.show();
+		}
 	});
 	
 	// PRIMARY - GEO HINTING

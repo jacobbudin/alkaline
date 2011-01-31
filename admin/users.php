@@ -74,7 +74,11 @@ if(empty($user_db_id)){
 	
 	<p>Users can add photos to your Alkaline library and modify the your Alkaline installation.</p>
 	
-	<table>
+	<p>
+		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
+	</p>
+	
+	<table class="filter">
 		<tr>
 			<th>Username</th>
 			<th>Name</th>
