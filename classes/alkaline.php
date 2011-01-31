@@ -1886,6 +1886,13 @@ class Alkaline{
 			return false;
 		}
 		
+		if($this->returnConf('stat_ignore_user')){
+			$user = new User();
+			if($user->perm(false)){
+				return;
+			}
+		}
+		
 		if(empty($_SESSION['alkaline']['duration_start']) or ((time() - @$_SESSION['alkaline']['duration_recent']) > 3600)){
 			$duration = 0;
 			$_SESSION['alkaline']['duration_start'] = time();

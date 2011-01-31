@@ -59,6 +59,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
+	$alkaline->setConf('stat_ignore_user', @$_POST['stat_ignore_user']);
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
@@ -337,7 +338,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="stat_enabled" name="stat_enabled" <?php echo $alkaline->readConf('stat_enabled'); ?> value="true" /></td>
 			<td class="description">
 				<label for="stat_enabled">Enable statistics</label><br />
-				Affects only Alkaline&#8217;s built-in visitor tracking, can be disabled if using a third-party stat program
+				Affects only Alkaline&#8217;s built-in visitor tracking, can be disabled if using third-party analytics software
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="stat_ignore_user" name="stat_ignore_user" <?php echo $alkaline->readConf('stat_ignore_user'); ?> value="true" /></td>
+			<td class="description">
+				<label for="stat_ignore_user">Ignore registered users&#8217; browsing activity</label><br />
 			</td>
 		</tr>
 	</table>
