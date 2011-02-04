@@ -22,7 +22,7 @@ else{
 	define('PATH', $path . '\\');
 }
 
-preg_match_all('#(?:/)?(.*)/(?:.*)admin/install#si', $_SERVER['SCRIPT_NAME'], $matches);
+preg_match_all('#(?:/)?(.*)/(?:.*)install#si', $_SERVER['SCRIPT_NAME'], $matches);
 if(!empty($matches[1][0])){
 	$dir = $matches[1][0] . '/';
 }
@@ -63,7 +63,13 @@ if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
 	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
-} 
+}
+if($alkaline->checkPerm(PATH . 'config.json') != '0777'){
+	$alkaline->addNote('Configuration (config.json) file is not writable (CHMOD 777).', 'error');
+}
+if($alkaline->checkPerm(PATH . 'config.php') == '0777'){
+	$alkaline->addNote('Configuration (config.php) file should not be writable (CHMOD 644).', 'error');
+}
 
 // Configuration setup
 
@@ -73,15 +79,15 @@ if(@$_POST['install'] == 'Install'){
 	$username = $_POST['install_db_user'];
 	$password = $_POST['install_db_pass'];
 	
-	$config = $alkaline->replaceVar('$base', '$base = \'' . $_POST['install_base'] . '\';', $config);
-	$config = $alkaline->replaceVar('$path', '$path = \'' . $_POST['install_path'] . '\';', $config);
-	
-	if(!$config = file_get_contents(PATH . '/config.php', false)){
+	if(!$config = file_get_contents(PATH . INSTALL . 'config.php', false)){
 		$alkaline->addNote('Cannot find configuration file.', 'error');
 	}
 	
+	$config = $alkaline->replaceVar('$base', '$base = \'' . $_POST['install_base'] . '\';', $config);
+	$config = $alkaline->replaceVar('$path', '$path = \'' . $_POST['install_path'] . '\';', $config);
+	
 	if($_POST['install_server'] == 'win'){
-		$config = $alkaline->replaceVar('$server_type', '$server_type = "win";', $config);
+		$config = $alkaline->replaceVar('$server_type', '$server_type = \'win\';', $config);
 	}
 	
 	if($_POST['install_db_type'] == 'mysql'){
@@ -168,7 +174,7 @@ if(@$_POST['install'] == 'Install'){
 
 // Database setup
 
-if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){	
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	// Check to see if can connect
 	if(!$db = new PDO($dsn, $username, $password)){
 		$alkaline->addNote('The database could not be contacted. Check your settings.', 'error');
@@ -210,9 +216,9 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		}
 		
 		// Add admin user
-		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_photo_count) VALUES (?, ?, ?, ?, ?, ?);');
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_photo_count, user_preferences) VALUES (?, ?, ?, ?, ?, ?, ?);');
 		
-		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0));
+		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0, 'a:5:{s:10:"page_limit";s:3:"100";s:13:"recent_photos";b:1;s:8:"shoe_pub";b:1;s:19:"recent_photos_limit";s:2:"25";s:11:"home_target";b:1;}'));
 		
 		$query->closeCursor();
 		
@@ -221,15 +227,19 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
 		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
+		$query->execute(array('Medium', 'medium', 640, 640, 'scale', '_m'));
 		
 		$query->closeCursor();
 		
 		// Add default theme
 		
-		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'themes (theme_uid, theme_title, theme_default, theme_build, theme_version, theme_folder, theme_creator, theme_creator_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'themes (theme_uid, theme_title, theme_build, theme_version, theme_folder, theme_creator, theme_creator_uri) VALUES (?, ?, ?, ?, ?, ?, ?);');
+		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
 		
 		$query->closeCursor();
+		
+		$alkaline->setConf('theme_id', '1');
+		$alkaline->setConf('theme_folder', 'basic');
 	}
 }
 
@@ -242,6 +252,8 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	?>
 	
 	<p class="large"><strong>Almost there.</strong> Copy and paste the text below into a text editor and save it as &#8220;config.php&#8221; to your hard disk. Then upload this file (overwriting the file that is already there) to your Alkaline directory to complete your installation.</p>
+	
+	<p>Once you&#8217;re done, <a href="<?php echo BASE . ADMIN; ?>">log in to access your Dashboard</a>.</p>
 	
 	<textarea style="height: 30em;" class="code"><?php echo $config; ?></textarea>
 	
@@ -452,14 +464,14 @@ else{
 					<input type="text" name="install_email" id="install_email" value="<?php echo @$_POST['install_email'] ?>" class="m" />
 				</td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td style="text-align: right;">
 					<input type="checkbox" name="install_welcome" id="install_welcome" value="1" checked="checked">
 				</td>
 				<td>
 					<label for="install_welcome" style="font-weight: normal;">Send me a welcome email containing my username and password.</label>
 				</td>
-			</tr>
+			</tr> -->
 		</table>
 		
 		<h3>Install Alkaline</h3>
