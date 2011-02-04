@@ -380,6 +380,10 @@ class Photo extends Alkaline{
 			}
 		}
 		
+		
+		// Tags to update to all photos
+		$tags_to_update = $tags;
+		
 		// Get current tags
 		$this->getTags();
 		
@@ -387,6 +391,9 @@ class Photo extends Alkaline{
 		
 		// Loop through photos
 		for($i = 0; $i < $this->photo_count; ++$i){
+			// Duplicate tags so unsetting doesn't affect loop
+			$tags = $tags_to_update;
+			
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
 				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
@@ -481,9 +488,9 @@ class Photo extends Alkaline{
 		for($j=0; $j<$tag_count; ++$j){
 			$sql_params[':tag' . $j] = $tags[$j];
 		}
-		
+	
 		$sql_param_keys = array_keys($sql_params);
-		
+	
 		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
 		$query->execute($sql_params);
 		$tags_db = $query->fetchAll();
@@ -495,6 +502,9 @@ class Photo extends Alkaline{
 			$tags_db_names[] = $tag_db['tag_name'];
 		}
 		
+		// Tags to add to all photos
+		$tags_to_add = $tags;
+		
 		// Get current tags
 		$this->getTags();
 		
@@ -502,13 +512,15 @@ class Photo extends Alkaline{
 		
 		// Loop through photos
 		for($i = 0; $i < $this->photo_count; ++$i){
+			// Duplicate tags so unsetting doesn't affect loop
+			$tags = $tags_to_add;
+			
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
 				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
-					$tag_key = array_search($tag['tag_name'], $tags);
+					$tag_key = array_search($tag['tag_name'], $tags, true);
 					if($tag_key !== false){
 						unset($tags[$tag_key]);
-						continue;
 					}
 				}
 			}
@@ -573,6 +585,7 @@ class Photo extends Alkaline{
 		$tags = array_map('trim', $tags);
 		$tags = array_unique($tags);
 		
+		// Get current tags
 		$this->getTags();
 		
 		$tags_db_ids = array();
