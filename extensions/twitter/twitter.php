@@ -13,6 +13,7 @@ class Twitter extends Orbit{
 		
 		$this->twitter_active = $this->returnPref('twitter_active');
 		$this->twitter_format = $this->returnPref('twitter_format');
+		$this->twitter_last_photo_id = $this->returnPref('twitter_last_photo_id');
 		$this->twitter_url_shortener = $this->returnPref('twitter_url_shortener');
 		
 		require_once('classes/twitteroauth.php');
@@ -47,13 +48,13 @@ class Twitter extends Orbit{
 			<table>
 				<tr>
 					<td class="right"><label>Username:</label></td>
-					<td><a href="http://twitter.com/<?php echo $this->twitter_screen_name; ?>/"><?php echo $this->twitter_screen_name; ?></a> &#0160; <a href="<?php echo $this->locationFull('unlink=twitter'); ?>" class="button">Unlink from Twitter</a></td>
+					<td><a href="http://twitter.com/<?php echo $this->twitter_screen_name; ?>/"><?php echo $this->twitter_screen_name; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'twitter')); ?>" class="button">Unlink from Twitter</a></td>
 				</tr>
 				<tr>
 					<td class="right pad"><label for="twitter_format">Format:</label></td>
 					<td>
-						<input type="text" id="twitter_format" name="twitter_format" style="width: 30em;" value="<?php echo $this->twitter_format; ?>" /><br />
-						<span class="quiet">Use the keywords %LINK, %PHOTO_TITLE, and %USER_NAME above.</span>
+						<textarea type="text" id="twitter_format" name="twitter_format" style="width: 30em;"><?php echo $this->twitter_format; ?></textarea><br />
+						<span class="quiet">Use Canvas tags such as <code>{Photo_Title}</code> above.</span>
 					</td>
 				</tr>
 				<tr>
@@ -75,7 +76,7 @@ class Twitter extends Orbit{
 				<tr>
 					<td class="right"><label>Username:</label></td>
 					<td>
-						<a href="<?php echo $this->locationFull('link=twitter'); ?>" class="button">Link to Twitter</a><br /><br />
+						<a href="<?php echo $this->locationFull(array('link' => 'twitter')); ?>" class="button">Link to Twitter</a><br /><br />
 						<span class="quiet">Note: Alkaline will be linked to whichever Twitter account you are currently logged into.</span>
 					</td>
 				</tr>
@@ -112,7 +113,7 @@ class Twitter extends Orbit{
 		if(!empty($_GET['link'])){
 			switch($_GET['link']){
 				case 'twitter':
-					$twitter_token = $this->twitter->getRequestToken($this->locationFull('from=twitter'));
+					$twitter_token = $this->twitter->getRequestToken($this->locationFull(array('from' => 'twitter')));
 					$twitter_authorize_url = $this->twitter->getAuthorizeURL($twitter_token['oauth_token']);
 					
 					$this->setPref('twitter_oauth_token', $twitter_token['oauth_token']);
@@ -146,15 +147,53 @@ class Twitter extends Orbit{
 	}
 	
 	public function orbit_config_save(){
+		if(empty($this->twitter_last_photo_id)){
+			$photo_ids = new Find;
+			$photo_ids->published();
+			$photo_ids->sort('photo_published', 'DESC');
+			$photo_ids->privacy('public');
+			$photo_ids->find();
+			$photo = new Photo($photo_ids);
+			$photo->hook();
+		}
+		
 		$this->setPref('twitter_format', @$_POST['twitter_format']);
 		$this->setPref('twitter_url_shortener', @$_POST['twitter_url_shortener']);
 		$this->savePref();
 	}
 	
-	public function orbit_photo_publish($photo_ids){
-		$status = 'I just uploaded a photo.';
-		$paramaters = array('status' => $status);
-		// $this->twitter->post('/statuses/update.json', $paramaters);
+	public function orbit_photo($photos){
+		if(count($photos) < 1){ return; }
+		
+		$latest = 0;
+		$now = time();
+		foreach($photos as $photo){
+			$photo_published = strtotime($photo['photo_published']);
+			
+			if(empty($photo_published)){ continue; }
+			if($photo_published > $now){ continue; }
+			if($photo['photo_privacy'] != 1){ continue; }
+			
+			if($photo_published > $latest){
+				$latest = $photo_published;
+				$latest_photo = $photo;
+			}
+		}
+		
+		if($latest_photo['photo_id'] == $this->twitter_last_photo_id){ return; }
+		if(empty($latest_photo)){ return; }
+		
+		$this->setPref('twitter_last_photo_id', $latest_photo['photo_id']);
+		$this->savePref();
+		
+		$canvas = new Canvas($this->twitter_format);
+		$canvas->assignArray($latest_photo);
+		$canvas->generate();
+		
+		$canvas->template = trim($canvas->template);
+		
+		$parameters = array('status' => $canvas->template);
+		$this->twitter->post('statuses/update', $parameters);
 	}
 }
 
