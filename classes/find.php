@@ -33,7 +33,9 @@ class Find extends Alkaline{
 	public $page_limit_current;
 	public $page_limit_first;
 	public $page_next;
+	public $page_next_uri;
 	public $page_previous;
+	public $page_previous_uri;
 	public $piles;
 	public $tags;
 	public $with;
@@ -112,65 +114,65 @@ class Find extends Alkaline{
 
 		// Smart search
 		if(!empty($_REQUEST['act'])){
-			$this->smart($_REQUEST['act']);
+			$this->_smart($_REQUEST['act']);
 		}
 
 		// Title and description
 		if(!empty($_REQUEST['q'])){
-			$this->search($_REQUEST['q']);
+			$this->_search($_REQUEST['q']);
 		}
 
 		// Tags
 		if(!empty($_REQUEST['tags'])){
-			$this->tags($_REQUEST['tags']);
+			$this->_tags($_REQUEST['tags']);
 		}
 
 		// Rights set
 		if(!empty($_REQUEST['rights'])){
-			$this->rights(intval($_REQUEST['rights']));
+			$this->_rights(intval($_REQUEST['rights']));
 		}
 
 		// Date taken
 		if(!empty($_REQUEST['taken_begin']) or !empty($_REQUEST['taken_end'])){
-			$this->taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
+			$this->_taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
 		}
 
 		// Date uploaded
 		if(!empty($_REQUEST['uploaded_begin']) or !empty($_REQUEST['uploaded_end'])){
-			$this->uploaded($_REQUEST['uploaded_begin'], $_REQUEST['uploaded_end']);
+			$this->_uploaded($_REQUEST['uploaded_begin'], $_REQUEST['uploaded_end']);
 		}
 
 		// Location
 		if(!empty($_REQUEST['location'])){
-			$this->location($_REQUEST['location'], $_REQUEST['location_proximity']);
+			$this->_location($_REQUEST['location'], $_REQUEST['location_proximity']);
 		}
 
 		// Primary color
 		if(!empty($_REQUEST['color'])){
 			switch($_REQUEST['color']){
 				case 'blue':
-					$this->hsl(170, 235, 1, 100, 1, 100);
+					$this->_hsl(170, 235, 1, 100, 1, 100);
 					break;
 				case 'red':
-					$this->hsl(345, 10, 1, 100, 1, 100);
+					$this->_hsl(345, 10, 1, 100, 1, 100);
 					break;
 				case 'yellow':
-					$this->hsl(50, 75, 1, 100, 1, 100);
+					$this->_hsl(50, 75, 1, 100, 1, 100);
 					break;
 				case 'green':
-					$this->hsl(75, 170, 1, 100, 1, 100);
+					$this->_hsl(75, 170, 1, 100, 1, 100);
 					break;
 				case 'purple':
-					$this->hsl(235, 300, 1, 100, 1, 100);
+					$this->_hsl(235, 300, 1, 100, 1, 100);
 					break;
 				case 'orange':
-					$this->hsl(10, 50, 1, 100, 1, 100);
+					$this->_hsl(10, 50, 1, 100, 1, 100);
 					break;
 				case 'brown':
-					$this->hsl(null, null, null, null, 1, 20);
+					$this->_hsl(null, null, null, null, 1, 20);
 					break;
 				case 'pink':
-					$this->hsl(300, 345, 1, 100, 1, 100);
+					$this->_hsl(300, 345, 1, 100, 1, 100);
 					break;
 				default:
 					break;
@@ -181,13 +183,13 @@ class Find extends Alkaline{
 		if(!empty($_REQUEST['views'])){
 			switch($_REQUEST['views_operator']){
 				case 'greater':
-					$this->views($_REQUEST['views'], null);
+					$this->_views($_REQUEST['views'], null);
 					break;
 				case 'less':
-					$this->views(null, $_REQUEST['views']);
+					$this->_views(null, $_REQUEST['views']);
 					break;
 				case 'equal':
-					$this->views($_REQUEST['views'], $_REQUEST['views']);
+					$this->_views($_REQUEST['views'], $_REQUEST['views']);
 					break;
 			}
 		}
@@ -196,13 +198,13 @@ class Find extends Alkaline{
 		if(!empty($_REQUEST['orientation'])){
 			switch($_REQUEST['orientation']){
 				case 'portrait':
-					$this->ratio(1, null, null);
+					$this->_ratio(1, null, null);
 					break;
 				case 'landscape':
-					$this->ratio(null, 1, null);
+					$this->_ratio(null, 1, null);
 					break;
 				case 'square':
-					$this->ratio(null, null, 1);
+					$this->_ratio(null, null, 1);
 					break;
 			}
 		}
@@ -211,13 +213,13 @@ class Find extends Alkaline{
 		if(!empty($_REQUEST['privacy'])){
 			switch($_REQUEST['privacy']){
 				case 'public':
-					$this->privacy(1);
+					$this->_privacy(1);
 					break;
 				case 'protected':
-					$this->privacy(2);
+					$this->_privacy(2);
 					break;
 				case 'private':
-					$this->privacy(3);
+					$this->_privacy(3);
 					break;
 			}
 		}
@@ -226,10 +228,10 @@ class Find extends Alkaline{
 		if(!empty($_REQUEST['published'])){
 			switch($_REQUEST['published']){
 				case 'published':
-					$this->published(true);
+					$this->_published(true);
 					break;
 				case 'unpublished':
-					$this->published(false);
+					$this->_published(false);
 					break;
 			}
 		}
@@ -238,26 +240,26 @@ class Find extends Alkaline{
 		if(!empty($_REQUEST['sort'])){
 			switch($_REQUEST['sort']){
 				case 'taken':
-					$this->sort('photos.photo_taken', $_REQUEST['sort_direction']);
-					$this->notnull('photos.photo_taken');
+					$this->_sort('photos.photo_taken', $_REQUEST['sort_direction']);
+					$this->_notnull('photos.photo_taken');
 					break;
 				case 'published':
-					$this->sort('photos.photo_published', $_REQUEST['sort_direction']);
-					$this->notnull('photos.photo_published');
+					$this->_sort('photos.photo_published', $_REQUEST['sort_direction']);
+					$this->_notnull('photos.photo_published');
 					break;
 				case 'uploaded':
-					$this->sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
+					$this->_sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
 					break;
 				case 'updated':
-					$this->sort('photos.photo_updated', $_REQUEST['sort_direction']);
-					$this->notnull('photos.photo_updated');
+					$this->_sort('photos.photo_updated', $_REQUEST['sort_direction']);
+					$this->_notnull('photos.photo_updated');
 					break;
 				case 'title':
-					$this->sort('photos.photo_title', $_REQUEST['sort_direction']);
-					$this->notnull('photos.photo_title');
+					$this->_sort('photos.photo_title', $_REQUEST['sort_direction']);
+					$this->_notnull('photos.photo_title');
 					break;
 				case 'views':
-					$this->sort('photos.photo_views', $_REQUEST['sort_direction']);
+					$this->_sort('photos.photo_views', $_REQUEST['sort_direction']);
 					break;
 				default:
 					break;
@@ -850,7 +852,7 @@ class Find extends Alkaline{
 		// Guest, admin checking
 		$user = new User;
 		
-		if(@$_SESSION['alkaline']['guest']){
+		if(!empty($_SESSION['alkaline']['guest'])){
 			$privacy = 2;
 			$all = false;
 		}
@@ -1160,7 +1162,6 @@ class Find extends Alkaline{
 				$this->pages(@intval($_GET['id']));
 				break;
 			default:
-				$this->addNote('There is no smart search by that name.', 'notice');
 				return false;
 				break;
 		}
@@ -1194,8 +1195,9 @@ class Find extends Alkaline{
 	 */
 	public function page($page, $limit=null, $first=null){
 		// Error checking
+		if($limit === 0){ return false; }
 		if(empty($page)){
-			if(!empty($_GET['page'])){ $page = intval($_GET['page']); }
+			if(!empty($_REQUEST['page'])){ $page = intval($_REQUEST['page']); }
 			else{ $page = 1; }
 		}
 		else{
@@ -1462,6 +1464,15 @@ class Find extends Alkaline{
 		$this->photo_last = $this->page_begin + $this->page_limit;
 		$this->photo_first_reverse = $this->photo_count - $this->photo_first + 1;
 		$this->photo_last_reverse = $this->page_begin + $this->page_limit;
+		
+		// Determine URLs of photo pages
+		if(!empty($this->page_next)){
+			$this->page_next_uri = $this->magicURL($this->page_next);
+		}
+		
+		if(!empty($this->page_previous)){
+			$this->page_previous_uri = $this->magicURL($this->page_previous);
+		}
 		
 		// Return photos.photo_ids
 		return $this->photo_ids;
