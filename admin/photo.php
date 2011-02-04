@@ -49,6 +49,13 @@ if(!empty($_POST['photo_id'])){
 			$photo_description = nl2br($photo_description_raw);
 		}
 		
+		if(@$_POST['photo_comment_disabled'] == 'disabled'){
+			$photo_comment_disabled = 1;
+		}
+		else{
+			$photo_comment_disabled = 0;
+		}
+		
 		$fields = array('photo_title' => @$_POST['photo_title'],
 			'photo_description' => $photo_description,
 			'photo_description_raw' => $photo_description_raw,
@@ -56,6 +63,7 @@ if(!empty($_POST['photo_id'])){
 			'photo_geo' => @$_POST['photo_geo'],
 			'photo_published' => @$_POST['photo_published'],
 			'photo_privacy' => @$_POST['photo_privacy'],
+			'photo_comment_disabled' => $photo_comment_disabled,
 			'right_id' => @$_POST['right_id']);
 		
 		$photos->updateFields($fields);
@@ -184,6 +192,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<hr />
 			
 			<table>
+				<?php if($alkaline->returnConf('comm_enabled')){ ?>
+				<tr>
+					<td class="right" style="width: 5%"><input type="checkbox" id="photo_comment_disabled" name="photo_comment_disabled" value="disabled" <?php if($photo['photo_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
+					<td>
+						<strong><label for="photo_comment_disabled">Disable comments on this image.</label></strong>
+					</td>
+				</tr>
+				<?php } ?>
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="photo_delete" name="photo_delete" value="delete" /></td>
 					<td>

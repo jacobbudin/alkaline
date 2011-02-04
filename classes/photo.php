@@ -74,6 +74,9 @@ class Photo extends Alkaline{
 				$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
 				$this->photos[$i]['photo_src'] = BASE . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
 				$this->photos[$i]['photo_uri'] = LOCATION . BASE . 'photo' . URL_ID . $this->photos[$i]['photo_id'] . URL_RW;
+				if($this->returnConf('comm_enabled') != true){
+					$this->photos[$i]['photo_comment_disabled'] = 1;
+				}
 			}
 		}
 	}
