@@ -50,7 +50,7 @@ if(!empty($_POST['tag_id'])){
 	unset($tag_id);
 }
 else{
-	$alkaline->deleteEmptyRow('tags', array('tag_title'));
+	$alkaline->deleteEmptyRow('tags', array('tag_name'));
 }
 
 $tags = $alkaline->getTags();
