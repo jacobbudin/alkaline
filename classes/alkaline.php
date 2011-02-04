@@ -2267,17 +2267,18 @@ class Alkaline{
 	/**
 	 * Current page for redirects
 	 *
-	 * @param string $append Append to URL (GET variables)
-	 * @return void
+	 * @param array $get Append to URL (GET variables as associative array)
+	 * @return string URL
 	 */
-	public function locationFull($append=null){
+	public function locationFull($get=null){
+		if(!empty($array) and !is_array($get)){ return false; }
 		$location = LOCATION . $_SERVER['REQUEST_URI'];
-		if(!empty($append)){
+		if(!empty($get)){
 			if(preg_match('#\?.*$#si', $location)){
-				$location .= '&' . urlencode($append);
+				$location .= '&' . http_build_query($get);
 			}
 			else{
-				$location .= '?' . urlencode($append);
+				$location .= '?' . http_build_query($get);
 			}
 		}
 		
