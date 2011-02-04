@@ -176,6 +176,7 @@ $photo_ids->find();
 
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
+$photos->hook();
 
 define('TAB', 'features');
 define('TITLE', 'Alkaline Features');
@@ -186,7 +187,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div class="span-24 last">
 	<div class="span-18 colborder">
 		<div class="actions">
-			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a>
+			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
 		</div>
 		
 		<h1>Editor (<span id="photo_count_selected">0</span> of <?php echo number_format($photo_ids->photo_count); ?>)</h1>
