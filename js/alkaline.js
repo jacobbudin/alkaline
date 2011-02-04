@@ -628,7 +628,7 @@ $(document).ready(function(){
 		var no_of_files;
 		$("#progress").hide(0);
 		$("#upload").html5_upload({
-			url: BASE + ADMIN + 'upload/',
+			url: BASE + ADMIN + 'upload.php',
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
 				no_of_files = total;
