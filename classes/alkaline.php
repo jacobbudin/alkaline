@@ -2164,19 +2164,18 @@ class Alkaline{
 	 * @param string $count Count
 	 * @param string $singular Singular form
 	 * @param string $plural Plural form
-	 * @return void
+	 * @return string
 	 */
-	public function echoCount($count, $singular, $plural=null){
+	public function returnCount($count, $singular, $plural=null){
 		if(empty($plural)){
 			$plural = $singular . 's';
 		}
 		
 		if($count == 1){
-			echo $singular;
+			return $singular;
 		}
-		else{
-			echo $plural;
-		}
+		
+		return $plural;
 	}
 	
 	/**
@@ -2185,10 +2184,12 @@ class Alkaline{
 	 * @param string $count Count
 	 * @param string $singular Singular form
 	 * @param string $plural Plural form
-	 * @return void
+	 * @return string
 	 */
-	public function echoFullCount($count, $singular, $plural=null){
-		$count = number_format($count) . ' ' . self::echoCount($count, $singular, $plural);
+	public function returnFullCount($count, $singular, $plural=null){
+		$count = number_format($count) . ' ' . self::returnCount($count, $singular, $plural);
+		
+		return $count;
 	}
 	
 	/**

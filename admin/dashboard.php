@@ -50,12 +50,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<div id="statistics_holder" class="statistics_holder"></div>
 			<div id="statistics_views" title="<?php echo $views; ?>"></div>
 			<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
-			<hr />
 			<?php
 		}
-		?>
 		
-		<?php
+		if(($user->returnConf('stat_enabled') !== false) and ($user->returnPref('recent_photos') === true)){
+			echo '<hr />';
+		}
+		
 		// Preference: recent_photos
 		if($user->returnPref('recent_photos') === true){
 			?>
@@ -115,13 +116,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php if($shoebox_count > 0){ ?>
 					<tr>
 						<td class="right"><?php echo $shoebox_count; ?></td>
-						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php $alkaline->echoCount($shoebox_count, 'photo'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($shoebox_count, 'photo'); ?></a></td>
 					</tr>
 				<?php } ?>
 				<?php if($comments->comment_count > 0){ ?>
 					<tr>
 						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php $alkaline->echoCount($comments->comment_count, 'comment'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php echo $alkaline->returnCount($comments->comment_count, 'comment'); ?></a></td>
 					</tr>
 				<?php } ?>
 			</table>
