@@ -85,6 +85,10 @@ class Comment extends Alkaline{
 		if(!empty($_REQUEST['status'])){
 			$this->status($_REQUEST['status']);
 		}
+		
+		if(!empty($_REQUEST['photo'])){
+			$this->photo($_REQUEST['photo']);
+		}
 	}
 	
 	public function __destruct(){

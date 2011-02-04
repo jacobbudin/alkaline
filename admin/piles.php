@@ -89,7 +89,7 @@ if(empty($pile_id)){
 	
 	define('TITLE', 'Alkaline Piles');
 	require_once(PATH . ADMIN . 'includes/header.php');
-
+	
 	?>
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'piles' . URL_ACT . 'build' . URL_RW; ?>">Build static pile</a></div>

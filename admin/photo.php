@@ -77,11 +77,20 @@ $photos = new Photo($photo_id);
 $sizes = $photos->getImgUrl();
 $photos->getTags();
 $photos->getColorkey(300, 40);
+$comments = $photos->getComments();
 $exifs = $photos->getEXIF();
 
 if(!$photo = @$photos->photos[0]){
 	$alkaline->addNote('The photo you requested could not be found.', 'error');
 	$alkaline->callback();
+}
+
+$comment_count = count($comments);
+if($comment_count > 0){
+	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?photo=' . $photo['photo_id'] . '">View ' . $alkaline->returnCount($comment_count, 'comments') . ' (' . $comment_count . ')</a>';
+}
+else{
+	$comment_action = '';
 }
 
 $photo_colorkey = $photo['photo_colorkey'];
@@ -109,7 +118,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 last">
-			<div class="actions"><a href="<?php echo BASE . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">Go to photo</a></div>
+			<div class="actions"><a href="<?php echo BASE . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">Go to photo</a><?php echo $comment_action; ?></div>
 			
 			<div class="photo_tag_container">
 				<label for="photo_tag">Tags:</label><br />

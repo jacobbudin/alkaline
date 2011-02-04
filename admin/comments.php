@@ -69,7 +69,7 @@ if(empty($comment_id)){
 
 	?>
 	
-	<h1>Search</h1>
+	<h1>Comments (<?php echo $comments->comment_count; ?>)</h1>
 	
 	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
 		<p style="margin-bottom: 0;">
@@ -103,10 +103,6 @@ if(empty($comment_id)){
 			</table>
 		</div>
 	</form>
-	
-	<hr />
-	
-	<h1>Comments (<?php echo $comments->comment_count; ?>)</h1>
 	
 	<table>
 		<tr>
