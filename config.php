@@ -39,7 +39,7 @@ $table_prefix = '';
 $folder_prefix = '';
 
 // URL rewriting (supports Apache mod_rewrite, Microsoft IIS7 URL Rewrite 2, and compatible)
-$url_rewrite = false;
+$url_rewrite = true;
 
 // Global password salt
 $salt = '';
@@ -59,7 +59,7 @@ $user_remember = 1209600;
 $temp_ext = '.html';
 
 // Default query limit (can be overwritten)
-$limit = 20;
+$limit = 15;
 
 // Date formatting
 $date_format = 'M j, Y \a\t g:i a';

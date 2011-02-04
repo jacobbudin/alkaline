@@ -108,6 +108,10 @@ th{
 	color: #777;
 }
 
+.colborderl {padding-left:24px;margin-left:25px;border-left: 1px solid #eee;}
+.colborderr {padding-right:0;margin-right:0;}
+
+
 p.slim { margin-bottom: .75em; }
 
 img.frame{
@@ -145,7 +149,7 @@ table.census a{
 
 #header_holder{
 	padding: 2em 0 0 0;
-	background: #ccc url(/admin/images/header_bg.png) bottom left repeat-x;
+	background: #ccc url(../admin/images/header_bg.png) bottom left repeat-x;
 }
 
 #panels{
@@ -176,7 +180,7 @@ table.census a{
 }
 
 #user_panel{
-	background: transparent url(/admin/images/hr_vertical.png) repeat-y 210px 0;
+	background: transparent url(../admin/images/hr_vertical.png) repeat-y 210px 0;
 }
 
 #footer{
@@ -401,6 +405,8 @@ img.ui-datepicker-trigger{
 
 .actions{
 	float: right;
+	text-align: right;
+	min-width: 310px;
 }
 
 .actions form{
@@ -418,7 +424,7 @@ img.ui-datepicker-trigger{
 }
 
 .actions a, a.button{
-	margin-left:.5em;
+	margin-left: 1em;
 	padding: .4em .6em;
 	background-color: #eee;
 	color: #666;
