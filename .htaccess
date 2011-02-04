@@ -25,5 +25,8 @@
 	RewriteRule ^pile/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				pile.php?id=$1&page=$4 [NC]
 	RewriteRule ^tag/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				tag.php?id=$1&page=$4 [NC]
 	RewriteRule ^slideshow(/)?$											slideshow.php [NC]
+	RewriteRule ^search(/)?$											search.php [NC]
+	RewriteRule ^results(/)?$											results.php [NC]
+	RewriteRule ^results/page([0-9]+)(/)?$								results.php?page=$1 [NC]
 	
 </IfModule>
