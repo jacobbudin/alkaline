@@ -10,8 +10,18 @@ $user->perm(true);
 
 $id = $alkaline->findID(@$_POST['photo_id']);
 
+// Require at least 128M memory
+$mem = ini_get('memory_limit');
+if(substr($mem, -1) == 'M'){
+	if(substr($mem, 0, strlen($mem) - 1) < 128){
+		if(!ini_set('memory_limit', '128M')){
+			exit();
+		}
+	}
+}
+
 // Open cities JSON file
-$cities = file_get_contents(PATH . INSTALL . 'cities.json');
+$cities = file_get_contents(PATH . DB . 'cities.json');
 $cities = explode("\n", $cities);
 
 if(!is_int($id)){
@@ -30,7 +40,7 @@ else{
 		$alkaline->exec('DELETE FROM countries;');
 		
 		// Load countries
-		$countries = file_get_contents(PATH . INSTALL . 'countries.json');
+		$countries = file_get_contents(PATH . DB . 'countries.json');
 		$countries = explode("\n", $countries);
 
 		$query = $alkaline->prepare('INSERT INTO countries (country_id, country_code, country_name) VALUES (?, ?, ?);');
