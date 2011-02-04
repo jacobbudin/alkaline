@@ -33,6 +33,7 @@ $photo_ids->find();
 
 $photos = new Photo($photo_ids->photo_ids);
 $photos->getImgUrl('square');
+$photos->hook();
 
 $shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
 if($shoebox_count > 0){
@@ -50,7 +51,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-		<h1>Search</h1>
+		<h1>Images (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
+		
 		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
 			<p style="margin-bottom: 0;">
 				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
@@ -194,9 +196,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 		</form>
 		
-		<hr />
-		
-		<h1>Images (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
 		<p>
 			<?php
 
