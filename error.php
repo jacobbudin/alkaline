@@ -15,11 +15,28 @@ define('TAB', 'Error');
 define('TITLE', 'Alkaline Error');
 require_once(PATH . ADMIN . 'includes/header.php');
 
-?>
+if($_SESSION['alkaline']['errors']){
+	$error_constants = array();
+	foreach($_SESSION['alkaline']['errors'] as $error){
+		$error_constants[] = $error['constant'];
+	}
+}
 
-<p>A critical error has occurred.</p>
+$key = array_search(E_USER_ERROR, $error_constants, true);
 
-<?php
+if($key !== false){
+	$error = $_SESSION['alkaline']['errors'][$key];
+	echo '<p>' . $error['message'];
+	if(!empty($error['filename'])){
+		echo ' (' . $error['filename'] . ', line ' . $error['line_number'] .')';
+	} 
+	echo '.</p>';
+}
+else{
+	?>
+	<p>A critical error has occurred.</p>
+	<?php
+}
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 

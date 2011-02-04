@@ -10,15 +10,15 @@
 require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
-$alkaline = new Alkaline();
+$alkaline = new Alkaline;
 $alkaline->recordStat('tag');
 
 $id = $alkaline->findID($_GET['id']);
 $tag = $alkaline->getRow('tags', $id);
-if(!$tag){ $alkaline->addError(E_USER_WARNING, 'No tag was not found.'); }
+if(!$tag){ $alkaline->addError(E_USER_ERROR, 'No tag was not found'); }
 
 $photo_ids = new Find;
-$photo_ids->page(null,5,4);
+$photo_ids->page(null, 0);
 $photo_ids->published();
 $photo_ids->privacy('public');
 $photo_ids->tags($id);

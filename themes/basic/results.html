@@ -25,21 +25,19 @@
 		{if:Tags}
 			<p>
 			{block:Tags}
-				<span class="tag">#{Tag_Name}</span>
+				<span class="tag">#<a href="{Tag_Uri}">{Tag_Name}</a></span>
 			{/block:Tags}
 			</p>
 		{/if:Tags}
+
 		{if:Piles}
 			<p>
-			
-				<em>As seen in the pile:</em> {block:Piles}{Pile_Title}{/block:Piles}
+				<em>As seen in the collection:</em>{block:Piles} &#0183; <a href="{define:Base}pile{define:Url_Id}{Pile_Title_Url}{define:Url_Rw}">{Pile_Title}</a>{/block:Piles}
 			</p>
 		{/if:Piles}
 		{if:Pages}
 			<p>
-			{block:Pages}
-				<em>As seen on the page:</em> {Page_Title}
-			{/block:Pages}
+				<em>As seen on the page:</em>{block:Pages} &#0183; <a href="{define:Base}page{define:Url_Id}{Page_Title_Url}{define:Url_Rw}">{Page_Title}</a>{/block:Pages}
 			</p>
 		{/if:Pages}
 	</div>

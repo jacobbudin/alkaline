@@ -15,11 +15,12 @@ $alkaline->recordStat('photo');
 $alkaline->addComments();
 
 $id = $alkaline->findID($_GET['id'], true);
-if(!$id){ $alkaline->addError(E_USER_WARNING, 'No photo was found'); }
+if(!$id){ $alkaline->addError(E_USER_ERROR, 'No photo was found'); }
 
 $photo_ids = new Find($id);
 $photo_ids->privacy('public');
 $photo_ids->find();
+if(empty($photo_ids->photo_ids)){ $alkaline->addError(E_USER_ERROR, 'No photo was found'); }
 
 $photos = new Photo($photo_ids);
 $photos->updateViews();

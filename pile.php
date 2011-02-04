@@ -14,10 +14,11 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('pile');
 
 $id = $alkaline->findID($_GET['id']);
+if(!$id){ $alkaline->addError(E_USER_ERROR, 'No pile was found'); }
+
 $pile = new Pile($id);
 $pile = @$pile->piles[0];
-
-if(!$pile){ $alkaline->addError(E_USER_WARNING, 'No pile was found.'); }
+if(!$pile){ $alkaline->addError(E_USER_WARNING, 'No pile was found'); }
 
 $pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);
 $pile['pile_modified'] = $alkaline->formatTime($pile['pile_modified']);

@@ -42,31 +42,38 @@
 				{/block:Comments}
 				</table>
 			{else:Comments}
-				<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
+				{if:Photo_Comment_Disabled}
+				{else:Photo_Comment_Disabled}
+					<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
+				{/if:Photo_Comment_Disabled}
 			{/if:Comments}
-			<hr />
-			<table class="comments">
-				<tr>
-					<td class="right">Author:</td>
-					<td>{Photo_Comment_Author_Name}</td>
-				</tr>
-				<tr>
-					<td class="right">Email:</td>
-					<td>{Photo_Comment_Author_Email}</td>
-				</tr>
-				<tr>
-					<td class="right">URL:</td>
-					<td>{Photo_Comment_Author_Uri}</td>
-				</tr>
-				<tr>
-					<td class="right">Comment:</td>
-					<td>{Photo_Comment_Text}</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>{Photo_Comment_Submit}</td>
-				</tr>
-			</table>
+			{if:Photo_Comment_Disabled}
+				<p>Comments have been disabled for this photo.</p>
+			{else:Photo_Comment_Disabled}
+				<hr />
+				<table class="comments">
+					<tr>
+						<td class="right">Author:</td>
+						<td>{Photo_Comment_Author_Name}</td>
+					</tr>
+					<tr>
+						<td class="right">Email:</td>
+						<td>{Photo_Comment_Author_Email}</td>
+					</tr>
+					<tr>
+						<td class="right">URL:</td>
+						<td>{Photo_Comment_Author_Uri}</td>
+					</tr>
+					<tr>
+						<td class="right">Comment:</td>
+						<td>{Photo_Comment_Text}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>{Photo_Comment_Submit}</td>
+					</tr>
+				</table>
+			{/if:Photo_Comment_Disabled}
 		</div>
 		<hr />
 	{/block:Photos}

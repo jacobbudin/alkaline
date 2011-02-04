@@ -9,6 +9,9 @@
 	<div class="float_right">
 		<div class="uploaded">{Photo_Uploaded}</div>
 		<div class="right_set">
+			{if:Photo_Comment_Count}
+				{Photo_Comment_Count|alpha0|ucwords} comments.<br />
+			{/if:Photo_Comment_Count}
 			{if:Right_Title}
 				{Right_Title}
 			{else:Right_Title}
@@ -28,6 +31,7 @@
 		{/block:Tags}
 		</p>
 	{/if:Tags}
+	
 	{if:Piles}
 		<p>
 			<em>As seen in the collection:</em>{block:Piles} &#0183; <a href="{define:Base}pile{define:Url_Id}{Pile_Title_Url}{define:Url_Rw}">{Pile_Title}</a>{/block:Piles}
@@ -44,11 +48,11 @@
 <hr />
 
 <div class="span-5">
-	{if:Page_Previous}<strong><a href="/page{Page_Previous}/">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+	{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
 </div>
 <div class="span-7 center">
 	Page #{Page_Current} of {Page_Count}
 </div>
 <div class="span-5 right last">
-	&#0160;{if:Page_Next}<strong><a href="/page{Page_Next}/">Next page &#8594;</a></strong>{/if:Page_Next}
+	&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
 </div>

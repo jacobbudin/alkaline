@@ -156,7 +156,7 @@ class Alkaline{
 		$response = $this->db->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 		$this->postquery($query);
 		
-		if(!$response){ $this->addError(E_USER_ERROR, 'Invalid query, check database connection'); }
+		if(!$response){ $this->addError(E_USER_ERROR, 'Invalid query, check database log and connection'); }
 		
 		return $response;
 	}
@@ -256,7 +256,7 @@ class Alkaline{
 			$message = $query . ' ' . ucfirst(preg_replace('#^Error\:[[:space:]]+#si', '', $error[2])) . ' (' . $code . ').';
 			
 			if(substr($code, 0, 2) == '00'){
-				// $this->report($message, $code);
+				$this->report($message, $code);
 			}
 			elseif($code == '23000'){
 				$this->report($message, $code);
@@ -1238,7 +1238,7 @@ class Alkaline{
 		}
 		
 		if($this->returnConf('comm_email')){
-			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . $comment_text);
+			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . strip_tags($comment_text));
 		}
 		
 		$this->updateCount('comments', 'photos', 'photo_comment_count', $id);
@@ -2120,6 +2120,45 @@ class Alkaline{
 	}
 	
 	/**
+	 * Change page number on current URL
+	 *
+	 * @param string $page 
+	 * @return void
+	 */
+	public function magicURL($page){
+		$uri = $_SERVER['REQUEST_URI'];
+		
+		if(URL_PAGE == '/'){
+			$uri = @preg_replace('#(\?)?page\=[0-9]#si', '', $uri);
+			if(preg_match('#page[0-9]+#si', $uri)){
+				$uri = preg_replace('#(/)?page[0-9]+(/)?#si', '\\1page' . $page . '\\2', $uri);
+			}
+			else{
+				$last_pos = strlen($uri) - 1;
+				if($last_pos != '/'){
+					$uri .= '/';
+				}
+				$uri .= 'page' . $page . '/';
+			}
+		}
+		else{
+			$uri = @preg_replace('#(\?)?page\=[0-9]#si', '', $uri);
+			$uri = @preg_replace('#\/page[0-9]+(/)?#si', '', $uri);
+
+			$last_pos = strlen($uri) - 1;
+
+			if($last_pos != '&'){
+				$uri .= '?';
+			}
+			
+			$uri .= 'page=' . $page;
+		}
+		
+		$uri = LOCATION . $uri;
+		return $uri;
+	}
+	
+	/**
 	 * Trim long strings
 	 *
 	 * @param string $string 
@@ -2348,19 +2387,19 @@ class Alkaline{
 		
 		switch($severity){
 			case E_USER_NOTICE:
-				$_SESSION['alkaline']['errors'][] = array('severity' => 'notice', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'notice', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 			case E_USER_WARNING:
-				$_SESSION['alkaline']['errors'][] = array('severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 			case E_USER_ERROR:
-				$_SESSION['alkaline']['errors'][] = array('severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				session_write_close();
-				require_once(PATH . '/error.php');
+				require_once(PATH . BASE . 'error.php');
 				exit();
 				break;
 			default:
-				$_SESSION['alkaline']['errors'][] = array('severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
+				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 		}
 		
@@ -2455,6 +2494,64 @@ class Alkaline{
 			$this->addError(E_USER_ERROR, 'Cannot write to report file');
 		}
 		fclose($handle);
+	}
+	
+	/**
+	 * ionCube event handler
+	 *
+	 * @param int|string $err_code Error code
+	 * @param array $params Associative array of context- dependent values
+	 * @return void
+	 */
+	public function ioncube_event_handler($err_code, $params){
+		switch($err_code){
+			case 1:
+				$error = 'An encoded file has been corrupted';
+				break;
+			case 2:
+				$error = 'An encoded file has reached its expiry time';
+				break;
+			case 3:
+				$error = 'An encoded file has a server restriction and is used on a non-authorized system';
+				break;
+			case 4:
+				$error = 'An encoded file is used on a system where the clock is set more than 24 hours before the file was encoded';
+				break;
+			case 5:
+				$error = 'An encoded file was encoded with the --disallow- untrusted-extensions option, and is used on a system with an unrecognized extension installed';
+				break;
+			case 6:
+				$error = 'The license file required by an encoded script could not be found';
+				break;
+			case 7:
+				$error = 'The license file has been altered or the passphrase used to decrypt the license was incorrect';
+				break;
+			case 8:
+				$error = 'The license file has reached its expiry time';
+				break;
+			case 9:
+				$error = 'A property marked as &#8216;enforced&#8217; in the license file was not matched by a property contained in the encoded file';
+				break;
+			case 10:
+				$error = 'The header block of the license file has been altered';
+				break;
+			case 11:
+				$error = 'The license has a server restriction and is used on a non-authorized system';
+				break;
+			case 12:
+				$error = 'The encoded file has been included by a file which is either non-encoded or has incorrect properties';
+				break;
+			case 13:
+				$error = 'The encoded file has included a file which is either non- encoded or has incorrect properties';
+				break;
+			case 14:
+				$error = 'The php.ini has either the --auto-append-file or --auto-prepend-file setting enabled';
+				break;
+			default:
+				$error = 'An unknown encoding error occured';
+				break;
+		}
+		$this->addError(E_USER_ERROR, $error);
 	}
 }
 

@@ -15,6 +15,7 @@ $alkaline->recordStat('home');
 
 $photo_ids = new Find;
 $photo_ids->sort('photos.photo_published', 'DESC');
+$photo_ids->published();
 $photo_ids->privacy('public');
 $photo_ids->find();
 
@@ -24,6 +25,7 @@ $photos->formatTime();
 $photos->getImgUrl('square');
 $photos->getImgUrl('medium');
 $photos->getEXIF();
+$photos->getColorkey(670, 10);
 $photos->getPiles();
 $photos->getTags();
 $photos->getRights();
@@ -37,8 +39,9 @@ $header->display();
 $index = new Canvas;
 $index->load('results');
 $index->assign('Page_Next', $photo_ids->page_next);
-$index->assign('Page_Next', $photo_ids->page_next);
 $index->assign('Page_Previous', $photo_ids->page_previous);
+$index->assign('Page_Next_URI', $photo_ids->page_next_uri);
+$index->assign('Page_Previous_URI', $photo_ids->page_previous_uri);
 $index->assign('Page_Current', $photo_ids->page);
 $index->assign('Page_Count', $photo_ids->page_count);
 $index->loop($photos);
