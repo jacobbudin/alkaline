@@ -98,7 +98,7 @@ class Alkaline{
 					$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 				}
 				elseif($this->db_type == 'sqlite'){
-					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 				
 					$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
 					$this->db->sqliteCreateFunction('COS', 'cos', 1);
