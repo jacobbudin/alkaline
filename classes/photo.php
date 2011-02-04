@@ -363,19 +363,21 @@ class Photo extends Alkaline{
 		$sql_params = array();
 		$tag_count = count($tags);
 		
-		for($j=0; $j<$tag_count; ++$j){
-			$sql_params[':tag' . $j] = $tags[$j];
-		}
+		if($tag_count > 0){
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
 		
-		$sql_param_keys = array_keys($sql_params);
+			$sql_param_keys = array_keys($sql_params);
 		
-		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
-		$query->execute($sql_params);
-		$tags_db = $query->fetchAll();
-		$tags_db_names = array();
+			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+			$query->execute($sql_params);
+			$tags_db = $query->fetchAll();
+			$tags_db_names = array();
 		
-		foreach($tags_db as $tag_db){
-			$tags_db_names[] = $tag_db['tag_name'];
+			foreach($tags_db as $tag_db){
+				$tags_db_names[] = $tag_db['tag_name'];
+			}
 		}
 		
 		// Get current tags
@@ -459,6 +461,9 @@ class Photo extends Alkaline{
 	public function addTags($tags){
 		// Error checking
 		if(!is_array($tags)){
+			return false;
+		}
+		if(empty($tags)){
 			return false;
 		}
 		
