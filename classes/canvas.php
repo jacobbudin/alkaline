@@ -80,7 +80,12 @@ class Canvas extends Alkaline{
 	 * @return void
 	 */
 	public function load($filename){
-		$theme_folder = $this->returnConf('theme_folder');
+		if(!empty($_REQUEST['theme'])){
+			$theme_folder = strip_tags($_REQUEST['theme']);
+		}
+		else{
+			$theme_folder = $this->returnConf('theme_folder');
+		}
 		
 		if(empty($theme_folder)){
 			$this->addError(E_USER_ERROR, 'No default theme selected');
@@ -122,9 +127,11 @@ class Canvas extends Alkaline{
 		
 		if(is_array($array)){
 			foreach($array as $key => $value){
-				// Set variable, scrub to remove conditionals
-				$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
-				$this->template = self::scrub($key, $this->template);
+				if(isset($value)){
+					// Set variable, scrub to remove conditionals
+					$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
+					$this->template = self::scrub($key, $this->template);
+				}
 			}
 		}
 		else{
@@ -229,7 +236,15 @@ class Canvas extends Alkaline{
 							$this->value = $value;
 							
 							$loop_template = str_ireplace('{' . $key . '}', $this->value, $loop_template);
-							$loop_template = preg_replace('#\{' . $key . '\|([a-z0-9_]+)\}#esi', "Canvas::\\1()", $loop_template);
+							// $loop_template = preg_replace('#\{' . $key . '\|([^\}]+)\}#esi', "Canvas::filter('\\1')", $loop_template);
+							
+							preg_match_all('#\{' . $key . '\|([^\}]+)\}#si', $loop_template, $keys_full, PREG_SET_ORDER);
+							
+							foreach($keys_full as $key_full){
+								$this->value = $value;
+								$this->value = $this->filter($key_full[1]);
+								$loop_template = str_ireplace($key_full[0], $this->value, $loop_template);
+							}
 							
 							if(!empty($this->value)){
 								$loop_template = self::scrub($key, $loop_template);
@@ -257,6 +272,122 @@ class Canvas extends Alkaline{
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Process nested blocks
+	 *
+	 * @param string $array 
+	 * @param string $template 
+	 * @param string $photo_id 
+	 * @return void
+	 */
+	protected function loopSub($array, $template, $photo_id){
+		$loops = array();
+		
+		$table_regex = implode('|', array_keys($this->tables));
+		
+		$matches = array();
+		
+		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $template, $matches, PREG_SET_ORDER);
+		
+		if(count($matches) > 0){
+			$loops = array();
+			
+			foreach($matches as $match){
+				$match[1] = strtolower($match[1]);
+				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
+			}
+		}
+		else{
+			return $template;
+		}
+		
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
+			$replacement = '';
+			$reel = $array->$loops[$j]['reel'];
+			
+			$reel_count = count($reel);
+			
+			if($reel_count > 0){
+				for($i = 0; $i < $reel_count; ++$i){
+					$loop_template = '';
+					
+					if(!empty($reel[$i]['photo_id'])){
+						if($reel[$i]['photo_id'] == $photo_id){
+							if(empty($loop_template)){
+								$loop_template = $loops[$j]['template'];
+							}
+							foreach($reel[$i] as $key => $value){
+								if(is_array($value)){
+									$value = var_export($value, true);
+								}
+								
+								$this->value = $value;
+								
+								$loop_template = str_ireplace('{' . $key . '}', $this->value, $loop_template);
+								// $loop_template = preg_replace('#\{' . $key . '\|([^\}]+)\}#esi', "Canvas::filter('\\1')", $loop_template);
+								
+								preg_match_all('#\{' . $key . '\|([^\}]+)\}#si', $loop_template, $keys_full, PREG_SET_ORDER);
+								
+								foreach($keys_full as $key_full){
+									$this->value = $value;
+									$this->value = $this->filter($key_full[1]);
+									$loop_template = str_ireplace($key_full[0], $this->value, $loop_template);
+								}
+													
+								if(!empty($this->value)){
+									$loop_template = self::scrub($key, $loop_template);
+								}
+							}
+						}
+					}
+					else{
+						$loop_template = '';
+					}
+					$replacement .= $loop_template;
+				}
+			}
+			
+			$loops[$j]['replacement'] = $replacement;
+		}
+		
+		$reels = array();
+		
+		foreach($loops as $loop){
+			if(!empty($loop['replacement'])){
+				$template = str_replace($loop['replace'], $loop['replacement'], $template);
+				$template = self::scrub($loop['reel'], $template);
+			}
+		}
+		
+		$table_regex = implode('|', array_keys($this->tables));
+		preg_match_all('#{if:(' . $table_regex . ')}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
+		
+		$loops = array();
+		
+		if(count($matches) > 0){
+			foreach($matches as $match){
+				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
+			}
+		}
+		
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
+			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
+				$loops[$j]['replacement'] = $loops[$j]['template'];
+				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
+			}
+		}
+		
+		foreach($loops as $loop){
+			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+		}
+		
+		return $template;
 	}
 	
 	/**
@@ -371,115 +502,24 @@ class Canvas extends Alkaline{
 		}
 	}
 	
-	/**
-	 * Process nested blocks
-	 *
-	 * @param string $array 
-	 * @param string $template 
-	 * @param string $photo_id 
-	 * @return void
-	 */
-	protected function loopSub($array, $template, $photo_id){
-		$loops = array();
-		
-		$table_regex = implode('|', array_keys($this->tables));
-		
-		$matches = array();
-		
-		preg_match_all('#{block:(' . $table_regex . ')}(.*?){/block:\1}#si', $template, $matches, PREG_SET_ORDER);
-		
-		if(count($matches) > 0){
-			$loops = array();
-			
-			foreach($matches as $match){
-				$match[1] = strtolower($match[1]);
-				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
-			}
-		}
-		else{
-			return $template;
-		}
-		
-		$loop_count = count($loops);
-		
-		for($j = 0; $j < $loop_count; ++$j){
-			$replacement = '';
-			$reel = $array->$loops[$j]['reel'];
-			
-			$reel_count = count($reel);
-			
-			if($reel_count > 0){
-				for($i = 0; $i < $reel_count; ++$i){
-					$loop_template = '';
-					
-					if(!empty($reel[$i]['photo_id'])){
-						if($reel[$i]['photo_id'] == $photo_id){
-							if(empty($loop_template)){
-								$loop_template = $loops[$j]['template'];
-							}
-							foreach($reel[$i] as $key => $value){
-								if(is_array($value)){
-									$value = var_export($value, true);
-								}
-								
-								$this->value = $value;
-								
-								$loop_template = str_ireplace('{' . $key . '}', $this->value, $loop_template);
-								$loop_template = preg_replace('#\{' . $key . '\|([a-z0-9_]+)\}#esi', "Canvas::\\1()", $loop_template);
-								
-								if(!empty($this->value)){
-									$loop_template = self::scrub($key, $loop_template);
-								}
-							}
-						}
-					}
-					else{
-						$loop_template = '';
-					}
-					$replacement .= $loop_template;
-				}
-			}
-			
-			$loops[$j]['replacement'] = $replacement;
-		}
-		
-		$reels = array();
-		
-		foreach($loops as $loop){
-			if(!empty($loop['replacement'])){
-				$template = str_replace($loop['replace'], $loop['replacement'], $template);
-				$template = self::scrub($loop['reel'], $template);
-			}
-		}
-		
-		$table_regex = implode('|', array_keys($this->tables));
-		preg_match_all('#{if:(' . $table_regex . ')}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
-		
-		$loops = array();
-		
-		if(count($matches) > 0){
-			foreach($matches as $match){
-				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
-			}
-		}
-		
-		$loop_count = count($loops);
-		
-		for($j = 0; $j < $loop_count; ++$j){
-			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
-				$loops[$j]['replacement'] = $loops[$j]['template'];
-				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
-			}
-		}
-		
-		foreach($loops as $loop){
-			$template = str_replace($loop['replace'], $loop['replacement'], $template);
-		}
-		
-		return $template;
-	}
 	
 	// FILTERS
+	
+	/**
+	 * Execute Canvas filters
+	 *
+	 * @param string $filters Filters 
+	 * @return void
+	 */
+	public function filter($filters){
+		$filters = explode('|', $filters);
+		foreach($filters as $filter){
+			if(method_exists('Canvas', $filter)){
+				$this->value = Canvas::$filter();
+			}
+		}
+		return $this->value;
+	}
 	
 	/**
 	 * Perform urlencode() filter
@@ -495,9 +535,64 @@ class Canvas extends Alkaline{
 	 *
 	 * @return string
 	 */
-	public function makeURL(){
+	public function urlize(){
 		return Alkaline::makeURL($this->value);
 	}
+	
+	/**
+	 * Convert number to words
+	 *
+	 * @return string
+	 */
+	public function alpha(){
+		return Alkaline::numberToWords($this->value);
+	}
+	
+	/**
+	 * Convert number to words (except zero)
+	 *
+	 * @return string
+	 */
+	public function alpha0(){
+		if($this->value != 0){
+			$this->value = Alkaline::numberToWords($this->value);
+		}
+		return $this->value;
+	}
+	
+	/**
+	 * Add S to make plural
+	 *
+	 * @return void
+	 */
+	public function pluralize(){
+		if($this->value != 1){
+			$this->value = 's';
+		}
+		else{
+			$this->value = '';
+		}
+		return $this->value;
+	}
+	
+	/**
+	 * Make words uppercase
+	 *
+	 * @return string
+	 */
+	public function ucwords(){
+		return ucwords($this->value);
+	}
+	
+	/**
+	 * Make first word uppercase
+	 *
+	 * @return string
+	 */
+	public function ucfirst(){
+		return ucfirst($this->value);
+	}
+	
 	
 	// PREPROCESSING
 	
