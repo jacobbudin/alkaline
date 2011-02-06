@@ -91,9 +91,11 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-15') * 1000;
-			$stat['stat_views'] = intval($stat['stat_views']);
+		$stats_count = count($stats);
+		
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_ts_js'] = strtotime($stats[$i]['stat_month'] . '-' . $stats[$i]['stat_month'] . '-15') * 1000;
+			$stats[$i]['stat_views'] = intval($stats[$i]['stat_views']);
 		}
 		
 		$this->stats = array();
@@ -127,8 +129,10 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_visitors'] = intval($stat['stat_visitors']);
+		$stats_count = count($stats);
+		
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_visitors'] = intval($stats[$i]['stat_visitors']);
 		}
 		
 		foreach($this->stats as &$monthly){
@@ -156,9 +160,10 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-' . $stat['stat_day']) * 1000;
-			$stat['stat_views'] = intval($stat['stat_views']);
+		$stats_count = count($stats);
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_ts_js'] = strtotime($stats[$i]['stat_month'] . '-' . $stats[$i]['stat_month'] . '-' . $stats[$i]['stat_day']) * 1000;
+			$stats[$i]['stat_views'] = intval($stats[$i]['stat_views']);
 		}
 		
 		$this->stats = array();
@@ -199,8 +204,10 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_visitors'] = intval($stat['stat_visitors']);
+		$stats_count = count($stats);
+		
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_visitors'] = intval($stats[$i]['stat_visitors']);
 		}
 		
 		foreach($this->stats as &$daily){
@@ -228,9 +235,11 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_ts_js'] = strtotime($stat['stat_month'] . '-' . $stat['stat_month'] . '-' . $stat['stat_day'] . ' ' . $stat['stat_hour'] . ':30:00') * 1000;
-			$stat['stat_views'] = intval($stat['stat_views']);
+		$stats_count = count($stats);
+		
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_ts_js'] = strtotime($stats[$i]['stat_month'] . '-' . $stats[$i]['stat_month'] . '-' . $stats[$i]['stat_day'] . ' ' . $stats[$i]['stat_hour'] . ':30:00') * 1000;
+			$stats[$i]['stat_views'] = intval($stats[$i]['stat_views']);
 		}
 		
 		$this->stats = array();
@@ -276,8 +285,10 @@ class Stat extends Alkaline{
 		$query->execute(array(':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$stats = $query->fetchAll();
 		
-		foreach($stats as &$stat){
-			$stat['stat_visitors'] = intval($stat['stat_visitors']);
+		$stats_count = count($stats);
+		
+		for($i=0; $i < $stats_count; $i++){
+			$stats[$i]['stat_visitors'] = intval($stats[$i]['stat_visitors']);
 		}
 		
 		foreach($this->stats as &$hourly){
