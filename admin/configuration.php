@@ -20,10 +20,17 @@ if(!empty($_POST['configuration_save'])){
 	$theme_id = intval($_POST['theme_id']);
 	if($_POST['theme_id'] != $alkaline->returnConf('theme_id')){
 		$theme = $alkaline->getRow('themes', $theme_id);
-		$theme_folder = $theme['theme_folder'];
 		
 		$alkaline->setConf('theme_id', $theme_id);
-		$alkaline->setConf('theme_folder', $theme_folder);
+		$alkaline->setConf('theme_folder', $theme['theme_folder']);
+	}
+	
+	$page_size_id = intval($_POST['page_size_id']);
+	if($_POST['page_size_id'] != $alkaline->returnConf('page_size_id')){
+		$size = $alkaline->getRow('sizes', $page_size_id);
+		
+		$alkaline->setConf('page_size_id', $page_size_id);
+		$alkaline->setConf('page_size_label', $size['size_label']);
 	}
 	
 	$alkaline->setConf('web_name', @$_POST['web_name']);
@@ -207,13 +214,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<h3>Photos</h3>
 	
 	<table>
-		<tr>
-			<td class="input"><input type="checkbox" id="photo_original" name="photo_original" <?php echo $alkaline->readConf('photo_original'); ?> value="true" /></td>
-			<td class="description">
-				<label for="photo_original">Protect original files</label><br />
-				Save your high-resolution originals behind a password-protected firewall
-			</td>
-		</tr>
 		<tr class="markup">
 			<td class="pad"><input type="checkbox" id="photo_markup" name="photo_markup" <?php echo $alkaline->readConf('photo_markup'); ?> value="true" /></td>
 			<td>
@@ -288,6 +288,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
+	<h3>Pages</h3>
+	
+	<table>
+		<tr>
+			<td class="input pad"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="description">
+				<label for="page_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('page_size_id', $alkaline->returnConf('page_size_id')); ?> when adding images by point-and-click</label>
+			</td>
+		</tr>
+	</table>
+	
 	<h3>Comments</h3>
 	
 	<table>
@@ -323,10 +334,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
+			<td class="input pad"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
 			<td class="description">
-				<label for="rights_default">Attach rights set to new photos</label><br />
-				Use the <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> rights set
+				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new photos</label>
 			</td>
 		</tr>
 	</table>

@@ -620,6 +620,33 @@ $(document).ready(function(){
 	
 	$("#pile_photo_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { pile = $(this); pileSort(pile); } });
 	
+	// PRIMARY - PHOTO DROPPABLE
+	
+	$(".photo_click a").hover(function() {
+		$(this).css('cursor', 'pointer');
+	}, function() {
+		$(this).css('cursor', 'inherit');
+	}).click(function() {
+		src = $(this).attr('href');
+		alt = $(this).children('img').attr('alt');
+		text = '<img src="' + src + '" alt="' + alt + '">';
+	
+		var input = $("#page_text_raw");
+		var range = input.caret();
+		
+		var value = input.val();
+		if(range.start > 0){
+			input.val(value.substr(0, range.start) + text + value.substr(range.end, value.length));
+			input.caret(range.start + text.length);
+		}
+		else{
+			input.caret(0);
+			input.val(text + value.substr(range.end, value.length));
+			input.caret(text.length);
+		}
+		event.preventDefault();
+	});
+	
 	// UPLOAD
 	
 	if(page == 'Upload'){

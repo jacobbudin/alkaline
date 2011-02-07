@@ -163,6 +163,38 @@ else{
 				<td><textarea id="page_text_raw" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$page['page_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
+				<td class="right"><label>Images:</label></td>
+				<td>
+					<p>
+						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add photos at cursor position)</span>
+					</p>
+					<div class="reveal photo_click">
+						<?php
+						
+						$photo_ids = new Find;
+						$photo_ids->sort('photo_uploaded', 'DESC');
+						$photo_ids->page(1, 100);
+						$photo_ids->find();
+						
+						$photos = new Photo($photo_ids);
+						$photos->getImgUrl('square');
+						
+						if($alkaline->returnConf('page_size_label')){
+							$label = 'photo_src_' . $alkaline->returnConf('page_size_label');
+						}
+						else{
+							$label = 'photo_src_admin';
+						}
+						
+						foreach($photos->photos as $photo){
+							echo '<a href="' . $photo[$label] . '"><img src="' . $photo['photo_src_square'] .'" alt="" class="frame" id="photo-' . $photo['photo_id'] . '" /></a>';
+						}
+					
+						?>
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<td class="right pad"><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
 				<td><label for="page_markup">Markup this page using <select name="page_markup_ext" title="<?php echo @$page['page_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
 			</tr>
