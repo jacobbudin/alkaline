@@ -948,13 +948,6 @@ class Find extends Alkaline{
 	 * @return void
 	 */
 	public function published($published=true){
-		// Admin checking
-		$user = new User;
-		
-		if(!$user->perm(false)){
-			return;
-		}
-		
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
