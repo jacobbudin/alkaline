@@ -1459,6 +1459,37 @@ class Alkaline{
 	}
 	
 	/**
+	 * Get HTML <select> of all sizes
+	 *
+	 * @param string $name Name and ID of <select>
+	 * @param integer $size_id Default or selected size_id
+	 * @return string
+	 */
+	public function showSizes($name, $size_id=null){
+		if(empty($name)){
+			return false;
+		}
+		
+		$query = $this->prepare('SELECT size_id, size_title FROM sizes;');
+		$query->execute();
+		$sizes = $query->fetchAll();
+		
+		$html = '<select name="' . $name . '" id="' . $name . '">';
+		
+		foreach($sizes as $size){
+			$html .= '<option value="' . $size['size_id'] . '"';
+			if($size['size_id'] == $size_id){
+				$html .= ' selected="selected"';
+			}
+			$html .= '>' . $size['size_title'] . '</option>';
+		}
+		
+		$html .= '</select>';
+		
+		return $html;
+	}
+	
+	/**
 	 * Get HTML <select> of all privacy levels
 	 *
 	 * @param string $name Name and ID of <select>
@@ -1486,6 +1517,8 @@ class Alkaline{
 		
 		return $html;
 	}
+	
+	
 	
 	/**
 	 * Get HTML <select> of all piles
@@ -2374,16 +2407,202 @@ class Alkaline{
 	/**
 	 * Set errors
 	 *
-	 * @param int $severity 
+	 * @param int|string $severity Severity (PHP error constant) or title (user-generated)
 	 * @param string $message 
 	 * @param string $filename
 	 * @param int $line_number
+	 * @param int|string|array $http_headers Index array of HTTP headers to send (if an item is an integer, send as status code)
 	 * @return void
 	 */
-	public function addError($severity, $message, $filename=null, $line_number=null){
+	public function addError($severity, $message, $filename=null, $line_number=null, $http_headers=null){
 		if(!(error_reporting() & $severity)){
 			// This error code is not included in error_reporting
 			// return;
+		}
+		
+		if(is_string($severity)){
+			if(!is_array($http_headers)){
+				$http_headers_wrong_format = $http_headers;
+				$http_headers = array();
+				if(is_int($http_headers_wrong_format)){
+					$http_headers[] = $http_headers_wrong_format;
+				}
+				if(is_string($http_headers_wrong_format)){
+					$http_headers[] = $http_headers_wrong_format;
+				}
+			}
+			foreach($http_headers as $header){
+				if(!headers_sent()){
+					if(is_string($header)){
+						header($header, true);
+					}
+					elseif(is_integer($header)){
+						if($header == 100){
+							header('HTTP/1.0 404 Not Found', true);
+							header('Status: 404 Not Found', true);
+						}
+						elseif($header == 101){
+							header('HTTP/1.0 101 Switching Protocols', true);
+							header('Status: 101 Switching Protocols', true);
+						}
+						elseif($header == 200){
+							header('HTTP/1.0 200 OK', true);
+							header('Status: 200 OK', true);
+						}
+						elseif($header == 201){
+							header('HTTP/1.0 201 Created', true);
+							header('Status: 201 Created', true);
+						}
+						elseif($header == 202){
+							header('HTTP/1.0 202 Accepted', true);
+							header('Status: 202 Accepted', true);
+						}
+						elseif($header == 203){
+							header('HTTP/1.0 203 Non-Authoritative Information', true);
+							header('Status: 203 Non-Authoritative Information', true);
+						}
+						elseif($header == 204){
+							header('HTTP/1.0 204 No Content', true);
+							header('Status: 204 No Content', true);
+						}
+						elseif($header == 205){
+							header('HTTP/1.0 205 Reset Content', true);
+							header('Status: 205 Reset Content', true);
+						}
+						elseif($header == 206){
+							header('HTTP/1.0 206 Partial Content', true);
+							header('Status: 206 Partial Content', true);
+						}
+						elseif($header == 300){
+							header('HTTP/1.0 300 Multiple Choices', true);
+							header('Status: 300 Multiple Choices', true);
+						}
+						elseif($header == 301){
+							header('HTTP/1.0 301 Moved Permanently', true);
+							header('Status: 301 Moved Permanently', true);
+						}
+						elseif($header == 302){
+							header('HTTP/1.0 302 Moved Temporarily', true);
+							header('Status: 302 Moved Temporarily', true);
+						}
+						elseif($header == 303){
+							header('HTTP/1.0 303 See Other', true);
+							header('Status: 303 See Other', true);
+						}
+						elseif($header == 304){
+							header('HTTP/1.0 304 Not Modified', true);
+							header('Status: 304 Not Modified', true);
+						}
+						elseif($header == 305){
+							header('HTTP/1.0 305 Use Proxy', true);
+							header('Status: 305 Use Proxy', true);
+						}
+						elseif($header == 307){
+							header('HTTP/1.0 307 Temporary Redirect', true);
+							header('Status: 307 Temporary Redirect', true);
+						}
+						elseif($header == 400){
+							header('HTTP/1.0 400 Bad Request', true);
+							header('Status: 400 Bad Request', true);
+						}
+						elseif($header == 401){
+							header('HTTP/1.0 401 Unauthorized', true);
+							header('Status: 401 Unauthorized', true);
+						}
+						elseif($header == 402){
+							header('HTTP/1.0 402 Payment Required', true);
+							header('Status: 402 Payment Required', true);
+						}
+						elseif($header == 403){
+							header('HTTP/1.0 403 Forbidden', true);
+							header('Status: 403 Forbidden', true);
+						}
+						elseif($header == 404){
+							header('HTTP/1.0 404 Not Found', true);
+							header('Status: 404 Not Found', true);
+						}
+						elseif($header == 405){
+							header('HTTP/1.0 405 Method Not Allowed', true);
+							header('Status: 405 Method Not Allowed', true);
+						}
+						elseif($header == 406){
+							header('HTTP/1.0 406 Not Acceptable', true);
+							header('Status: 406 Not Acceptable', true);
+						}
+						elseif($header == 407){
+							header('HTTP/1.0 407 Proxy Authentication Required', true);
+							header('Status: 407 Proxy Authentication Required', true);
+						}
+						elseif($header == 408){
+							header('HTTP/1.0 408 Request Timeout', true);
+							header('Status: 408 Request Timeout', true);
+						}
+						elseif($header == 409){
+							header('HTTP/1.0 409 Conflict', true);
+							header('Status: 409 Conflict', true);
+						}
+						elseif($header == 410){
+							header('HTTP/1.0 410 Gone', true);
+							header('Status: 410 Gone', true);
+						}
+						elseif($header == 411){
+							header('HTTP/1.0 411 Length Required', true);
+							header('Status: 411 Length Required', true);
+						}
+						elseif($header == 412){
+							header('HTTP/1.0 412 Precondition Failed', true);
+							header('Status: 412 Precondition Failed', true);
+						}
+						elseif($header == 413){
+							header('HTTP/1.0 413 Request Entity Too Large', true);
+							header('Status: 413 Request Entity Too Large', true);
+						}
+						elseif($header == 414){
+							header('HTTP/1.0 414 Request URI Too Large', true);
+							header('Status: 414 Request URI Too Large', true);
+						}
+						elseif($header == 415){
+							header('HTTP/1.0 415 Unsupported Media Type', true);
+							header('Status: 415 Unsupported Media Type', true);
+						}
+						elseif($header == 416){
+							header('HTTP/1.0 416 Request Range Not Satisfiable', true);
+							header('Status: 416 Request Range Not Satisfiable', true);
+						}
+						elseif($header == 417){
+							header('HTTP/1.0 417 Expectation Failed', true);
+							header('Status: 417 Expectation Failed', true);
+						}
+						elseif($header == 500){
+							header('HTTP/1.0 500 Internal Server Error', true);
+							header('Status: 500 Internal Server Error', true);
+						}
+						elseif($header == 501){
+							header('HTTP/1.0 501 Not Implemented', true);
+							header('Status: 501 Not Implemented', true);
+						}
+						elseif($header == 502){
+							header('HTTP/1.0 502 Bad Gateway', true);
+							header('Status: 502 Bad Gateway', true);
+						}
+						elseif($header == 503){
+							header('HTTP/1.0 503 Service Unavailable', true);
+							header('Status: 503 Service Unavailable', true);
+						}
+						elseif($header == 504){
+							header('HTTP/1.0 504 Gateway Timeout', true);
+							header('Status: 504 Gateway Timeout', true);
+						}
+						elseif($header == 505){
+							header('HTTP/1.0 505 HTTP Version Not Supported', true);
+							header('Status: 505 HTTP Version Not Supported', true);
+						}
+					}
+				}
+			}
+			$_SESSION['alkaline']['error'] = array('error_title' => $severity, 'error_message' => $message);
+			require_once(PATH . BASE . 'error.php');
+			exit();
 		}
 		
 		switch($severity){
@@ -2396,7 +2615,7 @@ class Alkaline{
 			case E_USER_ERROR:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				session_write_close();
-				require_once(PATH . BASE . 'error.php');
+				header('Location: ' . LOCATION . BASE . ADMIN . 'error.php');
 				exit();
 				break;
 			default:
