@@ -14,41 +14,44 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('tag');
 
 $id = $alkaline->findID($_GET['id']);
-$tag = $alkaline->getRow('tags', $id);
-if(!$tag){ $alkaline->addError(E_USER_ERROR, 'No tag was not found'); }
 
-$photo_ids = new Find;
-$photo_ids->page(null, 0);
-$photo_ids->published();
-$photo_ids->privacy('public');
-$photo_ids->tags($id);
-$photo_ids->find();
+if($id){
+	$tag = $alkaline->getRow('tags', $id);
+	if(!$tag){ $alkaline->addError('No tag was not found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
-$photos = new Photo($photo_ids);
-$photos->formatTime();
-$photos->getImgUrl('medium');
-$photos->getEXIF();
-$photos->getColorkey(670, 10);
-$photos->getTags();
-$photos->getRights();
+	$photo_ids = new Find;
+	$photo_ids->page(null, 0);
+	$photo_ids->published();
+	$photo_ids->privacy('public');
+	$photo_ids->tags($id);
+	$photo_ids->find();
 
-$header = new Canvas;
-$header->load('header');
-$header->setTitle('#' . $tag['tag_name']);
-$header->display();
+	$photos = new Photo($photo_ids);
+	$photos->formatTime();
+	$photos->getImgUrl('medium');
+	$photos->getEXIF();
+	$photos->getColorkey(670, 10);
+	$photos->getTags();
+	$photos->getRights();
 
-$index = new Canvas;
-$index->load('index');
-$index->assign('Page_Next', $photo_ids->page_next);
-$index->assign('Page_Previous', $photo_ids->page_previous);
-$index->assign('Page_Current', $photo_ids->page);
-$index->assign('Page_Count', $photo_ids->page_count);
-$index->loop($photos);
-$index->assignArray($tag);
-$index->display();
+	$header = new Canvas;
+	$header->load('header');
+	$header->setTitle('#' . $tag['tag_name']);
+	$header->display();
 
-$footer = new Canvas;
-$footer->load('footer');
-$footer->display();
+	$index = new Canvas;
+	$index->load('index');
+	$index->assign('Page_Next', $photo_ids->page_next);
+	$index->assign('Page_Previous', $photo_ids->page_previous);
+	$index->assign('Page_Current', $photo_ids->page);
+	$index->assign('Page_Count', $photo_ids->page_count);
+	$index->loop($photos);
+	$index->assignArray($tag);
+	$index->display();
+
+	$footer = new Canvas;
+	$footer->load('footer');
+	$footer->display();
+}
 
 ?>

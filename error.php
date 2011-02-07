@@ -8,36 +8,23 @@
 */
 
 require_once('config.php');
+require_once(PATH . CLASSES . 'alkaline.php');
 
-@session_start();
+$alkaline = new Alkaline;
+$alkaline->recordStat('error');
 
-define('TAB', 'Error');
-define('TITLE', 'Alkaline Error');
-require_once(PATH . ADMIN . 'includes/header.php');
+$header = new Canvas;
+$header->load('header');
+$header->setTitle('Welcome');
+$header->display();
 
-if($_SESSION['alkaline']['errors']){
-	$error_constants = array();
-	foreach($_SESSION['alkaline']['errors'] as $error){
-		$error_constants[] = $error['constant'];
-	}
-}
+$index = new Canvas;
+$index->load('error');
+$index->assignArray($_SESSION['alkaline']['error']);
+$index->display();
 
-$key = array_search(E_USER_ERROR, $error_constants, true);
-
-if($key !== false){
-	$error = $_SESSION['alkaline']['errors'][$key];
-	echo '<p>' . $error['message'];
-	if(!empty($error['filename'])){
-		echo ' (' . $error['filename'] . ', line ' . $error['line_number'] .')';
-	} 
-	echo '.</p>';
-}
-else{
-	?>
-	<p>A critical error has occurred.</p>
-	<?php
-}
-
-require_once(PATH . ADMIN . 'includes/footer.php');
+$footer = new Canvas;
+$footer->load('footer');
+$footer->display();
 
 ?>
