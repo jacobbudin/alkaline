@@ -61,8 +61,9 @@ class Find extends Alkaline{
 	 *
 	 * @param string|array|int $photo_ids Limit results to select photo IDs
 	 * @param string $auto_guest Set guest access restrictions
+	 * @param string $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
 	 */
-	public function __construct($photo_ids=null, $auto_guest=true){
+	public function __construct($photo_ids=null, $auto_guest=true, $process_request=true){
 		parent::__construct();
 		
 		// Store data to object
@@ -105,164 +106,166 @@ class Find extends Alkaline{
 			}
 		}
 		
-		// Process browser requests
-		$_REQUEST = array_map('strip_tags', $_REQUEST);
+		if($process_request == true){
+			// Process browser requests
+			$_REQUEST = array_map('strip_tags', $_REQUEST);
 
-		if(empty($_REQUEST) and empty($_REQUEST)){
-			$this->memory();
-		}
-
-		// Smart search
-		if(!empty($_REQUEST['act'])){
-			$this->_smart($_REQUEST['act']);
-		}
-
-		// Title and description
-		if(!empty($_REQUEST['q'])){
-			$this->_search($_REQUEST['q']);
-		}
-
-		// Tags
-		if(!empty($_REQUEST['tags'])){
-			$this->_tags($_REQUEST['tags']);
-		}
-
-		// Rights set
-		if(!empty($_REQUEST['rights'])){
-			$this->_rights(intval($_REQUEST['rights']));
-		}
-
-		// Date taken
-		if(!empty($_REQUEST['taken_begin']) or !empty($_REQUEST['taken_end'])){
-			$this->_taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
-		}
-
-		// Date uploaded
-		if(!empty($_REQUEST['uploaded_begin']) or !empty($_REQUEST['uploaded_end'])){
-			$this->_uploaded($_REQUEST['uploaded_begin'], $_REQUEST['uploaded_end']);
-		}
-
-		// Location
-		if(!empty($_REQUEST['location'])){
-			$this->_location($_REQUEST['location'], $_REQUEST['location_proximity']);
-		}
-
-		// Primary color
-		if(!empty($_REQUEST['color'])){
-			switch($_REQUEST['color']){
-				case 'blue':
-					$this->_hsl(170, 235, 1, 100, 1, 100);
-					break;
-				case 'red':
-					$this->_hsl(345, 10, 1, 100, 1, 100);
-					break;
-				case 'yellow':
-					$this->_hsl(50, 75, 1, 100, 1, 100);
-					break;
-				case 'green':
-					$this->_hsl(75, 170, 1, 100, 1, 100);
-					break;
-				case 'purple':
-					$this->_hsl(235, 300, 1, 100, 1, 100);
-					break;
-				case 'orange':
-					$this->_hsl(10, 50, 1, 100, 1, 100);
-					break;
-				case 'brown':
-					$this->_hsl(null, null, null, null, 1, 20);
-					break;
-				case 'pink':
-					$this->_hsl(300, 345, 1, 100, 1, 100);
-					break;
-				default:
-					break;
+			if(empty($_REQUEST) and empty($_REQUEST)){
+				$this->memory();
 			}
-		}
 
-		// Views
-		if(!empty($_REQUEST['views'])){
-			switch($_REQUEST['views_operator']){
-				case 'greater':
-					$this->_views($_REQUEST['views'], null);
-					break;
-				case 'less':
-					$this->_views(null, $_REQUEST['views']);
-					break;
-				case 'equal':
-					$this->_views($_REQUEST['views'], $_REQUEST['views']);
-					break;
+			// Smart search
+			if(!empty($_REQUEST['act'])){
+				$this->_smart($_REQUEST['act']);
 			}
-		}
 
-		// Orientation
-		if(!empty($_REQUEST['orientation'])){
-			switch($_REQUEST['orientation']){
-				case 'portrait':
-					$this->_ratio(1, null, null);
-					break;
-				case 'landscape':
-					$this->_ratio(null, 1, null);
-					break;
-				case 'square':
-					$this->_ratio(null, null, 1);
-					break;
+			// Title and description
+			if(!empty($_REQUEST['q'])){
+				$this->_search($_REQUEST['q']);
 			}
-		}
 
-		// Privacy
-		if(!empty($_REQUEST['privacy'])){
-			switch($_REQUEST['privacy']){
-				case 'public':
-					$this->_privacy(1);
-					break;
-				case 'protected':
-					$this->_privacy(2);
-					break;
-				case 'private':
-					$this->_privacy(3);
-					break;
+			// Tags
+			if(!empty($_REQUEST['tags'])){
+				$this->_tags($_REQUEST['tags']);
 			}
-		}
 
-		// Published
-		if(!empty($_REQUEST['published'])){
-			switch($_REQUEST['published']){
-				case 'published':
-					$this->_published(true);
-					break;
-				case 'unpublished':
-					$this->_published(false);
-					break;
+			// Rights set
+			if(!empty($_REQUEST['rights'])){
+				$this->_rights(intval($_REQUEST['rights']));
 			}
-		}
 
-		// Sort
-		if(!empty($_REQUEST['sort'])){
-			switch($_REQUEST['sort']){
-				case 'taken':
-					$this->_sort('photos.photo_taken', $_REQUEST['sort_direction']);
-					$this->_notnull('photos.photo_taken');
-					break;
-				case 'published':
-					$this->_sort('photos.photo_published', $_REQUEST['sort_direction']);
-					$this->_notnull('photos.photo_published');
-					break;
-				case 'uploaded':
-					$this->_sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
-					break;
-				case 'updated':
-					$this->_sort('photos.photo_updated', $_REQUEST['sort_direction']);
-					$this->_notnull('photos.photo_updated');
-					break;
-				case 'title':
-					$this->_sort('photos.photo_title', $_REQUEST['sort_direction']);
-					$this->_notnull('photos.photo_title');
-					break;
-				case 'views':
-					$this->_sort('photos.photo_views', $_REQUEST['sort_direction']);
-					break;
-				default:
-					break;
+			// Date taken
+			if(!empty($_REQUEST['taken_begin']) or !empty($_REQUEST['taken_end'])){
+				$this->_taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
+			}
+
+			// Date uploaded
+			if(!empty($_REQUEST['uploaded_begin']) or !empty($_REQUEST['uploaded_end'])){
+				$this->_uploaded($_REQUEST['uploaded_begin'], $_REQUEST['uploaded_end']);
+			}
+
+			// Location
+			if(!empty($_REQUEST['location'])){
+				$this->_location($_REQUEST['location'], $_REQUEST['location_proximity']);
+			}
+
+			// Primary color
+			if(!empty($_REQUEST['color'])){
+				switch($_REQUEST['color']){
+					case 'blue':
+						$this->_hsl(170, 235, 1, 100, 1, 100);
+						break;
+					case 'red':
+						$this->_hsl(345, 10, 1, 100, 1, 100);
+						break;
+					case 'yellow':
+						$this->_hsl(50, 75, 1, 100, 1, 100);
+						break;
+					case 'green':
+						$this->_hsl(75, 170, 1, 100, 1, 100);
+						break;
+					case 'purple':
+						$this->_hsl(235, 300, 1, 100, 1, 100);
+						break;
+					case 'orange':
+						$this->_hsl(10, 50, 1, 100, 1, 100);
+						break;
+					case 'brown':
+						$this->_hsl(null, null, null, null, 1, 20);
+						break;
+					case 'pink':
+						$this->_hsl(300, 345, 1, 100, 1, 100);
+						break;
+					default:
+						break;
+				}
+			}
+
+			// Views
+			if(!empty($_REQUEST['views'])){
+				switch($_REQUEST['views_operator']){
+					case 'greater':
+						$this->_views($_REQUEST['views'], null);
+						break;
+					case 'less':
+						$this->_views(null, $_REQUEST['views']);
+						break;
+					case 'equal':
+						$this->_views($_REQUEST['views'], $_REQUEST['views']);
+						break;
+				}
+			}
+
+			// Orientation
+			if(!empty($_REQUEST['orientation'])){
+				switch($_REQUEST['orientation']){
+					case 'portrait':
+						$this->_ratio(1, null, null);
+						break;
+					case 'landscape':
+						$this->_ratio(null, 1, null);
+						break;
+					case 'square':
+						$this->_ratio(null, null, 1);
+						break;
+				}
+			}
+
+			// Privacy
+			if(!empty($_REQUEST['privacy'])){
+				switch($_REQUEST['privacy']){
+					case 'public':
+						$this->_privacy(1);
+						break;
+					case 'protected':
+						$this->_privacy(2);
+						break;
+					case 'private':
+						$this->_privacy(3);
+						break;
+				}
+			}
+
+			// Published
+			if(!empty($_REQUEST['published'])){
+				switch($_REQUEST['published']){
+					case 'published':
+						$this->_published(true);
+						break;
+					case 'unpublished':
+						$this->_published(false);
+						break;
+				}
+			}
+
+			// Sort
+			if(!empty($_REQUEST['sort'])){
+				switch($_REQUEST['sort']){
+					case 'taken':
+						$this->_sort('photos.photo_taken', $_REQUEST['sort_direction']);
+						$this->_notnull('photos.photo_taken');
+						break;
+					case 'published':
+						$this->_sort('photos.photo_published', $_REQUEST['sort_direction']);
+						$this->_notnull('photos.photo_published');
+						break;
+					case 'uploaded':
+						$this->_sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
+						break;
+					case 'updated':
+						$this->_sort('photos.photo_updated', $_REQUEST['sort_direction']);
+						$this->_notnull('photos.photo_updated');
+						break;
+					case 'title':
+						$this->_sort('photos.photo_title', $_REQUEST['sort_direction']);
+						$this->_notnull('photos.photo_title');
+						break;
+					case 'views':
+						$this->_sort('photos.photo_views', $_REQUEST['sort_direction']);
+						break;
+					default:
+						break;
+				}
 			}
 		}
 	}
@@ -680,7 +683,7 @@ class Find extends Alkaline{
 		
 		// If auto, apply stored functions
 		if($pile['pile_type'] == 'auto'){
-			$photo_ids = new Find(null, false);
+			$photo_ids = new Find(null, false, false);
 			$pile['pile_call'] = str_ireplace('$this->', '$photo_ids->', $pile['pile_call']);
 			if(eval($pile['pile_call']) === false){
 				return false;
