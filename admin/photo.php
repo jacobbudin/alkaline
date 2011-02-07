@@ -174,8 +174,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<?php
 
 					foreach($sizes as $size){
-						$field = 'photo_src_' . $size['size_label'];
-						echo '<li><a href="' . $photo[$field] . '">' . $size['size_title'] . '</a></li>';
+						$src = 'photo_src_' . $size['size_label'];
+						$height = 'photo_height_' . $size['size_label'];
+						$width = 'photo_width_' . $size['size_label'];
+						echo '<li><a href="' . $photo[$src] . '">' . $size['size_title'] . '</a> <span class="quiet">(' . $photo[$width] . ' &#0215; ' . $photo[$height] . ')</span></li>';
 					}
 
 					?>

@@ -19,6 +19,7 @@ class Photo extends Alkaline{
 	public $comments;
 	public $pages;
 	public $piles;
+	public $sizes;
 	public $tags;
 	public $tag_count;
 	public $photo_columns;
@@ -1502,21 +1503,28 @@ class Photo extends Alkaline{
 		if(!empty($size)){
 			$sizes = array_map('strtolower', $sizes);
 			$value_slots = array_fill(0, count($sizes)*2, '?');
-			$query = $this->prepare('SELECT size_label, size_prepend, size_append FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots));
+			$query = $this->prepare('SELECT size_label, size_type, size_prepend, size_append, size_height, size_width FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots) . ' ORDER BY (size_width*size_width) DESC');
 			$query->execute($sizes);
 		}
 		else{
-			$query = $this->prepare('SELECT size_label, size_prepend, size_append, size_title FROM sizes');
+			$query = $this->prepare('SELECT size_label, size_type, size_prepend, size_append, size_title, size_height, size_width FROM sizes ORDER BY (size_width*size_width) DESC');
 			$query->execute();
 		}
 		
 		$sizes = $query->fetchAll();
 		
-		foreach($sizes as $size){
-			$size_label = 'photo_src_' . strtolower($size['size_label']);
-			$size_img_label = 'photo_img_' . strtolower($size['size_label']);
-			$size_prepend = $size['size_prepend'];
-			$size_append = $size['size_append'];
+		$sizes_count = count($sizes);
+		
+		for($k=0; $k < $sizes_count; $k++){
+			$size_label = 'photo_src_' . strtolower($sizes[$k]['size_label']);
+			$size_img_label = 'photo_img_' . strtolower($sizes[$k]['size_label']);
+			$size_height_label = 'photo_height_' . strtolower($sizes[$k]['size_label']);
+			$size_width_label = 'photo_width_' . strtolower($sizes[$k]['size_label']);
+			$size_prepend = $sizes[$k]['size_prepend'];
+			$size_append = $sizes[$k]['size_append'];
+			$size_type = $sizes[$k]['size_type'];
+			$size_width = $sizes[$k]['size_width'];
+			$size_height = $sizes[$k]['size_height'];
 			
 			// Attach photo_src_ to photos array
 			for($i = 0; $i < $this->photo_count; ++$i){
@@ -1528,8 +1536,59 @@ class Photo extends Alkaline{
 				
 			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext;
 			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext . ' alt="" />';
+				
+				$width = $size_width;
+				$height = $size_height;
+				
+				$width_orig = $this->photos[$i]['photo_width'];
+				$height_orig = $this->photos[$i]['photo_height'];
+				
+				if($size_type == 'scale'){
+					if(($width_orig <= $width) and ($height_orig <= $height)){
+						switch($ext){
+							case 'jpg':
+								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
+								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								break;
+							case 'png':
+								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
+								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								break;
+							case 'gif':
+								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
+								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								break;
+						}
+					}
+
+					$ratio_orig = $width_orig / $height_orig;
+					$ratio = $width / $height;
+
+					if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
+					else{ $width = $height * $ratio_orig; }
+					
+					$this->photos[$i][$size_height_label] = floor($height);
+					$this->photos[$i][$size_width_label] = floor($width);
+				}
+				elseif($size_type == 'fill'){
+					if($size_height < $height){
+						$this->photos[$i][$size_height_label] = $size_height;
+					}
+					else{
+						$this->photos[$i][$size_height_label] = $height;
+					}
+					
+					if($size_width < $width){
+						$this->photos[$i][$size_width_label] = $size_width;
+					}
+					else{
+						$this->photos[$i][$size_width_label] = $width;
+					}
+				}
 			}
 		}
+		
+		$this->sizes = $sizes;
 		
 		return $sizes;
 	}
