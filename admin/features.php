@@ -151,7 +151,14 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				}
 			}
 			if($bool === true){
-				$alkaline->addNote('The photos were succesfully published.', 'success');
+				$alkaline->addNote('The photos were successfully published.', 'success');
+			}
+		}
+		elseif($act == 'delete'){
+			if($alkaline->returnConf('bulk_delete')){
+				$photos = new Photo($photo_ids);
+				$photos->delete();
+				$alkaline->addNote('The photos were successfully deleted.', 'success');
 			}
 		}
 	}
@@ -187,7 +194,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div class="span-24 last">
 	<div class="span-18 colborder">
 		<div class="actions">
-			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
+			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Show all</a>
 		</div>
 		
 		<h1>Editor (<span id="photo_count_selected">0</span> of <?php echo number_format($photo_ids->photo_count); ?>)</h1>
@@ -202,6 +209,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="right">Switch to rights set</option>
 					<option value="privacy">Switch to privacy level</option>
 					<option value="publish">Publish now</option>
+					<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
 				</select>
 				<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
 				<?php echo $alkaline->showPiles('act_pile_id', true); ?>

@@ -46,6 +46,8 @@ if(!empty($_POST['configuration_save'])){
 	if(@$_POST['photo_markup'] == ''){ $_POST['photo_markup_ext'] = ''; }
 	
 	$alkaline->setConf('photo_markup_ext', @$_POST['photo_markup_ext']);
+	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
+	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
@@ -54,7 +56,6 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('thumb_watermark', @$_POST['thumb_watermark']);
 	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
 	$alkaline->setConf('thumb_watermark_margin', intval(@$_POST['thumb_watermark_margin']));
-	$alkaline->setConf('photo_original', @$_POST['photo_original']);
 	$alkaline->setConf('tag_alpha', @$_POST['tag_alpha']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
@@ -219,6 +220,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td>
 				<label for="photo_markup">Markup new photo descriptions using <select name="photo_markup_ext" title="<?php echo $alkaline->returnConf('photo_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
 				To use this setting for all your photos, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-photo-markup' ?>">reset your photo markup</a>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Bulk Editor</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="bulk_delete" name="bulk_delete" <?php echo $alkaline->readConf('bulk_delete'); ?> value="true" /></td>
+			<td class="description">
+				<label for="bulk_delete">Allow users to delete images using the bulk editor</label>
 			</td>
 		</tr>
 	</table>
