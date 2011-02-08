@@ -18,8 +18,8 @@ $user->perm(true);
 if(!empty($_POST['preferences_save'])){
 	$user->setPref('page_limit', @$_POST['page_limit']);
 	$user->setPref('home_target', @$_POST['home_target']);
-	$user->setPref('recent_photos', @$_POST['recent_photos']);
-	$user->setPref('recent_photos_limit', @$_POST['recent_photos_limit']);
+	$user->setPref('recent_images', @$_POST['recent_images']);
+	$user->setPref('recent_images_limit', @$_POST['recent_images_limit']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
 	$user->savePref();
 	
@@ -53,8 +53,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<option value="500" <?php echo $user->readPref('page_limit', 500); ?>>500</option>
 					<option value="1000" <?php echo $user->readPref('page_limit', 1000); ?>>1,000</option>
 				</select>
-				photos per page</label><br />
-				Determines pagination in photo library, search results, and bulk editor
+				images per page</label><br />
+				Determines pagination in image library, search results, and bulk editor
 			</td>
 		</tr>
 		<tr>
@@ -70,17 +70,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input middle"><input type="checkbox" id="recent_photos" name="recent_photos" <?php echo $user->readPref('recent_photos'); ?> value="true"  /></td>
+			<td class="input middle"><input type="checkbox" id="recent_images" name="recent_images" <?php echo $user->readPref('recent_images'); ?> value="true"  /></td>
 			<td class="description">
-				<label for="recent_photos">Show the
-				<select name="recent_photos_limit">
-					<option value="10" <?php echo $user->readPref('recent_photos_limit', 10); ?>>10</option>
-					<option value="25" <?php echo $user->readPref('recent_photos_limit', 25); ?>>25</option>
-					<option value="50" <?php echo $user->readPref('recent_photos_limit', 50); ?>>50</option>
-					<option value="100" <?php echo $user->readPref('recent_photos_limit', 100); ?>>100</option>
-					<option value="250" <?php echo $user->readPref('recent_photos_limit', 250); ?>>250</option>
+				<label for="recent_images">Show the
+				<select name="recent_images_limit">
+					<option value="10" <?php echo $user->readPref('recent_images_limit', 10); ?>>10</option>
+					<option value="25" <?php echo $user->readPref('recent_images_limit', 25); ?>>25</option>
+					<option value="50" <?php echo $user->readPref('recent_images_limit', 50); ?>>50</option>
+					<option value="100" <?php echo $user->readPref('recent_images_limit', 100); ?>>100</option>
+					<option value="250" <?php echo $user->readPref('recent_images_limit', 250); ?>>250</option>
 				</select>
-				most recent photos on my dashboard</label>
+				most recent images on my dashboard</label>
 			</td>
 		</tr>
 	</table>
@@ -91,7 +91,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="true" /></td>
 			<td class="description">
-				<label for="shoe_pub">Set all photos to be published immediately after processing by default</label>
+				<label for="shoe_pub">Set all images to be published immediately after processing by default</label>
 			</td>
 		</tr>
 	</table>

@@ -1,7 +1,7 @@
 		</div>
 		<hr />
 		<div id="footer" class="span-24 last">
-			<img src="<?php echo BASE . IMAGES; ?>icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved. <?php echo Alkaline::returnErrors(); ?><br />
+			<img src="<?php echo BASE . ADMIN; ?>images/icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved. <?php echo Alkaline::returnErrors(); ?><br />
 			<?php
 			
 			if(!empty($alkaline) and $alkaline->returnConf('maint_debug')){

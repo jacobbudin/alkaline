@@ -20,7 +20,7 @@
 	
 	RewriteRule ^access/([a-z0-9-_]+)(/)?$								access.php?key=$1 [NC]
 	RewriteRule ^page([0-9]+)(/)?$										index.php?page=$1 [NC]
-	RewriteRule ^photo/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$			photo.php?id=$1&page=$4 [NC]
+	RewriteRule ^image/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$			image.php?id=$1&page=$4 [NC]
 	RewriteRule ^page/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				page.php?id=$1&page=$4 [NC]
 	RewriteRule ^pile/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				pile.php?id=$1&page=$4 [NC]
 	RewriteRule ^tag/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				tag.php?id=$1&page=$4 [NC]

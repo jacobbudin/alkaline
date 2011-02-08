@@ -33,11 +33,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 	<ul class="tasks">
 		<li>
-			<strong><a href="#rebuild-thumbnails">Rebuild all photo thumbnails</a></strong><br />
+			<strong><a href="#rebuild-thumbnails">Rebuild all image thumbnails</a></strong><br />
 			Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files
 		</li>
 		<li>
-			<strong><a href="#delete-unused">Delete unclaimed photo thumbnails</a></strong><br />
+			<strong><a href="#delete-unused">Delete unclaimed image thumbnails</a></strong><br />
 			Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available space
 		</li>
 		<li>
@@ -59,10 +59,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</li>
 		<li>
 			<strong><a href="#delete-orphaned-tags">Delete orphaned tags</a></strong><br />
-			Removes tags that are no longer linked to any photos, increasing available space
+			Removes tags that are no longer linked to any images, increasing available space
 		</li>
 		<li>
-			<strong><a href="#reset-photo-markup">Reset photo markup</a></strong>
+			<strong><a href="#reset-image-markup">Reset image markup</a></strong>
 		</li>
 		<li>
 			<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>

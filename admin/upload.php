@@ -31,7 +31,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-5 colborderr">
-		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
+		<h2 id="shoebox_link"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox &#9656;</a></h2>
 		
 		<div id="progress">
 		</div>
@@ -42,7 +42,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
 		<h3>Instructions</h3>
-		<p>Drag images from a folder on your computer or from most applications including iPhoto and Aperture into the grey retaining area.</p>
+		<p>Drag images from a folder on your computer or from most applications including iImage and Aperture into the grey retaining area.</p>
 		
 		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
@@ -52,7 +52,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h1>Upload</h1>
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
 			<p>
-				<img src="<?php echo BASE . IMAGES; ?>upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
 				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
 			</p>
 		</form>

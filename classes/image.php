@@ -13,70 +13,70 @@
  * @version 1.0
  */
 
-class Photo extends Alkaline{
+class Image extends Alkaline{
 	public $db;
-	public $photos = array();
+	public $images = array();
 	public $comments;
 	public $pages;
 	public $piles;
 	public $sizes;
 	public $tags;
 	public $tag_count;
-	public $photo_columns;
-	public $photo_count;
-	public $photo_import_ids = array();
-	public $photo_ids = array();
+	public $image_columns;
+	public $image_count;
+	public $image_import_ids = array();
+	public $image_ids = array();
 	public $user;
 	protected $sql;
 	
 	/**
-	 * Initiates Photo object
+	 * Initiates Image object
 	 *
-	 * @param array|int|string $photo_ids Photo IDs (use Find class to locate them)
+	 * @param array|int|string $image_ids Image IDs (use Find class to locate them)
 	 */
-	public function __construct($photo_ids=null){
+	public function __construct($image_ids=null){
 		parent::__construct();
 		
-		// Reset photo array
-		$this->photos = array();
+		// Reset image array
+		$this->images = array();
 		
 		// Input handling
-		if(is_object($photo_ids)){
-			$photo_ids = $photo_ids->photo_ids;
+		if(is_object($image_ids)){
+			$image_ids = $image_ids->image_ids;
 		}
 		
-		$this->photo_ids = parent::convertToIntegerArray($photo_ids);
+		$this->image_ids = parent::convertToIntegerArray($image_ids);
 		
 		// Error checking
-		$this->sql = ' WHERE (photos.photo_id IS NULL)';
+		$this->sql = ' WHERE (images.image_id IS NULL)';
 		
-		if(count($this->photo_ids) > 0){
-			// Retrieve photos from database
-			$this->sql = ' WHERE (photos.photo_id IN (' . implode(', ', $this->photo_ids) . '))';
+		if(count($this->image_ids) > 0){
+			// Retrieve images from database
+			$this->sql = ' WHERE (images.image_id IN (' . implode(', ', $this->image_ids) . '))';
 			
-			$query = $this->prepare('SELECT * FROM photos' . $this->sql . ';');
+			$query = $this->prepare('SELECT * FROM images' . $this->sql . ';');
 			$query->execute();
-			$photos = $query->fetchAll();
+			$images = $query->fetchAll();
 		
-			// Ensure photos array correlates to photo_ids array
-			foreach($this->photo_ids as $photo_id){
-				foreach($photos as $photo){
-					if($photo_id == $photo['photo_id']){
-						$this->photos[] = $photo;
+			// Ensure images array correlates to image_ids array
+			foreach($this->image_ids as $image_id){
+				foreach($images as $image){
+					if($image_id == $image['image_id']){
+						$this->images[] = $image;
 					}
 				}
 			}
 		
-			// Store photo count as integer
-			$this->photo_count = count($this->photos);
+			// Store image count as integer
+			$this->image_count = count($this->images);
 		
 			// Attach additional fields
-			for($i = 0; $i < $this->photo_count; ++$i){
-				$this->photos[$i]['photo_file'] = parent::correctWinPath(PATH . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext']);
-				$this->photos[$i]['photo_src'] = BASE . PHOTOS . $this->photos[$i]['photo_id'] . '.' . $this->photos[$i]['photo_ext'];
-				$this->photos[$i]['photo_uri'] = LOCATION . BASE . 'photo' . URL_ID . $this->photos[$i]['photo_id'] . URL_RW;
+			for($i = 0; $i < $this->image_count; ++$i){
+				$this->images[$i]['image_file'] = parent::correctWinPath(PATH . PHOTOS . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+				$this->images[$i]['image_src'] = BASE . PHOTOS . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
+				$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
 				if($this->returnConf('comm_enabled') != true){
-					$this->photos[$i]['photo_comment_disabled'] = 1;
+					$this->images[$i]['image_comment_disabled'] = 1;
 				}
 			}
 		}
@@ -97,7 +97,7 @@ class Photo extends Alkaline{
 			$orbit = new Orbit;
 		}
 		
-		$this->photos = $orbit->hook('photo', $this->photos, $this->photos);
+		$this->images = $orbit->hook('image', $this->images, $this->images);
 	}
 	
 	/**
@@ -122,7 +122,7 @@ class Photo extends Alkaline{
 		}
 		
 		$files = $this->convertToArray($files);
-		$photo_ids = array();
+		$image_ids = array();
 		
 		foreach($files as $file){
 			if(!file_exists($file)){
@@ -131,10 +131,10 @@ class Photo extends Alkaline{
 		
 			$filename = $this->getFilename($file);
 		
-			// Add photo to database
-			$photo_ext = $this->getExt($file);
-			$photo_mime = $this->getMIME($file);
-			$photo_size = $this->getSize($file);
+			// Add image to database
+			$image_ext = $this->getExt($file);
+			$image_mime = $this->getMIME($file);
+			$image_size = $this->getSize($file);
 			
 			// Configuration: default rights set
 			if($this->returnConf('rights_default')){
@@ -143,28 +143,28 @@ class Photo extends Alkaline{
 			
 			$fields = array('user_id' => @$this->user['user_id'],
 				'right_id' => @$right_id,
-				'photo_ext' => $photo_ext,
-				'photo_mime' => $photo_mime,
-				'photo_name' => $filename,
-				'photo_uploaded' => date('Y-m-d H:i:s'),
-				'photo_height' => $photo_size['height'],
-				'photo_width' => $photo_size['width']);
+				'image_ext' => $image_ext,
+				'image_mime' => $image_mime,
+				'image_name' => $filename,
+				'image_uploaded' => date('Y-m-d H:i:s'),
+				'image_height' => $image_size['height'],
+				'image_width' => $image_size['width']);
 			
-			$photo_id = $this->addRow($fields, 'photos');
-			$photo_ids[] = $photo_id;
+			$image_id = $this->addRow($fields, 'images');
+			$image_ids[] = $image_id;
 
-			// Copy photo to archive, delete original from shoebox
-			copy($file, parent::correctWinPath(PATH . PHOTOS . $photo_id . '.' . $photo_ext));
+			// Copy image to archive, delete original from shoebox
+			copy($file, parent::correctWinPath(PATH . PHOTOS . $image_id . '.' . $image_ext));
 			@unlink($file);
 		}
 		
-		// Store initial photo_ids array
-		$existing_photo_ids = $this->photo_ids;
+		// Store initial image_ids array
+		$existing_image_ids = $this->image_ids;
 		
 		// Construct object anew
-		self::__construct($photo_ids);
+		self::__construct($image_ids);
 		
-		// Process imported photos
+		// Process imported images
 		$this->findColors();
 		
 		if($this->returnConf('shoe_exif')){
@@ -179,31 +179,31 @@ class Photo extends Alkaline{
 			$this->readGeo();
 		}
 		
-		$this->sizePhoto();
+		$this->sizeImage();
 		
-		// Combine existing and imported photo_ids arrays
-		if(!empty($existing_photo_ids)){
-			$this->photo_ids = array_merge($existing_photo_ids, $this->photo_ids);
+		// Combine existing and imported image_ids arrays
+		if(!empty($existing_image_ids)){
+			$this->image_ids = array_merge($existing_image_ids, $this->image_ids);
 		}
 		
-		// Merge with previous photo_ids
-		self::__construct($this->photo_ids);
+		// Merge with previous image_ids
+		self::__construct($this->image_ids);
 	}
 	
 	/**
-	 * Generate photo thumbnails based on sizes in database (and apply watermark if selected)
+	 * Generate image thumbnails based on sizes in database (and apply watermark if selected)
 	 *
-	 * @param array $photos Photo array
+	 * @param array $images Image array
 	 * @param array|int $size_ids Size IDs (else all sizes)
 	 * @return void
 	 */
-	public function sizePhoto($photos=null, $size_ids=null){
-		if(empty($photos)){
-			$photos = $this->photos;
-			$photo_count = $this->photo_count;
+	public function sizeImage($images=null, $size_ids=null){
+		if(empty($images)){
+			$images = $this->images;
+			$image_count = $this->image_count;
 		}
 		else{
-			$photo_count = count($photos);
+			$image_count = count($images);
 		}
 		
 		if(!empty($size_ids)){
@@ -216,7 +216,7 @@ class Photo extends Alkaline{
 		$sizes = $query->fetchAll();
 		
 		// Generate thumbnails
-		for($i = 0; $i < $photo_count; ++$i){
+		for($i = 0; $i < $image_count; ++$i){
 			foreach($sizes as $size){
 				$size_id = $size['size_id'];
 				
@@ -232,14 +232,14 @@ class Photo extends Alkaline{
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
 				$size_watermark = $size['size_watermark'];
-				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $photos[$i]['photo_id'] . $size_append . '.' . $photos[$i]['photo_ext']);
+				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
 				
 				switch($size_type){
 					case 'fill':
-						$this->imageFill($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
+						$this->imageFill($images[$i]['image_file'], $size_dest, $size_height, $size_width, null, $images[$i]['image_ext']);
 						break;
 					case 'scale':
-						$this->imageScale($photos[$i]['photo_file'], $size_dest, $size_height, $size_width, null, $photos[$i]['photo_ext']);
+						$this->imageScale($images[$i]['image_file'], $size_dest, $size_height, $size_width, null, $images[$i]['image_ext']);
 						break;
 					default:
 						return false; break;
@@ -247,14 +247,14 @@ class Photo extends Alkaline{
 				
 				if($this->returnConf('thumb_watermark') and ($size_watermark == 1)){
 					$watermark = parent::correctWinPath(PATH . 'watermark.png');
-					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $photos[$i]['photo_ext']);
+					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $images[$i]['image_ext']);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Update photo table
+	 * Update image table
 	 *
 	 * @param array $array Associative array of columns and fields
 	 * @param bool $overwrite 
@@ -266,13 +266,13 @@ class Photo extends Alkaline{
 			return false;
 		}
 		
-		for($i = 0; $i < $this->photo_count; ++$i){
+		for($i = 0; $i < $this->image_count; ++$i){
 			// Verify each key has changed; if not, unset the key
 			foreach($array as $key => $value){
-				if($array[$key] == $this->photos[$i][$key]){
+				if($array[$key] == $this->images[$i][$key]){
 					unset($array[$key]);
 				}
-				if(!empty($this->photos[$i][$key]) and ($overwrite === false)){
+				if(!empty($this->images[$i][$key]) and ($overwrite === false)){
 					unset($array[$key]);
 				}
 			}
@@ -286,7 +286,7 @@ class Photo extends Alkaline{
 			
 			// Prepare input
 			foreach($array as $key => $value){
-				if($key == 'photo_published'){
+				if($key == 'image_published'){
 					if(empty($value)){
 						$fields[$key] = null;
 					}
@@ -300,26 +300,26 @@ class Photo extends Alkaline{
 						$fields[$key] = $value;
 					}
 				}
-				elseif($key == 'photo_geo'){
+				elseif($key == 'image_geo'){
 					$geo = new Geo($value);
 					if(!empty($geo->city)){
 						if($geo->city['country_name'] == 'United States'){
-							$fields['photo_geo'] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
+							$fields['image_geo'] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
 						}
 						else{
-							$fields['photo_geo'] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
+							$fields['image_geo'] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
 						}
 					}
 					elseif(!empty($geo->raw)){
-						$fields['photo_geo'] = ucwords($geo->raw);
+						$fields['image_geo'] = ucwords($geo->raw);
 					}
 					else{
-						$fields['photo_geo'] = '';
+						$fields['image_geo'] = '';
 					}
 					
 					if(!empty($geo->lat) and !empty($geo->long)){
-						$fields['photo_geo_lat'] = $geo->lat;
-						$fields['photo_geo_long'] = $geo->long;
+						$fields['image_geo_lat'] = $geo->lat;
+						$fields['image_geo_long'] = $geo->long;
 					}
 				}
 				else{
@@ -327,14 +327,14 @@ class Photo extends Alkaline{
 				}
 			}
 			
-			// Set photo_updated field to now
-			$fields['photo_updated'] = date('Y-m-d H:i:s');
+			// Set image_updated field to now
+			$fields['image_updated'] = date('Y-m-d H:i:s');
 			
 			$columns = array_keys($fields);
 			$values = array_values($fields);
 
 			// Add row to database
-			$query = $this->prepare('UPDATE photos SET ' . implode(' = ?, ', $columns) . ' = ? WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+			$query = $this->prepare('UPDATE images SET ' . implode(' = ?, ', $columns) . ' = ? WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 			if(!$query->execute($values)){
 				return false;
 			}
@@ -382,29 +382,29 @@ class Photo extends Alkaline{
 		}
 		
 		
-		// Tags to update to all photos
+		// Tags to update to all images
 		$tags_to_update = $tags;
 		
 		// Get current tags
 		$this->getTags();
 		
-		$affected_photo_ids = array();
+		$affected_image_ids = array();
 		
-		// Loop through photos
-		for($i = 0; $i < $this->photo_count; ++$i){
+		// Loop through images
+		for($i = 0; $i < $this->image_count; ++$i){
 			// Duplicate tags so unsetting doesn't affect loop
 			$tags = $tags_to_update;
 			
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
-				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+				if($tag['image_id'] == $this->images[$i]['image_id']){
 					$tag_key = array_search($tag['tag_name'], $tags);
 					if($tag_key !== false){
 						unset($tags[$tag_key]);
 						continue;
 					}
 					else{
-						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
+						$query = 'DELETE FROM links WHERE image_id = ' . $tag['image_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
 						$this->exec($query);
 						
 						$query = $this->prepare('SELECT COUNT(*) as count FROM links WHERE tag_id = ' . $tag['tag_id'] . ';');
@@ -427,12 +427,12 @@ class Photo extends Alkaline{
 				continue;
 			}
 			
-			$affected_photo_ids[] = $this->photos[$i]['photo_id'];
+			$affected_image_ids[] = $this->images[$i]['image_id'];
 			
 			foreach($tags as $tag){
 				$key = array_search($tag, $tags_db_names);
 				if($key !== false){
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
+					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $this->images[$i]['image_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
 					$this->exec($query);
 				}
 				else{
@@ -443,17 +443,17 @@ class Photo extends Alkaline{
 					$tags_db[] = array('tag_id' => $tag_id, 'tag_name' => $tag);
 					$tags_db_names[] = $tag;
 					
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $this->images[$i]['image_id'] . ', ' . $tag_id . ');';
 					$this->exec($query);
 				}
 			}
 		}
 		
-		if(count($affected_photo_ids) > 0){
+		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
-			foreach($affected_photo_ids as $photo_id){
-				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			foreach($affected_image_ids as $image_id){
+				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -503,22 +503,22 @@ class Photo extends Alkaline{
 			$tags_db_names[] = $tag_db['tag_name'];
 		}
 		
-		// Tags to add to all photos
+		// Tags to add to all images
 		$tags_to_add = $tags;
 		
 		// Get current tags
 		$this->getTags();
 		
-		$affected_photo_ids = array();
+		$affected_image_ids = array();
 		
-		// Loop through photos
-		for($i = 0; $i < $this->photo_count; ++$i){
+		// Loop through images
+		for($i = 0; $i < $this->image_count; ++$i){
 			// Duplicate tags so unsetting doesn't affect loop
 			$tags = $tags_to_add;
 			
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
-				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+				if($tag['image_id'] == $this->images[$i]['image_id']){
 					$tag_key = array_search($tag['tag_name'], $tags, true);
 					if($tag_key !== false){
 						unset($tags[$tag_key]);
@@ -533,12 +533,12 @@ class Photo extends Alkaline{
 				continue;
 			}
 			
-			$affected_photo_ids[] = $this->photos[$i]['photo_id'];
+			$affected_image_ids[] = $this->images[$i]['image_id'];
 			
 			foreach($tags as $tag){
 				$key = array_search($tag, $tags_db_names);
 				if($key !== false){
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
+					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $this->images[$i]['image_id'] . ', ' . $tags_db[$key]['tag_id'] . ');';
 					$this->exec($query);
 				}
 				else{
@@ -550,17 +550,17 @@ class Photo extends Alkaline{
 					$tag_db_ids[] = $tag_id;
 					$tags_db_names[] = $tag;
 					
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $this->photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $this->images[$i]['image_id'] . ', ' . $tag_id . ');';
 					$this->exec($query);
 				}
 			}
 		}
 		
-		if(count($affected_photo_ids) > 0){
+		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
-			foreach($affected_photo_ids as $photo_id){
-				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			foreach($affected_image_ids as $image_id){
+				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -590,28 +590,28 @@ class Photo extends Alkaline{
 		$this->getTags();
 		
 		$tags_db_ids = array();
-		$affected_photo_ids = array();
+		$affected_image_ids = array();
 		
-		for($i = 0; $i < $this->photo_count; ++$i){
+		for($i = 0; $i < $this->image_count; ++$i){
 			// Verify tags have changed; if not, unset the key
 			foreach($this->tags as $tag){
-				if($tag['photo_id'] == $this->photos[$i]['photo_id']){
+				if($tag['image_id'] == $this->images[$i]['image_id']){
 					$tag_key = array_search($tag['tag_name'], $tags);
 					if($tag_key !== false){			
-						$query = 'DELETE FROM links WHERE photo_id = ' . $tag['photo_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
+						$query = 'DELETE FROM links WHERE image_id = ' . $tag['image_id'] . ' AND tag_id = ' . $tag['tag_id'] . ';';
 						$this->exec($query);
 						$tags_db_ids[] = $tag['tag_id'];
-						$affected_photo_ids[] = $this->photos[$i]['photo_id'];
+						$affected_image_ids[] = $this->images[$i]['image_id'];
 					}
 				}
 			}
 		}
 		
-		if(count($affected_photo_ids) > 0){
+		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE photos SET photo_updated = :photo_updated WHERE photo_id = :photo_id;');
-			foreach($affected_photo_ids as $photo_id){
-				$query->execute(array(':photo_updated' => $now, ':photo_id' => $photo_id));
+			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			foreach($affected_image_ids as $image_id){
+				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -1006,23 +1006,23 @@ class Photo extends Alkaline{
 	/**
 	 * Generate Colorkey data
 	 *
-	 * @param array $photos 
+	 * @param array $images 
 	 * @return void
 	 */
-	public function findColors($photos=null){
-		if(empty($photos)){
-			$photos = $this->photos;
-			$photo_count = $this->photo_count;
+	public function findColors($images=null){
+		if(empty($images)){
+			$images = $this->images;
+			$image_count = $this->image_count;
 		}
 		else{
-			$photo_count = count($photos);
+			$image_count = count($images);
 		}
-		for($i = 0; $i < $photo_count; ++$i){		
-			$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-tmp$2', $photos[$i]['photo_file']);
+		for($i = 0; $i < $image_count; ++$i){		
+			$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-tmp$2', $images[$i]['image_file']);
 		
-			self::imageScale($photos[$i]['photo_file'], $dest, 50, 50, 100, $photos[$i]['photo_ext']);
+			self::imageScale($images[$i]['image_file'], $dest, 50, 50, 100, $images[$i]['image_ext']);
 		
-			switch($photos[$i]['photo_ext']){
+			switch($images[$i]['image_ext']){
 				case 'jpg':
 					$image = imagecreatefromjpeg($dest);
 					break;
@@ -1161,15 +1161,15 @@ class Photo extends Alkaline{
 			$hsl_dom_s = round($S * 100);
 			$hsl_dom_l = round($V * 100);
 			
-			$fields = array(':photo_colors' => serialize($rgbs),
-				':photo_color_r' => $rgb_dom_r,
-				':photo_color_g' => $rgb_dom_g,
-				':photo_color_b' => $rgb_dom_b,
-				':photo_color_h' => $hsl_dom_h,
-				':photo_color_s' => $hsl_dom_s,
-				':photo_color_l' => $hsl_dom_l);
+			$fields = array(':image_colors' => serialize($rgbs),
+				':image_color_r' => $rgb_dom_r,
+				':image_color_g' => $rgb_dom_g,
+				':image_color_b' => $rgb_dom_b,
+				':image_color_h' => $hsl_dom_h,
+				':image_color_s' => $hsl_dom_s,
+				':image_color_l' => $hsl_dom_l);
 		
-			$query = $this->prepare('UPDATE photos SET photo_colors = :photo_colors, photo_color_r = :photo_color_r, photo_color_g = :photo_color_g, photo_color_b = :photo_color_b, photo_color_h = :photo_color_h, photo_color_s = :photo_color_s, photo_color_l = :photo_color_l WHERE photo_id = ' . $photos[$i]['photo_id'] . ';');
+			$query = $this->prepare('UPDATE images SET image_colors = :image_colors, image_color_r = :image_color_r, image_color_g = :image_color_g, image_color_b = :image_color_b, image_color_h = :image_color_h, image_color_s = :image_color_s, image_color_l = :image_color_l WHERE image_id = ' . $images[$i]['image_id'] . ';');
 			return $query->execute($fields);
 		}
 	}
@@ -1177,23 +1177,23 @@ class Photo extends Alkaline{
 	/**
 	 * Read and import EXIF data from images
 	 *
-	 * @param array $photos 
+	 * @param array $images 
 	 * @return void
 	 */
-	public function readEXIF($photos=null){
+	public function readEXIF($images=null){
 		if(!function_exists('exif_read_data')){ return false; }
 		
-		if(empty($photos)){
-			$photos = $this->photos;
-			$photo_count = $this->photo_count;
+		if(empty($images)){
+			$images = $this->images;
+			$image_count = $this->image_count;
 		}
 		else{
-			$photo_count = count($photos);
+			$image_count = count($images);
 		}
 		
-		for($i = 0; $i < $photo_count; ++$i){
+		for($i = 0; $i < $image_count; ++$i){
 			// Read EXIF data
-			$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
+			$exif = @exif_read_data($images[$i]['image_file'], 0, true, false);
 			
 			// If EXIF data exists, add each key (group), name, value to database
 			if((count($exif) > 0) and is_array($exif)){
@@ -1208,17 +1208,17 @@ class Photo extends Alkaline{
 							continue;
 						}
 						
-						$fields = array('photo_id' => $photos[$i]['photo_id'],
+						$fields = array('image_id' => $images[$i]['image_id'],
 							'exif_key' => $key,
 							'exif_name' => $name,
 							'exif_value' => serialize($value));
 						
 						$this->addRow($fields, 'exifs');
 						
-						// Check for date taken, insert to photos table
+						// Check for date taken, insert to images table
 						if(($key == 'IFD0') and ($name == 'DateTime')){
-							$query = $this->prepare('UPDATE photos SET photo_taken = :photo_taken WHERE photo_id = ' . $photos[$i]['photo_id'] . ';');
-							$query->execute(array(':photo_taken' => date('Y-m-d H:i:s', strtotime($value))));
+							$query = $this->prepare('UPDATE images SET image_taken = :image_taken WHERE image_id = ' . $images[$i]['image_id'] . ';');
+							$query->execute(array(':image_taken' => date('Y-m-d H:i:s', strtotime($value))));
 						}
 				    }
 				}
@@ -1229,21 +1229,21 @@ class Photo extends Alkaline{
 	/**
 	 * Read and import IPTC data from images (for tags)
 	 *
-	 * @param array $photos 
+	 * @param array $images 
 	 * @return void
 	 */
-	public function readIPTC($photos=null){
-		if(empty($photos)){
-			$photos = $this->photos;
-			$photo_count = $this->photo_count;
+	public function readIPTC($images=null){
+		if(empty($images)){
+			$images = $this->images;
+			$image_count = $this->image_count;
 		}
 		else{
-			$photo_count = count($photos);
+			$image_count = count($images);
 		}
 		
-		for($i = 0; $i < $photo_count; ++$i){
+		for($i = 0; $i < $image_count; ++$i){
 			// Read IPTC data
-			$size = getimagesize($photos[$i]['photo_file'], $info);
+			$size = getimagesize($images[$i]['image_file'], $info);
 			
 			if(isset($info['APP13']))
 			{
@@ -1287,7 +1287,7 @@ class Photo extends Alkaline{
 					unset($tags[$tag_key]);
 					
 					// Add link
-					$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag['tag_id'] . ');';
+					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $images[$i]['image_id'] . ', ' . $tag['tag_id'] . ');';
 					$this->exec($query);
 				}
 				
@@ -1303,17 +1303,17 @@ class Photo extends Alkaline{
 						$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
 					
 						// Add link
-						$query = 'INSERT INTO links (photo_id, tag_id) VALUES (' . $photos[$i]['photo_id'] . ', ' . $tag_id . ');';
+						$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $images[$i]['image_id'] . ', ' . $tag_id . ');';
 						$this->exec($query);
 					}
 				}
 			}
 			
-			$fields = array('photo_title' => @$title,
-				'photo_description' => @$description);
+			$fields = array('image_title' => @$title,
+				'image_description' => @$description);
 			
-			$photo = new Photo($photos[$i]['photo_id']);
-			$photo->updateFields($fields, false);
+			$image = new Image($images[$i]['image_id']);
+			$image->updateFields($fields, false);
 		}
 		
 		return true;
@@ -1322,24 +1322,24 @@ class Photo extends Alkaline{
 	/**
 	 * Read and import geolocation data (via any mix of EXIF and IPTC) from images
 	 *
-	 * @param array $photos 
+	 * @param array $images 
 	 * @return void
 	 */
-	public function readGeo($photos=null){
-		if(empty($photos)){
-			$photos = $this->photos;
-			$photo_count = $this->photo_count;
+	public function readGeo($images=null){
+		if(empty($images)){
+			$images = $this->images;
+			$image_count = $this->image_count;
 		}
 		else{
-			$photo_count = count($photos);
+			$image_count = count($images);
 		}
 		
-		for($i = 0; $i < $photo_count; ++$i){
+		for($i = 0; $i < $image_count; ++$i){
 			$found_exif = 0;
 			
 			if(function_exists('exif_read_data')){
 				// Read EXIF data
-				$exif = @exif_read_data($photos[$i]['photo_file'], 0, true, false);
+				$exif = @exif_read_data($images[$i]['image_file'], 0, true, false);
 				
 				// If EXIF data exists, add each key (group), name, value to database
 				if((count($exif) > 0) and is_array($exif)){
@@ -1401,7 +1401,7 @@ class Photo extends Alkaline{
 			}
 			
 			// Read IPTC data
-			$size = getimagesize($photos[$i]['photo_file'], $info);
+			$size = getimagesize($images[$i]['image_file'], $info);
 			
 			if(isset($info['APP13']))
 			{
@@ -1454,39 +1454,39 @@ class Photo extends Alkaline{
 				$geo_long = $place->long;
 			}
 			
-			$fields = array('photo_geo' => @$geo,
-				'photo_geo_lat' => @$geo_lat,
-				'photo_geo_long' => @$geo_long);
+			$fields = array('image_geo' => @$geo,
+				'image_geo_lat' => @$geo_lat,
+				'image_geo_long' => @$geo_long);
 		
-			$photo = new Photo($photos[$i]['photo_id']);
-			$photo->updateFields($fields, false);
+			$image = new Image($images[$i]['image_id']);
+			$image->updateFields($fields, false);
 		}
 	}
 	
 	/**
-	 * Increase photo_views field by 1
+	 * Increase image_views field by 1
 	 *
 	 * @return void
 	 */
 	public function updateViews(){
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_views']++;
-			$this->exec('UPDATE photos SET photo_views = ' . $this->photos[$i]['photo_views'] . ' WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+		for($i = 0; $i < $this->image_count; ++$i){
+			$this->images[$i]['image_views']++;
+			$this->exec('UPDATE images SET image_views = ' . $this->images[$i]['image_views'] . ' WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 		}
 	}
 	
 	/**
-	 * Delete photos (and remove photo from photos, comments, exifs, and links tables)
+	 * Delete images (and remove image from images, comments, exifs, and links tables)
 	 *
 	 * @return void
 	 */
 	public function delete(){
-		$this->deSizePhoto(true);
-		for($i = 0; $i < $this->photo_count; ++$i){
-			@$this->exec('DELETE FROM photos WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			@$this->exec('DELETE FROM comments WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			@$this->exec('DELETE FROM exifs WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
-			@$this->exec('DELETE FROM links WHERE photo_id = ' . $this->photos[$i]['photo_id'] . ';');
+		$this->deSizeImage(true);
+		for($i = 0; $i < $this->image_count; ++$i){
+			@$this->exec('DELETE FROM images WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+			@$this->exec('DELETE FROM comments WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+			@$this->exec('DELETE FROM exifs WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+			@$this->exec('DELETE FROM links WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 		}
 	}
 	
@@ -1516,47 +1516,47 @@ class Photo extends Alkaline{
 		$sizes_count = count($sizes);
 		
 		for($k=0; $k < $sizes_count; $k++){
-			$size_label = 'photo_src_' . strtolower($sizes[$k]['size_label']);
-			$size_img_label = 'photo_img_' . strtolower($sizes[$k]['size_label']);
-			$size_height_label = 'photo_height_' . strtolower($sizes[$k]['size_label']);
-			$size_width_label = 'photo_width_' . strtolower($sizes[$k]['size_label']);
+			$size_label = 'image_src_' . strtolower($sizes[$k]['size_label']);
+			$size_img_label = 'image_img_' . strtolower($sizes[$k]['size_label']);
+			$size_height_label = 'image_height_' . strtolower($sizes[$k]['size_label']);
+			$size_width_label = 'image_width_' . strtolower($sizes[$k]['size_label']);
 			$size_prepend = $sizes[$k]['size_prepend'];
 			$size_append = $sizes[$k]['size_append'];
 			$size_type = $sizes[$k]['size_type'];
 			$size_width = $sizes[$k]['size_width'];
 			$size_height = $sizes[$k]['size_height'];
 			
-			// Attach photo_src_ to photos array
-			for($i = 0; $i < $this->photo_count; ++$i){
-				$photo_ext = $this->photos[$i]['photo_ext'];
+			// Attach image_src_ to images array
+			for($i = 0; $i < $this->image_count; ++$i){
+				$image_ext = $this->images[$i]['image_ext'];
 
-				if(in_array($photo_ext, array('pdf', 'svg'))){
-					$photo_ext = 'png';
+				if(in_array($image_ext, array('pdf', 'svg'))){
+					$image_ext = 'png';
 				}
 				
-			    $this->photos[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext;
-			    $this->photos[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->photos[$i]['photo_id'] . $size_append . '.' . $photo_ext . ' alt="" />';
+			    $this->images[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->images[$i]['image_id'] . $size_append . '.' . $image_ext;
+			    $this->images[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->images[$i]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
 				
 				$width = $size_width;
 				$height = $size_height;
 				
-				$width_orig = $this->photos[$i]['photo_width'];
-				$height_orig = $this->photos[$i]['photo_height'];
+				$width_orig = $this->images[$i]['image_width'];
+				$height_orig = $this->images[$i]['image_height'];
 				
 				if($size_type == 'scale'){
 					if(($width_orig <= $width) and ($height_orig <= $height)){
 						switch($ext){
 							case 'jpg':
-								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
-								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
+								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
 								break;
 							case 'png':
-								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
-								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
+								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
 								break;
 							case 'gif':
-								$this->photos[$i][$size_height_label] = $this->photos[$i]['photo_height'];
-								$this->photos[$i][$size_width_label] = $this->photos[$i]['photo_width'];
+								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
+								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
 								break;
 						}
 					}
@@ -1567,22 +1567,22 @@ class Photo extends Alkaline{
 					if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
 					else{ $width = $height * $ratio_orig; }
 					
-					$this->photos[$i][$size_height_label] = floor($height);
-					$this->photos[$i][$size_width_label] = floor($width);
+					$this->images[$i][$size_height_label] = floor($height);
+					$this->images[$i][$size_width_label] = floor($width);
 				}
 				elseif($size_type == 'fill'){
 					if($size_height < $height){
-						$this->photos[$i][$size_height_label] = $size_height;
+						$this->images[$i][$size_height_label] = $size_height;
 					}
 					else{
-						$this->photos[$i][$size_height_label] = $height;
+						$this->images[$i][$size_height_label] = $height;
 					}
 					
 					if($size_width < $width){
-						$this->photos[$i][$size_width_label] = $size_width;
+						$this->images[$i][$size_width_label] = $size_width;
 					}
 					else{
-						$this->photos[$i][$size_width_label] = $width;
+						$this->images[$i][$size_width_label] = $width;
 					}
 				}
 			}
@@ -1594,20 +1594,20 @@ class Photo extends Alkaline{
 	}
 	
 	/**
-	 * Get EXIF data and append to photo array
+	 * Get EXIF data and append to image array
 	 *
 	 * @return array Associative array of EXIFs
 	 */
 	public function getEXIF(){
-		$query = $this->prepare('SELECT exifs.* FROM exifs, photos' . $this->sql . ' AND photos.photo_id = exifs.photo_id;');
+		$query = $this->prepare('SELECT exifs.* FROM exifs, images' . $this->sql . ' AND images.image_id = exifs.image_id;');
 		$query->execute();
 		$exifs = $query->fetchAll();
 		
 		foreach($exifs as $exif){
-			$photo_id = intval($exif['photo_id']);
-			$key = array_search($photo_id, $this->photo_ids);
-			if(@$photo_id = $this->photo_ids[$key]){
-				@$this->photos[$key]['photo_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
+			$image_id = intval($exif['image_id']);
+			$key = array_search($image_id, $this->image_ids);
+			if(@$image_id = $this->image_ids[$key]){
+				@$this->images[$key]['image_exif_' . strtolower($exif['exif_key']) . '_' . strtolower($exif['exif_name'])] = unserialize($exif['exif_value']);
 			}
 		}
 		
@@ -1615,18 +1615,18 @@ class Photo extends Alkaline{
 	}
 	
 	/**
-	 * Get image tags and append to photo array
+	 * Get image tags and append to image array
 	 *
 	 * @return array Associative array of tags
 	 */
 	public function getTags(){
 		// Sort by tag name
 		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_name;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
 		}
 		// Sort by order added
 		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY links.link_id;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY links.link_id;');
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
@@ -1646,14 +1646,14 @@ class Photo extends Alkaline{
 		}
 		
 		foreach($tags as $tag){
-			$photo_id = intval($tag['photo_id']);
-			$key = array_search($photo_id, $this->photo_ids);
-			if($photo_id = $this->photo_ids[$key]){
-				if(empty($this->photos[$key]['photo_tags'])){
-					@$this->photos[$key]['photo_tags'] = $tag['tag_name'];
+			$image_id = intval($tag['image_id']);
+			$key = array_search($image_id, $this->image_ids);
+			if($image_id = $this->image_ids[$key]){
+				if(empty($this->images[$key]['image_tags'])){
+					@$this->images[$key]['image_tags'] = $tag['tag_name'];
 				}
 				else{
-					$this->photos[$key]['photo_tags'] .= ', ' . $tag['tag_name']; 
+					$this->images[$key]['image_tags'] .= ', ' . $tag['tag_name']; 
 				}
 			}
 		}
@@ -1662,21 +1662,21 @@ class Photo extends Alkaline{
 	}
 	
 	/**
-	 * Get rights set data and append to photo array
+	 * Get rights set data and append to image array
 	 *
 	 * @return array Associative array of rights sets
 	 */
 	public function getRights(){
-		$query = $this->prepare('SELECT rights.*, photos.photo_id FROM rights, photos' . $this->sql . ' AND rights.right_id = photos.right_id;');
+		$query = $this->prepare('SELECT rights.*, images.image_id FROM rights, images' . $this->sql . ' AND rights.right_id = images.right_id;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		
 		foreach($rights as $right){
-			$photo_id = intval($right['photo_id']);
-			$key = array_search($photo_id, $this->photo_ids);
-			if($photo_id = $this->photo_ids[$key]){
+			$image_id = intval($right['image_id']);
+			$key = array_search($image_id, $this->image_ids);
+			if($image_id = $this->image_ids[$key]){
 				foreach($right as $right_key => $right_value){
-					$this->photos[$key][$right_key] = $right_value;
+					$this->images[$key][$right_key] = $right_value;
 				}
 			}
 		}
@@ -1685,7 +1685,7 @@ class Photo extends Alkaline{
 	}
 	
 	/**
-	 * Get piles data and append to photo array
+	 * Get piles data and append to image array
 	 *
 	 * @return array Associative array of piles
 	 */
@@ -1693,10 +1693,10 @@ class Photo extends Alkaline{
 		$piles = $this->getTable('piles');
 		
 		foreach($piles as &$pile){
-			$pile_photos = explode(', ', $pile['pile_photos']);
-			foreach($this->photo_ids as $photo_id){
-				if(in_array($photo_id, $pile_photos)){
-					$pile['photo_id'] = $photo_id;
+			$pile_images = explode(', ', $pile['pile_images']);
+			foreach($this->image_ids as $image_id){
+				if(in_array($image_id, $pile_images)){
+					$pile['image_id'] = $image_id;
 					$this->piles[] = $pile;
 				}
 			}
@@ -1706,7 +1706,7 @@ class Photo extends Alkaline{
 	}
 	
 	/**
-	 * Get pages data and append to photo array
+	 * Get pages data and append to image array
 	 *
 	 * @return array Associative array of pages
 	 */
@@ -1714,13 +1714,13 @@ class Photo extends Alkaline{
 		$pages = $this->getTable('pages');
 		
 		foreach($pages as &$page){
-			$page_photos = $page['page_photos'];
-			if(empty($page_photos)){ continue; }
+			$page_images = $page['page_images'];
+			if(empty($page_images)){ continue; }
 			
-			$page_photos = explode(', ', $page_photos);
-			foreach($this->photo_ids as $photo_id){
-				if(in_array($photo_id, $page_photos)){
-					$page['photo_id'] = $photo_id;
+			$page_images = explode(', ', $page_images);
+			foreach($this->image_ids as $image_id){
+				if(in_array($image_id, $page_images)){
+					$page['image_id'] = $image_id;
 					$this->pages[] = $page;
 				}
 			}
@@ -1745,20 +1745,20 @@ class Photo extends Alkaline{
 		}
 		
 		if($asc === true){
-			$values = range($start, $start+$this->photo_count);
+			$values = range($start, $start+$this->image_count);
 		}
 		else{
-			$values = range($start, $start-$this->photo_count);
+			$values = range($start, $start-$this->image_count);
 		}
 		
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_numeric'] = $values[$i];
-			$this->photos[$i]['photo_alpha'] = ucwords($this->numberToWords($values[$i]));
+		for($i = 0; $i < $this->image_count; ++$i){
+			$this->images[$i]['image_numeric'] = $values[$i];
+			$this->images[$i]['image_alpha'] = ucwords($this->numberToWords($values[$i]));
 		}
 	}
 	
 	/**
-	 * Get Colorkey data and append <canvas> to photo array
+	 * Get Colorkey data and append <canvas> to image array
 	 *
 	 * @param int $width Width (in pixels)
 	 * @param int $height Height (in pixels) 
@@ -1769,25 +1769,25 @@ class Photo extends Alkaline{
 		if(!isset($width)){ $width = 300; }
 		if(!isset($height)){ $height = 40; }
 		
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$photo_colors = unserialize($this->photos[$i]['photo_colors']);
+		for($i = 0; $i < $this->image_count; ++$i){
+			$image_colors = unserialize($this->images[$i]['image_colors']);
 			
-			if(empty($photo_colors)){ $this->photos[$i]['photo_colorkey'] = ''; continue; }
+			if(empty($image_colors)){ $this->images[$i]['image_colorkey'] = ''; continue; }
 
-			$photo_colors_colors = array();
-			$photo_colors_percents = array();
+			$image_colors_colors = array();
+			$image_colors_percents = array();
 
-			foreach($photo_colors as $color => $percent){
-				$photo_colors_colors[] = $color;
-				$photo_colors_percents[] = $percent;
+			foreach($image_colors as $color => $percent){
+				$image_colors_colors[] = $color;
+				$image_colors_percents[] = $percent;
 			}
 
-			$photo_colors_colors = json_encode($photo_colors_colors);
-			$photo_colors_percents = json_encode($photo_colors_percents);
+			$image_colors_colors = json_encode($image_colors_colors);
+			$image_colors_percents = json_encode($image_colors_percents);
 			
-			$this->photos[$i]['photo_colorkey'] = '<div class="colorkey_data none">
-				<div class="colors">' . $photo_colors_colors . '</div>
-				<div class="percents">' . $photo_colors_percents . '</div>
+			$this->images[$i]['image_colorkey'] = '<div class="colorkey_data none">
+				<div class="colors">' . $image_colors_colors . '</div>
+				<div class="percents">' . $image_colors_percents . '</div>
 			</div>
 			<canvas width="' . intval(@$width) . '" height="' . intval(@$height) . '" class="colorkey"></canvas>';
 		}
@@ -1809,14 +1809,14 @@ class Photo extends Alkaline{
 			$i = $frequency;
 		}
 		
-		// Store photo comment fields
-		foreach($this->photos as &$photo){
+		// Store image comment fields
+		foreach($this->images as &$image){
 			if($i == $frequency){
-				if(empty($photo['photo_sequence'])){
-					$photo['photo_sequence'] = $label;
+				if(empty($image['image_sequence'])){
+					$image['image_sequence'] = $label;
 				}
 				else{
-					$photo['photo_sequence'] .= ' ' . $label;
+					$image['image_sequence'] .= ' ' . $label;
 				}
 				$i = 1;
 			}
@@ -1836,10 +1836,10 @@ class Photo extends Alkaline{
 	 */
 	public function getComments($published=true){
 		if($published == true){
-			$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id AND comments.comment_status > 0;');
+			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id AND comments.comment_status > 0;');
 		}
 		else{
-			$query = $this->prepare('SELECT * FROM comments, photos' . $this->sql . ' AND comments.photo_id = photos.photo_id;');
+			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id;');
 		}
 		$query->execute();
 		$this->comments = $query->fetchAll();
@@ -1851,43 +1851,43 @@ class Photo extends Alkaline{
 			$comment['comment_created'] = parent::formatTime($comment['comment_created']);
 		}
 		
-		// Store photo comment fields
-		for($i = 0; $i < $this->photo_count; ++$i){
-			$this->photos[$i]['photo_comment_text'] = '<textarea id="comment_' . $this->photos[$i]['photo_id'] . '_text" name="comment_' . $this->photos[$i]['photo_id'] . '_text" class="comment_text"></textarea>';
+		// Store image comment fields
+		for($i = 0; $i < $this->image_count; ++$i){
+			$this->images[$i]['image_comment_text'] = '<textarea id="comment_' . $this->images[$i]['image_id'] . '_text" name="comment_' . $this->images[$i]['image_id'] . '_text" class="comment_text"></textarea>';
 			
-			$this->photos[$i]['photo_comment_author_name'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_name" name="comment_' . $this->photos[$i]['photo_id'] . '_author_name" class="comment_author_name" />';
+			$this->images[$i]['image_comment_author_name'] = '<input type="text" id="comment_' . $this->images[$i]['image_id'] . '_author_name" name="comment_' . $this->images[$i]['image_id'] . '_author_name" class="comment_author_name" />';
 			
-			$this->photos[$i]['photo_comment_author_email'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_email" name="comment_' . $this->photos[$i]['photo_id'] . '_author_email" class="comment_author_email" />';
+			$this->images[$i]['image_comment_author_email'] = '<input type="text" id="comment_' . $this->images[$i]['image_id'] . '_author_email" name="comment_' . $this->images[$i]['image_id'] . '_author_email" class="comment_author_email" />';
 			
-			$this->photos[$i]['photo_comment_author_uri'] = '<input type="text" id="comment_' . $this->photos[$i]['photo_id'] . '_author_uri" name="comment_' . $this->photos[$i]['photo_id'] . '_author_uri" class="comment_author_uri" />';
+			$this->images[$i]['image_comment_author_uri'] = '<input type="text" id="comment_' . $this->images[$i]['image_id'] . '_author_uri" name="comment_' . $this->images[$i]['image_id'] . '_author_uri" class="comment_author_uri" />';
 		
-			$this->photos[$i]['photo_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->photos[$i]['photo_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
+			$this->images[$i]['image_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->images[$i]['image_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
 		}
 		
 		return $this->comments;
 	}
 	
 	/**
-	 * Delete photo thumbnail files
+	 * Delete image thumbnail files
 	 *
-	 * @param string $original Delete original photo
+	 * @param string $original Delete original image
 	 * @return void
 	 */
-	public function deSizePhoto($original=false){
-		// Open photo directory
+	public function deSizeImage($original=false){
+		// Open image directory
 		$dir = parent::correctWinPath(PATH . PHOTOS);
 		$handle = opendir($dir);
-		$photos = array();
+		$images = array();
 		
 		while($filename = readdir($handle)){
-			for($i = 0; $i < $this->photo_count; ++$i){
-				// Find photo thumnails
-				if(preg_match('/^((.*[\D]+' . $this->photos[$i]['photo_id'] . '|' . $this->photos[$i]['photo_id'] . '[\D]+.*|.*[\D]+' . $this->photos[$i]['photo_id'] . '[\D]+.*)\..+)$/', $filename)){
-					$photos[] = $dir . $filename;
+			for($i = 0; $i < $this->image_count; ++$i){
+				// Find image thumnails
+				if(preg_match('/^((.*[\D]+' . $this->images[$i]['image_id'] . '|' . $this->images[$i]['image_id'] . '[\D]+.*|.*[\D]+' . $this->images[$i]['image_id'] . '[\D]+.*)\..+)$/', $filename)){
+					$images[] = $dir . $filename;
 				}
 				if($original === true){
-					if(preg_match('/^' . $this->photos[$i]['photo_id'] . '\..+$/', $filename)){
-						$photos[] = $dir . $filename;
+					if(preg_match('/^' . $this->images[$i]['image_id'] . '\..+$/', $filename)){
+						$images[] = $dir . $filename;
 					}
 				}
 			}
@@ -1895,9 +1895,9 @@ class Photo extends Alkaline{
 		
 		closedir($handle);
 		
-		// Delete photo thumbnails
-		foreach($photos as $photo){
-			unlink($photo);
+		// Delete image thumbnails
+		foreach($images as $image){
+			unlink($image);
 		}
 	}
 	
@@ -1908,11 +1908,11 @@ class Photo extends Alkaline{
 	 * @return void
 	 */
 	public function formatTime($format=null){
-		foreach($this->photos as &$photo){
-			$photo['photo_taken'] = parent::formatTime($photo['photo_taken'], $format);
-			$photo['photo_uploaded'] = parent::formatTime($photo['photo_uploaded'], $format);
-			$photo['photo_published'] = parent::formatTime($photo['photo_published'], $format);
-			$photo['photo_updated'] = parent::formatTime($photo['photo_updated'], $format);
+		foreach($this->images as &$image){
+			$image['image_taken'] = parent::formatTime($image['image_taken'], $format);
+			$image['image_uploaded'] = parent::formatTime($image['image_uploaded'], $format);
+			$image['image_published'] = parent::formatTime($image['image_published'], $format);
+			$image['image_updated'] = parent::formatTime($image['image_updated'], $format);
 		}
 	}
 	
@@ -2048,15 +2048,15 @@ class Photo extends Alkaline{
 	/**
 	 * Determine watermark position
 	 *
-	 * @param int $photo_height Photo height (in pixels)
-	 * @param int $photo_width Photo width (in pixels)
+	 * @param int $image_height Image height (in pixels)
+	 * @param int $image_width Image width (in pixels)
 	 * @param int $water_height Watermark height (in pixels)
 	 * @param int $water_width Watermark width (in pixels)
 	 * @param int $margin Margin (in pixels)
 	 * @param string $position 'nw', 'ne', 'sw', '00', 'n0', 's0', '0e', '0w'
 	 * @return void
 	 */
-	private function watermarkPosition($photo_height, $photo_width, $water_height, $water_width, $margin=null, $position=null){
+	private function watermarkPosition($image_height, $image_width, $water_height, $water_width, $margin=null, $position=null){
 		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
 		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
 		switch($position){
@@ -2065,36 +2065,36 @@ class Photo extends Alkaline{
 				$pos_y = $margin;
 				break;
 			case 'ne':
-				$pos_x = $photo_width - $water_width - $margin;
+				$pos_x = $image_width - $water_width - $margin;
 				$pos_y = $margin;
 				break;
 			case 'sw':
 				$pos_x = $margin;
-				$pos_y = $photo_height - $water_height - $margin;
+				$pos_y = $image_height - $water_height - $margin;
 				break;
 			case 'se':
-				$pos_x = $photo_width - $water_width - $margin;
-				$pos_y = $photo_height - $water_height - $margin;
+				$pos_x = $image_width - $water_width - $margin;
+				$pos_y = $image_height - $water_height - $margin;
 				break;
 			case '00':
-				$pos_x = ($photo_width / 2) - ($water_width / 2);
-				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				$pos_x = ($image_width / 2) - ($water_width / 2);
+				$pos_y = ($image_height / 2) - ($water_height / 2);
 				break;
 			case 'n0':
-				$pos_x = ($photo_width / 2) - ($water_width / 2);
+				$pos_x = ($image_width / 2) - ($water_width / 2);
 				$pos_y = $margin;
 				break;
 			case 's0':
-				$pos_x = ($photo_width / 2) - ($water_width / 2);
-				$pos_y = $photo_height - $water_height - $margin;
+				$pos_x = ($image_width / 2) - ($water_width / 2);
+				$pos_y = $image_height - $water_height - $margin;
 				break;
 			case '0e':
-				$pos_x = $photo_width - $water_width - $margin;
-				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				$pos_x = $image_width - $water_width - $margin;
+				$pos_y = ($image_height / 2) - ($water_height / 2);
 				break;
 			case '0w':
 				$pos_x = $margin;
-				$pos_y = ($photo_height / 2) - ($water_height / 2);
+				$pos_y = ($image_height / 2) - ($water_height / 2);
 				break;
 			default:
 				return false;

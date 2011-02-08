@@ -271,7 +271,7 @@ $test = new AlkalineCS();
 					<?php $result = $test->isExt('exif', false); echo $test->boolToIMG($result); ?>
 					<td>
 						<strong>PHP EXIF support</strong><br />
-						<span class="quiet">PHP EXIF allows Alkaline to read EXIF data from your photos.</span>
+						<span class="quiet">PHP EXIF allows Alkaline to read EXIF data from your images.</span>
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>

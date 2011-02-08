@@ -9,12 +9,11 @@ var BASE = $('meta[name="base"]').attr('content');
 var FOLDER_PREFIX = $('meta[name="folder_prefix"]').attr('content');
 
 var ADMIN = FOLDER_PREFIX + 'admin/';
-var IMAGES = ADMIN + 'images/';
-var PHOTOS = FOLDER_PREFIX + 'photos/';
+var IMAGES = FOLDER_PREFIX + 'images/';
 
 var slideshow;
-var slideshow_photo;
-var slideshow_photo_prev;
+var slideshow_image;
+var slideshow_image_prev;
 var slideshow_working = 0;
 var slideshow_play = 1;
 
@@ -24,45 +23,45 @@ $.expr[':'].containsIgnoreCase = function(n,i,m){
 
 function slideshow_first(){
 	if(slideshow_working == 1){ return; }
-	slideshow_photo = slideshow_photos.first('li');
+	slideshow_image = slideshow_images.first('li');
 	slideshow_update();
 }
 
 function slideshow_last(){
 	if(slideshow_working == 1){ return; }
-	slideshow_photo = slideshow_photos.last('li');
+	slideshow_image = slideshow_images.last('li');
 	slideshow_update();
 }
 
 function slideshow_next(){
 	if(slideshow_working == 1){ return; }
-	slideshow_photo_next = slideshow_photo.next();
-	if(slideshow_photo_next.length == 0){
+	slideshow_image_next = slideshow_image.next();
+	if(slideshow_image_next.length == 0){
 		slideshow_first();
 	}
 	else{
-		slideshow_photo = slideshow_photo_next;
+		slideshow_image = slideshow_image_next;
 		slideshow_update();
 	}
 }
 
 function slideshow_prev(){
 	if(slideshow_working == 1){ return; }
-	slideshow_photo_next = slideshow_photo.prev();
-	if(slideshow_photo_next.length == 0){
+	slideshow_image_next = slideshow_image.prev();
+	if(slideshow_image_next.length == 0){
 		slideshow_last();
 	}
 	else{
-		slideshow_photo = slideshow_photo_next;
+		slideshow_image = slideshow_image_next;
 		slideshow_update();
 	}
 }
 
 function reset(){
-	if(slideshow_photo){
-		photo = slideshow_photo.find('img');
-		height = photo.innerHeight();
-	    width = photo.innerWidth();
+	if(slideshow_image){
+		image = slideshow_image.find('img');
+		height = image.innerHeight();
+	    width = image.innerWidth();
 		doc_height = $(document).height();
 		if(doc_height > 700){
 			if(width > height){
@@ -80,14 +79,14 @@ function reset(){
 				padding = 0;
 			}
 		}
-		slideshow_photo.css('padding-top', padding + 'px');
+		slideshow_image.css('padding-top', padding + 'px');
 	}
 }
 
 function slideshow_update(){
 	slideshow_working = 1;
 	
-	slideshow.fadeOut(100, function(){ uncomment(slideshow_photo); $('ul#slideshow li').hide(); slideshow_photo.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_photo_prev = slideshow_photo; slideshow_photo_next = slideshow_photo.next(); slideshow_photo_next.hide(0, function(){ uncomment(slideshow_photo_next); } ); slideshow_working = 0; });
+	slideshow.fadeOut(100, function(){ uncomment(slideshow_image); $('ul#slideshow li').hide(); slideshow_image.show(); }).delay(0).hide(100, function(){ reset(); }).fadeIn(100, function(){ slideshow_image_prev = slideshow_image; slideshow_image_next = slideshow_image.next(); slideshow_image_next.hide(0, function(){ uncomment(slideshow_image_next); } ); slideshow_working = 0; });
 }
 
 function slideshow_play_now(){
@@ -122,11 +121,11 @@ function slideshow_stop(){
 	slideshow_play = 0;
 }
 
-function uncomment(slideshow_photo){
-	slideshow_photo_html = slideshow_photo.html();
-	slideshow_photo_html = slideshow_photo_html.replace(/^\<\!-- /gi, '');
-	slideshow_photo_html = slideshow_photo_html.replace(/ --\>$/gi, '');
-	slideshow_photo.html(slideshow_photo_html);
+function uncomment(slideshow_image){
+	slideshow_image_html = slideshow_image.html();
+	slideshow_image_html = slideshow_image_html.replace(/^\<\!-- /gi, '');
+	slideshow_image_html = slideshow_image_html.replace(/ --\>$/gi, '');
+	slideshow_image.html(slideshow_image_html);
 }
 
 var shift = 0;
@@ -161,11 +160,11 @@ function shortNum(num){
 	return num;
 }
 
-function static_html(div_id, photo_id){
+function static_html(div_id, image_id){
 	var block = $('#' + div_id).html();
-	photo_id = photo_id.toString();
+	image_id = image_id.toString();
 	static_html_regex = new RegExp('--', 'gim');
-	block = block.replace(static_html_regex, '-' + photo_id + '-');
+	block = block.replace(static_html_regex, '-' + image_id + '-');
 	return block;
 }
 
@@ -207,8 +206,8 @@ function empty(mixed_var){
     return false;
 }
 
-function photoArray(input){
-	photo_count = input.length;
+function imageArray(input){
+	image_count = input.length;
 	progress = 0;
 	progress_step = 100 / input.length;
 	if(page == 'Shoebox'){
@@ -219,11 +218,11 @@ function photoArray(input){
 			$.ajaxq("default", {
 				type: "POST",
 			    url: BASE + ADMIN + "tasks/" + task + ".php",
-				data: { photo_file: input[item] },
+				data: { image_file: input[item] },
 			    cache: false,
 			    success: function(data)
 			    {
-			        appendPhoto(data);
+			        appendImage(data);
 					updateProgress();
 			    }
 			});
@@ -234,7 +233,7 @@ function photoArray(input){
 			$.ajaxq("default", {
 				type: "POST",
 			    url: BASE + ADMIN + "tasks/" + task + ".php",
-				data: { photo_id: input[item] },
+				data: { image_id: input[item] },
 			    cache: false,
 			    success: function(data)
 			    {
@@ -266,8 +265,8 @@ function updateMaintProgress(){
 }
 
 function focusTags(that){
-	var container = $(that).closest('.photo_tag_container');
-	tags = container.children('.photo_tags_load').text();
+	var container = $(that).closest('.image_tag_container');
+	tags = container.children('.image_tags_load').text();
 	
 	if(empty(tags)){
 		tags = new Array();
@@ -278,30 +277,30 @@ function focusTags(that){
 }
 
 function updateTags(that){
-	var container = $(that).closest('.photo_tag_container');		
-	var tags_html = tags.map(function(item) { return '<img src="' + BASE + IMAGES + 'icons/tag.png" alt="" /> <a class="tag">' + item + '</a>'; });
-	container.children('.photo_tags_input').val($.toJSON(tags));
-	container.children('.photo_tags_load').text($.toJSON(tags));
-	container.children('.photo_tags').html(tags_html.join(', '));
+	var container = $(that).closest('.image_tag_container');		
+	var tags_html = tags.map(function(item) { return '<img src="' + BASE + ADMIN + 'images/icons/tag.png" alt="" /> <a class="tag">' + item + '</a>'; });
+	container.children('.image_tags_input').val($.toJSON(tags));
+	container.children('.image_tags_load').text($.toJSON(tags));
+	container.children('.image_tags').html(tags_html.join(', '));
 }
 
 function updateAllTags(){
-	$('.photo_tag_container').each(function(index){
+	$('.image_tag_container').each(function(index){
 		focusTags(this);
 	
-		$(this).find('.photo_tag_add').click(function(){
+		$(this).find('.image_tag_add').click(function(){
 			focusTags(this);
-			var tag = $(this).siblings('.photo_tag').val();
+			var tag = $(this).siblings('.image_tag').val();
 			tag = jQuery.trim(tag);
 			if((tags.indexOf(tag) == -1) && tag != ''){
 				tags.push(tag);
 				updateTags(this);
 			}
-			$(this).siblings('.photo_tag').val('');
+			$(this).siblings('.image_tag').val('');
 			event.preventDefault();
 		});
 
-		$(this).find('.photo_tag').keydown(function(event){
+		$(this).find('.image_tag').keydown(function(event){
 			focusTags(this);
 			if(event.keyCode == '13'){
 				var tag = $(this).val();
@@ -328,7 +327,7 @@ function updateAllTags(){
 			event.preventDefault();
 		});
 	
-		tags = $(this).find('.photo_tags_load').text();
+		tags = $(this).find('.image_tags_load').text();
 	
 		if(empty(tags)){
 			tags = new Array();
@@ -341,21 +340,21 @@ function updateAllTags(){
 	});
 }
 
-function appendPhoto(photo){
-	var photo = $.evalJSON(photo);
-	photo_ids = $("#shoebox_photo_ids").val();
-	photo_ids += photo.photo_id + ',';
-	$("#shoebox_photo_ids").attr("value", photo_ids);
-	var privacy = static_html('privacy_html', photo.photo_id);
-	var rights = static_html('rights_html', photo.photo_id);
-	photo.photo_tags = $.toJSON(photo.photo_tags);
-	if(empty(photo.photo_geo_lat) && empty(photo.photo_geo_long)){
+function appendImage(image){
+	var image = $.evalJSON(image);
+	image_ids = $("#shoebox_image_ids").val();
+	image_ids += image.image_id + ',';
+	$("#shoebox_image_ids").attr("value", image_ids);
+	var privacy = static_html('privacy_html', image.image_id);
+	var rights = static_html('rights_html', image.image_id);
+	image.image_tags = $.toJSON(image.image_tags);
+	if(empty(image.image_geo_lat) && empty(image.image_geo_long)){
 		var geo = '';
 	}
 	else{
-		var geo = '<br /><img src="' + BASE + IMAGES + '/icons/geo.png" alt="" /> ' + photo.photo_geo_lat + ', ' + photo.photo_geo_long;
+		var geo = '<br /><img src="' + BASE + ADMIN + 'images/icons/geo.png" alt="" /> ' + image.image_geo_lat + ', ' + image.image_geo_long;
 	}
-	$("#shoebox_photos").append('<div id="photo-' + photo.photo_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + photo.photo_src_admin + '" alt="" /><p><input type="text" id="photo-' + photo.photo_id + '-title" name="photo-' + photo.photo_id + '-title" value="' + photo.photo_title + '" class="title bottom-border" /><textarea id="photo-' + photo.photo_id + '-description" name="photo-' + photo.photo_id + '-description">' + photo.photo_description + '</textarea></p></div><div class="span-8 last"><div class="photo_tag_container"><label for="photo_tag">Tags:</label><br /><input type="text" id="photo_tag" name="photo_tag" class="photo_tag" style="width: 40%;" /><input type="submit" id="photo_tag_add" class="photo_tag_add" value="Add" /><br /><div id="photo_tags" class="photo_tags"></div><div id="photo_tags_load" class="photo_tags_load none">' + photo.photo_tags + '</div><input type="hidden" name="photo-' + photo.photo_id + '-tags_input" id="photo_tags_input" class="photo_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="photo-' + photo.photo_id + '-geo" name="photo-' + photo.photo_id + '-geo" class="photo_geo" value="' + photo.photo_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="photo-' + photo.photo_id + '-published" name="photo-' + photo.photo_id + '-published" value="' + photo.photo_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="photo-' + photo.photo_id + '-delete" name="photo-' + photo.photo_id + '-delete" value="delete" /></td><td><strong><label for="photo-' + photo.photo_id + '-delete">Delete this photo.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
+	$("#shoebox_images").append('<div id="image-' + image.image_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + image.image_src_admin + '" alt="" /><p><input type="text" id="image-' + image.image_id + '-title" name="image-' + image.image_id + '-title" value="' + image.image_title + '" class="title bottom-border" /><textarea id="image-' + image.image_id + '-description" name="image-' + image.image_id + '-description">' + image.image_description + '</textarea></p></div><div class="span-8 last"><div class="image_tag_container"><label for="image_tag">Tags:</label><br /><input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /><input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br /><div id="image_tags" class="image_tags"></div><div id="image_tags_load" class="image_tags_load none">' + image.image_tags + '</div><input type="hidden" name="image-' + image.image_id + '-tags_input" id="image_tags_input" class="image_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="image-' + image.image_id + '-geo" name="image-' + image.image_id + '-geo" class="image_geo" value="' + image.image_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="image-' + image.image_id + '-published" name="image-' + image.image_id + '-published" value="' + image.image_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="image-' + image.image_id + '-delete" name="image-' + image.image_id + '-delete" value="delete" /></td><td><strong><label for="image-' + image.image_id + '-delete">Delete this image.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 	updateAllTags();
 }
 
@@ -381,7 +380,7 @@ function executeTask(){
 				progress = 100; updateMaintProgress();
 			}
 			else{
-				photoArray(data);
+				imageArray(data);
 			}
 		}
 	});
@@ -393,14 +392,14 @@ function executeTask(){
 }
 
 function pileSort(pile){
-	photos = new Array();
-	photo_id_regex = new RegExp('photo-', 'gim');
+	images = new Array();
+	image_id_regex = new RegExp('image-', 'gim');
 	pile.children('img').each(function(){
 		id = $(this).attr('id');
-		id = id.replace(photo_id_regex, '');
-		photos.push(id);
+		id = id.replace(image_id_regex, '');
+		images.push(id);
 	});
-	pile.siblings('#pile_photos').val(photos.join(', '));
+	pile.siblings('#pile_images').val(images.join(', '));
 };
 
 $(document).ready(function(){
@@ -408,9 +407,9 @@ $(document).ready(function(){
 		$('ul#slideshow').hide();
 		
 		slideshow = $('ul#slideshow');
-		slideshow_photos = slideshow.children('li');
-		slideshow_photo = slideshow_photos.first('li');
-		slideshow_photo_prev = slideshow_photo;
+		slideshow_images = slideshow.children('li');
+		slideshow_image = slideshow_images.first('li');
+		slideshow_image_prev = slideshow_image;
 		slideshow_update();
 		slideshow_play_now();
 		
@@ -564,7 +563,7 @@ $(document).ready(function(){
 	
 	$(".date").datepicker({
 		showOn: 'button',
-		buttonImage: BASE + IMAGES + '/icons/calendar.png',
+		buttonImage: BASE + ADMIN + 'images/icons/calendar.png',
 		buttonImageOnly: true,
 		changeMonth: true,
 		changeYear: true,
@@ -600,7 +599,7 @@ $(document).ready(function(){
 	});
 	
 	// PRIMARY - GEO HINTING
-	$(".photo_geo").live('focus', function(){
+	$(".image_geo").live('focus', function(){
 		$(this).autocomplete({
 			source: BASE + ADMIN + 'tasks/geo-hint.php',
 			delay: 200,
@@ -618,11 +617,11 @@ $(document).ready(function(){
 	
 	// PRIMARY - SORTABLE
 	
-	$("#pile_photo_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { pile = $(this); pileSort(pile); } });
+	$("#pile_image_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { pile = $(this); pileSort(pile); } });
 	
 	// PRIMARY - PHOTO DROPPABLE
 	
-	$(".photo_click a").hover(function() {
+	$(".image_click a").hover(function() {
 		$(this).css('cursor', 'pointer');
 	}, function() {
 		$(this).css('cursor', 'inherit');
@@ -712,7 +711,7 @@ $(document).ready(function(){
 	// SHOEBOX
 	
 	if(page == 'Shoebox'){
-		task = 'add-photos';
+		task = 'add-images';
 		executeTask();
 		
 		$("#shoebox_add").attr("disabled", "disabled");
@@ -750,7 +749,7 @@ $(document).ready(function(){
 		
 		function selectedCount(){
 			count = $('img.frame_selected').length;
-			$('#photo_count_selected').text(count);
+			$('#image_count_selected').text(count);
 			
 			ids = new Array();
 			
@@ -761,7 +760,7 @@ $(document).ready(function(){
 				ids.push(id[1]);
 			});
 			
-			$('#photo_ids').val(ids.join(', '));
+			$('#image_ids').val(ids.join(', '));
 		}
 		
 		$('#act').mouseup(function() {
@@ -788,7 +787,7 @@ $(document).ready(function(){
 			if((last_selected.length > 0) && (shift == 1) && (ids.length > 0)){
 				group = $(this).prevUntil('img[id="' + last_selected + '"]').andSelf();
 				group_first = group.first().attr('id');
-				if(group_first != first_photo){
+				if(group_first != first_image){
 					group.removeClass('frame').addClass('frame_selected');
 					last_selected = $(this).attr('id');
 				}
@@ -833,7 +832,7 @@ $(document).ready(function(){
 			}
 		});
 		
-		first_photo = $('img.frame').parent().children().first().attr('id');
+		first_image = $('img.frame').parent().children().first().attr('id');
 		last_selected = '';
 		actEditor();
 		selectedCount();

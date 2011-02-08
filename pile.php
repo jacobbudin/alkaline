@@ -23,19 +23,19 @@ if($id){
 	$pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);
 	$pile['pile_modified'] = $alkaline->formatTime($pile['pile_modified']);
 
-	$photo_ids = new Find;
-	$photo_ids->page(null,0);
-	$photo_ids->published();
-	$photo_ids->privacy('public');
-	$photo_ids->pile($pile['pile_id']);
-	$photo_ids->find();
+	$image_ids = new Find;
+	$image_ids->page(null,0);
+	$image_ids->published();
+	$image_ids->privacy('public');
+	$image_ids->pile($pile['pile_id']);
+	$image_ids->find();
 
-	$photos = new Photo($photo_ids);
-	$photos->formatTime();
-	$photos->getImgUrl('square');
-	$photos->getEXIF();
-	$photos->getTags();
-	$photos->getRights();
+	$images = new Image($image_ids);
+	$images->formatTime();
+	$images->getImgUrl('square');
+	$images->getEXIF();
+	$images->getTags();
+	$images->getRights();
 
 	$header = new Canvas;
 	$header->load('header');
@@ -45,7 +45,7 @@ if($id){
 	$index = new Canvas;
 	$index->load('pile');
 	$index->assignArray($pile);
-	$index->loop($photos);
+	$index->loop($images);
 	$index->display();
 
 	$footer = new Canvas;

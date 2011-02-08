@@ -168,9 +168,9 @@ class Canvas extends Alkaline{
 	}
 	
 	/**
-	 * Set a photo object to process blocks and nested blocks
+	 * Set a image object to process blocks and nested blocks
 	 *
-	 * @param Photo $object Photo object
+	 * @param Image $object Image object
 	 * @return bool True if successful
 	 */
 	public function loop($object){
@@ -194,10 +194,10 @@ class Canvas extends Alkaline{
 				$match[1] = strtolower($match[1]);
 				
 				// Wrap in <form> for commenting
-				if(($match[1] == 'photos') and ($this->form_wrap === true)){
-					$match[2] = '<form action="" id="photo_{PHOTO_ID}" class="photo" method="post">' . $match[2] . '</form>';
+				if(($match[1] == 'images') and ($this->form_wrap === true)){
+					$match[2] = '<form action="" id="image_{PHOTO_ID}" class="image" method="post">' . $match[2] . '</form>';
 				}
-				elseif(($match[1] == 'photos') and ($this->slideshow === true)){
+				elseif(($match[1] == 'images') and ($this->slideshow === true)){
 					$match[2] = '<li><!-- ' . $match[2] . ' --></li>';
 				}
 				$loops[] = array('replace' => $match[0], 'reel' => $match[1], 'template' => $match[2], 'replacement' => '');
@@ -251,9 +251,9 @@ class Canvas extends Alkaline{
 							}
 						}
 						
-						// If tied to photo array (either sub or super), execute inner blocks
-						if(!empty($reel[$i]['photo_id'])){
-							$loop_template = self::loopSub($object, $loop_template, $reel[$i]['photo_id']);
+						// If tied to image array (either sub or super), execute inner blocks
+						if(!empty($reel[$i]['image_id'])){
+							$loop_template = self::loopSub($object, $loop_template, $reel[$i]['image_id']);
 						}
 						$done_once[] = $reel[$i][$field];
 					}
@@ -279,10 +279,10 @@ class Canvas extends Alkaline{
 	 *
 	 * @param string $array 
 	 * @param string $template 
-	 * @param string $photo_id 
+	 * @param string $image_id 
 	 * @return void
 	 */
-	protected function loopSub($array, $template, $photo_id){
+	protected function loopSub($array, $template, $image_id){
 		$loops = array();
 		
 		$table_regex = implode('|', array_keys($this->tables));
@@ -315,8 +315,8 @@ class Canvas extends Alkaline{
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
 					
-					if(!empty($reel[$i]['photo_id'])){
-						if($reel[$i]['photo_id'] == $photo_id){
+					if(!empty($reel[$i]['image_id'])){
+						if($reel[$i]['image_id'] == $image_id){
 							if(empty($loop_template)){
 								$loop_template = $loops[$j]['template'];
 							}

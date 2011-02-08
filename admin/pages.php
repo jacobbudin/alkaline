@@ -54,7 +54,7 @@ if(!empty($_POST['page_id'])){
 			$page_text = nl2br($page_text_raw);
 		}
 		
-		$page_photos = implode(', ', $alkaline->findIDRef($page_text));
+		$page_images = implode(', ', $alkaline->findIDRef($page_text));
 		
 		$page_words = $alkaline->countWords($_POST['page_text_raw'], 0);
 		
@@ -62,7 +62,7 @@ if(!empty($_POST['page_id'])){
 			'page_title_url' => $page_title_url,
 			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
 			'page_markup' => $page_markup_ext,
-			'page_photos' => $page_photos,
+			'page_images' => $page_images,
 			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_words' => $page_words);
 		
@@ -141,7 +141,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View photos</a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
 	
 	<h1>Page</h1>
 
@@ -166,28 +166,28 @@ else{
 				<td class="right"><label>Images:</label></td>
 				<td>
 					<p>
-						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add photos at cursor position)</span>
+						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add images at cursor position)</span>
 					</p>
-					<div class="reveal photo_click">
+					<div class="reveal image_click">
 						<?php
 						
-						$photo_ids = new Find;
-						$photo_ids->sort('photo_uploaded', 'DESC');
-						$photo_ids->page(1, 100);
-						$photo_ids->find();
+						$image_ids = new Find;
+						$image_ids->sort('image_uploaded', 'DESC');
+						$image_ids->page(1, 100);
+						$image_ids->find();
 						
-						$photos = new Photo($photo_ids);
-						$photos->getImgUrl('square');
+						$images = new Image($image_ids);
+						$images->getImgUrl('square');
 						
 						if($alkaline->returnConf('page_size_label')){
-							$label = 'photo_src_' . $alkaline->returnConf('page_size_label');
+							$label = 'image_src_' . $alkaline->returnConf('page_size_label');
 						}
 						else{
-							$label = 'photo_src_admin';
+							$label = 'image_src_admin';
 						}
 						
-						foreach($photos->photos as $photo){
-							echo '<a href="' . $photo[$label] . '"><img src="' . $photo['photo_src_square'] .'" alt="" class="frame" id="photo-' . $photo['photo_id'] . '" /></a>';
+						foreach($images->images as $image){
+							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" /></a>';
 						}
 					
 						?>

@@ -53,8 +53,8 @@ define('TAB', 'settings');
 
 // GET USERS TO VIEW OR USER TO EDIT
 if(empty($user_db_id)){
-	// Update photo counts
-	$alkaline->updateCounts('photos', 'users', 'user_photo_count');
+	// Update image counts
+	$alkaline->updateCounts('images', 'users', 'user_image_count');
 	
 	$user_dbs = $alkaline->getTable('users');
 	$user_db_count = @count($user_dbs);
@@ -72,7 +72,7 @@ if(empty($user_db_id)){
 
 	<h1>Users (<?php echo $user_db_count; ?>)</h1>
 	
-	<p>Users can add photos to your Alkaline library and modify the your Alkaline installation.</p>
+	<p>Users can add images to your Alkaline library and modify the your Alkaline installation.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -82,7 +82,7 @@ if(empty($user_db_id)){
 		<tr>
 			<th>Username</th>
 			<th>Name</th>
-			<th class="center">Photos</th>
+			<th class="center">Images</th>
 			<th>Last login</th>
 		</tr>
 		<?php
@@ -91,7 +91,7 @@ if(empty($user_db_id)){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user_db['user_name'] . '</td>';
-				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_photo_count']) . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_image_count']) . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>(Never)</em>') . '</td>';
 			echo '</tr>';
 		}
@@ -105,16 +105,16 @@ if(empty($user_db_id)){
 	
 }
 else{
-	// Update photo count
-	$alkaline->updateCount('photos', 'users', 'user_photo_count', $user_db_id);
+	// Update image count
+	$alkaline->updateCount('images', 'users', 'user_image_count', $user_db_id);
 	
 	// Get user
 	$user_db = $alkaline->getRow('users', $user_db_id);
 	$user_db = $alkaline->makeHTMLSafe($user_db);
-	$user_photo_count = $user_db['user_photo_count'];
+	$user_image_count = $user_db['user_image_count'];
 	
-	if(empty($user_photo_count)){
-		$user_photo_count = 0;
+	if(empty($user_image_count)){
+		$user_image_count = 0;
 	}
 	
 	if(!empty($user_db['user_name'])){
@@ -127,7 +127,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View photos (<?php echo $user_photo_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View images (<?php echo $user_image_count; ?>)</a></div>
 	
 	<h1>User</h1>
 	

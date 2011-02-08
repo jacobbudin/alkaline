@@ -8,7 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$id = $alkaline->findID(@$_POST['photo_id']);
+$id = $alkaline->findID(@$_POST['image_id']);
 
 if(empty($id)){
 	$piles = $alkaline->getTable('piles');
@@ -24,8 +24,8 @@ if(empty($id)){
 	echo json_encode($pile_ids);
 }
 else{
-	$photos = new Find;
-	$photos->pile(intval($id));
+	$images = new Find;
+	$images->pile(intval($id));
 }
 
 ?>

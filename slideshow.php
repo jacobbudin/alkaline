@@ -13,18 +13,18 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->recordStat('slideshow');
 
-$photo_ids = new Find;
-$photo_ids->sort('photos.photo_published', 'DESC');
-$photo_ids->privacy('public');
-$photo_ids->find();
+$image_ids = new Find;
+$image_ids->sort('images.image_published', 'DESC');
+$image_ids->privacy('public');
+$image_ids->find();
 
-$photos = new Photo($photo_ids);
-$photos->formatTime();
-$photos->getImgUrl('medium');
-$photos->getEXIF();
-$photos->getTags();
-$photos->getRights();
-$photos->getComments();
+$images = new Image($image_ids);
+$images->formatTime();
+$images->getImgUrl('medium');
+$images->getEXIF();
+$images->getTags();
+$images->getRights();
+$images->getComments();
 
 $header = new Canvas;
 $header->load('slide_header');
@@ -33,7 +33,7 @@ $header->display();
 $slideshow = new Canvas;
 $slideshow->load('slide');
 $slideshow->slideshow();
-$slideshow->loop($photos);
+$slideshow->loop($images);
 $slideshow->display();
 
 $header = new Canvas;

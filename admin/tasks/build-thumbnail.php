@@ -9,14 +9,14 @@ $user = new User;
 $user->perm(true);
 
 if(!empty($_SESSION['alkaline']['maintenance']['size_id'])){
-	if(empty($_POST['photo_id'])){
-		$photo_ids = new Find();
-		$photo_ids->find();
-		echo json_encode($photo_ids->photo_ids);
+	if(empty($_POST['image_id'])){
+		$image_ids = new Find();
+		$image_ids->find();
+		echo json_encode($image_ids->image_ids);
 	}
 	else{
-		$photo = new Photo($_POST['photo_id']);
-		$photo->sizePhoto(null, intval($_SESSION['alkaline']['maintenance']['size_id']));
+		$image = new Image($_POST['image_id']);
+		$image->sizeImage(null, intval($_SESSION['alkaline']['maintenance']['size_id']));
 	}
 }
 

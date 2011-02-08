@@ -25,7 +25,7 @@ class Comment extends Alkaline{
 	public $page_limit_first;
 	public $page_next;
 	public $page_previous;
-	public $photo_ids;
+	public $image_ids;
 	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
@@ -52,7 +52,7 @@ class Comment extends Alkaline{
 		$this->comment_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
-		$this->photo_ids = array();
+		$this->image_ids = array();
 		$this->sql = 'SELECT *';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
@@ -86,8 +86,8 @@ class Comment extends Alkaline{
 			$this->status($_REQUEST['status']);
 		}
 		
-		if(!empty($_REQUEST['photo'])){
-			$this->photo($_REQUEST['photo']);
+		if(!empty($_REQUEST['image'])){
+			$this->image($_REQUEST['image']);
 		}
 	}
 	
@@ -217,18 +217,18 @@ class Comment extends Alkaline{
 	}
 	
 	/**
-	 * Find by photo association
+	 * Find by image association
 	 *
-	 * @param int|array $photo_ids Photo IDs
+	 * @param int|array $image_ids Image IDs
 	 * @return bool True if successful
 	 */
-	public function photo($photo_ids=null){
+	public function image($image_ids=null){
 		// Error checking
-		if(empty($photo_ids)){ return false; }
+		if(empty($image_ids)){ return false; }
 		
-		$photo_ids = parent::convertToIntegerArray($photo_ids);
+		$image_ids = parent::convertToIntegerArray($image_ids);
 		
-		$this->sql_conds[] = 'comments.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		$this->sql_conds[] = 'comments.image_id IN (' . implode(', ', $image_ids) . ')';
 		
 		return true;
 	}
@@ -280,8 +280,8 @@ class Comment extends Alkaline{
 	 * Paginate results
 	 *
 	 * @param int $page Page number
-	 * @param int $limit Number of photos per page
-	 * @param int $first Number of photos on the first page (if different)
+	 * @param int $limit Number of images per page
+	 * @param int $first Number of images on the first page (if different)
 	 * @return bool True if successful
 	 */
 	public function page($page, $limit=null, $first=null){
@@ -394,15 +394,15 @@ class Comment extends Alkaline{
 		
 		// Grab comments.comment_ids of results
 		$this->comment_ids = array();
-		$this->photo_ids = array();
+		$this->image_ids = array();
 		
 		foreach($comments as $comment){
 			$this->comment_ids[] = intval($comment['comment_id']);
-			$this->photo_ids[] = $comment['photo_id'];
+			$this->image_ids[] = $comment['image_id'];
 		}
 
-		$this->photo_ids = array_unique($this->photo_ids, SORT_NUMERIC);
-		$this->photo_ids = array_values($this->photo_ids);
+		$this->image_ids = array_unique($this->image_ids, SORT_NUMERIC);
+		$this->image_ids = array_values($this->image_ids);
 		
 		// Count comments
 		$this->comment_count_result = count($this->comments);

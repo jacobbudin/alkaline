@@ -1,14 +1,14 @@
 <!-- {canvas:Hello_World} -->
 
-{if:Photos}
-	{block:Photos}
-	<div class="photo">
-		<div class="center"><a href="/photo/{Photo_ID}/"><img src="{Photo_Src_Medium}" alt="" class="frame" /></a></div><br />
+{if:Images}
+	{block:Images}
+	<div class="image">
+		<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Medium}" alt="" class="frame" /></a></div><br />
 	
-		{Photo_Colorkey}
+		{Image_Colorkey}
 	
 		<div class="float_right">
-			<div class="uploaded">{Photo_Uploaded}</div>
+			<div class="uploaded">{Image_Uploaded}</div>
 			<div class="right_set">
 				{if:Right_Title}
 					{Right_Title}
@@ -17,11 +17,11 @@
 				{/if:Right_Title}
 			</div>
 		</div>
-		{if:Photo_Title}
+		{if:Image_Title}
 			<h2>
-				{Photo_Title}
+				{Image_Title}
 			</h2>
-		{/if:Photo_Title}
+		{/if:Image_Title}
 		{if:Tags}
 			<p>
 			{block:Tags}
@@ -41,12 +41,12 @@
 			</p>
 		{/if:Pages}
 	</div>
-	{/block:Photos}
-{else:Photos}
+	{/block:Images}
+{else:Images}
 	<br /><br />
 	<hr />
 	<p>There were no images matching your criteria.</p>
-{/if:Photos}
+{/if:Images}
 <hr />
 
 <div class="span-5">

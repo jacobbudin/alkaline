@@ -13,7 +13,7 @@ class Twitter extends Orbit{
 		
 		$this->twitter_active = $this->returnPref('twitter_active');
 		$this->twitter_format = $this->returnPref('twitter_format');
-		$this->twitter_last_photo_id = $this->returnPref('twitter_last_photo_id');
+		$this->twitter_last_image_id = $this->returnPref('twitter_last_image_id');
 		$this->twitter_url_shortener = $this->returnPref('twitter_url_shortener');
 		
 		require_once('classes/twitteroauth.php');
@@ -40,7 +40,7 @@ class Twitter extends Orbit{
 	
 	public function orbit_config(){
 		?>
-		<p>Every time you publish a photo, your <a href="http://www.twitter.com/">Twitter</a> status will be updated. (If you publish multiple photos simultaneously, your status will only be updated once.)</p>
+		<p>Every time you publish a image, your <a href="http://www.twitter.com/">Twitter</a> status will be updated. (If you publish multiple images simultaneously, your status will only be updated once.)</p>
 		<?php
 		if($this->twitter_active){
 			$this->twitter_format = $this->makeHTMLSafe($this->twitter_format);
@@ -54,7 +54,7 @@ class Twitter extends Orbit{
 					<td class="right pad"><label for="twitter_format">Format:</label></td>
 					<td>
 						<textarea type="text" id="twitter_format" name="twitter_format" style="width: 30em;"><?php echo $this->twitter_format; ?></textarea><br />
-						<span class="quiet">Use Canvas tags such as <code>{Photo_Title}</code> above.</span>
+						<span class="quiet">Use Canvas tags such as <code>{Image_Title}</code> above.</span>
 					</td>
 				</tr>
 				<tr>
@@ -147,14 +147,14 @@ class Twitter extends Orbit{
 	}
 	
 	public function orbit_config_save(){
-		if(empty($this->twitter_last_photo_id)){
-			$photo_ids = new Find;
-			$photo_ids->published();
-			$photo_ids->sort('photo_published', 'DESC');
-			$photo_ids->privacy('public');
-			$photo_ids->find();
-			$photo = new Photo($photo_ids);
-			$photo->hook();
+		if(empty($this->twitter_last_image_id)){
+			$image_ids = new Find;
+			$image_ids->published();
+			$image_ids->sort('image_published', 'DESC');
+			$image_ids->privacy('public');
+			$image_ids->find();
+			$image = new Image($image_ids);
+			$image->hook();
 		}
 		
 		$this->setPref('twitter_format', @$_POST['twitter_format']);
@@ -162,32 +162,32 @@ class Twitter extends Orbit{
 		$this->savePref();
 	}
 	
-	public function orbit_photo($photos){
-		if(count($photos) < 1){ return; }
+	public function orbit_image($images){
+		if(count($images) < 1){ return; }
 		
 		$latest = 0;
 		$now = time();
-		foreach($photos as $photo){
-			$photo_published = strtotime($photo['photo_published']);
+		foreach($images as $image){
+			$image_published = strtotime($image['image_published']);
 			
-			if(empty($photo_published)){ continue; }
-			if($photo_published > $now){ continue; }
-			if($photo['photo_privacy'] != 1){ continue; }
+			if(empty($image_published)){ continue; }
+			if($image_published > $now){ continue; }
+			if($image['image_privacy'] != 1){ continue; }
 			
-			if($photo_published > $latest){
-				$latest = $photo_published;
-				$latest_photo = $photo;
+			if($image_published > $latest){
+				$latest = $image_published;
+				$latest_image = $image;
 			}
 		}
 		
-		if($latest_photo['photo_id'] == $this->twitter_last_photo_id){ return; }
-		if(empty($latest_photo)){ return; }
+		if($latest_image['image_id'] == $this->twitter_last_image_id){ return; }
+		if(empty($latest_image)){ return; }
 		
-		$this->setPref('twitter_last_photo_id', $latest_photo['photo_id']);
+		$this->setPref('twitter_last_image_id', $latest_image['image_id']);
 		$this->savePref();
 		
 		$canvas = new Canvas($this->twitter_format);
-		$canvas->assignArray($latest_photo);
+		$canvas->assignArray($latest_image);
 		$canvas->generate();
 		
 		$canvas->template = trim($canvas->template);

@@ -14,22 +14,22 @@ header('Content-Type: application/xml');
 
 $alkaline = new Alkaline();
 
-$photo_ids = new Find();
-$photo_ids->sort('photos.photo_published', 'DESC');
-$photo_ids->page(1,20);
-$photo_ids->published();
-$photo_ids->find();
+$image_ids = new Find();
+$image_ids->sort('images.image_published', 'DESC');
+$image_ids->page(1,20);
+$image_ids->published();
+$image_ids->find();
 
-$photos = new Photo($photo_ids);
-$photos->getImgUrl('medium');
-$photos->formatTime('c');
+$images = new Image($image_ids);
+$images->getImgUrl('medium');
+$images->formatTime('c');
 
-// $photos->photos = $alkaline->makeHTMLSafe($photos->photos);
+// $images->images = $alkaline->makeHTMLSafe($images->images);
 
 $entries = new Canvas('
-{block:Photos}
+{block:Images}
 	<entry>
-		<title type="text">{if:Photo_Title}{Photo_Title}{else:Photo_Title}(Untitled){/if:Photo_Title}</title>
+		<title type="text">{if:Image_Title}{Image_Title}{else:Image_Title}(Untitled){/if:Image_Title}</title>
 		<link href="" />
 		<id>{LOCATION}{BASE}{PHOTO_ID}</id>
 		<updated>{PHOTO_UPDATED}</updated>
@@ -48,10 +48,10 @@ $entries = new Canvas('
 		</content>
 		<link rel="enclosure" type="{PHOTO_MIME}" href="{LOCATION}{PHOTO_SRC_MEDIUM}" />
 	</entry>
-{/block:Photos}');
+{/block:Images}');
 $entries->assign('BASE', BASE);
 $entries->assign('LOCATION', LOCATION);
-$entries->loop($photos);
+$entries->loop($images);
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
 
@@ -60,7 +60,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 <feed xmlns="http://www.w3.org/2005/Atom">
 	
 	<title><?php echo $alkaline->returnConf('web_title'); ?></title>
-	<updated><?php echo date('c', strtotime($photos->photos[0]['photo_published'])); ?></updated>
+	<updated><?php echo date('c', strtotime($images->images[0]['image_published'])); ?></updated>
 	<link href="<?php echo BASE; ?>" />
 	<link rel="self" type="application/atom+xml" href="<?php echo LOCATION . BASE; ?>atom.php" />
 	<id>tag:<?php echo DOMAIN; ?>,2010:/</id>

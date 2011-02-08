@@ -1,9 +1,9 @@
-{if:Photos}
-	{block:Photos}
-		<div class="photo">
-			<div class="center"><img src="{Photo_Src_Medium}" alt="" class="frame" /></div><br />
+{if:Images}
+	{block:Images}
+		<div class="image">
+			<div class="center"><img src="{Image_Src_Medium}" alt="" class="frame" /></div><br />
 			<div class="float_right">
-				<div class="uploaded">{Photo_Uploaded}</div>
+				<div class="uploaded">{Image_Uploaded}</div>
 				<div class="right_set">
 					{if:Right_Title}
 						{Right_Title}
@@ -12,19 +12,19 @@
 					{/if:Right_Title}
 				</div>
 			</div>
-			{if:Photo_Title}
+			{if:Image_Title}
 				<h2>
-					{Photo_Title}
+					{Image_Title}
 				</h2>
-			{/if:Photo_Title}
-			{if:Photo_Map}
-				{Photo_Map}
-			{/if:Photo_Map}
-			{if:Photo_Description}
+			{/if:Image_Title}
+			{if:Image_Map}
+				{Image_Map}
+			{/if:Image_Map}
+			{if:Image_Description}
 				<p class="description">
-					{Photo_Description}
+					{Image_Description}
 				</p>
-			{/if:Photo_Description}
+			{/if:Image_Description}
 			{if:Tags}
 				<p>
 				{block:Tags}
@@ -42,43 +42,43 @@
 				{/block:Comments}
 				</table>
 			{else:Comments}
-				{if:Photo_Comment_Disabled}
-				{else:Photo_Comment_Disabled}
+				{if:Image_Comment_Disabled}
+				{else:Image_Comment_Disabled}
 					<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
-				{/if:Photo_Comment_Disabled}
+				{/if:Image_Comment_Disabled}
 			{/if:Comments}
-			{if:Photo_Comment_Disabled}
-				<p>Comments have been disabled for this photo.</p>
-			{else:Photo_Comment_Disabled}
+			{if:Image_Comment_Disabled}
+				<p>Comments have been disabled for this image.</p>
+			{else:Image_Comment_Disabled}
 				<hr />
 				<table class="comments">
 					<tr>
 						<td class="right">Author:</td>
-						<td>{Photo_Comment_Author_Name}</td>
+						<td>{Image_Comment_Author_Name}</td>
 					</tr>
 					<tr>
 						<td class="right">Email:</td>
-						<td>{Photo_Comment_Author_Email}</td>
+						<td>{Image_Comment_Author_Email}</td>
 					</tr>
 					<tr>
 						<td class="right">URL:</td>
-						<td>{Photo_Comment_Author_Uri}</td>
+						<td>{Image_Comment_Author_Uri}</td>
 					</tr>
 					<tr>
 						<td class="right">Comment:</td>
-						<td>{Photo_Comment_Text}</td>
+						<td>{Image_Comment_Text}</td>
 					</tr>
 					<tr>
 						<td></td>
-						<td>{Photo_Comment_Submit}</td>
+						<td>{Image_Comment_Submit}</td>
 					</tr>
 				</table>
-			{/if:Photo_Comment_Disabled}
+			{/if:Image_Comment_Disabled}
 		</div>
 		<hr />
-	{/block:Photos}
-{else:Photos}
-	<p>No photos.</p>
+	{/block:Images}
+{else:Images}
+	<p>No images.</p>
 	
 	<hr />
-{/if:Photos}
+{/if:Images}

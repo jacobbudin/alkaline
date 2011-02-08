@@ -51,7 +51,7 @@ h2{
 	text-align: center;
 }
 
-.photo{
+.image{
 	padding: 3em 0;
 }
 
@@ -75,7 +75,7 @@ a#prev{
 	width: 160px;
 }
 
-.photo, .photo_comments{
+.image, .image_comments{
 	display: block;
 	margin: 1em 0;
 }

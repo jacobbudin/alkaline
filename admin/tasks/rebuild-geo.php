@@ -8,7 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$id = $alkaline->findID(@$_POST['photo_id']);
+$id = $alkaline->findID(@$_POST['image_id']);
 
 // Require at least 128M memory
 $mem = ini_get('memory_limit');

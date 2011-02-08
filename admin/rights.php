@@ -38,7 +38,7 @@ if(!empty($_POST['right_id'])){
 			$right_merge_id = '';
 		}
 		
-		$query = $alkaline->prepare('UPDATE photos SET right_id = :right_merge_id WHERE right_id = :right_id;');
+		$query = $alkaline->prepare('UPDATE images SET right_id = :right_merge_id WHERE right_id = :right_id;');
 		$query->execute(array(':right_merge_id' => $right_merge_id, ':right_id' => $right_id));
 	}
 	
@@ -70,7 +70,7 @@ define('TAB', 'features');
 
 // GET RIGHTS SETS TO VIEW OR RIGHTS SET TO EDIT
 if(empty($right_id)){
-	$alkaline->updateCounts('photos', 'rights', 'right_photo_count');
+	$alkaline->updateCounts('images', 'rights', 'right_image_count');
 	$rights = $alkaline->getTable('rights');
 	$rights = $alkaline->stripTags($rights);
 	$right_count = @count($rights);
@@ -84,7 +84,7 @@ if(empty($right_id)){
 
 	<h1>Right Sets (<?php echo $right_count; ?>)</h1>
 	
-	<p>Right sets clarify which copyrights you retain on your photography to discourage illicit use.</p>
+	<p>Right sets clarify which copyrights you retain on your imagegraphy to discourage illicit use.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -93,7 +93,7 @@ if(empty($right_id)){
 	<table class="filter">
 		<tr>
 			<th style="width: 60%;">Title</th>
-			<th class="center">Photos</th>
+			<th class="center">Images</th>
 			<th>Last modified</th>
 		</tr>
 		<?php
@@ -101,7 +101,7 @@ if(empty($right_id)){
 		foreach($rights as $right){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $right['right_id'] . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
-				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_photo_count'] . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($right['right_modified']) . '</td>';
 			echo '</tr>';
 		}
@@ -115,12 +115,12 @@ if(empty($right_id)){
 	
 }
 else{	
-	// Update photo count on rights set
-	$photo_ids = new Find;
-	$photo_ids->rights($right_id);
-	$photo_ids->find();
+	// Update image count on rights set
+	$image_ids = new Find;
+	$image_ids->rights($right_id);
+	$image_ids->find();
 	
-	$fields = array('right_photo_count' => $photo_ids->photo_count);
+	$fields = array('right_image_count' => $image_ids->image_count);
 	$alkaline->updateRow($fields, 'rights', $right_id, false);
 	
 	// Get rights set
@@ -134,7 +134,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View photos (<?php echo $photo_ids->photo_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View images (<?php echo $image_ids->image_count; ?>)</a></div>
 	
 	<h1>Rights Set</h1>
 	
@@ -150,7 +150,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right pad"><input type="checkbox" id="right_merge" name="right_merge" value="merge" /></td>
-				<td><strong><label for="right_merge">Transfer photos to <?php echo $alkaline->showRights('right_merge_id'); ?> rights set.</label></strong> This action cannot be undone.</td>
+				<td><strong><label for="right_merge">Transfer images to <?php echo $alkaline->showRights('right_merge_id'); ?> rights set.</label></strong> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="right_delete" name="right_delete" value="delete" /></td>

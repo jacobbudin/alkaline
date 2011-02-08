@@ -16,29 +16,29 @@ $user = new User;
 $user->perm(true);
 
 // PROCESS SUBMITTED PHOTOS
-if(!empty($_POST['photo_ids'])){
-	$photo_ids = explode(',', $_POST['photo_ids']);
-	array_pop($photo_ids);
+if(!empty($_POST['image_ids'])){
+	$image_ids = explode(',', $_POST['image_ids']);
+	array_pop($image_ids);
 	
-	$alkaline->convertToIntegerArray($photo_ids);
+	$alkaline->convertToIntegerArray($image_ids);
 	
-	foreach($photo_ids as $photo_id){
-		$photo = new Photo($photo_id);
-		if(@$_POST['photo-' . $photo_id . '-delete'] == 'delete'){
-			if($photo->delete()){
-				$alkaline->addNote('Your photo has been deleted.', 'success');
+	foreach($image_ids as $image_id){
+		$image = new Image($image_id);
+		if(@$_POST['image-' . $image_id . '-delete'] == 'delete'){
+			if($image->delete()){
+				$alkaline->addNote('Your image has been deleted.', 'success');
 			}
 
 		}
 		else{
-			$fields = array('photo_title' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-title']),
-				'photo_description' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-description']),
-				'photo_geo' => $alkaline->makeUnicode(@$_POST['photo-' . $photo_id . '-geo']),
-				'photo_published' => @$_POST['photo-' . $photo_id . '-published'],
-				'photo_privacy' => @$_POST['photo-' . $photo_id . '-privacy'],
-				'right_id' => @$_POST['photo-' . $photo_id . '-id']);
-			$photo->updateFields($fields);
-			$photo->updateTags(json_decode(@$_POST['photo-' . $photo_id . '-tags_input']));
+			$fields = array('image_title' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']),
+				'image_description' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-description']),
+				'image_geo' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-geo']),
+				'image_published' => @$_POST['image-' . $image_id . '-published'],
+				'image_privacy' => @$_POST['image-' . $image_id . '-privacy'],
+				'right_id' => @$_POST['image-' . $image_id . '-id']);
+			$image->updateFields($fields);
+			$image->updateTags(json_decode(@$_POST['image-' . $image_id . '-tags_input']));
 		}
 	}
 	
@@ -49,11 +49,11 @@ if(!empty($_POST['photo_ids'])){
 }
 
 // DETERMINE IF PHOTOS IN SHOEBOX
-$photos = $alkaline->seekDirectory(PATH . SHOEBOX);
-$photo_count = count($photos);
+$images = $alkaline->seekDirectory(PATH . SHOEBOX);
+$image_count = count($images);
 
-if(!($photo_count > 0)){
-	$alkaline->addNote('There are no photos in your shoebox.', 'notice');
+if(!($image_count > 0)){
+	$alkaline->addNote('There are no images in your shoebox.', 'notice');
 	header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
 	exit();
 }
@@ -64,18 +64,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Shoebox (<?php echo $photo_count; ?>)</h1>
+<h1>Shoebox (<?php echo $image_count; ?>)</h1>
 
 <form action="" method="post">
 	<div id="privacy_html" class="none">
-		<?php echo $alkaline->showPrivacy('photo--privacy'); ?>
+		<?php echo $alkaline->showPrivacy('image--privacy'); ?>
 	</div>
 	
 	<div id="rights_html" class="none">
 		<?php echo $alkaline->showRights('right--id'); ?>
 	</div>
 	
-	<div id="shoebox_photos">
+	<div id="shoebox_images">
 		
 	</div>
 
@@ -84,8 +84,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</p>
 
 	<p>
-		<input id="shoebox_photo_ids" type="hidden" name="photo_ids" value="" />
-		<input id="shoebox_add" type="submit" value="Add photos" />
+		<input id="shoebox_image_ids" type="hidden" name="image_ids" value="" />
+		<input id="shoebox_add" type="submit" value="Add images" />
 	</p>
 </form>
 	

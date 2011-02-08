@@ -60,9 +60,9 @@ if(empty($comment_id)){
 	$comments->formatTime();
 	$comments->comments = $alkaline->stripTags($comments->comments);
 	
-	$photo_ids = $comments->photo_ids;
-	$photos = new Photo($photo_ids);
-	$photos->getImgUrl('square');
+	$image_ids = $comments->image_ids;
+	$images = new Image($image_ids);
+	$images->getImgUrl('square');
 	
 	define('TITLE', 'Alkaline Comments');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -115,9 +115,9 @@ if(empty($comment_id)){
 		foreach($comments->comments as $comment){
 			echo '<tr>';
 				echo '<td class="right">';
-				$key = array_search($comment['photo_id'], $photo_ids);
+				$key = array_search($comment['image_id'], $image_ids);
 				if(is_int($key)){
-					echo '<a href="' . BASE . ADMIN . 'photo' . URL_ID . $photos->photos[$key]['photo_id'] . URL_RW . '"><img src="' . $photos->photos[$key]['photo_src_square'] . '" title="' . $photos->photos[$key]['photo_title'] . '" class="frame" /></a>';
+					echo '<a href="' . BASE . ADMIN . 'image' . URL_ID . $images->images[$key]['image_id'] . URL_RW . '"><img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame" /></a>';
 				}
 				echo '</td>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '">';
@@ -170,7 +170,7 @@ else{
 	
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE; ?>photo/<?php echo $comment['photo_id']; ?>/">Go to photo</a></div>
+	<div class="actions"><a href="<?php echo BASE; ?>image/<?php echo $comment['image_id']; ?>/">Go to image</a></div>
 	
 	<h1>Comment</h1>
 

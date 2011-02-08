@@ -72,7 +72,7 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('photos' => 'photo_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -1221,7 +1221,7 @@ class Alkaline{
 			$comment_text = nl2br($comment_text_raw);
 		}
 		
-		$fields = array('photo_id' => $id,
+		$fields = array('image_id' => $id,
 			'comment_status' => $comment_status,
 			'comment_text' => $comment_text,
 			'comment_text_raw' => $comment_text_raw,
@@ -1241,7 +1241,7 @@ class Alkaline{
 			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . strip_tags($comment_text));
 		}
 		
-		$this->updateCount('comments', 'photos', 'photo_comment_count', $id);
+		$this->updateCount('comments', 'images', 'image_comment_count', $id);
 		
 		return true;
 	}
@@ -1371,10 +1371,10 @@ class Alkaline{
 	 */
 	public function getTags(){
 		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_name;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
 		}
 		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, photos.photo_id FROM tags, links, photos WHERE tags.tag_id = links.tag_id AND links.photo_id = photos.photo_id ORDER BY tags.tag_id ASC;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_id ASC;');
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
@@ -1808,8 +1808,8 @@ class Alkaline{
 		// Add default fields
 		if($default === true){
 			switch($table){
-				case 'photos':
-					$fields['photo_modified'] = date('Y-m-d H:i:s');
+				case 'images':
+					$fields['image_modified'] = date('Y-m-d H:i:s');
 					break;
 				case 'piles':
 					$fields['pile_modified'] = date('Y-m-d H:i:s');
@@ -2104,23 +2104,23 @@ class Alkaline{
 	}
 	
 	/**
-	 * Find photo IDs (in <a>, <img>, etc.) from a string
+	 * Find image IDs (in <a>, <img>, etc.) from a string
 	 *
 	 * @param string $str Input string
-	 * @return array Photo IDs
+	 * @return array Image IDs
 	 */
 	public function findIDRef($str){
 		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $str, $matches, PREG_SET_ORDER);
 		
-		$photo_ids = array();
+		$image_ids = array();
 		
 		foreach($matches as $match){
-			$photo_ids[] = intval($match[1]);
+			$image_ids[] = intval($match[1]);
 		}
 		
-		$photo_ids = array_unique($photo_ids);
+		$image_ids = array_unique($image_ids);
 		
-		return $photo_ids;
+		return $image_ids;
 	}
 	
 	/**

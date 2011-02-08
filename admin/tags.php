@@ -90,10 +90,10 @@ if(empty($tag_id)){
 	require_once(PATH . ADMIN . 'includes/footer.php');
 }
 else{
-	// Update photo count on rights set
-	$photo_ids = new Find;
-	$photo_ids->tags($tag_id);
-	$photo_ids->find();
+	// Update image count on rights set
+	$image_ids = new Find;
+	$image_ids->tags($tag_id);
+	$image_ids->find();
 	
 	// Get rights set
 	$tag = $alkaline->getRow('tags', $tag_id);
@@ -106,7 +106,7 @@ else{
 	
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a></div>
 	
 	<h1>Tag</h1>
 	

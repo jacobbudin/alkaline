@@ -26,14 +26,14 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$photo_ids = new Find();
-$photo_ids->clearMemory();
-$photo_ids->page(null, $max);
-$photo_ids->find();
+$image_ids = new Find();
+$image_ids->clearMemory();
+$image_ids->page(null, $max);
+$image_ids->find();
 
-$photos = new Photo($photo_ids->photo_ids);
-$photos->getImgUrl('square');
-$photos->hook();
+$images = new Image($image_ids->image_ids);
+$images->getImgUrl('square');
+$images->hook();
 
 $shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
 if($shoebox_count > 0){
@@ -51,7 +51,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-		<h1>Images (<?php echo number_format($photo_ids->photo_count); ?>)</h1>
+		<h1>Images (<?php echo number_format($image_ids->image_count); ?>)</h1>
 		
 		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
 			<p style="margin-bottom: 0;">
@@ -113,7 +113,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 								<option value="2500">2,500</option>
 							</select>
 							miles of 
-							<input type="text" name="location" class="photo_geo m" />
+							<input type="text" name="location" class="image_geo m" />
 						</td>
 					</tr>
 					<tr>
@@ -199,30 +199,30 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<p>
 			<?php
 
-			foreach($photos->photos as $photo){
+			foreach($images->images as $image){
 				?>
-				<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
-					<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+				<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>">
+					<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
 				</a>
 				<?php
 			}
 			?>
 		</p>
 		<?php
-		if($photo_ids->page_count > 1){
+		if($image_ids->page_count > 1){
 			?>
 			<p>
 				<?php
-				if(!empty($photo_ids->page_previous)){
-					for($i = 1; $i <= $photo_ids->page_previous; ++$i){
+				if(!empty($image_ids->page_previous)){
+					for($i = 1; $i <= $image_ids->page_previous; ++$i){
 						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
-				<span class="page_no">Page <?php echo $photo_ids->page; ?> of <?php echo $photo_ids->page_count; ?></span>
+				<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
 				<?php
-				if(!empty($photo_ids->page_next)){
-					for($i = $photo_ids->page_next; $i <= $photo_ids->page_count; ++$i){
+				if(!empty($image_ids->page_next)){
+					for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
 						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
@@ -233,8 +233,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		?>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/upload.png" alt="" /> Upload &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
 		<hr />
 
 		<h3>Find</h3>

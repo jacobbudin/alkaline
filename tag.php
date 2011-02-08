@@ -19,20 +19,20 @@ if($id){
 	$tag = $alkaline->getRow('tags', $id);
 	if(!$tag){ $alkaline->addError('No tag was not found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
-	$photo_ids = new Find;
-	$photo_ids->page(null, 0);
-	$photo_ids->published();
-	$photo_ids->privacy('public');
-	$photo_ids->tags($id);
-	$photo_ids->find();
+	$image_ids = new Find;
+	$image_ids->page(null, 0);
+	$image_ids->published();
+	$image_ids->privacy('public');
+	$image_ids->tags($id);
+	$image_ids->find();
 
-	$photos = new Photo($photo_ids);
-	$photos->formatTime();
-	$photos->getImgUrl('medium');
-	$photos->getEXIF();
-	$photos->getColorkey(670, 10);
-	$photos->getTags();
-	$photos->getRights();
+	$images = new Image($image_ids);
+	$images->formatTime();
+	$images->getImgUrl('medium');
+	$images->getEXIF();
+	$images->getColorkey(670, 10);
+	$images->getTags();
+	$images->getRights();
 
 	$header = new Canvas;
 	$header->load('header');
@@ -41,11 +41,11 @@ if($id){
 
 	$index = new Canvas;
 	$index->load('index');
-	$index->assign('Page_Next', $photo_ids->page_next);
-	$index->assign('Page_Previous', $photo_ids->page_previous);
-	$index->assign('Page_Current', $photo_ids->page);
-	$index->assign('Page_Count', $photo_ids->page_count);
-	$index->loop($photos);
+	$index->assign('Page_Next', $image_ids->page_next);
+	$index->assign('Page_Previous', $image_ids->page_previous);
+	$index->assign('Page_Current', $image_ids->page);
+	$index->assign('Page_Count', $image_ids->page_count);
+	$index->loop($images);
 	$index->assignArray($tag);
 	$index->display();
 

@@ -14,18 +14,18 @@
  */
 
 class Find extends Alkaline{
-	private $memory;
-	public $photo_ids;
-	public $photo_ids_after;
-	public $photo_ids_before;
-	public $photo_count;
-	public $photo_count_result;
-	public $photo_offset_length;
-	public $photo_order;
-	public $photo_first;
-	public $photo_first_reverse;
-	public $photo_last;
-	public $photo_last_reverse;
+	private $eval;
+	public $image_ids;
+	public $image_ids_after;
+	public $image_ids_before;
+	public $image_count;
+	public $image_count_result;
+	public $image_offset_length;
+	public $image_order;
+	public $image_first;
+	public $image_first_reverse;
+	public $image_last;
+	public $image_last_reverse;
 	public $page;
 	public $page_begin;
 	public $page_count;
@@ -59,30 +59,30 @@ class Find extends Alkaline{
 	/**
 	 * Initiates Find class
 	 *
-	 * @param string|array|int $photo_ids Limit results to select photo IDs
+	 * @param string|array|int $image_ids Limit results to select image IDs
 	 * @param string $auto_guest Set guest access restrictions
 	 * @param string $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
 	 */
-	public function __construct($photo_ids=null, $auto_guest=true, $process_request=true){
+	public function __construct($image_ids=null, $auto_guest=true, $process_request=true){
 		parent::__construct();
 		
 		// Store data to object
-		$this->memory = array();
-		$this->photo_ids = array();
+		$this->eval = array();
+		$this->image_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
 		$this->page_limit_first = LIMIT;
-		$this->sql = 'SELECT photos.photo_id AS photo_id';
+		$this->sql = 'SELECT images.image_id AS image_id';
 		$this->sql_conds = array();
 		$this->sql_limit = '';
 		$this->sql_sorts = array();
 		$this->sql_from = '';
-		$this->sql_tables = array('photos');
+		$this->sql_tables = array('images');
 		$this->sql_join = '';
 		$this->sql_join_type = '';
 		$this->sql_join_tables = array();
 		$this->sql_join_on = array();
-		$this->sql_group_by = ' GROUP BY photos.photo_id';
+		$this->sql_group_by = ' GROUP BY images.image_id';
 		$this->sql_having = '';
 		$this->sql_injection = '';
 		$this->sql_having_fields = array();
@@ -90,10 +90,10 @@ class Find extends Alkaline{
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 		
-		// Optional "starter photo set"
-		if(!empty($photo_ids)){
-			$photo_ids = parent::convertToIntegerArray($photo_ids);
-			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		// Optional "starter image set"
+		if(!empty($image_ids)){
+			$image_ids = parent::convertToIntegerArray($image_ids);
+			$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $image_ids) . ')';
 		}
 		
 		if($auto_guest == true){
@@ -242,26 +242,26 @@ class Find extends Alkaline{
 			if(!empty($_REQUEST['sort'])){
 				switch($_REQUEST['sort']){
 					case 'taken':
-						$this->_sort('photos.photo_taken', $_REQUEST['sort_direction']);
-						$this->_notnull('photos.photo_taken');
+						$this->_sort('images.image_taken', $_REQUEST['sort_direction']);
+						$this->_notnull('images.image_taken');
 						break;
 					case 'published':
-						$this->_sort('photos.photo_published', $_REQUEST['sort_direction']);
-						$this->_notnull('photos.photo_published');
+						$this->_sort('images.image_published', $_REQUEST['sort_direction']);
+						$this->_notnull('images.image_published');
 						break;
 					case 'uploaded':
-						$this->_sort('photos.photo_uploaded', $_REQUEST['sort_direction']);
+						$this->_sort('images.image_uploaded', $_REQUEST['sort_direction']);
 						break;
 					case 'updated':
-						$this->_sort('photos.photo_updated', $_REQUEST['sort_direction']);
-						$this->_notnull('photos.photo_updated');
+						$this->_sort('images.image_updated', $_REQUEST['sort_direction']);
+						$this->_notnull('images.image_updated');
 						break;
 					case 'title':
-						$this->_sort('photos.photo_title', $_REQUEST['sort_direction']);
-						$this->_notnull('photos.photo_title');
+						$this->_sort('images.image_title', $_REQUEST['sort_direction']);
+						$this->_notnull('images.image_title');
 						break;
 					case 'views':
-						$this->_sort('photos.photo_views', $_REQUEST['sort_direction']);
+						$this->_sort('images.image_views', $_REQUEST['sort_direction']);
 						break;
 					default:
 						break;
@@ -321,17 +321,17 @@ class Find extends Alkaline{
 			}
 		
 			// Save to memory
-			$this->memory[] = '$this->' . $method . '(' . @implode(', ', $arguments) . '); ';
+			$this->eval[] = '$this->' . $method . '(' . @implode(', ', $arguments) . '); ';
 		}
 	}
 	
 	/**
-	 * Translate $this->photo_ids array to comma-separated string
+	 * Translate $this->image_ids array to comma-separated string
 	 *
-	 * @return string Comma-separated photo IDs
+	 * @return string Comma-separated image IDs
 	 */
 	public function __toString(){
-        return implode(', ', $this->photo_ids);
+        return implode(', ', $this->image_ids);
     }
 
 	/**
@@ -345,7 +345,7 @@ class Find extends Alkaline{
 			$orbit = new Orbit;
 		}
 		
-		$this->photo_ids = $orbit->hook('find', $this->photo_ids, $this->photo_ids);
+		$this->image_ids = $orbit->hook('find', $this->image_ids, $this->image_ids);
 	}
 
 	/**
@@ -364,8 +364,8 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_taken >= :photo_taken_begin';
-			$this->sql_params[':photo_taken_begin'] = $begin . ' 00:00:00';
+			$this->sql_conds[] = 'images.image_taken >= :image_taken_begin';
+			$this->sql_params[':image_taken_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
@@ -373,8 +373,8 @@ class Find extends Alkaline{
 			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
-			$this->sql_conds[] = 'photos.photo_taken <= :photo_taken_end';
-			$this->sql_params[':photo_taken_end'] = $end . ' 23:59:59"';
+			$this->sql_conds[] = 'images.image_taken <= :image_taken_end';
+			$this->sql_params[':image_taken_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
@@ -396,8 +396,8 @@ class Find extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'photos.photo_uploaded >= :photo_uploaded_begin';
-			$this->sql_params[':photo_uploaded_begin'] = $begin . ' 00:00:00';
+			$this->sql_conds[] = 'images.image_uploaded >= :image_uploaded_begin';
+			$this->sql_params[':image_uploaded_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
@@ -405,8 +405,8 @@ class Find extends Alkaline{
 			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
-			$this->sql_conds[] = 'photos.photo_uploaded <= :photo_uploaded_end';
-			$this->sql_params[':photo_uploaded_end'] = $end . ' 23:59:59"';
+			$this->sql_conds[] = 'images.image_uploaded <= :image_uploaded_end';
+			$this->sql_params[':image_uploaded_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
@@ -428,12 +428,12 @@ class Find extends Alkaline{
 		
 		// Set maximum views
 		if(!empty($max)){
-			$this->sql_conds[] = 'photos.photo_views <= ' . $max;
+			$this->sql_conds[] = 'images.image_views <= ' . $max;
 		}
 		
 		// Set minimum views
 		if(!empty($min)){
-			$this->sql_conds[] = 'photos.photo_views >= ' . $min;
+			$this->sql_conds[] = 'images.image_views >= ' . $min;
 		}
 		
 		return true;
@@ -524,7 +524,7 @@ class Find extends Alkaline{
 		}
 		
 		// Join tables
-		$this->sql_join_on[] = 'photos.photo_id = links.photo_id';
+		$this->sql_join_on[] = 'images.image_id = links.image_id';
 		$this->sql_join_tables[] = 'links';
 		$this->sql_join_type = 'INNER JOIN';
 		
@@ -550,10 +550,10 @@ class Find extends Alkaline{
 		
 		parent::convertToArray($tags);
 		
-		// Find photos with these tags in database
+		// Find images with these tags in database
 		if(intval($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query = $this->prepare('SELECT images.image_id FROM images, links WHERE images.image_id = links.image_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 			$query->execute();
 		}
 		else{
@@ -567,35 +567,35 @@ class Find extends Alkaline{
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
+			$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
 			$query->execute($sql_params);
 		}
 		
-		$this->photos = $query->fetchAll();
+		$this->images = $query->fetchAll();
 		
-		// Compile photo IDs
-		$include_photo_ids = array();	
-		foreach($this->photos as $photo){
-			if(array_key_exists($photo['photo_id'], $include_photo_ids)){
-				$include_photo_ids[$photo['photo_id']]++;
+		// Compile image IDs
+		$include_image_ids = array();	
+		foreach($this->images as $image){
+			if(array_key_exists($image['image_id'], $include_image_ids)){
+				$include_image_ids[$image['image_id']]++;
 			}
 			else{
-				$include_photo_ids[$photo['photo_id']] = 1;
+				$include_image_ids[$image['image_id']] = 1;
 			}
 		}
-		foreach($include_photo_ids as $photo_id => $count){
+		foreach($include_image_ids as $image_id => $count){
 			if($count < $tag_count){
-				unset($include_photo_ids[$photo_id]);
+				unset($include_image_ids[$image_id]);
 			}
 		}
-		$include_photo_ids = array_keys($include_photo_ids);
+		$include_image_ids = array_keys($include_image_ids);
 		
 		// Set fields to search
-		if(count($include_photo_ids) > 0){
-			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $include_photo_ids) . ')';
+		if(count($include_image_ids) > 0){
+			$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $include_image_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+			$this->sql_conds[] = 'images.image_id IN (NULL)';
 		}
 		
 		return true;
@@ -613,10 +613,10 @@ class Find extends Alkaline{
 		
 		parent::convertToArray($tags);
 		
-		// Find photos with these tags in database
+		// Find images with these tags in database
 		if(intval($tags[0])){
 			parent::convertToIntegerArray($tags);
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links WHERE photos.photo_id = links.photo_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
+			$query = $this->prepare('SELECT images.image_id FROM images, links WHERE images.image_id = links.image_id AND (links.tag_id = ' . implode(' OR links.tag_id = ', $tags) . ');');
 			$query->execute();
 		}
 		else{
@@ -630,20 +630,20 @@ class Find extends Alkaline{
 			
 			$sql_param_keys = array_keys($sql_params);
 			
-			$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
+			$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ');');
 			$query->execute($sql_params);
 		}
-		$this->photos = $query->fetchAll();
+		$this->images = $query->fetchAll();
 		
-		// Compile photo IDs
-		$exclude_photo_ids = array();	
-		foreach($this->photos as $photo){
-			$exclude_photo_ids[] = $photo['photo_id'];
+		// Compile image IDs
+		$exclude_image_ids = array();	
+		foreach($this->images as $image){
+			$exclude_image_ids[] = $image['image_id'];
 		}
-		$exclude_photo_ids = array_unique($exclude_photo_ids);
+		$exclude_image_ids = array_unique($exclude_image_ids);
 		
-		if(count($exclude_photo_ids) > 0){
-			$this->sql_conds[] = 'photos.photo_id NOT IN (' . implode(', ', $exclude_photo_ids) . ')';
+		if(count($exclude_image_ids) > 0){
+			$this->sql_conds[] = 'images.image_id NOT IN (' . implode(', ', $exclude_image_ids) . ')';
 		}
 		
 		return true;
@@ -662,11 +662,11 @@ class Find extends Alkaline{
 		
 		// Determine input type
 		if(is_string($pile)){
-			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE LOWER(pile_title) LIKE :pile_title_lower LIMIT 0, 1;');
+			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_images, pile_image_count FROM piles WHERE LOWER(pile_title) LIKE :pile_title_lower LIMIT 0, 1;');
 			$query->execute(array(':pile_title_lower' => strtolower($pile)));
 		}
 		elseif(is_int($pile)){
-			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_photos, pile_photo_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
+			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_images, pile_image_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
 			$query->execute();
 		}
 		else{
@@ -683,38 +683,38 @@ class Find extends Alkaline{
 		
 		// If auto, apply stored functions
 		if($pile['pile_type'] == 'auto'){
-			$photo_ids = new Find(null, false, false);
-			$pile['pile_call'] = str_ireplace('$this->', '$photo_ids->', $pile['pile_call']);
+			$image_ids = new Find(null, false, false);
+			$pile['pile_call'] = str_ireplace('$this->', '$image_ids->', $pile['pile_call']);
 			if(eval($pile['pile_call']) === false){
 				return false;
 			}
-			$photo_ids->find();
+			$image_ids->find();
 			
-			$pile_photos = implode(', ', $photo_ids->photo_ids);
+			$pile_images = implode(', ', $image_ids->image_ids);
 			
-			// Update pile if photos have changed
-			if($pile_photos != $pile['pile_photos']){
-				$fields = array('pile_photo_count' => $photo_ids->photo_count,
-					'pile_photos' => $pile_photos);
+			// Update pile if images have changed
+			if($pile_images != $pile['pile_images']){
+				$fields = array('pile_image_count' => $image_ids->image_count,
+					'pile_images' => $pile_images);
 				$this->updateRow($fields, 'piles', $pile['pile_id'], false);
 			}
 			
-			if(!empty($photo_ids->photo_ids)){
-				$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids->photo_ids) . ')';
+			if(!empty($image_ids->image_ids)){
+				$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $image_ids->image_ids) . ')';
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+				$this->sql_conds[] = 'images.image_id IN (NULL)';
 			}
 		}
 		
-		// If static, use stored photo IDs
+		// If static, use stored image IDs
 		elseif($pile['pile_type'] == 'static'){
-			if(!empty($pile['pile_photos'])){
-				$this->sql_conds[] = 'photos.photo_id IN (' . $pile['pile_photos'] . ')';
-				$this->photo_order = $this->convertToIntegerArray($pile['pile_photos']);
+			if(!empty($pile['pile_images'])){
+				$this->sql_conds[] = 'images.image_id IN (' . $pile['pile_images'] . ')';
+				$this->image_order = $this->convertToIntegerArray($pile['pile_images']);
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+				$this->sql_conds[] = 'images.image_id IN (NULL)';
 			}
 		}
 	}
@@ -766,7 +766,7 @@ class Find extends Alkaline{
 		
 		$right = $rights[0];
 		
-		$this->sql_conds[] = 'photos.right_id = ' . $right['right_id'];
+		$this->sql_conds[] = 'images.right_id = ' . $right['right_id'];
 		
 		return true;
 	}
@@ -786,7 +786,7 @@ class Find extends Alkaline{
 		$users_sql = array();
 		
 		foreach($users as $user){
-			$users_sql[] = 'photos.user_id = ' . $user;
+			$users_sql[] = 'images.user_id = ' . $user;
 		}
 		
 		$this->sql_conds[] = '(' . implode(' OR ', $users_sql) . ')';
@@ -795,7 +795,7 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Find by search (photo title, photo description, photo geography, and photo tags)
+	 * Find by search (image title, image description, image geography, and image tags)
 	 *
 	 * @param string $search 
 	 * @return bool True if successful
@@ -810,31 +810,31 @@ class Find extends Alkaline{
 		$search_lower = '%' . $search_lower . '%';
 		
 		// Search title, description
-		$query = $this->prepare('SELECT photos.photo_id FROM photos WHERE (LOWER(photos.photo_title) LIKE :photo_title_lower OR LOWER(photos.photo_description) LIKE :photo_description_lower OR LOWER(photos.photo_geo) LIKE :photo_geo_lower)');
-		$query->execute(array(':photo_title_lower' => $search_lower, ':photo_description_lower' => $search_lower, ':photo_geo_lower' => $search_lower));
-		$photos = $query->fetchAll();
+		$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title_lower OR LOWER(images.image_description) LIKE :image_description_lower OR LOWER(images.image_geo) LIKE :image_geo_lower)');
+		$query->execute(array(':image_title_lower' => $search_lower, ':image_description_lower' => $search_lower, ':image_geo_lower' => $search_lower));
+		$images = $query->fetchAll();
 		
-		$photo_ids = array();
+		$image_ids = array();
 		
-		foreach($photos as $photo){
-			$photo_ids[] = $photo['photo_id'];
+		foreach($images as $image){
+			$image_ids[] = $image['image_id'];
 		}
 		
 		// Search tags
-		$query = $this->prepare('SELECT photos.photo_id FROM photos, links, tags WHERE photos.photo_id = links.photo_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
+		$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
 		$query->execute(array(':tag_name_lower' => $search_lower));
 		
-		$photos = $query->fetchAll();
+		$images = $query->fetchAll();
 		
-		foreach($photos as $photo){
-			$photo_ids[] = $photo['photo_id'];
+		foreach($images as $image){
+			$image_ids[] = $image['image_id'];
 		}
 		
-		if(count($photo_ids) > 0){
-			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		if(count($image_ids) > 0){
+			$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $image_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'photos.photo_id IS NULL';
+			$this->sql_conds[] = 'images.image_id IS NULL';
 		}
 		
 		return true;
@@ -844,7 +844,7 @@ class Find extends Alkaline{
 	 * Find by privacy levels
 	 *
 	 * @param int|string $privacy Privacy ID or string
-	 * @param string $all Also include all photos of lower privacy levels
+	 * @param string $all Also include all images of lower privacy levels
 	 * @return bool True if successful
 	 */
 	public function privacy($privacy=null, $all=false){
@@ -873,19 +873,19 @@ class Find extends Alkaline{
 			
 			// Set fields to search
 			if($all == true){
-				$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+				$this->sql_conds[] = 'images.image_privacy <= ' . $privacy;
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+				$this->sql_conds[] = 'images.image_privacy = ' . $privacy;
 			}
 		}
 		elseif(is_integer($privacy)){
 			// Set fields to search
 			if($all == true){
-				$this->sql_conds[] = 'photos.photo_privacy <= ' . $privacy;
+				$this->sql_conds[] = 'images.image_privacy <= ' . $privacy;
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_privacy = ' . $privacy;
+				$this->sql_conds[] = 'images.image_privacy = ' . $privacy;
 			}
 			
 		}
@@ -893,7 +893,7 @@ class Find extends Alkaline{
 			parent::convertToIntegerArray($privacy);
 			
 			// Set fields to search
-			$this->sql_conds[] = 'photos.photo_privacy IN (' . implode(', ', $privacy) . ')';
+			$this->sql_conds[] = 'images.image_privacy IN (' . implode(', ', $privacy) . ')';
 		}
 		else{
 			return false;
@@ -921,24 +921,24 @@ class Find extends Alkaline{
 		if(isset($h_min) and isset($h_max)){
 			
 			if($h_min > $h_max){
-				$this->sql_conds[] = '(photos.photo_color_h <= ' . intval($h_max) . ' OR photos.photo_color_h >= ' . intval($h_min) . ')';
+				$this->sql_conds[] = '(images.image_color_h <= ' . intval($h_max) . ' OR images.image_color_h >= ' . intval($h_min) . ')';
 			}
 			else{
-				$this->sql_conds[] = 'photos.photo_color_h >= ' . intval($h_min);
-				$this->sql_conds[] = 'photos.photo_color_h <= ' . intval($h_max);
+				$this->sql_conds[] = 'images.image_color_h >= ' . intval($h_min);
+				$this->sql_conds[] = 'images.image_color_h <= ' . intval($h_max);
 			}
 		}
 		
 		// S - Saturation
 		if(isset($s_min) and isset($s_max)){
-			$this->sql_conds[] = 'photos.photo_color_s >= ' . intval($s_min);
-			$this->sql_conds[] = 'photos.photo_color_s <= ' . intval($s_max);
+			$this->sql_conds[] = 'images.image_color_s >= ' . intval($s_min);
+			$this->sql_conds[] = 'images.image_color_s <= ' . intval($s_max);
 		}
 		
 		// L - Lightness
 		if(isset($l_min) and isset($l_max)){
-			$this->sql_conds[] = 'photos.photo_color_l >= ' . intval($l_min);
-			$this->sql_conds[] = 'photos.photo_color_l <= ' . intval($l_max);
+			$this->sql_conds[] = 'images.image_color_l >= ' . intval($l_min);
+			$this->sql_conds[] = 'images.image_color_l <= ' . intval($l_max);
 		}
 		
 		return true;
@@ -954,12 +954,12 @@ class Find extends Alkaline{
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
-			$this->sql_conds[] = 'photos.photo_published < :photo_published';
-			$this->sql_params[':photo_published'] = $now;
+			$this->sql_conds[] = 'images.image_published < :image_published';
+			$this->sql_params[':image_published'] = $now;
 		}
 		if($published == false){
-			$this->sql_conds[] = '(photos.photo_published > :photo_published OR photo_published IS NULL)';
-			$this->sql_params[':photo_published'] = $now;
+			$this->sql_conds[] = '(images.image_published > :image_published OR image_published IS NULL)';
+			$this->sql_params[':image_published'] = $now;
 		}
 	}
 	
@@ -979,28 +979,28 @@ class Find extends Alkaline{
 		if(!empty($min)){
 			$min = floatval($min);
 			if($this->db_type == 'pgsql'){
-				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) < ' . $min;
+				$this->sql_conds[] = '(CAST(images.image_width AS FLOAT) / CAST(images.image_height AS FLOAT)) < ' . $min;
 			}
 			else{
-				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) < ' . $min;
+				$this->sql_conds[] = '(images.image_width / images.image_height) < ' . $min;
 			}
 		}
 		if(!empty($max)){
 			$max = floatval($max);
 			if($this->db_type == 'pgsql'){
-				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) >' . $max;
+				$this->sql_conds[] = '(CAST(images.image_width AS FLOAT) / CAST(images.image_height AS FLOAT)) >' . $max;
 			}
 			else{
-				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) > ' . $max;
+				$this->sql_conds[] = '(images.image_width / images.image_height) > ' . $max;
 			}
 		}
 		if(!empty($equal)){
 			$equal = floatval($equal);
 			if($this->db_type == 'pgsql'){
-				$this->sql_conds[] = '(CAST(photos.photo_width AS FLOAT) / CAST(photos.photo_height AS FLOAT)) = ' . $equal;
+				$this->sql_conds[] = '(CAST(images.image_width AS FLOAT) / CAST(images.image_height AS FLOAT)) = ' . $equal;
 			}
 			else{
-				$this->sql_conds[] = '(photos.photo_width / photos.photo_height) = ' . $equal;
+				$this->sql_conds[] = '(images.image_width / images.image_height) = ' . $equal;
 			}
 		}
 		
@@ -1021,22 +1021,22 @@ class Find extends Alkaline{
 		
 		$pages = $this->getTable('pages', $id);
 		
-		$photo_ids = array();
+		$image_ids = array();
 		
 		foreach($pages as $page){
-			$photo_ids_on_page = explode(', ', $page['page_photos']);
-			foreach($photo_ids_on_page as $photo_id){
-				$photo_ids[] = $photo_id;
+			$image_ids_on_page = explode(', ', $page['page_images']);
+			foreach($image_ids_on_page as $image_id){
+				$image_ids[] = $image_id;
 			}
 		}
 		
-		$photo_ids = array_unique($photo_ids);
+		$image_ids = array_unique($image_ids);
 		
-		if(count($photo_ids) > 0){
-			$this->sql_conds[] = 'photos.photo_id IN (' . implode(', ', $photo_ids) . ')';
+		if(count($image_ids) > 0){
+			$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $image_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'photos.photo_id IN (NULL)';
+			$this->sql_conds[] = 'images.image_id IN (NULL)';
 		}
 		
 		return true;
@@ -1054,7 +1054,7 @@ class Find extends Alkaline{
 		
 		// Add EXIFs to find
 		$this->sql_tables[] = 'exifs';
-		$this->sql_conds[] = 'exifs.photo_id = photos.photo_id';
+		$this->sql_conds[] = 'exifs.image_id = images.image_id';
 		
 		// Search EXIFs
 		if(empty($name)){
@@ -1110,7 +1110,7 @@ class Find extends Alkaline{
 		switch($kind){
 			case 'untagged':
 				// Join tables
-				$this->sql_join_on[] = 'photos.photo_id = links.photo_id';
+				$this->sql_join_on[] = 'images.image_id = links.image_id';
 				$this->sql_join_tables[] = 'links';
 				$this->sql_join_type = 'LEFT OUTER JOIN';
 				
@@ -1125,16 +1125,16 @@ class Find extends Alkaline{
 				$this->privacy('public');
 				break;
 			case 'updated':
-				$this->sort('photo_updated', 'DESC');
+				$this->sort('image_updated', 'DESC');
 				break;
 			case 'nonpublic':
 				$this->privacy(array(2, 3));
 				break;
 			case 'untitled':
-				$this->sql_conds[] = 'photos.photo_title IS NULL';
+				$this->sql_conds[] = 'images.image_title IS NULL';
 				break;
 			case 'views':
-				$this->sort('photo_views', 'DESC');
+				$this->sort('image_views', 'DESC');
 				break;
 			case 'tags':
 				$this->allTags(@intval($_GET['id']));
@@ -1166,17 +1166,17 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Locate page that contains a particular photo ID
+	 * Locate page that contains a particular image ID
 	 *
-	 * @param int $photo_id Photo ID
+	 * @param int $image_id Image ID
 	 * @return bool True if successful
 	 */
-	public function with($photo_id){
+	public function with($image_id){
 		// Error checking
-		if(empty($photo_id)){ return false; }
-		if(!$photo_id = intval($photo_id)){ return false; }
+		if(empty($image_id)){ return false; }
+		if(!$image_id = intval($image_id)){ return false; }
 		
-		$this->with = $photo_id;
+		$this->with = $image_id;
 		
 		return true;
 	}
@@ -1185,8 +1185,8 @@ class Find extends Alkaline{
 	 * Paginate results
 	 *
 	 * @param int $page Page number
-	 * @param int $limit Number of photos per page
-	 * @param int $first Number of photos on the first page (if different)
+	 * @param int $limit Number of images per page
+	 * @param int $first Number of images on the first page (if different)
 	 * @return bool True if successful
 	 */
 	public function page($page, $limit=null, $first=null){
@@ -1219,16 +1219,16 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Set number of offset photos (photos that appear just before and after the requested page)
+	 * Set number of offset images (images that appear just before and after the requested page)
 	 *
-	 * @param int $length Number of photos
+	 * @param int $length Number of images
 	 * @return bool True if successful
 	 */
 	public function offset($length){
 		// Error checking
 		if(!($length = intval($length))){ return false; }
 		
-		$this->photo_offset_length = $length;
+		$this->image_offset_length = $length;
 	}
 	
 	/**
@@ -1246,19 +1246,19 @@ class Find extends Alkaline{
 		$lat = $place->city['city_lat'];
 		$long = $place->city['city_long'];
 		
-		$this->sql_conds[] = 'photo_geo_lat <= ' . ceil($lat + $radius);
-		$this->sql_conds[] = 'photo_geo_lat >= ' . ceil($lat - $radius);
-		$this->sql_conds[] = 'photo_geo_long <= ' . ceil($long + $radius);
-		$this->sql_conds[] = 'photo_geo_long >= ' . ceil($long - $radius);
-		$this->sql_conds[] = '3959 * acos(cos(radians(' . $lat . ')) * cos(radians(photo_geo_lat)) * cos(radians(photo_geo_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(photo_geo_lat))) <= ' . $radius;
+		$this->sql_conds[] = 'image_geo_lat <= ' . ceil($lat + $radius);
+		$this->sql_conds[] = 'image_geo_lat >= ' . ceil($lat - $radius);
+		$this->sql_conds[] = 'image_geo_long <= ' . ceil($long + $radius);
+		$this->sql_conds[] = 'image_geo_long >= ' . ceil($long - $radius);
+		$this->sql_conds[] = '3959 * acos(cos(radians(' . $lat . ')) * cos(radians(image_geo_lat)) * cos(radians(image_geo_long) - radians(' . $long . ')) + sin(radians(' . $lat . ')) * sin(radians(image_geo_lat))) <= ' . $radius;
 		
 		return true;
 	}
 	
 	/**
-	 * Sort results by photo column
+	 * Sort results by image column
 	 *
-	 * @param string $column Photo column
+	 * @param string $column Image column
 	 * @param string $sort Sort order (ASC or DESC)
 	 * @return bool True if successful
 	 */
@@ -1283,9 +1283,9 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Find by photo fields not null
+	 * Find by image fields not null
 	 *
-	 * @param string $field Photo field
+	 * @param string $field Image field
 	 * @return bool True if successful
 	 */
 	public function notnull($field){
@@ -1301,7 +1301,7 @@ class Find extends Alkaline{
 	/**
 	 * Execute Find class to determine class variables
 	 *
-	 * @return array Photo IDs
+	 * @return array Image IDs
 	 */
 	public function find(){
 		// Prepare SQL
@@ -1319,10 +1319,10 @@ class Find extends Alkaline{
 				$this->sql_group_by .= ', ' . implode(', ', $sql_sorts);
 			}
 		}
-		elseif(empty($this->photo_order)){
-			$this->sql_order_by = ' ORDER BY photos.photo_uploaded DESC';
+		elseif(empty($this->image_order)){
+			$this->sql_order_by = ' ORDER BY images.image_uploaded DESC';
 			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-				$this->sql_group_by .= ', photos.photo_uploaded';
+				$this->sql_group_by .= ', images.image_uploaded';
 			}
 		}
 		
@@ -1340,20 +1340,20 @@ class Find extends Alkaline{
 		// Execute query without limit
 		$query = $this->prepare($this->sql);
 		$query->execute($this->sql_params);
-		$photos = $query->fetchAll();
+		$images = $query->fetchAll();
 		
-		// Grab photos.photo_ids of results
-		$photo_ids = array();
-		foreach($photos as $photo){
-			$photo_ids[] = intval($photo['photo_id']);
+		// Grab images.image_ids of results
+		$image_ids = array();
+		foreach($images as $image){
+			$image_ids[] = intval($image['image_id']);
 		}
 		
-		// Determine number of photos
-		$this->photo_count = count($photos);
+		// Determine number of images
+		$this->image_count = count($images);
 		
-		// Determine where "with" photo id is placed in pages
+		// Determine where "with" image id is placed in pages
 		if(!empty($this->with)){
-			$key = array_search($this->with, $photo_ids);
+			$key = array_search($this->with, $image_ids);
 			if($key === false){
 				return false;
 			}
@@ -1373,7 +1373,7 @@ class Find extends Alkaline{
 		
 		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil(($this->photo_count - $this->page_limit_first) / $this->page_limit) + 1;
+			$this->page_count = ceil(($this->image_count - $this->page_limit_first) / $this->page_limit) + 1;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
@@ -1388,50 +1388,50 @@ class Find extends Alkaline{
 		// Execute query with order, limit
 		$query = $this->prepare($this->sql);
 		$query->execute($this->sql_params);
-		$photos = $query->fetchAll();
+		$images = $query->fetchAll();
 		
-		// Grab photos.photo_ids of results
-		$this->photo_ids = array();
-		foreach($photos as $photo){
-			$this->photo_ids[] = intval($photo['photo_id']);
+		// Grab images.image_ids of results
+		$this->image_ids = array();
+		foreach($images as $image){
+			$this->image_ids[] = intval($image['image_id']);
 		}
 		
-		if(!empty($this->photo_order)){
-			$replacement_photo_ids = array();
-			foreach($this->photo_order as $photo_id){
-				if(in_array($photo_id, $this->photo_ids)){
-					$replacement_photo_ids[] = $photo_id;
+		if(!empty($this->image_order)){
+			$replacement_image_ids = array();
+			foreach($this->image_order as $image_id){
+				if(in_array($image_id, $this->image_ids)){
+					$replacement_image_ids[] = $image_id;
 				}
 			}
 			
-			$replacement_append_photo_ids = array();
-			foreach($this->photo_ids as $photo_id){
-				if(!in_array($photo_id, $this->photo_order)){
-					$replacement_append_photo_ids[] = $photo_id;
+			$replacement_append_image_ids = array();
+			foreach($this->image_ids as $image_id){
+				if(!in_array($image_id, $this->image_order)){
+					$replacement_append_image_ids[] = $image_id;
 				}
 			}
 			
-			$this->photo_ids = array_merge($replacement_photo_ids, $replacement_append_photo_ids);
+			$this->image_ids = array_merge($replacement_image_ids, $replacement_append_image_ids);
 		}
 		
-		// Count photos
-		$this->photo_count_result = count($this->photo_ids);
+		// Count images
+		$this->image_count_result = count($this->image_ids);
 		
-		// Determine offset photos
+		// Determine offset images
 		if(!empty($this->page_limit)){
-			if(!empty($this->photo_offset_length)){
-				$offset = $this->page_begin - $this->photo_offset_length;
+			if(!empty($this->image_offset_length)){
+				$offset = $this->page_begin - $this->image_offset_length;
 				
 				if($offset < 0){
-					$length = $this->photo_offset_length + $offset;
+					$length = $this->image_offset_length + $offset;
 					$offset = 0;
 				}
 				else{
-					$length = $this->photo_offset_length;
+					$length = $this->image_offset_length;
 				}
 				
-				$this->photo_ids_before = array_slice($photo_ids, $offset, $length, true);
-				$this->photo_ids_before = array_reverse($this->photo_ids_before);
+				$this->image_ids_before = array_slice($image_ids, $offset, $length, true);
+				$this->image_ids_before = array_reverse($this->image_ids_before);
 				
 				if($this->page == 1){
 					$offset = $this->page_begin + $this->page_limit_first;
@@ -1440,10 +1440,10 @@ class Find extends Alkaline{
 					$offset = $this->page_begin + $this->page_limit;
 				}
 				
-				$this->photo_ids_after = array_slice($photo_ids, $offset, $this->photo_offset_length, true);
+				$this->image_ids_after = array_slice($image_ids, $offset, $this->image_offset_length, true);
 			}
 			else{
-				$this->photo_ids_before = array_slice($photo_ids, 0, $this->page_begin, true);
+				$this->image_ids_before = array_slice($image_ids, 0, $this->page_begin, true);
 				
 				if($this->page == 1){
 					$offset = $this->page_begin + $this->page_limit_first;
@@ -1451,17 +1451,17 @@ class Find extends Alkaline{
 				else{
 					$offset = $this->page_begin + $this->page_limit;
 				}
-				$this->photo_ids_after = array_slice($photo_ids, $offset, null, true);
+				$this->image_ids_after = array_slice($image_ids, $offset, null, true);
 			}
 		}
 		
-		// Determine keys of photos
-		$this->photo_first = $this->page_begin + 1;
-		$this->photo_last = $this->page_begin + $this->page_limit;
-		$this->photo_first_reverse = $this->photo_count - $this->photo_first + 1;
-		$this->photo_last_reverse = $this->page_begin + $this->page_limit;
+		// Determine keys of images
+		$this->image_first = $this->page_begin + 1;
+		$this->image_last = $this->page_begin + $this->page_limit;
+		$this->image_first_reverse = $this->image_count - $this->image_first + 1;
+		$this->image_last_reverse = $this->page_begin + $this->page_limit;
 		
-		// Determine URLs of photo pages
+		// Determine URLs of image pages
 		if(!empty($this->page_next)){
 			$this->page_next_uri = $this->magicURL($this->page_next);
 		}
@@ -1470,8 +1470,8 @@ class Find extends Alkaline{
 			$this->page_previous_uri = $this->magicURL($this->page_previous);
 		}
 		
-		// Return photos.photo_ids
-		return $this->photo_ids;
+		// Return images.image_ids
+		return $this->image_ids;
 	}
 	
 	// SEARCH MEMORY
@@ -1482,11 +1482,11 @@ class Find extends Alkaline{
 	 * @return string|false Methods that make up the memory or error
 	 */
 	public function getMemory(){
-		if(count($this->memory) > 0){
+		if(count($this->eval) < 1){
 			return false;
 		}
 		
-		return implode(' ', $this->memory);
+		return implode(' ', $this->eval);
 	}
 	
 	
@@ -1496,12 +1496,13 @@ class Find extends Alkaline{
 	 * @return bool True if successful
 	 */
 	public function saveMemory(){
-		if(count($this->memory) < 1){
+		if(count($this->eval) < 1){
 			return false;
 		}
 		
-		$_SESSION['alkaline']['search']['memory'] = $this->memory;
-		$_SESSION['alkaline']['search']['results'] = $this->photo_ids;
+		$_SESSION['alkaline']['search']['request'] = $_REQUEST;
+		$_SESSION['alkaline']['search']['eval'] = $this->eval;
+		$_SESSION['alkaline']['search']['image_ids'] = $this->image_ids;
 		
 		return true;
 	}
@@ -1512,11 +1513,11 @@ class Find extends Alkaline{
 	 * @return string|false
 	 */
 	public function recentMemory(){
-		if(empty($_SESSION['alkaline']['search']['memory'])){
+		if(empty($_SESSION['alkaline']['search']['eval'])){
 			return false;
 		}
 		
-		return implode(' ', $_SESSION['alkaline']['search']['memory']);
+		return implode(' ', $_SESSION['alkaline']['search']['eval']);
 	}
 	
 	/**
@@ -1525,8 +1526,9 @@ class Find extends Alkaline{
 	 * @return void
 	 */
 	public function clearMemory(){
-		unset($_SESSION['alkaline']['search']['memory']);
-		unset($_SESSION['alkaline']['search']['results']);
+		unset($_SESSION['alkaline']['search']['request']);
+		unset($_SESSION['alkaline']['search']['eval']);
+		unset($_SESSION['alkaline']['search']['image_ids']);
 	}
 }
 

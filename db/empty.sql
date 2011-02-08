@@ -6,7 +6,7 @@ DROP TABLE extensions;
 DROP TABLE guests;
 DROP TABLE links;
 DROP TABLE pages;
-DROP TABLE photos;
+DROP TABLE images;
 DROP TABLE piles;
 DROP TABLE rights;
 DROP TABLE sizes;

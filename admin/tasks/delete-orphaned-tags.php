@@ -8,7 +8,7 @@ $user = new User;
 
 $user->perm(true);
 
-$id = $alkaline->findID(@$_POST['photo_id']);
+$id = $alkaline->findID(@$_POST['image_id']);
 
 if(empty($id)){
 	$query = $alkaline->prepare('SELECT DISTINCT tags.tag_id FROM tags;');

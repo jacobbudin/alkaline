@@ -42,10 +42,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
-	$alkaline->setConf('photo_markup', @$_POST['photo_markup']);
-	if(@$_POST['photo_markup'] == ''){ $_POST['photo_markup_ext'] = ''; }
+	$alkaline->setConf('image_markup', @$_POST['image_markup']);
+	if(@$_POST['image_markup'] == ''){ $_POST['image_markup_ext'] = ''; }
 	
-	$alkaline->setConf('photo_markup_ext', @$_POST['photo_markup_ext']);
+	$alkaline->setConf('image_markup_ext', @$_POST['image_markup_ext']);
 	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
 	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
@@ -212,14 +212,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
-	<h3>Photos</h3>
+	<h3>Images</h3>
 	
 	<table>
 		<tr class="markup">
-			<td class="pad"><input type="checkbox" id="photo_markup" name="photo_markup" <?php echo $alkaline->readConf('photo_markup'); ?> value="true" /></td>
+			<td class="pad"><input type="checkbox" id="image_markup" name="image_markup" <?php echo $alkaline->readConf('image_markup'); ?> value="true" /></td>
 			<td>
-				<label for="photo_markup">Markup new photo descriptions using <select name="photo_markup_ext" title="<?php echo $alkaline->returnConf('photo_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your photos, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-photo-markup' ?>">reset your photo markup</a>
+				<label for="image_markup">Markup new image descriptions using <select name="image_markup_ext" title="<?php echo $alkaline->returnConf('image_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
+				To use this setting for all your images, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-image-markup' ?>">reset your image markup</a>
 			</td>
 		</tr>
 	</table>
@@ -348,7 +348,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input pad"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
 			<td class="description">
-				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new photos</label>
+				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new images</label>
 			</td>
 		</tr>
 	</table>

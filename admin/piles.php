@@ -44,8 +44,8 @@ if(!empty($_POST['pile_id'])){
 			'pile_type' => $_POST['pile_type'],
 			'pile_description' => $alkaline->makeUnicode($_POST['pile_description']));
 		
-		if(isset($_POST['pile_photos'])){
-			$fields['pile_photos'] = $_POST['pile_photos'];
+		if(isset($_POST['pile_images'])){
+			$fields['pile_images'] = $_POST['pile_images'];
 		}
 		
 		$alkaline->updateRow($fields, 'piles', $pile_id);
@@ -68,15 +68,15 @@ if($pile_act == 'build'){
 	}
 	$pile_id = $alkaline->addRow($fields, 'piles');
 	
-	$photos = new Find;
-	$photos->pile($pile_id);
-	$photos->find();
+	$images = new Find;
+	$images->pile($pile_id);
+	$images->find();
 	
-	$pile_photos = @implode(', ', $photos->photo_ids);
-	$pile_photo_count = $photos->photo_count;
+	$pile_images = @implode(', ', $images->image_ids);
+	$pile_image_count = $images->image_count;
 	
-	$fields = array('pile_photos' => $pile_photos,
-		'pile_photo_count' => $pile_photo_count);
+	$fields = array('pile_images' => $pile_images,
+		'pile_image_count' => $pile_image_count);
 	$alkaline->updateRow($fields, 'piles', $pile_id);
 }
 
@@ -96,7 +96,7 @@ if(empty($pile_id)){
 
 	<h1>Piles (<?php echo $pile_count; ?>)</h1>
 	
-	<p>Piles are collections of photos. You can build an automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
+	<p>Piles are collections of images. You can build an automatic pile that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -106,7 +106,7 @@ if(empty($pile_id)){
 		<tr>
 			<th style="width: 60%;">Title</th>
 			<th class="center">Views</th>
-			<th class="center">Photos</th>
+			<th class="center">Images</th>
 			<th>Last modified</th>
 		</tr>
 		<?php
@@ -115,7 +115,7 @@ if(empty($pile_id)){
 			echo '<tr>';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'piles' . URL_ID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a></strong><br /><a href="' . BASE . 'pile' . URL_ID . $pile['pile_title_url'] . URL_RW . '" class="nu">/' . $pile['pile_title_url'] . '</td>';
 				echo '<td class="center">' . $pile['pile_views'] . '</td>';
-				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_photo_count'] . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/piles/' . $pile['pile_id'] . '">' . $pile['pile_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($pile['pile_modified']) . '</td>';
 			echo '</tr>';
 		}
@@ -134,9 +134,9 @@ else{
 	$pile = $alkaline->makeHTMLSafe($pile);
 	
 	// Update pile
-	$photo_ids = new Find;
-	$photo_ids->pile($pile_id);
-	$photo_ids->find();
+	$image_ids = new Find;
+	$image_ids->pile($pile_id);
+	$image_ids->find();
 	
 	if(!empty($pile['pile_title'])){	
 		define('TITLE', 'Alkaline Pile: &#8220;' . $pile['pile_title']  . '&#8221;');
@@ -148,7 +148,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW; ?>">View photos (<?php echo $photo_ids->photo_count; ?>)</a> <a href="<?php echo BASE . 'pile' . URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a> <a href="<?php echo BASE . 'pile' . URL_ID . $pile['pile_id'] . URL_RW; ?>">Go to pile</a></div>
 	
 	<h1>Pile</h1>
 	
@@ -172,8 +172,8 @@ else{
 			<tr>
 				<td class="right"><label for="pile_type">Type:</label></td>
 				<td>
-					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; } if(empty($pile['pile_call'])){ echo 'disabled="disabled"'; } ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new photos that meet the pile&#8217;s criteria<br />
-					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the photos originally selected
+					<input type="radio" name="pile_type" id="pile_type_auto" value="auto" <?php if($pile['pile_type'] != 'static'){ echo 'checked="checked"'; } if(empty($pile['pile_call'])){ echo 'disabled="disabled"'; } ?> /> <label for="pile_type_auto">Automatic</label> &#8212; Automatically include new images that meet the pile&#8217;s criteria<br />
+					<input type="radio" name="pile_type" id="pile_type_static" value="static" <?php if($pile['pile_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="pile_type_static">Static</label> &#8212; Only include the images originally selected
 				</td>
 			</tr>
 			<?php if($pile['pile_type'] == 'static'){ ?>
@@ -181,22 +181,22 @@ else{
 					<td class="right"><label>Sort:</label></td>
 					<td>
 						<p>
-							<span class="switch">&#9656;</span> <a href="#" class="show">Show pile</a> <span class="quiet">(sort photos by dragging and dropping)</span>
+							<span class="switch">&#9656;</span> <a href="#" class="show">Show pile</a> <span class="quiet">(sort images by dragging and dropping)</span>
 						</p>
 
-						<div class="reveal" id="pile_photo_sort">
+						<div class="reveal" id="pile_image_sort">
 							<?php
 						
-							$photos = new Photo($pile['pile_photos']);
-							$photos->getImgUrl('square');
+							$images = new Image($pile['pile_images']);
+							$images->getImgUrl('square');
 						
-							foreach($photos->photos as $photo){
-								echo '<img src="' . $photo['photo_src_square'] .'" alt="" class="frame" id="photo-' . $photo['photo_id'] . '" />';
+							foreach($images->images as $image){
+								echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';
 							}
 						
 							?><br /><br />
 						</div>
-						<input type="hidden" id="pile_photos" name="pile_photos" value="<?php echo $pile['pile_photos']; ?>" />
+						<input type="hidden" id="pile_images" name="pile_images" value="<?php echo $pile['pile_images']; ?>" />
 					</td>
 				</tr>
 			<?php } ?>

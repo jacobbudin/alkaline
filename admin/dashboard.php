@@ -53,34 +53,34 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<?php
 		}
 		
-		if(($user->returnConf('stat_enabled') !== false) and ($user->returnPref('recent_photos') === true)){
+		if(($user->returnConf('stat_enabled') !== false) and ($user->returnPref('recent_images') === true)){
 			echo '<hr />';
 		}
 		
-		// Preference: recent_photos
-		if($user->returnPref('recent_photos') === true){
+		// Preference: recent_images
+		if($user->returnPref('recent_images') === true){
 			?>
 			<div class="actions"><a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">Go to library</a></div>
 			<h1>Recent</h1>
 			<p>
 				<?php
 			
-				// Preference: recent_photos_limit
-				if(!$max = $user->returnPref('recent_photos_limit')){
+				// Preference: recent_images_limit
+				if(!$max = $user->returnPref('recent_images_limit')){
 					$max = 10;
 				}
 			
-				$photo_ids = new Find;
-				$photo_ids->page(1,$max);
-				$photo_ids->sort('photos.photo_uploaded', 'DESC');
-				$photo_ids->find();
-				$photos = new Photo($photo_ids);
-				$photos->getImgUrl('square');
+				$image_ids = new Find;
+				$image_ids->page(1,$max);
+				$image_ids->sort('images.image_uploaded', 'DESC');
+				$image_ids->find();
+				$images = new Image($image_ids);
+				$images->getImgUrl('square');
 
-				foreach($photos->photos as $photo){
+				foreach($images->images as $image){
 					?>
-					<a href="<?php echo BASE . ADMIN . 'photo' . URL_ID . $photo['photo_id'] . URL_RW; ?>">
-						<img src="<?php echo $photo['photo_src_square']; ?>" alt="" title="<?php echo $photo['photo_title']; ?>" class="frame" />
+					<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>">
+						<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
 					</a>
 					<?php
 				}
@@ -91,8 +91,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		?>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN . 'statistics' . URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>"><img src="<?php echo BASE . IMAGES; ?>icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN . 'statistics' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/stats.png" alt="" /> Statistics &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/preferences.png" alt="" /> Preferences &#9656;</a></h2>
 		
 		<hr />
 		
@@ -116,7 +116,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php if($shoebox_count > 0){ ?>
 					<tr>
 						<td class="right"><?php echo $shoebox_count; ?></td>
-						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($shoebox_count, 'photo'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($shoebox_count, 'image'); ?></a></td>
 					</tr>
 				<?php } ?>
 				<?php if($comments->comment_count > 0){ ?>

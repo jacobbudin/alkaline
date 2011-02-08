@@ -5,12 +5,12 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 
-$photo_ids = new Find;
-$photo_ids->privacy('public', true);
-$photo_ids->find();
+$image_ids = new Find;
+$image_ids->privacy('public', true);
+$image_ids->find();
 
-$photos = new Photo($photo_ids);
-$photos->getImgUrl('medium');
-echo json_encode($photos);
+$images = new Image($image_ids);
+$images->getImgUrl('medium');
+echo json_encode($images);
 
 ?>

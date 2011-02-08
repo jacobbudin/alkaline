@@ -18,17 +18,17 @@ class Fotomoto extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function orbit_photo($photos){
+	public function orbit_image($images){
 		if(!empty($this->fm_account_id)){
-			foreach($photos as &$photo){
-				$photo['photo_buy'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.BUY,\'' . $photo['photo_src_admin'] . '\'); event.preventDefault();">' . $this->fm_buy_html . '</a>';
-				$photo['photo_print'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.PRINT,\'' . $photo['photo_src_admin'] . '\'); event.preventDefault();">' . $this->fm_print_html . '</a>';
-				$photo['photo_file'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.FILE,\'' . $photo['photo_src_admin'] . '\'); event.preventDefault();">' . $this->fm_file_html . '</a>';
-				$photo['photo_card'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.CARD,\'' . $photo['photo_src_admin'] . '\'); event.preventDefault();">' . $this->fm_card_html . '</a>';
-				$photo['photo_ecard'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.ECARD,\'' . $photo['photo_src_admin'] . '\'); event.preventDefault();">' . $this->fm_ecard_html . '</a>';
+			foreach($images as &$image){
+				$image['image_buy'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.BUY,\'' . $image['image_src_admin'] . '\'); event.preventDefault();">' . $this->fm_buy_html . '</a>';
+				$image['image_print'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.PRINT,\'' . $image['image_src_admin'] . '\'); event.preventDefault();">' . $this->fm_print_html . '</a>';
+				$image['image_file'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.FILE,\'' . $image['image_src_admin'] . '\'); event.preventDefault();">' . $this->fm_file_html . '</a>';
+				$image['image_card'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.CARD,\'' . $image['image_src_admin'] . '\'); event.preventDefault();">' . $this->fm_card_html . '</a>';
+				$image['image_ecard'] = '<a href="#" onclick="FOTOMOTO.API.showWindow(FOTOMOTO.API.ECARD,\'' . $image['image_src_admin'] . '\'); event.preventDefault();">' . $this->fm_ecard_html . '</a>';
 			}
 			
-			return $photos;
+			return $images;
 		}
 	}
 	
@@ -44,7 +44,7 @@ class Fotomoto extends Orbit{
 		?>
 		<p>To use this extension you will need a <a href="http://www.fotomoto.com/">Fotomoto account</a>. For more information on Fotomoto, visit <a href="http://www.fotomoto.com/">Fotomoto&#8217;s Web site</a>.</p>
 		
-		<p>Use by adding the following Canvas tags: {Photo_Buy}, {Photo_Print}, {Photo_File}, {Photo_Card}, {Photo_Ecard}</p>
+		<p>Use by adding the following Canvas tags: {Image_Buy}, {Image_Print}, {Image_File}, {Image_Card}, {Image_Ecard}</p>
 
 		<table>
 			<tr>
@@ -58,7 +58,7 @@ class Fotomoto extends Orbit{
 		
 		<table>
 			<tr>
-				<td class="right pad"><label for="fm_buy_html">Buy photo (HTML):</label></td>
+				<td class="right pad"><label for="fm_buy_html">Buy image (HTML):</label></td>
 				<td>
 					<input type="text" id="fm_buy_html" name="fm_buy_html" value="<?php echo $this->fm_buy_html; ?>" class="m" />
 				</td>

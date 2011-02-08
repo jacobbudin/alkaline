@@ -35,15 +35,13 @@ define('FOLDER_PREFIX', '');
 
 define('ADMIN', FOLDER_PREFIX . 'admin/');
 define('CLASSES', FOLDER_PREFIX . 'classes/');
-define('CSS', FOLDER_PREFIX . 'css/');
 define('DB', FOLDER_PREFIX . 'db/');
 define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
 define('INCLUDES', FOLDER_PREFIX . 'includes/');
 define('JS', FOLDER_PREFIX . 'js/');
-define('IMAGES', ADMIN . 'images/');
+define('IMAGES', FOLDER_PREFIX . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');
-define('PHOTOS', FOLDER_PREFIX . 'photos/');
 define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
 define('THEMES', FOLDER_PREFIX . 'themes/');
 
@@ -59,7 +57,7 @@ if($alkaline->checkPerm(PATH . DB) != '0777'){
 	$alkaline->addNote('Database (db/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
-	$alkaline->addNote('Photos (photos/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Images (images/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
 	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
@@ -216,9 +214,9 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		}
 		
 		// Add admin user
-		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_photo_count, user_preferences) VALUES (?, ?, ?, ?, ?, ?, ?);');
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_image_count, user_preferences) VALUES (?, ?, ?, ?, ?, ?, ?);');
 		
-		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0, 'a:5:{s:10:"page_limit";s:3:"100";s:13:"recent_photos";b:1;s:8:"shoe_pub";b:1;s:19:"recent_photos_limit";s:2:"25";s:11:"home_target";b:1;}'));
+		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0, 'a:5:{s:10:"page_limit";s:3:"100";s:13:"recent_images";b:1;s:8:"shoe_pub";b:1;s:19:"recent_images_limit";s:2:"25";s:11:"home_target";b:1;}'));
 		
 		$query->closeCursor();
 		
@@ -310,7 +308,7 @@ else{
 				</td>
 				<td>
 					<input type="text" name="install_base" id="install_base" class="s" value="<?php echo BASE; ?>" /><br />
-					<span class="quiet">For example, http://<em>www.yourdomain.com</em>/photos/ would be <strong>/photos/</strong></span>
+					<span class="quiet">For example, http://<em>www.yourdomain.com</em>/images/ would be <strong>/images/</strong></span>
 				</td>
 			</tr>
 		</table>

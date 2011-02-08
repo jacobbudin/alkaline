@@ -11,42 +11,40 @@ require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
-$alkaline->recordStat('home');
+$alkaline->recordStat('image');
+$alkaline->addComments();
 
-$image_ids = new Find;
-$image_ids->sort('images.image_published', 'DESC');
-$image_ids->published();
+$id = $alkaline->findID($_GET['id'], true);
+if(!$id){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
+
+$image_ids = new Find($id);
 $image_ids->privacy('public');
 $image_ids->find();
+if(empty($image_ids->image_ids)){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
 
 $images = new Image($image_ids);
-// $images->updateViews();
+$images->updateViews();
 $images->formatTime();
-$images->getImgUrl('square');
 $images->getImgUrl('medium');
 $images->getEXIF();
-$images->getColorkey(670, 10);
-$images->getPiles();
 $images->getTags();
 $images->getRights();
 $images->getComments();
+$images->hook();
 
 $header = new Canvas;
 $header->load('header');
-$header->setTitle('Search Results (' . $image_ids->image_count . ')');
+$header->setTitle(@$images->images[0]['image_title']);
 $header->display();
 
 $index = new Canvas;
-$index->load('results');
-$index->assign('Page_Next', $image_ids->page_next);
-$index->assign('Page_Previous', $image_ids->page_previous);
-$index->assign('Page_Next_URI', $image_ids->page_next_uri);
-$index->assign('Page_Previous_URI', $image_ids->page_previous_uri);
-$index->assign('Page_Current', $image_ids->page);
-$index->assign('Page_Count', $image_ids->page_count);
+$index->wrapForm();
+$index->load('image');
 $index->loop($images);
 $index->display();
 
 $footer = new Canvas;
 $footer->load('footer');
 $footer->display();
+
+?>

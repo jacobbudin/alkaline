@@ -75,7 +75,7 @@ if(empty($guest_id)){
 
 	<h1>Guests (<?php echo $guest_count; ?>)</h1>
 	
-	<p>Guests can use an access key to view some or all protected photos in your Alkaline library.</p>
+	<p>Guests can use an access key to view some or all protected images in your Alkaline library.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -139,8 +139,8 @@ else{
 			<tr>
 				<td class="right"><label for="guest_piles">Privileges:</label></td>
 				<td>
-					<input type="radio" name="guest_piles" value="all" id="guest_piles_all" <?php if(empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_all">Grant access to all protected photos</label><br />
-					<input type="radio" name="guest_piles" value="select" id="guest_piles_select" <?php if(!empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_select">Restrict access to the protected photos in the pile: &#0160; <?php echo $alkaline->showPiles('guest_piles_select', @$guest['guest_piles']); ?></label><br /><br />
+					<input type="radio" name="guest_piles" value="all" id="guest_piles_all" <?php if(empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_all">Grant access to all protected images</label><br />
+					<input type="radio" name="guest_piles" value="select" id="guest_piles_select" <?php if(!empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_select">Restrict access to the protected images in the pile: &#0160; <?php echo $alkaline->showPiles('guest_piles_select', @$guest['guest_piles']); ?></label><br /><br />
 				</td>
 			</tr>
 			<tr>

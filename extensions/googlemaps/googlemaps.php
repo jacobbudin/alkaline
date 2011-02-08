@@ -17,25 +17,25 @@ class GoogleMaps extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function orbit_photo($photos){
-		foreach($photos as &$photo){
-			if(!empty($photo['photo_geo'])){
-				$photo_geo = urlencode($photo['photo_geo']);
+	public function orbit_image($images){
+		foreach($images as &$image){
+			if(!empty($image['image_geo'])){
+				$image_geo = urlencode($image['image_geo']);
 				if(($this->maps_provider == 'google') and ($this->maps_type == 'road')){
-					$photo['photo_map'] = '<iframe width="' . $this->maps_width . '" height="' . $this->maps_height . '" frameborder="0" class="photo_map" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' . $photo_geo . '&amp;ie=UTF8&amp;output=embed"></iframe>';
+					$image['image_map'] = '<iframe width="' . $this->maps_width . '" height="' . $this->maps_height . '" frameborder="0" class="image_map" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' . $image_geo . '&amp;ie=UTF8&amp;output=embed"></iframe>';
 				}
 				elseif(($this->maps_provider == 'google') and ($this->maps_type == 'sat')){
-					$photo['photo_map'] = '<iframe width="' . $this->maps_width . '" height="' . $this->maps_height . '" frameborder="0" class="photo_map" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' . $photo_geo . '&amp;ie=UTF8&amp;t=h&amp;output=embed"></iframe>';
+					$image['image_map'] = '<iframe width="' . $this->maps_width . '" height="' . $this->maps_height . '" frameborder="0" class="image_map" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' . $image_geo . '&amp;ie=UTF8&amp;t=h&amp;output=embed"></iframe>';
 				}
 			}
 		}
 		
-		return $photos;
+		return $images;
 	}
 	
 	public function orbit_config(){
 		?>
-		<p>Integrate maps by adding the {Photo_Map} Canvas tag to your {block:Photo} loop.</p>
+		<p>Integrate maps by adding the {Image_Map} Canvas tag to your {block:Image} loop.</p>
 
 		<table>
 			<!-- <tr>
