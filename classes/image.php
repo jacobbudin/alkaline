@@ -18,7 +18,7 @@ class Image extends Alkaline{
 	public $images = array();
 	public $comments;
 	public $pages;
-	public $piles;
+	public $sets;
 	public $sizes;
 	public $tags;
 	public $tag_count;
@@ -1545,7 +1545,7 @@ class Image extends Alkaline{
 				
 				if($size_type == 'scale'){
 					if(($width_orig <= $width) and ($height_orig <= $height)){
-						switch($ext){
+						switch($image_ext){
 							case 'jpg':
 								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
 								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
@@ -1685,24 +1685,24 @@ class Image extends Alkaline{
 	}
 	
 	/**
-	 * Get piles data and append to image array
+	 * Get sets data and append to image array
 	 *
-	 * @return array Associative array of piles
+	 * @return array Associative array of sets
 	 */
-	public function getPiles(){
-		$piles = $this->getTable('piles');
+	public function getSets(){
+		$sets = $this->getTable('sets');
 		
-		foreach($piles as &$pile){
-			$pile_images = explode(', ', $pile['pile_images']);
+		foreach($sets as &$set){
+			$set_images = explode(', ', $set['set_images']);
 			foreach($this->image_ids as $image_id){
-				if(in_array($image_id, $pile_images)){
-					$pile['image_id'] = $image_id;
-					$this->piles[] = $pile;
+				if(in_array($image_id, $set_images)){
+					$set['image_id'] = $image_id;
+					$this->sets[] = $set;
 				}
 			}
 		}
 		
-		return $this->piles;
+		return $this->sets;
 	}
 	
 	/**

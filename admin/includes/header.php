@@ -95,7 +95,7 @@
 				elseif(@TAB == 'features'){
 					?>
 					<li><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/tags.png" alt="" /> Tags</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/piles.png" alt="" /> Piles</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/sets.png" alt="" /> Sets</a></li>
 					<li><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/comments.png" alt="" /> Comments</a></li>
 					<li><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/pages.png" alt="" /> Pages</a></li>
 					<li><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/rights.png" alt="" /> Rights</a></li>

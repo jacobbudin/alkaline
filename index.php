@@ -29,7 +29,7 @@ $images->getImgUrl('medium');
 $images->getEXIF();
 // $images->getSeries($image_ids->image_first_reverse, false);
 $images->getColorkey(670, 10);
-$images->getPiles();
+$images->getSets();
 $images->getTags();
 $images->getRights();
 $images->getPages();
@@ -43,13 +43,13 @@ $header->display();
 $pages = new Page;
 $pages->fetchAll();
 
-$piles = new Pile;
-$piles->fetchAll();
+$sets = new Set;
+$sets->fetchAll();
 
 $directory = new Canvas;
 $directory->load('directory');
 $directory->loop($pages);
-$directory->loop($piles);
+$directory->loop($sets);
 $directory->display();
 
 $index = new Canvas;

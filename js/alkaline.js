@@ -391,15 +391,15 @@ function executeTask(){
 	$("#progress").progressbar({ value: 0 });
 }
 
-function pileSort(pile){
+function setSort(set){
 	images = new Array();
 	image_id_regex = new RegExp('image-', 'gim');
-	pile.children('img').each(function(){
+	set.children('img').each(function(){
 		id = $(this).attr('id');
 		id = id.replace(image_id_regex, '');
 		images.push(id);
 	});
-	pile.siblings('#pile_images').val(images.join(', '));
+	set.siblings('#set_images').val(images.join(', '));
 };
 
 $(document).ready(function(){
@@ -617,7 +617,7 @@ $(document).ready(function(){
 	
 	// PRIMARY - SORTABLE
 	
-	$("#pile_image_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { pile = $(this); pileSort(pile); } });
+	$("#set_image_sort").sortable({ cursor: 'pointer', opacity: 0.6, tolerance: 'pointer', update: function() { set = $(this); setSort(set); } });
 	
 	// PRIMARY - PHOTO DROPPABLE
 	
@@ -722,7 +722,7 @@ $(document).ready(function(){
 	if(page == 'Editor'){
 		function actEditor(){
 			$('#act_tag_name').hide();
-			$('#act_pile_id').hide();
+			$('#act_set_id').hide();
 			$('#act_right_id').hide();
 			$('#act_privacy_id').hide();
 			
@@ -733,11 +733,11 @@ $(document).ready(function(){
 			else if(act == 'tag_remove'){
 				$('#act_tag_name').show();
 			}
-			else if(act == 'pile_add'){
-				$('#act_pile_id').show();
+			else if(act == 'set_add'){
+				$('#act_set_id').show();
 			}
-			else if(act == 'pile_remove'){
-				$('#act_pile_id').show();
+			else if(act == 'set_remove'){
+				$('#act_set_id').show();
 			}
 			else if(act == 'right'){
 				$('#act_right_id').show();

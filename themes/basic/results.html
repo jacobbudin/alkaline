@@ -30,11 +30,11 @@
 			</p>
 		{/if:Tags}
 
-		{if:Piles}
+		{if:Sets}
 			<p>
-				<em>As seen in the collection:</em>{block:Piles} &#0183; <a href="{define:Base}pile{define:Url_Id}{Pile_Title_Url}{define:Url_Rw}">{Pile_Title}</a>{/block:Piles}
+				<em>As seen in the collection:</em>{block:Sets} &#0183; <a href="{define:Base}set{define:Url_Id}{Set_Title_Url}{define:Url_Rw}">{Set_Title}</a>{/block:Sets}
 			</p>
-		{/if:Piles}
+		{/if:Sets}
 		{if:Pages}
 			<p>
 				<em>As seen on the page:</em>{block:Pages} &#0183; <a href="{define:Base}page{define:Url_Id}{Page_Title_Url}{define:Url_Rw}">{Page_Title}</a>{/block:Pages}

@@ -26,7 +26,7 @@ $images->getImgUrl('square');
 $images->getImgUrl('medium');
 $images->getEXIF();
 $images->getColorkey(670, 10);
-$images->getPiles();
+$images->getSets();
 $images->getTags();
 $images->getRights();
 $images->getComments();

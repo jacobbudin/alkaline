@@ -11,21 +11,21 @@ $user->perm(true);
 $id = $alkaline->findID(@$_POST['image_id']);
 
 if(empty($id)){
-	$piles = $alkaline->getTable('piles');
+	$sets = $alkaline->getTable('sets');
 	
-	$pile_ids = array();
+	$set_ids = array();
 	
-	foreach($piles as $pile){
-		if($pile['pile_type'] == 'auto'){
-			$pile_ids[] = $pile['pile_id'];
+	foreach($sets as $set){
+		if($set['set_type'] == 'auto'){
+			$set_ids[] = $set['set_id'];
 		}
 	}
 	
-	echo json_encode($pile_ids);
+	echo json_encode($set_ids);
 }
 else{
 	$images = new Find;
-	$images->pile(intval($id));
+	$images->sets(intval($id));
 }
 
 ?>

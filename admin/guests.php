@@ -30,18 +30,18 @@ if(!empty($_POST['guest_id'])){
 		$alkaline->deleteRow('guests', $guest_id);
 	}
 	else{
-		$guest_piles = @$_POST['guest_piles'];
+		$guest_sets = @$_POST['guest_sets'];
 		
-		if($guest_piles == 'all'){
-			$guest_piles = '';
+		if($guest_sets == 'all'){
+			$guest_sets = '';
 		}
 		else{
-			$guest_piles = @$_POST['guest_piles_select'];
+			$guest_sets = @$_POST['guest_sets_select'];
 		}
 		
 		$fields = array('guest_title' => $alkaline->makeUnicode(@$_POST['guest_title']),
 			'guest_key' => @$_POST['guest_key'],
-			'guest_piles' => $guest_piles);
+			'guest_sets' => $guest_sets);
 		if(@$_POST['guest_reset_view_count'] == 'reset_view_count'){
 			$fields['guest_views'] = 0;
 		}
@@ -81,7 +81,8 @@ if(empty($guest_id)){
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
 	</p>
 	
-	<table class="filter">		<tr>
+	<table class="filter">
+		<tr>
 			<th>Title</th>
 			<th class="center">Views</th>
 			<th>Last login</th>
@@ -137,10 +138,10 @@ else{
 				<td><input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s" /></td>
 			</tr>
 			<tr>
-				<td class="right"><label for="guest_piles">Privileges:</label></td>
+				<td class="right"><label for="guest_sets">Privileges:</label></td>
 				<td>
-					<input type="radio" name="guest_piles" value="all" id="guest_piles_all" <?php if(empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_all">Grant access to all protected images</label><br />
-					<input type="radio" name="guest_piles" value="select" id="guest_piles_select" <?php if(!empty($guest['guest_piles'])){ echo 'checked="checked" '; } ?>/> <label for="guest_piles_select">Restrict access to the protected images in the pile: &#0160; <?php echo $alkaline->showPiles('guest_piles_select', @$guest['guest_piles']); ?></label><br /><br />
+					<input type="radio" name="guest_sets" value="all" id="guest_sets_all" <?php if(empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/> <label for="guest_sets_all">Grant access to all protected images</label><br />
+					<input type="radio" name="guest_sets" value="select" id="guest_sets_select" <?php if(!empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/> <label for="guest_sets_select">Restrict access to the protected images in the set: &#0160; <?php echo $alkaline->showSets('guest_sets_select', @$guest['guest_sets']); ?></label><br /><br />
 				</td>
 			</tr>
 			<tr>

@@ -11,23 +11,23 @@ require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
-$alkaline->recordStat('pile');
+$alkaline->recordStat('set');
 
 $id = $alkaline->findID($_GET['id']);
 
 if($id){
-	$pile = new Pile($id);
-	$pile = @$pile->piles[0];
-	if(!$pile){ $alkaline->addError('No pile was not found.', 'Try searching for the pile you were seeking.', null, null, 404); }
+	$set = new Set($id);
+	$set = @$set->sets[0];
+	if(!$set){ $alkaline->addError('No set was not found.', 'Try searching for the set you were seeking.', null, null, 404); }
 
-	$pile['pile_created'] = $alkaline->formatTime($pile['pile_created']);
-	$pile['pile_modified'] = $alkaline->formatTime($pile['pile_modified']);
+	$set['set_created'] = $alkaline->formatTime($set['set_created']);
+	$set['set_modified'] = $alkaline->formatTime($set['set_modified']);
 
 	$image_ids = new Find;
 	$image_ids->page(null,0);
 	$image_ids->published();
 	$image_ids->privacy('public');
-	$image_ids->pile($pile['pile_id']);
+	$image_ids->sets($set['set_id']);
 	$image_ids->find();
 
 	$images = new Image($image_ids);
@@ -39,12 +39,12 @@ if($id){
 
 	$header = new Canvas;
 	$header->load('header');
-	$header->setTitle(@$pile['pile_title']);
+	$header->setTitle(@$set['set_title']);
 	$header->display();
 
 	$index = new Canvas;
-	$index->load('pile');
-	$index->assignArray($pile);
+	$index->load('set');
+	$index->assignArray($set);
 	$index->loop($images);
 	$index->display();
 

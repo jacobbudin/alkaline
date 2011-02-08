@@ -61,56 +61,56 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				$alkaline->addNote($notification, 'success');
 			}
 		}
-		elseif($act == 'pile_add'){
-			$pile = $alkaline->getRow('piles', $_POST['act_pile_id']);
+		elseif($act == 'set_add'){
+			$set = $alkaline->getRow('sets', $_POST['act_set_id']);
 		
-			if(!empty($pile['pile_images'])){
-				$pile_images = explode(', ', $pile['pile_images']);
-				$pile_images = array_merge($pile_images, $image_ids);
-				$pile_images = array_unique($pile_images);
+			if(!empty($set['set_images'])){
+				$set_images = explode(', ', $set['set_images']);
+				$set_images = array_merge($set_images, $image_ids);
+				$set_images = array_unique($set_images);
 			}
 			else{
-				$pile_images = $image_ids;
+				$set_images = $image_ids;
 			}
 		
-			$pile_image_count = count($pile_images);
-			$pile_images = implode(', ', $pile_images);
+			$set_image_count = count($set_images);
+			$set_images = implode(', ', $set_images);
 		
-			$fields = array('pile_images' => $pile_images,
-				'pile_image_count' => $pile_image_count);
+			$fields = array('set_images' => $set_images,
+				'set_image_count' => $set_image_count);
 		
-			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
+			$bool = $alkaline->updateRow($fields, 'sets', $_POST['act_set_id']);
 			if($bool === true){
-				$alkaline->addNote('You successfully added to the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . @$pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
+				$alkaline->addNote('You successfully added to the set &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . @$set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a>&#8221;.', 'success');
 			}
 		}
-		elseif($act == 'pile_remove'){
-			$pile = $alkaline->getRow('piles', $_POST['act_pile_id']);
+		elseif($act == 'set_remove'){
+			$set = $alkaline->getRow('sets', $_POST['act_set_id']);
 		
-			if(!empty($pile['pile_images'])){
-				$pile_images = explode(', ', $pile['pile_images']);
+			if(!empty($set['set_images'])){
+				$set_images = explode(', ', $set['set_images']);
 				foreach($image_ids as $image){
-					$key = array_search($image, $pile_images, false);
+					$key = array_search($image, $set_images, false);
 					if($key !== false){
-						unset($pile_images[$key]);
+						unset($set_images[$key]);
 					}
 				}
-				$pile_images = array_merge($pile_images);
-				$pile_images = array_unique($pile_images);
+				$set_images = array_merge($set_images);
+				$set_images = array_unique($set_images);
 			}
 			else{
-				$pile_images = array();
+				$set_images = array();
 			}
 		
-			$pile_image_count = count($pile_images);
-			$pile_images = implode(', ', $pile_images);
+			$set_image_count = count($set_images);
+			$set_images = implode(', ', $set_images);
 		
-			$fields = array('pile_images' => $pile_images,
-				'pile_image_count' => $pile_image_count);
+			$fields = array('set_images' => $set_images,
+				'set_image_count' => $set_image_count);
 		
-			$bool = $alkaline->updateRow($fields, 'piles', $_POST['act_pile_id']);
+			$bool = $alkaline->updateRow($fields, 'sets', $_POST['act_set_id']);
 			if($bool === true){
-				$alkaline->addNote('You successfully removed from the pile &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'piles' . URL_AID . $pile['pile_id'] . URL_RW . '">' . $pile['pile_title'] . '</a>&#8221;.', 'success');
+				$alkaline->addNote('You successfully removed from the set &#8220;<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a>&#8221;.', 'success');
 			}
 		}
 		elseif($act == 'right'){
@@ -184,7 +184,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div class="span-24 last">
 	<div class="span-18 colborder">
 		<div class="actions">
-			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Show all</a>
+			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
 		</div>
 		
 		<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->image_count); ?>)</h1>
@@ -194,15 +194,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<select name="act" id="act">
 					<option value="tag_add">Add tag</option>
 					<option value="tag_remove">Remove tag</option>
-					<option value="pile_add">Add to static pile</option>
-					<option value="pile_remove">Remove from static pile</option>
+					<option value="set_add">Add to static set</option>
+					<option value="set_remove">Remove from static set</option>
 					<option value="right">Switch to rights set</option>
 					<option value="privacy">Switch to privacy level</option>
 					<option value="publish">Publish now</option>
 					<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
 				</select>
 				<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
-				<?php echo $alkaline->showPiles('act_pile_id', true); ?>
+				<?php echo $alkaline->showSets('act_set_id', true); ?>
 				<?php echo $alkaline->showRights('act_right_id'); ?>
 				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
 				<input type="hidden" name="image_ids" id="image_ids" value="" />
@@ -258,7 +258,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	<div class="span-5 last">
 		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>piles<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/piles.png" alt="" /> Piles &#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
 		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>

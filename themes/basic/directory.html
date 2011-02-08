@@ -3,16 +3,16 @@
 <hr />
 
 <div class="span-8 colborder">
-	<h3>Collections ({count:Piles})</h3>
-	{if:Piles}
+	<h3>Collections ({count:Sets})</h3>
+	{if:Sets}
 		<ul>
-		{block:Piles}
-			<li><a href="{Pile_Uri}">{Pile_Title}</a></li>
-		{/block:Piles}
+		{block:Sets}
+			<li><a href="{Set_Uri}">{Set_Title}</a></li>
+		{/block:Sets}
 		</ul>
-	{else:Piles}
+	{else:Sets}
 		<p>There are no collections.</p>
-	{/if:Piles}
+	{/if:Sets}
 </div>
 
 <div class="span-8 last">

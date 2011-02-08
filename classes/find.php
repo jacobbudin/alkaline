@@ -14,7 +14,7 @@
  */
 
 class Find extends Alkaline{
-	private $eval;
+	private $call;
 	public $image_ids;
 	public $image_ids_after;
 	public $image_ids_before;
@@ -36,7 +36,7 @@ class Find extends Alkaline{
 	public $page_next_uri;
 	public $page_previous;
 	public $page_previous_uri;
-	public $piles;
+	public $sets;
 	public $tags;
 	public $with;
 	protected $sql;
@@ -67,7 +67,7 @@ class Find extends Alkaline{
 		parent::__construct();
 		
 		// Store data to object
-		$this->eval = array();
+		$this->call = array();
 		$this->image_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
@@ -100,8 +100,8 @@ class Find extends Alkaline{
 			// Guest access
 			if(isset($_SESSION['alkaline']['guest'])){
 				$this->privacy(2);
-				if(!empty($_SESSION['alkaline']['guest']['guest_piles'])){
-					$this->pile(intval($_SESSION['alkaline']['guest']['guest_piles']));
+				if(!empty($_SESSION['alkaline']['guest']['guest_sets'])){
+					$this->sets(intval($_SESSION['alkaline']['guest']['guest_sets']));
 				}
 			}
 		}
@@ -271,7 +271,7 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Save methods (by appending an underscore to the method name) to memory for saving methods to piles, saved searches, etc.
+	 * Save methods (by appending an underscore to the method name) to memory for saving methods to sets, saved searches, etc.
 	 *
 	 * @param string $method Method name
 	 * @param array $arguments Method arguments
@@ -569,7 +569,7 @@ class Find extends Alkaline{
 		
 		$this->images = $query->fetchAll();
 		
-		// Compile image IDs
+		// Comset image IDs
 		$include_image_ids = array();	
 		foreach($this->images as $image){
 			if(array_key_exists($image['image_id'], $include_image_ids)){
@@ -631,7 +631,7 @@ class Find extends Alkaline{
 		}
 		$this->images = $query->fetchAll();
 		
-		// Compile image IDs
+		// Comset image IDs
 		$exclude_image_ids = array();	
 		foreach($this->images as $image){
 			$exclude_image_ids[] = $image['image_id'];
@@ -646,53 +646,50 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Find by pile
+	 * Find by set
 	 *
-	 * @param int|string $pile Pile ID or pile title
+	 * @param int|string $set Set ID or set title
 	 * @return void
 	 */
-	public function pile($pile=null){
+	public function sets($set=null){
 		// Error checking
-		if(empty($pile)){ return false; }
-		if(intval($pile)){ $pile = intval($pile); }
+		if(empty($set)){ return false; }
+		if(intval($set)){ $set = intval($set); }
 		
 		// Determine input type
-		if(is_string($pile)){
-			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_images, pile_image_count FROM piles WHERE LOWER(pile_title) LIKE :pile_title_lower LIMIT 0, 1;');
-			$query->execute(array(':pile_title_lower' => strtolower($pile)));
+		if(is_string($set)){
+			$query = $this->prepare('SELECT set_id, set_call, set_type, set_images, set_image_count FROM sets WHERE LOWER(set_title) LIKE :set_title_lower LIMIT 0, 1;');
+			$query->execute(array(':set_title_lower' => strtolower($set)));
 		}
-		elseif(is_int($pile)){
-			$query = $this->prepare('SELECT pile_id, pile_call, pile_type, pile_images, pile_image_count FROM piles WHERE pile_id = ' . $pile . ' LIMIT 0, 1;');
+		elseif(is_int($set)){
+			$query = $this->prepare('SELECT set_id, set_call, set_type, set_images, set_image_count FROM sets WHERE set_id = ' . $set . ' LIMIT 0, 1;');
 			$query->execute();
 		}
 		else{
 			return false;
 		}
 		
-		$piles = $query->fetchAll();
+		$sets = $query->fetchAll();
 		
-		if(@count($piles) != 1){
+		if(@count($sets) != 1){
 			return false;
 		}
 		
-		$pile = $piles[0];
+		$set = $sets[0];
 		
 		// If auto, apply stored functions
-		if($pile['pile_type'] == 'auto'){
+		if($set['set_type'] == 'auto'){
 			$image_ids = new Find(null, false, false);
-			$pile['pile_call'] = str_ireplace('$this->', '$image_ids->', $pile['pile_call']);
-			if(eval($pile['pile_call']) === false){
-				return false;
-			}
+			$image_ids->memory(unserialize($set['set_call']));
 			$image_ids->find();
 			
-			$pile_images = implode(', ', $image_ids->image_ids);
+			$set_images = implode(', ', $image_ids->image_ids);
 			
-			// Update pile if images have changed
-			if($pile_images != $pile['pile_images']){
-				$fields = array('pile_image_count' => $image_ids->image_count,
-					'pile_images' => $pile_images);
-				$this->updateRow($fields, 'piles', $pile['pile_id'], false);
+			// Update set if images have changed
+			if($set_images != $set['set_images']){
+				$fields = array('set_image_count' => $image_ids->image_count,
+					'set_images' => $set_images);
+				$this->updateRow($fields, 'sets', $set['set_id'], false);
 			}
 			
 			if(!empty($image_ids->image_ids)){
@@ -704,10 +701,10 @@ class Find extends Alkaline{
 		}
 		
 		// If static, use stored image IDs
-		elseif($pile['pile_type'] == 'static'){
-			if(!empty($pile['pile_images'])){
-				$this->sql_conds[] = 'images.image_id IN (' . $pile['pile_images'] . ')';
-				$this->image_order = $this->convertToIntegerArray($pile['pile_images']);
+		elseif($set['set_type'] == 'static'){
+			if(!empty($set['set_images'])){
+				$this->sql_conds[] = 'images.image_id IN (' . $set['set_images'] . ')';
+				$this->image_order = $this->convertToIntegerArray($set['set_images']);
 			}
 			else{
 				$this->sql_conds[] = 'images.image_id IN (NULL)';
@@ -720,11 +717,20 @@ class Find extends Alkaline{
 	/**
 	 * Recall memory
 	 *
+	 * @param array $call set_call field, else uses recent memory
 	 * @return bool True if successful
 	 */
-	public function memory(){
-		if(!eval($this->recentMemory())){
-			return false;
+	public function memory($call=null){
+		if(empty($call)){
+			if(!$call = $this->recentMemory()){
+				return false;
+			}
+		}
+		
+		foreach($call as $ring){
+			$method = key($ring);
+			$arguments = $ring[$method];
+			call_user_func_array(array($this, $method), $arguments);
 		}
 		
 		return true;
@@ -1081,11 +1087,11 @@ class Find extends Alkaline{
 			return false;
 		}
 		
-		if(empty($guest['guest_piles'])){
+		if(empty($guest['guest_sets'])){
 			$this->privacy('protected');
 		}
 		else{
-			$this->pile(intval($guest['guest_piles']));
+			$this->sets(intval($guest['guest_sets']));
 			$this->privacy('protected');
 		}
 		
@@ -1095,7 +1101,7 @@ class Find extends Alkaline{
 	/**
 	 * Specialized smart searches, use GET[id] values where necessary
 	 *
-	 * @param string $kind Untagged, unpublished, displayed, updated, nonpublic, untitled, views, tags, guests, piles, me, users, rights, pages
+	 * @param string $kind Untagged, unpublished, displayed, updated, nonpublic, untitled, views, tags, guests, sets, me, users, rights, pages
 	 * @return bool True if successful
 	 */
 	protected function smart($kind){
@@ -1114,44 +1120,44 @@ class Find extends Alkaline{
 				$this->sql_conds[] = 'links.link_id IS NULL';
 				break;
 			case 'unpublished':
-				$this->published(false);
+				$this->_published(false);
 				break;
 			case 'displayed':
-				$this->published(true);
-				$this->privacy('public');
+				$this->_published(true);
+				$this->_privacy('public');
 				break;
 			case 'updated':
-				$this->sort('image_updated', 'DESC');
+				$this->_sort('image_updated', 'DESC');
 				break;
 			case 'nonpublic':
-				$this->privacy(array(2, 3));
+				$this->_privacy(array(2, 3));
 				break;
 			case 'untitled':
 				$this->sql_conds[] = 'images.image_title IS NULL';
 				break;
 			case 'views':
-				$this->sort('image_views', 'DESC');
+				$this->_sort('image_views', 'DESC');
 				break;
 			case 'tags':
-				$this->allTags(@intval($_GET['id']));
+				$this->_allTags(@intval($_GET['id']));
 				break;
 			case 'guests':
-				$this->guest(@intval($_GET['id']));
+				$this->_guest(@intval($_GET['id']));
 				break;
-			case 'piles':
-				$this->pile(@intval($_GET['id']));
+			case 'sets':
+				$this->_sets(@intval($_GET['id']));
 				break;
 			case 'me':
-				$this->user(@intval($_SESSION['alkaline']['user']['user_id']));
+				$this->_user(@intval($_SESSION['alkaline']['user']['user_id']));
 				break;
 			case 'users':
-				$this->user(@intval($_GET['id']));
+				$this->_user(@intval($_GET['id']));
 				break;
 			case 'rights':
-				$this->rights(@intval($_GET['id']));
+				$this->_rights(@intval($_GET['id']));
 				break;
 			case 'pages':
-				$this->pages(@intval($_GET['id']));
+				$this->_pages(@intval($_GET['id']));
 				break;
 			default:
 				return false;

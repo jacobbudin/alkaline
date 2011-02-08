@@ -50,8 +50,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<ul>
 		<li>
-			<strong><a href="#rebuild-piles">Rebuild pile catalog</a></strong><br />
-			Reasses each pile&#8217;s contents using its original user-selected criteria, ensuring each pile is up-to-date
+			<strong><a href="#rebuild-sets">Rebuild set catalog</a></strong><br />
+			Reasses each set&#8217;s contents using its original user-selected criteria, ensuring each set is up-to-date
 		</li>
 		<li>
 			<strong><a href="#rebuild-geo">Rebuild geographic library</a></strong><br />

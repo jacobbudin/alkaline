@@ -72,7 +72,7 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'piles' => 'pile_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -1521,36 +1521,36 @@ class Alkaline{
 	
 	
 	/**
-	 * Get HTML <select> of all piles
+	 * Get HTML <select> of all sets
 	 *
 	 * @param string $name Name and ID of <select>
-	 * @param integer $pile_id Default or selected pile_id
-	 * @param bool $static_only Display on static piles
+	 * @param integer $set_id Default or selected set_id
+	 * @param bool $static_only Display on static sets
 	 * @return string
 	 */
-	public function showPiles($name, $pile_id=null, $static_only=false){
+	public function showSets($name, $set_id=null, $static_only=false){
 		if(empty($name)){
 			return false;
 		}
 		
 		if($static_only === true){	
-			$query = $this->prepare('SELECT pile_id, pile_title FROM piles WHERE pile_type = :pile_type;');
-			$query->execute(array(':pile_type', 'static'));
+			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type;');
+			$query->execute(array(':set_type', 'static'));
 		}
 		else{
-			$query = $this->prepare('SELECT pile_id, pile_title FROM piles;');
+			$query = $this->prepare('SELECT set_id, set_title FROM sets;');
 			$query->execute();
 		}
-		$piles = $query->fetchAll();
+		$sets = $query->fetchAll();
 		
 		$html = '<select name="' . $name . '" id="' . $name . '">';
 		
-		foreach($piles as $pile){
-			$html .= '<option value="' . $pile['pile_id'] . '"';
-			if($pile['pile_id'] == $pile_id){
+		foreach($sets as $set){
+			$html .= '<option value="' . $set['set_id'] . '"';
+			if($set['set_id'] == $set_id){
 				$html .= ' selected="selected"';
 			}
-			$html .= '>' . $pile['pile_title'] . '</option>';
+			$html .= '>' . $set['set_title'] . '</option>';
 		}
 		
 		$html .= '</select>';
@@ -1735,10 +1735,10 @@ class Alkaline{
 				$fields['page_created'] = date('Y-m-d H:i:s');
 				$fields['page_modified'] = date('Y-m-d H:i:s');
 				break;
-			case 'piles':
-				$fields['pile_views'] = 0;
-				$fields['pile_created'] = date('Y-m-d H:i:s');
-				$fields['pile_modified'] = date('Y-m-d H:i:s');
+			case 'sets':
+				$fields['set_views'] = 0;
+				$fields['set_created'] = date('Y-m-d H:i:s');
+				$fields['set_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'sizes':
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
@@ -1811,8 +1811,8 @@ class Alkaline{
 				case 'images':
 					$fields['image_modified'] = date('Y-m-d H:i:s');
 					break;
-				case 'piles':
-					$fields['pile_modified'] = date('Y-m-d H:i:s');
+				case 'sets':
+					$fields['set_modified'] = date('Y-m-d H:i:s');
 					break;
 				case 'pages':
 					$fields['page_modified'] = date('Y-m-d H:i:s');
