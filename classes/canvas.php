@@ -483,7 +483,7 @@ class Canvas extends Alkaline{
 		foreach($loops as $reel){
 			$count = 0;
 			foreach($this->objects as $object){
-				if(is_array($object->$reel)){
+				if(property_exists($object, $reel)){
 					$field = $this->tables[$reel];
 					$ids = array();
 					foreach($object->$reel as $item){
