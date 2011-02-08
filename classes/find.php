@@ -291,34 +291,21 @@ class Find extends Alkaline{
 			return false;
 		}
 		if(@count($arguments) < 1){
-			$arguments = array();
+			$arguments = null;
 		}
 		
 		// Execute method
-		if(call_user_method_array($method, $this, $arguments)){
-			// Remove unsaveable methods
-			$nosave_methods = array('page', 'privacy');
-			
-			if(in_array($method, $nosave_methods)){
-				return;
-			}
-			
-			// Prepare for memory
-			foreach($arguments as &$arg){
-				if(is_string($arg)){
-					$arg = '\'' . addslashes($arg) . '\'';
-				}
-				elseif($arg === true){
-					$arg = 'true';
-				}
-				elseif($arg === false){
-					$arg = 'false';
-				}
-			}
+		call_user_func_array(array($this, $method), $arguments);
 		
-			// Save to memory
-			$this->eval[] = '$this->' . $method . '(' . @implode(', ', $arguments) . '); ';
+		// Remove unsaveable methods
+		$nosave_methods = array('page', 'privacy');
+		
+		if(in_array($method, $nosave_methods)){
+			return;
 		}
+			
+		// Save to memory
+		$this->call[] = array($method => $arguments);
 	}
 	
 	/**
@@ -1479,31 +1466,17 @@ class Find extends Alkaline{
 	// SEARCH MEMORY
 	
 	/**
-	 * Retrieve memory
-	 *
-	 * @return string|false Methods that make up the memory or error
-	 */
-	public function getMemory(){
-		if(count($this->eval) < 0){
-			return false;
-		}
-		
-		return implode(' ', $this->eval);
-	}
-	
-	
-	/**
 	 * Save memory (after executing)
 	 *
 	 * @return bool True if successful
 	 */
 	public function saveMemory(){
-		if(count($this->eval) < 1){
+		if(count($this->call) < 1){
 			return false;
 		}
 		
 		$_SESSION['alkaline']['search']['request'] = $_REQUEST;
-		$_SESSION['alkaline']['search']['eval'] = $this->eval;
+		$_SESSION['alkaline']['search']['call'] = $this->call;
 		$_SESSION['alkaline']['search']['image_ids'] = $this->image_ids;
 		
 		return true;
@@ -1515,11 +1488,11 @@ class Find extends Alkaline{
 	 * @return string|false
 	 */
 	public function recentMemory(){
-		if(empty($_SESSION['alkaline']['search']['eval'])){
+		if(empty($_SESSION['alkaline']['search']['call'])){
 			return false;
 		}
 		
-		return implode(' ', $_SESSION['alkaline']['search']['eval']);
+		return $_SESSION['alkaline']['search']['call'];
 	}
 	
 	/**
@@ -1529,7 +1502,7 @@ class Find extends Alkaline{
 	 */
 	public function clearMemory(){
 		unset($_SESSION['alkaline']['search']['request']);
-		unset($_SESSION['alkaline']['search']['eval']);
+		unset($_SESSION['alkaline']['search']['call']);
 		unset($_SESSION['alkaline']['search']['image_ids']);
 	}
 }
