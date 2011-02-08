@@ -15,11 +15,6 @@ $user = new User;
 
 $user->perm(true);
 
-// Fix bad incoming links
-if(!empty($_GET['id'])){
-	$_GET['page'] = $_GET['id'];
-}
-
 if(!empty($_GET['act']) and ($_GET['act'] != 'bulk')){
 	Find::clearMemory();
 }
@@ -171,13 +166,8 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-if(isset($_SESSION['alkaline']['search']['results'])){
-	$image_ids = new Find($_SESSION['alkaline']['search']['results']);
-}
-else{
-	$image_ids = new Find();
-}
-
+$image_ids = new Find();
+$image_ids->memory();
 $image_ids->page(null, $max);
 $image_ids->find();
 

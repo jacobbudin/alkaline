@@ -2161,7 +2161,7 @@ class Alkaline{
 	public function magicURL($page){
 		$uri = $_SERVER['REQUEST_URI'];
 		
-		if(URL_PAGE == '/'){
+		if(URL_PAGE == '/page'){
 			$uri = @preg_replace('#(\?)?page\=[0-9]#si', '', $uri);
 			if(preg_match('#page[0-9]+#si', $uri)){
 				$uri = preg_replace('#(/)?page[0-9]+(/)?#si', '\\1page' . $page . '\\2', $uri);

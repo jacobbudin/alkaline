@@ -110,10 +110,6 @@ class Find extends Alkaline{
 			// Process browser requests
 			$_REQUEST = array_map('strip_tags', $_REQUEST);
 
-			if(empty($_REQUEST) and empty($_REQUEST)){
-				$this->memory();
-			}
-
 			// Smart search
 			if(!empty($_REQUEST['act'])){
 				$this->_smart($_REQUEST['act']);
@@ -1189,7 +1185,7 @@ class Find extends Alkaline{
 	 * @param int $first Number of images on the first page (if different)
 	 * @return bool True if successful
 	 */
-	public function page($page, $limit=null, $first=null){
+	public function page($page=null, $limit=null, $first=null){
 		// Error checking
 		if($limit === 0){ return false; }
 		if(empty($page)){
@@ -1482,7 +1478,7 @@ class Find extends Alkaline{
 	 * @return string|false Methods that make up the memory or error
 	 */
 	public function getMemory(){
-		if(count($this->eval) < 1){
+		if(count($this->eval) < 0){
 			return false;
 		}
 		

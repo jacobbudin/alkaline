@@ -24,6 +24,7 @@ if(!$max = $user->returnPref('page_limit')){
 
 $image_ids = new Find();
 $image_ids->page(null, $max);
+$image_ids->memory();
 $image_ids->find();
 $image_ids->saveMemory();
 

@@ -76,7 +76,7 @@ if($url_rewrite){
 	define('URL_ID', '/');
 	define('URL_ACT', '/');
 	define('URL_AID', '/');
-	define('URL_PAGE', '/');
+	define('URL_PAGE', '/page');
 	define('URL_RW', '/');
 }
 else{

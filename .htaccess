@@ -12,10 +12,14 @@
 	RewriteEngine on
 	RewriteBase /
 	
+	RewriteRule ^admin/search/page([0-9]+)(/)?$							admin/search.php?page=$1 [NC]
 	RewriteRule ^admin/search/([a-z0-9-_]+)(/)?$						admin/search.php?act=$1 [NC]
+	RewriteRule ^admin/search/([a-z0-9-_]+)/page([0-9]+)(/)?$						admin/search.php?act=$1&page=$2 [NC]
 	RewriteRule ^admin/search/([a-z0-9-_]+)/([0-9]+)(/)?$				admin/search.php?act=$1&id=$2 [NC]
+	RewriteRule ^admin/search/([a-z0-9-_]+)/([0-9]+)/page([0-9]+)(/)?$				admin/search.php?act=$1&id=$2&page=$3 [NC]
 	RewriteRule ^admin/([a-z0-9-_]+)(/)?$								admin/$1.php [NC]
 	RewriteRule ^admin/([a-z0-9-_]+)/([0-9]+)(/)?$						admin/$1.php?id=$2 [NC,QSA]
+	RewriteRule ^admin/([a-z0-9-_]+)/page([0-9]+)(/)?$					admin/$1.php?page=$2 [NC,QSA]
 	RewriteRule ^admin/([a-z0-9-_]+)/([a-z0-9-_]+)(/)?$					admin/$1.php?act=$2 [NC,QSA]
 	
 	RewriteRule ^access/([a-z0-9-_]+)(/)?$								access.php?key=$1 [NC]

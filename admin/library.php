@@ -17,10 +17,6 @@ $user->perm(true);
 
 $alkaline->setCallback();
 
-if(!empty($_GET['id'])){
-	$_GET['page'] = $_GET['id'];
-}
-
 // Preference: page_limit
 if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
