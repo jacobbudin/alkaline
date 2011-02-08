@@ -29,7 +29,7 @@ $image_ids->find();
 $image_ids->saveMemory();
 
 $images = new Image($image_ids->image_ids);
-$images->getImgUrl('square');
+$images->getSizes('square');
 
 define('TAB', 'library');
 define('TITLE', 'Alkaline Search Results');

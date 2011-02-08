@@ -75,7 +75,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				$image_ids->sort('images.image_uploaded', 'DESC');
 				$image_ids->find();
 				$images = new Image($image_ids);
-				$images->getImgUrl('square');
+				$images->getSizes('square');
 
 				foreach($images->images as $image){
 					?>

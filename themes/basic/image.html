@@ -33,6 +33,12 @@
 				</p>
 			{/if:Tags}
 			<hr />
+			<ul>
+			{block:Sizes}
+				<li><a href="{Size_Src}">{Size_Title}</a> ({Size_Width} x {Size_Height})</li>
+			{/block:Sizes}
+			</ul>
+			<hr />
 			{if:Comments}
 				<table>
 				{block:Comments}

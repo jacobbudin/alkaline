@@ -62,7 +62,7 @@ if(empty($comment_id)){
 	
 	$image_ids = $comments->image_ids;
 	$images = new Image($image_ids);
-	$images->getImgUrl('square');
+	$images->getSizes('square');
 	
 	define('TITLE', 'Alkaline Comments');
 	require_once(PATH . ADMIN . 'includes/header.php');

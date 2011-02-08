@@ -72,8 +72,8 @@ class Image extends Alkaline{
 		
 			// Attach additional fields
 			for($i = 0; $i < $this->image_count; ++$i){
-				$this->images[$i]['image_file'] = parent::correctWinPath(PATH . PHOTOS . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
-				$this->images[$i]['image_src'] = BASE . PHOTOS . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
+				$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+				$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
 				$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
 				if($this->returnConf('comm_enabled') != true){
 					$this->images[$i]['image_comment_disabled'] = 1;
@@ -1496,7 +1496,7 @@ class Image extends Alkaline{
 	 * @param array|string $sizes Size titles (or else all sizes)
 	 * @return void
 	 */
-	public function getImgUrl($sizes=null){
+	public function getSizes($sizes=null){
 		$sizes = $this->convertToArray($sizes);
 		
 		// Find size's prefix and suffix
@@ -1512,51 +1512,50 @@ class Image extends Alkaline{
 		}
 		
 		$sizes = $query->fetchAll();
+		$this->sizes = array();
 		
-		$sizes_count = count($sizes);
-		
-		for($k=0; $k < $sizes_count; $k++){
-			$size_label = 'image_src_' . strtolower($sizes[$k]['size_label']);
-			$size_img_label = 'image_img_' . strtolower($sizes[$k]['size_label']);
-			$size_height_label = 'image_height_' . strtolower($sizes[$k]['size_label']);
-			$size_width_label = 'image_width_' . strtolower($sizes[$k]['size_label']);
-			$size_prepend = $sizes[$k]['size_prepend'];
-			$size_append = $sizes[$k]['size_append'];
-			$size_type = $sizes[$k]['size_type'];
-			$size_width = $sizes[$k]['size_width'];
-			$size_height = $sizes[$k]['size_height'];
-			
-			// Attach image_src_ to images array
-			for($i = 0; $i < $this->image_count; ++$i){
-				$image_ext = $this->images[$i]['image_ext'];
+		for($j=0; $j < $this->image_count; $j++){
+			foreach($sizes as $size){
+				$size['image_id'] = $this->images[$j]['image_id'];
+				$image_ext = $this->images[$j]['image_ext'];
+				
+				$size_label = 'image_src_' . strtolower($size['size_label']);
+				$size_img_label = 'image_img_' . strtolower($size['size_label']);
+				$size_prepend = $size['size_prepend'];
+				$size_append = $size['size_append'];
+				$size_type = $size['size_type'];
+				$size_width = $size['size_width'];
+				$size_height = $size['size_height'];
 
 				if(in_array($image_ext, array('pdf', 'svg'))){
 					$image_ext = 'png';
 				}
 				
-			    $this->images[$i][$size_label] = BASE . PHOTOS . $size_prepend . $this->images[$i]['image_id'] . $size_append . '.' . $image_ext;
-			    $this->images[$i][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->images[$i]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
+				$size['size_src'] = BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
 				
-				$width = $size_width;
-				$height = $size_height;
+				$width = $size['size_width'];
+				$height = $size['size_height'];
+
+			    $this->images[$j][$size_label] = BASE . PHOTOS . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
+			    $this->images[$j][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
 				
-				$width_orig = $this->images[$i]['image_width'];
-				$height_orig = $this->images[$i]['image_height'];
+				$width_orig = $this->images[$j]['image_width'];
+				$height_orig = $this->images[$j]['image_height'];
 				
 				if($size_type == 'scale'){
 					if(($width_orig <= $width) and ($height_orig <= $height)){
 						switch($image_ext){
 							case 'jpg':
-								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
-								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
+								$size['size_height'] = $this->images[$j]['image_height'];
+								$size['size_width'] = $this->images[$j]['image_width'];
 								break;
 							case 'png':
-								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
-								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
+								$size['size_height'] = $this->images[$j]['image_height'];
+								$size['size_width'] = $this->images[$j]['image_width'];
 								break;
 							case 'gif':
-								$this->images[$i][$size_height_label] = $this->images[$i]['image_height'];
-								$this->images[$i][$size_width_label] = $this->images[$i]['image_width'];
+								$size['size_height'] = $this->images[$j]['image_height'];
+								$size['size_width'] = $this->images[$j]['image_width'];
 								break;
 						}
 					}
@@ -1567,30 +1566,29 @@ class Image extends Alkaline{
 					if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
 					else{ $width = $height * $ratio_orig; }
 					
-					$this->images[$i][$size_height_label] = floor($height);
-					$this->images[$i][$size_width_label] = floor($width);
+					$size['size_height'] = floor($height);
+					$size['size_width'] = floor($width);
 				}
 				elseif($size_type == 'fill'){
 					if($size_height < $height){
-						$this->images[$i][$size_height_label] = $size_height;
+						$size['size_height'] = $size_height;
 					}
 					else{
-						$this->images[$i][$size_height_label] = $height;
+						$size['size_height'] = $height;
 					}
 					
 					if($size_width < $width){
-						$this->images[$i][$size_width_label] = $size_width;
+						$size['size_width'] = $size_width;
 					}
 					else{
-						$this->images[$i][$size_width_label] = $width;
+						$size['size_width'] = $width;
 					}
 				}
+				$this->sizes[] = $size;
 			}
 		}
 		
-		$this->sizes = $sizes;
-		
-		return $sizes;
+		return $this->sizes;
 	}
 	
 	/**

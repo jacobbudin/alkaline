@@ -172,7 +172,7 @@ $image_ids->page(null, $max);
 $image_ids->find();
 
 $images = new Image($image_ids->image_ids);
-$images->getImgUrl('square');
+$images->getSizes('square');
 $images->hook();
 
 define('TAB', 'features');

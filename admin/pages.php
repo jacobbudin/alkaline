@@ -177,7 +177,7 @@ else{
 						$image_ids->find();
 						
 						$images = new Image($image_ids);
-						$images->getImgUrl('square');
+						$images->getSizes('square');
 						
 						if($alkaline->returnConf('page_size_label')){
 							$label = 'image_src_' . $alkaline->returnConf('page_size_label');

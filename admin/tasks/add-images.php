@@ -18,7 +18,7 @@ else{
 	$image = new Image();
 	$image->attachUser($user);
 	$image->import(base64_decode($_POST['image_file']));
-	$image->getImgUrl('admin');
+	$image->getSizes('admin');
 	$tags = $image->getTags();
 	$image = $image->images[0];
 	$tag_names = array();

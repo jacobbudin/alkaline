@@ -20,7 +20,7 @@ $image_ids->find();
 
 $images = new Image($image_ids);
 $images->formatTime();
-$images->getImgUrl('medium');
+$images->getSizes('medium');
 $images->getEXIF();
 $images->getTags();
 $images->getRights();

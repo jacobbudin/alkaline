@@ -28,7 +28,7 @@ if($id){
 
 	$images = new Image($image_ids);
 	$images->formatTime();
-	$images->getImgUrl('medium');
+	$images->getSizes('medium');
 	$images->getEXIF();
 	$images->getColorkey(670, 10);
 	$images->getTags();

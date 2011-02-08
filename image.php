@@ -25,7 +25,7 @@ if(empty($image_ids->image_ids)){ $alkaline->addError(E_USER_ERROR, 'No image wa
 $images = new Image($image_ids);
 $images->updateViews();
 $images->formatTime();
-$images->getImgUrl('medium');
+$images->getSizes('medium');
 $images->getEXIF();
 $images->getTags();
 $images->getRights();

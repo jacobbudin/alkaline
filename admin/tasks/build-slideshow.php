@@ -10,7 +10,7 @@ $image_ids->privacy('public', true);
 $image_ids->find();
 
 $images = new Image($image_ids);
-$images->getImgUrl('medium');
+$images->getSizes('medium');
 echo json_encode($images);
 
 ?>

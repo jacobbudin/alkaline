@@ -61,6 +61,7 @@ if($set_act == 'build'){
 	$set_call = Find::recentMemory();
 	if(!empty($set_call)){
 		$fields = array('set_call' => serialize($set_call),
+			'set_request' => serialize($_SESSION['alkaline']['search']['request']),
 			'set_type' => 'auto');
 	}
 	else{
@@ -188,7 +189,7 @@ else{
 							<?php
 						
 							$images = new Image($set['set_images']);
-							$images->getImgUrl('square');
+							$images->getSizes('square');
 						
 							foreach($images->images as $image){
 								echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';

@@ -21,7 +21,7 @@ $image_ids->published();
 $image_ids->find();
 
 $images = new Image($image_ids);
-$images->getImgUrl('medium');
+$images->getSizes('medium');
 $images->formatTime('c');
 
 // $images->images = $alkaline->makeHTMLSafe($images->images);
