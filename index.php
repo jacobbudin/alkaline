@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
 $image_ids = new Find;
-$image_ids->page(null,10,1);
+$image_ids->page(null, 10, 1);
 $image_ids->published();
 $image_ids->privacy('public');
 $image_ids->sort('image_published', 'DESC');

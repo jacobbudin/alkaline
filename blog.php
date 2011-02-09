@@ -15,6 +15,7 @@ $alkaline->recordStat('blog');
 
 $posts = new Post;
 $posts->page(null);
+$posts->published();
 $posts->fetch();
 $posts->formatTime();
 

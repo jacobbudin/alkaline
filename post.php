@@ -17,6 +17,7 @@ $id = $alkaline->findID($_GET['id']);
 
 if($id){
 	$posts = new Post($id);
+	$posts->published();
 	$posts->fetch();
 	$posts->formatTime();
 	$posts->updateViews();

@@ -18,6 +18,7 @@ $id = $alkaline->findID($_GET['id'], true);
 if(!$id){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
 
 $image_ids = new Find($id);
+$image_ids->published();
 $image_ids->privacy('public');
 $image_ids->find();
 if(empty($image_ids->image_ids)){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
