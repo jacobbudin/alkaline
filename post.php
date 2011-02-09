@@ -11,27 +11,28 @@ require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
-$alkaline->recordStat('page');
+$alkaline->recordStat('post');
 
 $id = $alkaline->findID($_GET['id']);
 
 if($id){
-	$pages = new Page($id);
-	$pages->formatTime();
-	$pages->updateViews();
-	$page = $pages->pages[0];
+	$posts = new Post($id);
+	$posts->fetch();
+	$posts->formatTime();
+	$posts->updateViews();
+	$post = $posts->posts[0];
 	
-	if(!$page){ $alkaline->addError('No page was not found.', 'Try searching for the page you were seeking.', null, null, 404); }
+	if(!$post){ $alkaline->addError('No post was not found.', 'Try searching for the post you were seeking.', null, null, 404); }
 
 	$header = new Canvas;
 	$header->load('header');
-	$header->setTitle($page['page_title']);
+	$header->setTitle($post['post_title']);
 	$header->display();
 
 	$content = new Canvas;
-	$content->load('page');
-	$content->loop($pages);
-	$content->assignArray($page);
+	$content->load('post');
+	$content->loop($posts);
+	$content->assignArray($post);
 	$content->display();
 
 	$footer = new Canvas;

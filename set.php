@@ -42,11 +42,11 @@ if($id){
 	$header->setTitle(@$set['set_title']);
 	$header->display();
 
-	$index = new Canvas;
-	$index->load('set');
-	$index->assignArray($set);
-	$index->loop($images);
-	$index->display();
+	$content = new Canvas;
+	$content->load('set');
+	$content->loop($images);
+	$content->assignArray($set);
+	$content->display();
 
 	$footer = new Canvas;
 	$footer->load('footer');

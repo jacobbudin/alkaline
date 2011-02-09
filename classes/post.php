@@ -13,11 +13,7 @@
  * @version 1.0
  */
 
-class Comment extends Alkaline{
-	public $comments;
-	public $comment_ids;
-	public $comment_count;
-	public $comment_count_result;
+class Post extends Alkaline{
 	public $page;
 	public $page_begin;
 	public $page_count;
@@ -25,7 +21,10 @@ class Comment extends Alkaline{
 	public $page_limit_first;
 	public $page_next;
 	public $page_previous;
-	public $image_ids;
+	public $posts;
+	public $post_ids;
+	public $post_count;
+	public $post_count_result;
 	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
@@ -40,11 +39,11 @@ class Comment extends Alkaline{
 	protected $sql_where;
 	
 	/**
-	 * Initiate Comment class
+	 * Initiate Post object
 	 *
-	 * @param string|int|array $comment_ids Limit results to select comment IDs
+	 * @param array|int|string $post Search posts (post IDs, post titles)
 	 */
-	public function __construct($comment_ids=null){
+	public function __construct($posts_ids=null){
 		parent::__construct();
 		
 		// Store data to object
@@ -58,12 +57,12 @@ class Comment extends Alkaline{
 		$this->sql_limit = '';
 		$this->sql_sorts = array();
 		$this->sql_from = '';
-		$this->sql_tables = array('comments');
+		$this->sql_tables = array('posts');
 		$this->sql_join = '';
 		$this->sql_join_type = '';
 		$this->sql_join_tables = array();
 		$this->sql_join_on = array();
-		$this->sql_group_by = ' GROUP BY comments.comment_id';
+		$this->sql_group_by = ' GROUP BY posts.post_id';
 		$this->sql_having = '';
 		$this->sql_injection = '';
 		$this->sql_having_fields = array();
@@ -73,7 +72,7 @@ class Comment extends Alkaline{
 		
 		if(!empty($comment_ids)){
 			$comment_ids = parent::convertToIntegerArray($comment_ids);
-			$this->sql_conds[] = 'comments.comment_id IN (' . implode(', ', $comment_ids) . ')';
+			$this->sql_conds[] = 'posts.post_id IN (' . implode(', ', $posts_ids) . ')';
 		}
 		
 		if(!empty($_REQUEST['q'])){
@@ -84,14 +83,6 @@ class Comment extends Alkaline{
 		}
 		if(!empty($_REQUEST['status'])){
 			$this->status($_REQUEST['status']);
-		}
-		
-		if(!empty($_REQUEST['image'])){
-			$this->image($_REQUEST['image']);
-		}
-		
-		if(!empty($_REQUEST['post'])){
-			$this->post($_REQUEST['post']);
 		}
 	}
 	
@@ -110,7 +101,7 @@ class Comment extends Alkaline{
 			$orbit = new Orbit;
 		}
 		
-		$this->comments = $orbit->hook('comment', $this->comments, $this->comments);
+		$this->posts = $orbit->hook('post', $this->posts, $this->posts);
 	}
 	
 	/**
@@ -128,64 +119,43 @@ class Comment extends Alkaline{
 		$search_lower = preg_replace('#\s#', '%', $search_lower);
 		$search_lower = '%' . $search_lower . '%';
 		
-		$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_uri) LIKE :comment_author_uri) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
-		$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
-		$comments = $query->fetchAll();
+		$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title);');
+		$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower));
+		$posts = $query->fetchAll();
 		
-		$comment_ids = array();
+		$post_ids = array();
 		
-		foreach($comments as $comment){
-			$comment_ids[] = $comment['comment_id'];
+		foreach($posts as $post){
+			$post_ids[] = $post['post_id'];
 		}
 		
-		if(count($comment_ids)){
-			$this->sql_conds[] = 'comments.comment_id IN (' . implode(', ', $comment_ids) . ')';
+		if(count($post_ids)){
+			$this->sql_conds[] = 'posts.post_id IN (' . implode(', ', $post_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = 'comments.comment_id IN (NULL)';
+			$this->sql_conds[] = 'posts.post_id IN (NULL)';
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * Find by comment status
+	 * Find by publish status
 	 *
-	 * @param int|string $status Comment status
-	 * @return bool True if successful
+	 * @param bool $published
+	 * @return void
 	 */
-	public function status($status=null){
-		// Error checking
-		if(!isset($status)){ return false; }
+	public function published($published=true){
+		$now = date('Y-m-d H:i:s');
 		
-		// Convert strings
-		if(is_string($status)){
-			$levels = array('spam' => -1, 'unpublished' => 0, 'published' => 1);
-			if(array_key_exists($status, $levels)){
-				$status = $levels[$status];
-			}
-			else{
-				return false;
-			}
-			
-			// Set fields to search
-			$this->sql_conds[] = 'comments.comment_status = ' . $status;
+		if($published == true){
+			$this->sql_conds[] = 'posts.post_published < :post_published';
+			$this->sql_params[':post_published'] = $now;
 		}
-		elseif(is_integer($status)){
-			$this->sql_conds[] = 'comments.comment_status = ' . $status;
-			
+		if($published == false){
+			$this->sql_conds[] = '(posts.post_published > :post_published OR post_published IS NULL)';
+			$this->sql_params[':post_published'] = $now;
 		}
-		elseif(is_array($status)){
-			parent::convertToIntegerArray($privacy);
-			
-			// Set fields to search
-			$this->sql_conds[] = 'comments.comment_status IN (' . implode(', ', $status) . ')';
-		}
-		else{
-			return false;
-		}
-		
-		return true;
 	}
 
 	/**
@@ -204,8 +174,8 @@ class Comment extends Alkaline{
 			if(is_int($begin)){ $begin = strval($begin); }
 			if(strlen($begin) == 4){ $begin .= '-01-01'; }
 			$begin = date('Y-m-d', strtotime($begin));
-			$this->sql_conds[] = 'comments.comment_created >= :comment_created_begin';
-			$this->sql_params[':comment_created_begin'] = $begin . ' 00:00:00';
+			$this->sql_conds[] = 'posts.post_created >= :post_created_begin';
+			$this->sql_params[':post_created_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
@@ -213,26 +183,9 @@ class Comment extends Alkaline{
 			if(is_int($end)){ $end = strval($end); }
 			if(strlen($end) == 4){ $end .= '-01-01'; }
 			$end = date('Y-m-d', strtotime($end));
-			$this->sql_conds[] = 'comments.comment_created <= :comment_created_end';
-			$this->sql_params[':comment_created_end'] = $end . ' 23:59:59"';
+			$this->sql_conds[] = 'posts.post_created <= :post_created_end';
+			$this->sql_params[':post_created_end'] = $end . ' 23:59:59"';
 		}
-		
-		return true;
-	}
-	
-	/**
-	 * Find by image association
-	 *
-	 * @param int|array $image_ids Image IDs
-	 * @return bool True if successful
-	 */
-	public function image($image_ids=null){
-		// Error checking
-		if(empty($image_ids)){ return false; }
-		
-		$image_ids = parent::convertToIntegerArray($image_ids);
-		
-		$this->sql_conds[] = 'comments.image_id IN (' . implode(', ', $image_ids) . ')';
 		
 		return true;
 	}
@@ -249,7 +202,7 @@ class Comment extends Alkaline{
 		
 		$post_ids = parent::convertToIntegerArray($post_ids);
 		
-		$this->sql_conds[] = 'comments.post_id IN (' . implode(', ', $post_ids) . ')';
+		$this->sql_conds[] = 'posts.post_id IN (' . implode(', ', $post_ids) . ')';
 		
 		return true;
 	}
@@ -334,19 +287,6 @@ class Comment extends Alkaline{
 	}
 	
 	/**
-	 * Format time
-	 *
-	 * @param string $format Format as in date();
-	 * @return void
-	 */
-	public function formatTime($format=null){
-		foreach($this->comments as &$comment){
-			$comment['comment_created'] = parent::formatTime($comment['comment_created'], $format);
-		}
-		return true;
-	}
-	
-	/**
 	 * Execute Comment class to determine class variables
 	 *
 	 * @return void
@@ -368,9 +308,9 @@ class Comment extends Alkaline{
 			}
 		}
 		else{
-			$this->sql_order_by = ' ORDER BY comments.comment_created DESC';
+			$this->sql_order_by = ' ORDER BY posts.post_created DESC';
 			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-				$this->sql_group_by .= ', comments.comment_created';
+				$this->sql_group_by .= ', posts.post_created';
 			}
 		}
 		
@@ -388,15 +328,15 @@ class Comment extends Alkaline{
 		// Execute query without limit
 		$query = $this->prepare($this->sql);
 		$query->execute($this->sql_params);
-		$comments = $query->fetchAll();
+		$posts = $query->fetchAll();
 		
-		// Determine number of comments
-		$this->comment_count = count($comments);
+		// Determine number of posts
+		$this->post_count = count($posts);
 		
 		// Determine pagination
 		// Determine pagination
 		if(!empty($this->page)){
-			$this->page_count = ceil(($this->comment_count - $this->page_limit_first) / $this->page_limit) + 1;
+			$this->page_count = ceil(($this->post_count - $this->page_limit_first) / $this->page_limit) + 1;
 			if($this->page < $this->page_count){
 				$this->page_next = $this->page + 1;
 			}
@@ -411,25 +351,56 @@ class Comment extends Alkaline{
 		// Execute query with order, limit
 		$query = $this->prepare($this->sql);
 		$query->execute($this->sql_params);
-		$this->comments = $query->fetchAll();
+		$this->posts = $query->fetchAll();
 		
-		// Grab comments.comment_ids of results
-		$this->comment_ids = array();
-		$this->image_ids = array();
+		// Grab posts.post_ids of results
+		$this->post_ids = array();
 		
-		foreach($comments as $comment){
-			$this->comment_ids[] = intval($comment['comment_id']);
-			$this->image_ids[] = $comment['image_id'];
+		foreach($posts as $post){
+			$this->post_ids[] = intval($post['post_id']);
 		}
-
-		$this->image_ids = array_unique($this->image_ids, SORT_NUMERIC);
-		$this->image_ids = array_values($this->image_ids);
 		
-		// Count comments
-		$this->comment_count_result = count($this->comments);
+		// Attach additional fields
+		for($i = 0; $i < $this->post_count; ++$i){
+			if(empty($this->posts[$i]['post_title_url'])){
+				$this->posts[$i]['post_uri'] = LOCATION . BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
+			}
+			else{
+				$this->posts[$i]['post_uri'] = LOCATION . BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $this->posts[$i]['post_title_url'] . URL_RW;
+			}
+		}
 		
-		// Return comments.comment_ids
-		return $this->comments;
+		// Count posts
+		$this->post_count_result = count($this->posts);
+		
+		// Return posts.post_ids
+		return $this->posts;
+	}
+	
+	/**
+	 * Increase post_views field by 1
+	 *
+	 * @return void
+	 */
+	public function updateViews(){
+		for($i = 0; $i < $this->post_count; ++$i){
+			$this->posts[$i]['post_views']++;
+			$this->exec('UPDATE posts SET post_views = ' . $this->posts[$i]['post_views'] . ' WHERE post_id = ' . $this->posts[$i]['post_id'] . ';');
+		}
+	}
+	
+	/**
+	 * Format time
+	 *
+	 * @param string $format Same format as date();
+	 * @return void
+	 */
+	public function formatTime($format=null){
+		foreach($this->posts as &$post){
+			$post['post_created'] = parent::formatTime($post['post_created'], $format);
+			$post['post_modified'] = parent::formatTime($post['post_modified'], $format);
+			$post['post_published'] = parent::formatTime($post['post_published'], $format);
+		}
 	}
 }
 

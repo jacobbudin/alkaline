@@ -39,15 +39,15 @@ if($id){
 	$header->setTitle('#' . $tag['tag_name']);
 	$header->display();
 
-	$index = new Canvas;
-	$index->load('index');
-	$index->assign('Page_Next', $image_ids->page_next);
-	$index->assign('Page_Previous', $image_ids->page_previous);
-	$index->assign('Page_Current', $image_ids->page);
-	$index->assign('Page_Count', $image_ids->page_count);
-	$index->loop($images);
-	$index->assignArray($tag);
-	$index->display();
+	$content = new Canvas;
+	$content->load('index');
+	$content->assign('Page_Next', $image_ids->page_next);
+	$content->assign('Page_Previous', $image_ids->page_previous);
+	$content->assign('Page_Current', $image_ids->page);
+	$content->assign('Page_Count', $image_ids->page_count);
+	$content->loop($images);
+	$content->assignArray($tag);
+	$content->display();
 
 	$footer = new Canvas;
 	$footer->load('footer');

@@ -36,16 +36,16 @@ $header->load('header');
 $header->setTitle('Search Results (' . $image_ids->image_count . ')');
 $header->display();
 
-$index = new Canvas;
-$index->load('results');
-$index->assign('Page_Next', $image_ids->page_next);
-$index->assign('Page_Previous', $image_ids->page_previous);
-$index->assign('Page_Next_URI', $image_ids->page_next_uri);
-$index->assign('Page_Previous_URI', $image_ids->page_previous_uri);
-$index->assign('Page_Current', $image_ids->page);
-$index->assign('Page_Count', $image_ids->page_count);
-$index->loop($images);
-$index->display();
+$content = new Canvas;
+$content->load('results');
+$content->assign('Page_Next', $image_ids->page_next);
+$content->assign('Page_Previous', $image_ids->page_previous);
+$content->assign('Page_Next_URI', $image_ids->page_next_uri);
+$content->assign('Page_Previous_URI', $image_ids->page_previous_uri);
+$content->assign('Page_Current', $image_ids->page);
+$content->assign('Page_Count', $image_ids->page_count);
+$content->loop($images);
+$content->display();
 
 $footer = new Canvas;
 $footer->load('footer');

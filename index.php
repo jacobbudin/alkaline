@@ -13,8 +13,6 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
-$orbit = new Orbit;
-
 $image_ids = new Find;
 $image_ids->page(null,10,1);
 $image_ids->published();

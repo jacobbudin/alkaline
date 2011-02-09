@@ -14,7 +14,7 @@
  */
 
 class Set extends Alkaline{
-	public $set_id;
+	public $set_ids;
 	public $set_count;
 	public $sets;
 	
@@ -119,6 +119,19 @@ class Set extends Alkaline{
 			$ids[] = $set['set_id'];
 		}
 		return parent::updateRow($fields, 'sets', $ids);
+	}
+	
+	/**
+	 * Format time
+	 *
+	 * @param string $format Same format as date();
+	 * @return void
+	 */
+	public function formatTime($format=null){
+		foreach($this->sets as &$set){
+			$set['set_created'] = parent::formatTime($set['set_created'], $format);
+			$set['set_modified'] = parent::formatTime($set['set_modified'], $format);
+		}
 	}
 }
 

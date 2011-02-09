@@ -75,7 +75,7 @@ else{
 }
 
 // CREATE PAGE
-if($page_act == 'add'){
+if(!empty($page_act) and ($page_act == 'add')){
 	$page_id = $alkaline->addRow(null, 'pages');
 }
 

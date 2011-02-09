@@ -14,7 +14,7 @@
  */
 
 class Page extends Alkaline{
-	public $page_id;
+	public $page_ids;
 	public $page_count;
 	public $pages;
 	
@@ -119,6 +119,31 @@ class Page extends Alkaline{
 			$ids[] = $page['page_id'];
 		}
 		return parent::updateRow($fields, 'pages', $ids);
+	}
+	
+	/**
+	 * Increase page_views field by 1
+	 *
+	 * @return void
+	 */
+	public function updateViews(){
+		for($i = 0; $i < $this->page_count; ++$i){
+			$this->pages[$i]['page_views']++;
+			$this->exec('UPDATE pages SET page_views = ' . $this->pages[$i]['page_views'] . ' WHERE page_id = ' . $this->pages[$i]['page_id'] . ';');
+		}
+	}
+	
+	/**
+	 * Format time
+	 *
+	 * @param string $format Same format as date();
+	 * @return void
+	 */
+	public function formatTime($format=null){
+		foreach($this->pages as &$page){
+			$page['page_created'] = parent::formatTime($page['page_created'], $format);
+			$page['page_modified'] = parent::formatTime($page['page_modified'], $format);
+		}
 	}
 }
 

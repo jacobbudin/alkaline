@@ -72,7 +72,7 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id');
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -1735,6 +1735,11 @@ class Alkaline{
 				$fields['page_created'] = date('Y-m-d H:i:s');
 				$fields['page_modified'] = date('Y-m-d H:i:s');
 				break;
+			case 'posts':
+				$fields['post_views'] = 0;
+				$fields['post_created'] = date('Y-m-d H:i:s');
+				$fields['post_modified'] = date('Y-m-d H:i:s');
+				break;
 			case 'sets':
 				$fields['set_views'] = 0;
 				$fields['set_created'] = date('Y-m-d H:i:s');
@@ -1816,6 +1821,9 @@ class Alkaline{
 					break;
 				case 'pages':
 					$fields['page_modified'] = date('Y-m-d H:i:s');
+					break;
+				case 'posts':
+					$fields['post_modified'] = date('Y-m-d H:i:s');
 					break;
 			}
 		}

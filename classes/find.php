@@ -1032,6 +1032,41 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by posts
+	 *
+	 * @param int|array $id Posts IDs
+	 * @return bool True if successful
+	 */
+	public function posts($id=null){
+		if(empty($id)){ return false; }
+		if(!intval($id)){ return false; }
+		
+		$id = intval($id);
+		
+		$posts = $this->getTable('posts', $id);
+		
+		$image_ids = array();
+		
+		foreach($posts as $post){
+			$image_ids_on_post = explode(', ', $post['post_images']);
+			foreach($image_ids_on_post as $image_id){
+				$image_ids[] = $image_id;
+			}
+		}
+		
+		$image_ids = array_unique($image_ids);
+		
+		if(count($image_ids) > 0){
+			$this->sql_conds[] = 'images.image_id IN (' . implode(', ', $image_ids) . ')';
+		}
+		else{
+			$this->sql_conds[] = 'images.image_id IN (NULL)';
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Find by EXIF value
 	 *
 	 * @param string $value EXIF value
@@ -1145,6 +1180,9 @@ class Find extends Alkaline{
 				break;
 			case 'pages':
 				$this->_pages(@intval($_GET['id']));
+				break;
+			case 'posts':
+				$this->_posts(@intval($_GET['id']));
 				break;
 			default:
 				return false;

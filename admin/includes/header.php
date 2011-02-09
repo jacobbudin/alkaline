@@ -55,10 +55,11 @@
 				<ul>
 					<?php
 
-					if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'features') or (@TAB == 'settings')){
+					if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'features') or (@TAB == 'settings')){
 						?>
 						<li><a href="<?php echo BASE . ADMIN; ?>dashboard<?php echo URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
 						<li><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
+						<li><a href="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a></li>
 						<li><a href="<?php echo BASE . ADMIN; ?>features<?php echo URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Editor</a></li>
 						<li><a href="<?php echo BASE . ADMIN; ?>settings<?php echo URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
 						<li><a href="http://www.alkalineapp.com/guide/" target="_blank">Help</a></li>
@@ -90,6 +91,11 @@
 					?>
 					<li><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/upload.png" alt="" /> Upload</a></li>
 					<li><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/shoebox.png" alt="" /> Shoebox</a></li>
+					<?php
+				}
+				elseif(@TAB == 'posts'){
+					?>
+					
 					<?php
 				}
 				elseif(@TAB == 'features'){

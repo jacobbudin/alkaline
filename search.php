@@ -18,11 +18,11 @@ $header->load('header_min');
 $header->setTitle('Search');
 $header->display();
 
-$index = new Canvas;
-$index->load('search');
-$index->assign('EXIF_Names', $alkaline->showEXIFNames('exif_name'));
-$index->assign('Rights', $alkaline->showRights('rights'));
-$index->display();
+$content = new Canvas;
+$content->load('search');
+$content->assign('EXIF_Names', $alkaline->showEXIFNames('exif_name'));
+$content->assign('Rights', $alkaline->showRights('rights'));
+$content->display();
 
 $footer = new Canvas;
 $footer->load('footer');

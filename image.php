@@ -37,11 +37,11 @@ $header->load('header');
 $header->setTitle(@$images->images[0]['image_title']);
 $header->display();
 
-$index = new Canvas;
-$index->wrapForm();
-$index->load('image');
-$index->loop($images);
-$index->display();
+$content = new Canvas;
+$content->wrapForm();
+$content->load('image');
+$content->loop($images);
+$content->display();
 
 $footer = new Canvas;
 $footer->load('footer');
