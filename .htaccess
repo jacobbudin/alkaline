@@ -24,13 +24,16 @@
 	
 	RewriteRule ^access/([a-z0-9-_]+)(/)?$								access.php?key=$1 [NC]
 	RewriteRule ^page([0-9]+)(/)?$										index.php?page=$1 [NC]
-	RewriteRule ^image/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$			image.php?id=$1&page=$4 [NC]
-	RewriteRule ^page/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				page.php?id=$1&page=$4 [NC]
+	RewriteRule ^image/([a-z0-9-_]+)(/)?$								image.php?id=$1 [NC]
+	RewriteRule ^page/([a-z0-9-_]+)(/)?$								page.php?id=$1 [NC]
+	RewriteRule ^post/([a-z0-9-_]+)(/)?$								post.php?id=$1 [NC]
 	RewriteRule ^set/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				set.php?id=$1&page=$4 [NC]
 	RewriteRule ^tag/([a-z0-9-_]+)(/)?(page)?([0-9]*)(/)?$				tag.php?id=$1&page=$4 [NC]
 	RewriteRule ^slideshow(/)?$											slideshow.php [NC]
 	RewriteRule ^search(/)?$											search.php [NC]
 	RewriteRule ^results(/)?$											results.php [NC]
 	RewriteRule ^results/page([0-9]+)(/)?$								results.php?page=$1 [NC]
+	RewriteRule ^blog(/)?$												blog.php [NC]
+	RewriteRule ^blog/page([0-9]+)(/)?$									blog.php?page=$1 [NC]
 	
 </IfModule>
