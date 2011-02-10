@@ -1,0 +1,23 @@
+<div id="directory">
+	<h5>Collections ({count:Sets}):</h5>
+	{if:Sets}
+		<ul>
+		{block:Sets}
+			<li><a href="{Set_Uri}">{Set_Title}</a></li>
+		{/block:Sets}
+		</ul>
+	{else:Sets}
+		There are no collections.
+	{/if:Sets}<br />
+	
+	<h5>Notes ({count:Pages}):</h5>
+	{if:Pages}
+		<ul>
+		{block:Pages}
+			<li><a href="{Page_Uri}">{Page_Title}</a></li>
+		{/block:Pages}
+		</ul>
+	{else:Pages}
+		<p>There are no pages.</p>
+	{/if:Pages}
+</div>

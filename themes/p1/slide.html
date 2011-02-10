@@ -1,0 +1,29 @@
+<!-- {canvas:Hello_World} -->
+
+{block:Images}
+<div class="image">
+	<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Medium}" alt="" class="frame" /></a></div><br />
+	<div class="float_right">
+		<div class="uploaded">{Image_Uploaded}</div>
+		<div class="right">
+			{if:Right_Title}
+				{Right_Title}
+			{else:Right_Title}
+				No rights set.
+			{/if:Right_Title}
+		</div>
+	</div>
+	{if:Image_Title}
+		<div class="title">
+			{Image_Title}
+		</div>
+	{/if:Image_Title}
+	{if:Sets}
+		<p>
+		{block:Sets}
+			<span class="tag">See set: {Set_Title}</span>
+		{/block:Sets}
+		</p>
+	{/if:Sets}
+</div>
+{/block:Images}

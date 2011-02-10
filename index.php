@@ -26,7 +26,7 @@ $images->getSizes('square');
 $images->getSizes('medium');
 $images->getEXIF();
 // $images->getSeries($image_ids->image_first_reverse, false);
-$images->getColorkey(670, 10);
+$images->getColorkey(950, 15);
 $images->getSets();
 $images->getTags();
 $images->getRights();

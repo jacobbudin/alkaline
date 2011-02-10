@@ -28,6 +28,7 @@ $images->updateViews();
 $images->formatTime();
 $images->getSizes('medium');
 $images->getEXIF();
+$images->getColorkey(950, 15);
 $images->getTags();
 $images->getRights();
 $images->getComments();

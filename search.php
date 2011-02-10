@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
 $header = new Canvas;
-$header->load('header_min');
+$header->load('header');
 $header->setTitle('Search');
 $header->display();
 
