@@ -16,20 +16,14 @@ $alkaline->recordStat('home');
 $image_ids = new Find;
 $image_ids->sort('images.image_published', 'DESC');
 $image_ids->published();
+$image_ids->page();
 $image_ids->privacy('public');
 $image_ids->find();
 
 $images = new Image($image_ids);
 // $images->updateViews();
 $images->formatTime();
-$images->getSizes('square');
-$images->getSizes('medium');
-$images->getEXIF();
-$images->getColorkey(670, 10);
-$images->getSets();
-$images->getTags();
-$images->getRights();
-$images->getComments();
+$images->getSizes();
 
 $header = new Canvas;
 $header->load('header');

@@ -1,60 +1,27 @@
 <!-- {canvas:Hello_World} -->
 
-{if:Images}
-	{block:Images}
-	<div class="image">
-		<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Medium}" alt="" class="frame" /></a></div><br />
-	
-		{Image_Colorkey}
-	
-		<div class="float_right">
-			<div class="uploaded">{Image_Uploaded}</div>
-			<div class="right_set">
-				{if:Right_Title}
-					{Right_Title}
-				{else:Right_Title}
-					No rights set.
-				{/if:Right_Title}
-			</div>
-		</div>
-		{if:Image_Title}
-			<h2>
-				{Image_Title}
-			</h2>
-		{/if:Image_Title}
-		{if:Tags}
-			<p>
-			{block:Tags}
-				<span class="tag">#<a href="{Tag_Uri}">{Tag_Name}</a></span>
-			{/block:Tags}
-			</p>
-		{/if:Tags}
-
-		{if:Sets}
-			<p>
-				<em>As seen in the collection:</em>{block:Sets} &#0183; <a href="{define:Base}set{define:Url_Id}{Set_Title_Url}{define:Url_Rw}">{Set_Title}</a>{/block:Sets}
-			</p>
-		{/if:Sets}
-		{if:Pages}
-			<p>
-				<em>As seen on the page:</em>{block:Pages} &#0183; <a href="{define:Base}page{define:Url_Id}{Page_Title_Url}{define:Url_Rw}">{Page_Title}</a>{/block:Pages}
-			</p>
-		{/if:Pages}
-	</div>
-	{/block:Images}
-{else:Images}
-	<br /><br />
-	<hr />
-	<p>There were no images matching your criteria.</p>
-{/if:Images}
 <hr />
 
-<div class="span-5">
-	{if:Page_Previous}<strong><a href="/page{Page_Previous}/">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+<h2>Search Results</h2>
+
+<div class="results">
+	{if:Images}
+	{block:Images}
+		<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="small" /></a>
+	{/block:Images}
+	{else:Images}
+		No images matched your search criteria.
+	{/if:Images}<br /><br />
 </div>
-<div class="span-7 center">
+
+<hr />
+
+<div class="span-8">
+	{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+</div>
+<div class="span-8 center">
 	{if:Page_Count}Page #{Page_Current} of {Page_Count}{/if:Page_Count}
 </div>
-<div class="span-5 right last">
-	&#0160;{if:Page_Next}<strong><a href="/page{Page_Next}/">Next page &#8594;</a></strong>{/if:Page_Next}
+<div class="span-8 right last">
+	&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
 </div>

@@ -26,7 +26,14 @@ h2{
 	font-size: 2em;
 	font-weight: 500;
 	color: #444;
-	margin-bottom: .5em;
+	margin: .5em 0;
+}
+
+h3{
+	font-size: 1.3em;
+	font-weight: 500;
+	color: #222;
+	margin-bottom: .7em;
 }
 
 h5{
@@ -66,6 +73,22 @@ h5{
 	
 }
 
+.medium{
+	float: left;
+	width: 270px;
+	margin-right: 70px;
+}
+
+.medium_last{
+	clear: right;
+	margin: 0;
+}
+
+.small{
+	margin: 0 1px;
+	padding: 0;
+}
+
 .colorkey{
 	margin: 0 0 .5em 0;
 }
@@ -92,7 +115,6 @@ a#prev{
 }
 
 img.large{
-	margin-bottom: .5em;
 }
 
 p.description{
@@ -102,7 +124,13 @@ p.description{
 }
 
 .float_right{
-	margin: .5em 0 1.5em 0;
+	margin: 0 0 .5em 0;
+	float: right;
+	text-align: right;
+}
+
+.float_right_big{
+	margin: 1em 0 1em 0;
 	float: right;
 	text-align: right;
 }
@@ -112,14 +140,33 @@ p.description{
 }
 
 .tag{
-	background: url(images/tag.png) top left no-repeat;
-	padding-left: 20px;
-	margin-right: 1em;
-	min-height: 50px;
+	background: url(images/tag.png) 0 50% no-repeat;
+	padding-left: 15px;
+	margin-right: .7em;
+}
+
+.tag_count{
+	background: url(images/tag.png) 0 50% no-repeat;
+	padding-left: 15px;
+}
+
+.comment_count{
+	background: url(images/comment.png) 0 50% no-repeat;
+	padding-left: 15px;
+	margin-right: .7em;
 }
 
 .tag a{
 	color: #666;
+}
+
+.tag_count a, .comment_count a{
+	color: #666;
+	text-decoration: none;
+}
+
+p.slim{
+	margin-bottom: .3em;
 }
 
 .datetime{
@@ -133,7 +180,7 @@ p.description{
 .right{ text-align: right; }
 td.right{ text-align: right; vertical-align: middle; }
 
-.page { font-size: 1.2em; line-height: 1.6em; }
+.page, .results { font-size: 1.2em; line-height: 1.6em; }
 
 .right_set{
 	color: #aaa;

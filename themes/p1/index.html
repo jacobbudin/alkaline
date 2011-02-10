@@ -6,9 +6,9 @@
 	
 	{Image_Colorkey}
 	
-	<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Large}" alt="" class="large" /></a></div>
+	<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Large}" alt="" /></a></div>
 	
-	<div class="float_right">
+	<div class="float_right_big">
 		<div class="datetime">{Image_Published}</div>
 		<div class="right_set">
 			{if:Image_Comment_Count}
@@ -28,12 +28,16 @@
 		<h2>(Untitled)</h2>
 	{/if:Image_Title}
 	
+	{if:Image_Description}
+		{Image_Description}
+	{/if:Image_Description}
+	
 	{if:Tags}
-		<div class="tags">
-			{block:Tags}
-				<span class="tag"><a href="{Tag_Uri}">{Tag_Name}</a></span>
-			{/block:Tags}
-		</div>
+		<p>
+		{block:Tags}
+			<span class="tag"><a href="{Tag_URI}">{Tag_Name}</a></span>
+		{/block:Tags}
+		</p>
 	{/if:Tags}
 	
 	{if:Sets}

@@ -1,0 +1,41 @@
+<!-- {canvas:Hello_World} -->
+<br />
+<hr />
+
+<div class="span-24 append-bottom last">
+{block:Images}
+	<div class="medium append-bottom {Image_Sequence}">
+		<div class="float_right">
+			<span class="comment_count"><a href="{Image_URI}">{Image_Comment_Count}</a></span> <span class="tag_count"><a href="{Image_URI}">{Image_Tag_Count}</a></span>
+		</div>
+		
+		{if:Image_Title}
+			<h3>{Image_Title}</h3>
+		{else:Image_Title}
+			<h3>(Untitled)</h3>
+		{/if:Image_Title}
+	
+		<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Medium}" alt="" class="" /></a></div>
+		
+		<p class="quiet slim">{Image_Published|reltime}</p>
+		
+		{Image_Description|fitStringByWord100}
+	</div>
+	{if:Image_Sequence}
+	</div>
+	<div class="span-24 prepend-top append-bottom last">
+	{/if:Image_Sequence}
+{/block:Images}
+</div>
+
+<hr />
+
+<div class="span-8">
+	{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+</div>
+<div class="span-8 center">
+	Page #{Page_Current} of {Page_Count}
+</div>
+<div class="span-8 right last">
+	&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
+</div>

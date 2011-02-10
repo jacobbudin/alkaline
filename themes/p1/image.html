@@ -5,8 +5,8 @@
 		{Image_Colorkey}
 		
 		<div class="center"><img src="{Image_Src_Large}" alt="" /></div>
-		<div class="float_right">
-			<div class="uploaded">{Image_Uploaded}</div>
+		<div class="float_right_big">
+			<div class="datetime">{Image_Uploaded}</div>
 			<div class="right_set">
 				{if:Right_Title}
 					{Right_Title}
@@ -15,19 +15,17 @@
 				{/if:Right_Title}
 			</div>
 		</div>
+		
 		{if:Image_Title}
-			<h2>
-				{Image_Title}
-			</h2>
+			<h2>{Image_Title}</h2>
+		{else:Image_Title}
+			<h2>(Untitled)</h2>
 		{/if:Image_Title}
-		{if:Image_Map}
-			{Image_Map}
-		{/if:Image_Map}
+		
 		{if:Image_Description}
-			<p class="description">
-				{Image_Description}
-			</p>
+			{Image_Description}
 		{/if:Image_Description}
+		
 		{if:Tags}
 			<p>
 			{block:Tags}
@@ -46,7 +44,7 @@
 			<table>
 			{block:Comments}
 				<tr>
-					<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<br /><br />{if:Comment_Author_Name}<p>&#8212; {Comment_Author_Name}, on {/if:Comment_Author_Name}{Comment_Created}</p></td>
+					<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<p class="quiet">{if:Comment_Author_Name}&#8212; {Comment_Author_Name}, {/if:Comment_Author_Name}{Comment_Created|reltime}</p></td>
 				</tr>
 			{/block:Comments}
 			</table>

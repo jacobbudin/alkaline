@@ -32,7 +32,7 @@ if($id){
 
 	$images = new Image($image_ids);
 	$images->formatTime();
-	$images->getSizes('square');
+	$images->getSizes('small');
 	$images->getEXIF();
 	$images->getTags();
 	$images->getRights();
