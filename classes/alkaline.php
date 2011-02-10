@@ -2331,8 +2331,8 @@ class Alkaline{
 	public function magicURL($page){
 		$uri = $_SERVER['REQUEST_URI'];
 		
-		if(URL_PAGE == '/page'){
-			$uri = @preg_replace('#(\?)?page\=[0-9]#si', '', $uri);
+		if((URL_RW == '/') and !strpos($uri, '?')){
+			$uri = @preg_replace('#(\?)?page\=[0-9]+#si', '', $uri);
 			if(preg_match('#page[0-9]+#si', $uri)){
 				$uri = preg_replace('#(/)?page[0-9]+(/)?#si', '\\1page' . $page . '\\2', $uri);
 			}
@@ -2345,12 +2345,13 @@ class Alkaline{
 			}
 		}
 		else{
-			$uri = @preg_replace('#(\?)?page\=[0-9]#si', '', $uri);
+			$uri = @preg_replace('#[\?\&]?page\=[0-9]#si', '', $uri);
 			$uri = @preg_replace('#\/page[0-9]+(/)?#si', '', $uri);
 
-			$last_pos = strlen($uri) - 1;
-
-			if($last_pos != '&'){
+			if(strpos($uri, '?')){
+				$uri .= '&';
+			}
+			else{
 				$uri .= '?';
 			}
 			
