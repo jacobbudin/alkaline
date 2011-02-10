@@ -74,7 +74,13 @@ class Image extends Alkaline{
 			for($i = 0; $i < $this->image_count; ++$i){
 				$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
 				$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
-				$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
+				$title_url = $this->makeURL($this->images[$i]['image_title']);
+				if(empty($title_url) or (URL_RW != '/')){
+					$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
+				}
+				else{
+					$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . '-' . $title_url . URL_RW;
+				}
 				if($this->returnConf('comm_enabled') != true){
 					$this->images[$i]['image_comment_disabled'] = 1;
 				}
@@ -1635,7 +1641,7 @@ class Image extends Alkaline{
 		// Attach additional fields
 		for($i = 0; $i < $this->tag_count; ++$i){
 			$title_url = $this->makeURL($this->tags[$i]['tag_name']);
-			if(empty($title_url)){
+			if(empty($title_url) or (URL_RW != '/')){
 				$this->tags[$i]['tag_uri'] = LOCATION . BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . URL_RW;
 			}
 			else{
@@ -1700,6 +1706,18 @@ class Image extends Alkaline{
 			}
 		}
 		
+		$set_count = count($this->sets);
+		
+		// Attach additional fields
+		for($i = 0; $i < $set_count; ++$i){
+			if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
+				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
+			}
+			else{
+				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
+			}
+		}
+		
 		return $this->sets;
 	}
 	
@@ -1723,6 +1741,19 @@ class Image extends Alkaline{
 				}
 			}
 		}
+		
+		$page_count = count($this->pages);
+		
+		// Attach additional fields
+		for($i = 0; $i < $page_count; ++$i){
+			if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
+				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
+			}
+			else{
+				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
+			}
+		}
+		
 		
 		return $this->pages;
 	}
