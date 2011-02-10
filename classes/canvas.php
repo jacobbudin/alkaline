@@ -531,6 +531,60 @@ class Canvas extends Alkaline{
 	}
 	
 	/**
+	 * Fit string by 50 characters, cut at word
+	 *
+	 * @return void
+	 */
+	public function fitStringByWord50(){
+		return Alkaline::fitStringByWord($this->value, 50);
+	}
+	
+	/**
+	 * Make a relative time
+	 *
+	 * @return void
+	 */
+	public function reltime(){
+		return Alkaline::formatRelTime($this->value, null, '(Unknown)');
+	}
+	
+	/**
+	 * Fit string by 100 characters, cut at word
+	 *
+	 * @return void
+	 */
+	public function fitStringByWord100(){
+		return Alkaline::fitStringByWord($this->value, 100);
+	}
+	
+	/**
+	 * Fit string by 250 characters, cut at word
+	 *
+	 * @return void
+	 */
+	public function fitStringByWord250(){
+		return Alkaline::fitStringByWord($this->value, 250);
+	}
+	
+	/**
+	 * Fit string by 500 characters, cut at word
+	 *
+	 * @return void
+	 */
+	public function fitStringByWord500(){
+		return Alkaline::fitStringByWord($this->value, 500);
+	}
+	
+	/**
+	 * Fit string by 1000 characters, cut at word
+	 *
+	 * @return void
+	 */
+	public function fitStringByWord1000(){
+		return Alkaline::fitStringByWord($this->value, 1000);
+	}
+	
+	/**
 	 * Perform Alkaline::makeURL filter
 	 *
 	 * @return string
