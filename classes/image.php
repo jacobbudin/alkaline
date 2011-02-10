@@ -1659,6 +1659,12 @@ class Image extends Alkaline{
 				else{
 					$this->images[$key]['image_tags'] .= ', ' . $tag['tag_name']; 
 				}
+				if(empty($this->images[$key]['image_tag_count'])){
+					$this->images[$key]['image_tag_count'] = 1;
+				}
+				else{
+					$this->images[$key]['image_tag_count']++;
+				}
 			}
 		}
 		
