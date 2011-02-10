@@ -113,7 +113,7 @@ if(empty($post_id)){
 	
 		<h1>Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
-		<form action="" method="post">
+		<form action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
 			<p style="margin-bottom: 0;">
 				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 			</p>
@@ -125,124 +125,36 @@ if(empty($post_id)){
 			<div class="reveal">
 				<table>
 					<tr>
-						<td class="right pad"><label for="tags">Tags:</label></td>
-						<td class="quiet">
-							<input type="text" id="tags" name="tags" class="l" /><br />
-							<em>Tip: Use the uppercase boolean operators AND, OR, and NOT.</em>
-						</td>
-					</tr>
-					<tr>
-						<td class="right pad"><label for="tags">EXIF metadata:</label></td>
-						<td>
-							<?php echo $alkaline->showEXIFNames('exif_name'); ?>
-							<input type="text" id="exif_value" name="exif_value" class="s" /><br />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="rights">Rights set:</label></td>
-						<td class="quiet">
-							<?php echo $alkaline->showRights('rights'); ?>
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date taken:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date s" name="taken_begin" />
-							and <input type="text" class="date s" name="taken_end" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date uploaded:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date s" name="uploaded_begin" />
-							and <input type="text" class="date s" name="uploaded_end" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Location:</label></td>
-						<td class="quiet">
-							within
-							<select name="location_proximity">
-								<option value="10">10</option>
-								<option value="25">25</option>
-								<option value="50">50</option>
-								<option value="100" selected="selected">100</option>
-								<option value="250">250</option>
-								<option value="500">500</option>
-								<option value="1000">1,000</option>
-								<option value="2500">2,500</option>
-							</select>
-							miles of 
-							<input type="text" name="location" class="image_geo m" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="color">Dominant color:</label></td>
-						<td>
-							<select id="color" name="color">
-								<option></option>
-								<option value="blue">Blue</option>
-								<option value="red">Red</option>
-								<option value="yellow">Yellow</option>
-								<option value="green">Green</option>
-								<option value="purple">Purple</option>
-								<option value="orange">Orange</option>
-								<option value="brown">Brown</option>
-								<option value="pink">Pink</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Views:</label></td>
-						<td>
-							<select name="views_operator">
-								<option value="greater">&#8805;</option>
-								<option value="less">&#8804;</option>
-								<option value="equal">&#0061;</option>
-							</select>
-							<input type="text" name="views" class="xs" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="orientation">Orientation:</label></td>
-						<td class="quiet">
-							<select id="orientation" name="orientation">
-								<option value="">All</option>
-								<option value="portrait">Portrait</option>
-								<option value="landscape">Landscape</option>
-								<option value="square">Square</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="privacy">Privacy level:</label></td>
-						<td class="quiet">
-							<select id="privacy" name="privacy">
-								<option value="">All</option>
-								<option value="public">Public</option>
-								<option value="protected">Protected</option>
-								<option value="private">Private</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
 						<td class="right middle"><label for="published">Publication status:</label></td>
 						<td class="quiet">
 							<select id="published" name="published">
 								<option value="">All</option>
-								<option value="published">Published</option>
-								<option value="unpublished">Unpublished</option>
+								<option value="true">Published</option>
+								<option value="false">Unpublished</option>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="right middle"><label>Date created:</label></td>
+						<td class="quiet">
+							between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+							and <input type="text" class="date" name="created_end" style="width: 10em;" />
+						</td>
+					</tr>
+					<tr>
+						<td class="right middle"><label>Date modified:</label></td>
+						<td class="quiet">
+							between <input type="text" class="date" name="modified_begin" style="width: 10em;" />
+							and <input type="text" class="date" name="modified_end" style="width: 10em;" />
 						</td>
 					</tr>
 					<tr>
 						<td class="right middle"><label>Sort results by:</label></td>
 						<td>
 							<select name="sort">
-								<option value="taken">Date taken</option>
-								<option value="updated">Date last updated</option>
+								<option value="created" selected="selected">Date created</option>
+								<option value="modified">Date modified</option>
 								<option value="published">Date published</option>
-								<option value="uploaded" selected="selected">Date uploaded</option>
 								<option value="title">Title</option>
 								<option value="views">Views</option>
 							</select>
