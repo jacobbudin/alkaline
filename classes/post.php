@@ -81,8 +81,36 @@ class Post extends Alkaline{
 		if(!empty($_REQUEST['created_begin']) or !empty($_REQUEST['created_end'])){
 			$this->created($_REQUEST['created_begin'], $_REQUEST['created_end']);
 		}
-		if(!empty($_REQUEST['status'])){
-			$this->status($_REQUEST['status']);
+		if(!empty($_REQUEST['modified_begin']) or !empty($_REQUEST['modified_end'])){
+			$this->modified($_REQUEST['modified_begin'], $_REQUEST['modified_end']);
+		}
+		if(!empty($_REQUEST['published'])){
+			$this->published($_REQUEST['published']);
+		}
+		
+		if(!empty($_REQUEST['sort'])){
+			switch($_REQUEST['sort']){
+				case 'published':
+					$this->sort('posts.post_published', $_REQUEST['sort_direction']);
+					$this->notnull('posts.post_published');
+					break;
+				case 'uploaded':
+					$this->sort('posts.post_uploaded', $_REQUEST['sort_direction']);
+					break;
+				case 'modified':
+					$this->sort('posts.post_modified', $_REQUEST['sort_direction']);
+					$this->notnull('posts.post_modified');
+					break;
+				case 'title':
+					$this->sort('posts.post_title', $_REQUEST['sort_direction']);
+					$this->notnull('posts.post_title');
+					break;
+				case 'views':
+					$this->sort('posts.post_views', $_REQUEST['sort_direction']);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
@@ -146,6 +174,7 @@ class Post extends Alkaline{
 	 * @return void
 	 */
 	public function published($published=true){
+		if($published == 'false'){ $published = false; }
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
@@ -185,6 +214,38 @@ class Post extends Alkaline{
 			$end = date('Y-m-d', strtotime($end));
 			$this->sql_conds[] = 'posts.post_created <= :post_created_end';
 			$this->sql_params[':post_created_end'] = $end . ' 23:59:59"';
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Find by date modified
+	 *
+	 * @param string $begin Date begin 
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
+	public function modified($begin=null, $end=null){
+		// Error checking
+		if(empty($begin) and empty($end)){ return false; }
+		
+		// Set begin date
+		if(!empty($begin)){
+			if(is_int($begin)){ $begin = strval($begin); }
+			if(strlen($begin) == 4){ $begin .= '-01-01'; }
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = 'posts.post_modified >= :post_modified_begin';
+			$this->sql_params[':post_modified_begin'] = $begin . ' 00:00:00';
+		}
+		
+		// Set end date
+		if(!empty($end)){
+			if(is_int($end)){ $end = strval($end); }
+			if(strlen($end) == 4){ $end .= '-01-01'; }
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = 'posts.post_modified <= :post_modified_end';
+			$this->sql_params[':post_modified_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
