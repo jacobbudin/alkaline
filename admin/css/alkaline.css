@@ -378,7 +378,7 @@ a.nu{
 	font-size: .9em;
 }
 
-#configuration table, #preferences table{
+#configuration td.input, #preferences td.input{
 	width: 0;
 }
 
