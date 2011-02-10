@@ -29,7 +29,7 @@ textarea{
 }
 
 input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }
-input[type=text], input.text { padding:.35em; width: 60%; }
+input[type=text], input.text, input[type=password], input.password { padding:.35em; width: 60%; }
 
 input.xs{ width: 10%; }
 input.s{ width: 30%; }
