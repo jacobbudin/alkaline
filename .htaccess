@@ -23,6 +23,7 @@
 	RewriteRule ^admin/([a-z0-9-_]+)/([a-z0-9-_]+)(/)?$					admin/$1.php?act=$2 [NC,QSA]
 	
 	RewriteRule ^access/([a-z0-9-_]+)(/)?$								access.php?key=$1 [NC]
+	RewriteRule ^atom(/)?$												atom.php [NC]
 	RewriteRule ^page([0-9]+)(/)?$										index.php?page=$1 [NC]
 	RewriteRule ^image/([a-z0-9-_]+)(/)?$								image.php?id=$1 [NC]
 	RewriteRule ^page/([a-z0-9-_]+)(/)?$								page.php?id=$1 [NC]
