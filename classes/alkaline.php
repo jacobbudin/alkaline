@@ -2338,7 +2338,7 @@ class Alkaline{
 			}
 			else{
 				$last_pos = strlen($uri) - 1;
-				if($last_pos != '/'){
+				if($uri[$last_pos] != '/'){
 					$uri .= '/';
 				}
 				$uri .= 'page' . $page . '/';
