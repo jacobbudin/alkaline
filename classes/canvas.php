@@ -110,6 +110,21 @@ class Canvas extends Alkaline{
 		// Set variable, scrub to remove conditionals
 		$this->template = str_ireplace('{' . $var . '}', $value, $this->template);
 		$this->template = self::scrub($var, $this->template);
+		
+		preg_match_all('#\{' . $key . '\|([^\}]+)\}#si', $this->template, $keys_full, PREG_SET_ORDER);
+		
+		foreach($keys_full as $key_full){
+			$this->value = $value;
+			$this->value = $this->filter($key_full[1]);
+			$this->template = str_ireplace($key_full[0], $this->value, $this->template);
+		}
+		
+		if(!empty($this->value)){
+			$this->template = self::scrub($key, $this->template);
+		}
+		
+		unset($this->value);
+		
 		return true;
 	}
 	
@@ -131,6 +146,20 @@ class Canvas extends Alkaline{
 					// Set variable, scrub to remove conditionals
 					$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
 					$this->template = self::scrub($key, $this->template);
+					
+					preg_match_all('#\{' . $key . '\|([^\}]+)\}#si', $this->template, $keys_full, PREG_SET_ORDER);
+					
+					foreach($keys_full as $key_full){
+						$this->value = $value;
+						$this->value = $this->filter($key_full[1]);
+						$this->template = str_ireplace($key_full[0], $this->value, $this->template);
+					}
+					
+					if(!empty($this->value)){
+						$this->template = self::scrub($key, $this->template);
+					}
+					
+					unset($this->value);
 				}
 			}
 		}
@@ -819,6 +848,8 @@ class Canvas extends Alkaline{
 		$this->assign('Copyright', parent::copyright);
 		$this->assign('Search_Uri', LOCATION . BASE . 'search' . URL_CAP);
 		$this->assign('Results_Uri', LOCATION . BASE . 'results' . URL_CAP);
+		$this->assign('Atom_Uri', LOCATION . BASE . 'atom' . URL_CAP);
+		$this->assign('Blog_Uri', LOCATION . BASE . 'blog' . URL_CAP);
 		
 		// Process Counts, Blocks, Orbit, Config
 		$this->initDefines();
