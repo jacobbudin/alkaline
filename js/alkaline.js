@@ -630,7 +630,7 @@ $(document).ready(function(){
 		alt = $(this).children('img').attr('alt');
 		text = '<img src="' + src + '" alt="' + alt + '">';
 	
-		var input = $("#page_text_raw");
+		var input = $('textarea');
 		var range = input.caret();
 		
 		var value = input.val();

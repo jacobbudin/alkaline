@@ -33,6 +33,14 @@ if(!empty($_POST['configuration_save'])){
 		$alkaline->setConf('page_size_label', $size['size_label']);
 	}
 	
+	$post_size_id = intval($_POST['post_size_id']);
+	if($_POST['post_size_id'] != $alkaline->returnConf('post_size_id')){
+		$size = $alkaline->getRow('sizes', $post_size_id);
+		
+		$alkaline->setConf('post_size_id', $post_size_id);
+		$alkaline->setConf('post_size_label', $size['size_label']);
+	}
+	
 	$alkaline->setConf('web_name', @$_POST['web_name']);
 	$alkaline->setConf('web_title', @$_POST['web_title']);
 	$alkaline->setConf('web_title_format', @$_POST['web_title_format']);
@@ -46,6 +54,10 @@ if(!empty($_POST['configuration_save'])){
 	if(@$_POST['image_markup'] == ''){ $_POST['image_markup_ext'] = ''; }
 	
 	$alkaline->setConf('image_markup_ext', @$_POST['image_markup_ext']);
+	$alkaline->setConf('post_markup', @$_POST['post_markup']);
+	if(@$_POST['post_markup'] == ''){ $_POST['post_markup_ext'] = ''; }
+	
+	$alkaline->setConf('post_markup_ext', @$_POST['post_markup_ext']);
 	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
 	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
@@ -220,6 +232,24 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td>
 				<label for="image_markup">Markup new image descriptions using <select name="image_markup_ext" title="<?php echo $alkaline->returnConf('image_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
 				To use this setting for all your images, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-image-markup' ?>">reset your image markup</a>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Posts</h3>
+	
+	<table>
+		<tr>
+			<td class="input pad"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="description">
+				<label for="post_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('post_size_id', $alkaline->returnConf('post_size_id')); ?> when adding images by point-and-click</label>
+			</td>
+		</tr>
+		<tr class="markup">
+			<td class="pad"><input type="checkbox" id="post_markup" name="post_markup" <?php echo $alkaline->readConf('post_markup'); ?> value="true" /></td>
+			<td>
+				<label for="post_markup">Markup new posts using <select name="post_markup_ext" title="<?php echo $alkaline->returnConf('post_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
+				To use this setting for all your posts, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-post-markup' ?>">reset your post markup</a>
 			</td>
 		</tr>
 	</table>

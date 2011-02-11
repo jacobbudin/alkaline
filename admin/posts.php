@@ -27,7 +27,7 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['post_id'])){
 	$post_id = $alkaline->findID($_POST['post_id']);
-	if(@$_POST['post_delete'] == 'delete'){
+	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		$alkaline->deleteRow('posts', $post_id);
 	}
 	else{
@@ -43,10 +43,13 @@ if(!empty($_POST['post_id'])){
 		$post_text_raw = $_POST['post_text_raw'];
 		$post_text = $post_text_raw;
 		
-		$post_markup = @$_POST['post_markup'];
-		$post_markup_ext = @$_POST['post_markup_ext'];
-		
-		if($post_markup == 'markup'){
+		// Configuration: post_markup
+		if(!empty($_POST['post_markup'])){
+			$post_markup_ext = $_POST['post_markup'];
+			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+		}
+		elseif($alkaline->returnConf('post_markup')){
+			$post_markup_ext = $alkaline->returnConf('post_markup_ext');
 			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
 		}
 		else{
@@ -298,16 +301,12 @@ else{
 				</td>
 			</tr>
 			<tr>
-				<td class="right pad"><input type="checkbox" id="post_markup" name="post_markup" value="markup" <?php if(!empty($post['post_markup'])){ echo 'checked="checked"'; } ?> /></td>
-				<td><label for="post_markup">Markup this post using <select name="post_markup_ext" title="<?php echo @$post['post_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
-			</tr>
-			<tr>
 				<td class="right center"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
 				<td><label for="post_delete">Delete this post.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
+				<td><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>

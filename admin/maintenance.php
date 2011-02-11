@@ -65,6 +65,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<strong><a href="#reset-image-markup">Reset image markup</a></strong>
 		</li>
 		<li>
+			<strong><a href="#reset-post-markup">Reset post markup</a></strong>
+		</li>
+		<li>
 			<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>
 		</li>
 	</ul>
