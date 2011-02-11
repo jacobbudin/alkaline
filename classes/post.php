@@ -43,12 +43,12 @@ class Post extends Alkaline{
 	 *
 	 * @param array|int|string $post Search posts (post IDs, post titles)
 	 */
-	public function __construct($posts_ids=null){
+	public function __construct($post_ids=null){
 		parent::__construct();
 		
 		// Store data to object
-		$this->comments = array();
-		$this->comment_ids = array();
+		$this->posts = array();
+		$this->post_ids = array();
 		$this->page = 1;
 		$this->page_limit = LIMIT;
 		$this->image_ids = array();
@@ -70,9 +70,9 @@ class Post extends Alkaline{
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 		
-		if(!empty($comment_ids)){
-			$comment_ids = parent::convertToIntegerArray($comment_ids);
-			$this->sql_conds[] = 'posts.post_id IN (' . implode(', ', $posts_ids) . ')';
+		if(!empty($post_ids)){
+			$post_ids = parent::convertToIntegerArray($post_ids);
+			$this->sql_conds[] = 'posts.post_id IN (' . implode(', ', $post_ids) . ')';
 		}
 		
 		if(!empty($_REQUEST['q'])){
@@ -174,7 +174,7 @@ class Post extends Alkaline{
 	 * @return void
 	 */
 	public function published($published=true){
-		if($published == 'false'){ $published = false; }
+		if($published === 'false'){ $published = false; }
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
@@ -319,7 +319,7 @@ class Post extends Alkaline{
 	 * @param int $first Number of images on the first page (if different)
 	 * @return bool True if successful
 	 */
-	public function page($page, $limit=null, $first=null){
+	public function page($page=null, $limit=null, $first=null){
 		// Error checking
 		if(empty($page)){
 			if(!empty($_GET['page'])){ $page = intval($_GET['page']); }
@@ -434,6 +434,15 @@ class Post extends Alkaline{
 		// Count posts
 		$this->post_count_result = count($this->posts);
 		
+		// Determine URLs of image pages
+		if(!empty($this->page_next)){
+			$this->page_next_uri = $this->magicURL($this->page_next);
+		}
+		
+		if(!empty($this->page_previous)){
+			$this->page_previous_uri = $this->magicURL($this->page_previous);
+		}
+		
 		// Return posts.post_ids
 		return $this->posts;
 	}
@@ -461,6 +470,70 @@ class Post extends Alkaline{
 			$post['post_created'] = parent::formatTime($post['post_created'], $format);
 			$post['post_modified'] = parent::formatTime($post['post_modified'], $format);
 			$post['post_published'] = parent::formatTime($post['post_published'], $format);
+		}
+	}
+	
+	
+	/**
+	 * Add string notation to particular sequence, good for CSS columns
+	 *
+	 * @param string $label String notation
+	 * @param int $frequency 
+	 * @param bool $start_first True if first post should be selected and begin sequence
+	 * @return void
+	 */
+	public function addSequence($label, $frequency, $start_first=false){
+		if($start_first === false){
+			$i = 1;
+		}
+		else{
+			$i = $frequency;
+		}
+		
+		// Store post comment fields
+		foreach($this->posts as &$post){
+			if($i == $frequency){
+				if(empty($post['post_sequence'])){
+					$post['post_sequence'] = $label;
+				}
+				else{
+					$post['post_sequence'] .= ' ' . $label;
+				}
+				$i = 1;
+			}
+			else{
+				$i++;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get word and numerical sequencing of posts
+	 *
+	 * @param int $start First number on page
+	 * @param bool $asc Sequence order (false if DESC)
+	 * @return void
+	 */
+	public function getSeries($start=null, $asc=true){
+		if(!isset($start)){
+			$start = 1;
+		}
+		else{
+			$start = intval($start);
+		}
+		
+		if($asc === true){
+			$values = range($start, $start+$this->post_count);
+		}
+		else{
+			$values = range($start, $start-$this->post_count);
+		}
+		
+		for($i = 0; $i < $this->post_count; ++$i){
+			$this->posts[$i]['post_numeric'] = $values[$i];
+			$this->posts[$i]['post_alpha'] = ucwords($this->numberToWords($values[$i]));
 		}
 	}
 }
