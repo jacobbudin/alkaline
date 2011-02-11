@@ -940,6 +940,7 @@ class Find extends Alkaline{
 	 * @return void
 	 */
 	public function published($published=true){
+		if($published === 'false'){ $published = false; }
 		$now = date('Y-m-d H:i:s');
 		
 		if($published == true){
