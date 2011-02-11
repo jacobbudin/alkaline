@@ -1509,11 +1509,11 @@ class Image extends Alkaline{
 		if(!empty($size)){
 			$sizes = array_map('strtolower', $sizes);
 			$value_slots = array_fill(0, count($sizes)*2, '?');
-			$query = $this->prepare('SELECT size_label, size_type, size_prepend, size_append, size_height, size_width FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots) . ' ORDER BY (size_width*size_width) DESC');
+			$query = $this->prepare('SELECT size_id, size_label, size_type, size_prepend, size_append, size_height, size_width FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots) . ' ORDER BY (size_width*size_width) DESC');
 			$query->execute($sizes);
 		}
 		else{
-			$query = $this->prepare('SELECT size_label, size_type, size_prepend, size_append, size_title, size_height, size_width FROM sizes ORDER BY (size_width*size_width) DESC');
+			$query = $this->prepare('SELECT size_id, size_label, size_type, size_prepend, size_append, size_title, size_height, size_width FROM sizes ORDER BY (size_width*size_width) DESC');
 			$query->execute();
 		}
 		
