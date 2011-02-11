@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('blog');
 
 $posts = new Post;
-$posts->page(null, 2);
+$posts->page(null, 3);
 $posts->published();
 $posts->fetch();
 $posts->formatTime();

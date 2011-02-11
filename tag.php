@@ -40,7 +40,7 @@ if($id){
 	$header->display();
 
 	$content = new Canvas;
-	$content->load('index');
+	$content->load('tag');
 	$content->assign('Page_Next', $image_ids->page_next);
 	$content->assign('Page_Previous', $image_ids->page_previous);
 	$content->assign('Page_Current', $image_ids->page);

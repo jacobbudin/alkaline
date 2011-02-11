@@ -51,7 +51,7 @@ h5{
 	margin-left: 1em;
 }
 
-#title a{
+#title h1 a, #title p.quiet a{
 	color: inherit;
 	text-decoration: inherit;
 }
