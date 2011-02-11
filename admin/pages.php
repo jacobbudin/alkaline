@@ -27,7 +27,7 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['page_id'])){
 	$page_id = $alkaline->findID($_POST['page_id']);
-	if(@$_POST['page_delete'] == 'delete'){
+	if(!empty($_POST['page_delete']) and ($_POST['page_delete'] == 'delete')){
 		$alkaline->deleteRow('pages', $page_id);
 	}
 	else{
@@ -85,6 +85,7 @@ define('TAB', 'features');
 if(empty($page_id)){
 	$pages = new Page();
 	$pages->fetchAll();
+	$pages->formatTime();
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -116,8 +117,8 @@ if(empty($page_id)){
 				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
-				echo '<td>' . $pages->formatTime($page['page_created']) . '</td>';
-				echo '<td>' . $pages->formatTime($page['page_modified']) . '</td>';
+				echo '<td>' . $page['page_created'] . '</td>';
+				echo '<td>' . $page['page_modified'] . '</td>';
 			echo '</tr>';
 		}
 
