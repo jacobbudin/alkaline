@@ -14,10 +14,17 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('blog');
 
 $posts = new Post;
-$posts->page(null);
+$posts->page(null, 2);
 $posts->published();
 $posts->fetch();
 $posts->formatTime();
+$posts->addSequence('last', 2);
+
+for ($i=0; $i < $posts->post_count; $i++) { 
+	if($i > 1){
+		$posts->posts[$i]['post_hr'] = '<hr />';
+	}
+}
 
 $header = new Canvas;
 $header->load('header');

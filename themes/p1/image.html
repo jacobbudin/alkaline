@@ -33,13 +33,48 @@
 			{/block:Tags}
 			</p>
 		{/if:Tags}
+		
 		<hr />
-		<ul>
-		{block:Sizes}
-			<li><a href="{Size_Src}">{Size_Title}</a> ({Size_Width} x {Size_Height})</li>
-		{/block:Sizes}
-		</ul>
+		
+		<div class="span-24 last">
+			<div class="span-8">
+				<h3>Sizes ({count:Sizes})</h3>
+				<ul>
+				{block:Sizes}
+					<li><a href="{Size_Src}">{Size_Title}</a> ({Size_Width} x {Size_Height})</li>
+				{/block:Sizes}
+				</ul>
+			</div>
+		
+			<div class="span-8">
+				<h3>Sets ({count:Sets})</h3>
+				{if:Sets}
+				<ul>
+				{block:Sets}
+					<li><a href="{Set_URI}">{Set_Title}</a></li>
+				{/block:Sets}
+				</ul>
+				{else:Sets}
+					<p class="quiet">This image is not featured in any sets.</p>
+				{/if:Sets}
+			</div>
+		
+			<div class="span-8 last">
+				<h3>Pages ({count:Pages})</h3>
+				{if:Pages}
+				<ul>
+				{block:Pages}
+					<li><a href="{Set_URI}">{Set_Title}</a></li>
+				{/block:Pages}
+				</ul>
+				{else:Pages}
+					<p class="quiet">This image is not featured on any pages.</p>
+				{/if:Pages}
+			</div>
+		</div>
+		
 		<hr />
+		
 		{if:Comments}
 			<table>
 			{block:Comments}

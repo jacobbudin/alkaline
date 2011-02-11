@@ -129,6 +129,12 @@ p.description{
 	text-align: right;
 }
 
+#blog img, #post img{
+	margin-bottom: 1.5em;
+	-webkit-box-shadow: 0 0 10px #ddd;
+	-moz-box-shadow: 0 0 10px #ddd;
+}
+
 .float_right_big{
 	margin: 1em 0 1em 0;
 	float: right;
@@ -172,7 +178,6 @@ p.slim{
 .datetime{
 	color: #999;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 1.1em;
 	font-weight: bold;
 	text-transform: uppercase;
 }

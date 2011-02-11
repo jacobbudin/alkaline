@@ -1,8 +1,13 @@
-{if:Posts}
+<hr />
+
+<div id="post" class="span-24 last">
+	<div class="span-14 last">
 	{block:Posts}
-		{Post_Created}
+		<div class="datetime">{Post_Created|reltime}</div>
 		<h2>{Post_Title}</h2>
-		
+
 		{Post_Text}
+		<p><strong><a href="{Post_URI}">Permalink</a></strong></p>
 	{/block:Posts}
-{/if:Posts}
+	</div>
+</div>

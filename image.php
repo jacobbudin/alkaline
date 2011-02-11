@@ -30,6 +30,8 @@ $images->getSizes('medium');
 $images->getEXIF();
 $images->getColorkey(950, 15);
 $images->getTags();
+$images->getPages();
+$images->getSets();
 $images->getRights();
 $images->getComments();
 $images->hook();
