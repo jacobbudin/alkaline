@@ -31,22 +31,22 @@ $entries = new Canvas('
 	<entry>
 		<title type="text">{if:Image_Title}{Image_Title}{else:Image_Title}(Untitled){/if:Image_Title}</title>
 		<link href="" />
-		<id>{LOCATION}{BASE}{PHOTO_ID}</id>
-		<updated>{PHOTO_UPDATED}</updated>
-		<published>{PHOTO_PUBLISHED}</published>
-		{if:PHOTO_DESCRIPTION}
+		<id>{Location}{Base}{Image_ID}</id>
+		<updated>{Image_Updated}</updated>
+		<published>{Image_Published}</published>
+		{if:Image_Description}
 			<summary type="xhtml">
 				<div xmlns="http://www.w3.org/1999/xhtml">
-					{PHOTO_DESCRIPTION}
+					{Image_Description}
 				</div>
 			</summary>
-		{/if:PHOTO_DESCRIPTION}
+		{/if:Image_Description}
 		<content type="xhtml">
 			<div xmlns="http://www.w3.org/1999/xhtml">
-				<a href=""><img src="{LOCATION}{PHOTO_SRC_MEDIUM}" title="{PHOTO_TITLE}" /></a>
+				<a href=""><img src="{Location}{Image_Src_Medium}" alt="" title="{Image_Title}" /></a>
 			</div>
 		</content>
-		<link rel="enclosure" type="{PHOTO_MIME}" href="{LOCATION}{PHOTO_SRC_MEDIUM}" />
+		<link rel="enclosure" type="{Image_MIME}" href="{Location}{Image_Src_Medium}" />
 	</entry>
 {/block:Images}');
 $entries->assign('BASE', BASE);
