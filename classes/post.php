@@ -431,6 +431,11 @@ class Post extends Alkaline{
 			}
 		}
 		
+		// Config: comm_enabled
+		if($this->returnConf('comm_enabled') != true){
+			$this->images[$i]['image_comment_disabled'] = 1;
+		}
+		
 		// Count posts
 		$this->post_count_result = count($this->posts);
 		
@@ -442,6 +447,9 @@ class Post extends Alkaline{
 		if(!empty($this->page_previous)){
 			$this->page_previous_uri = $this->magicURL($this->page_previous);
 		}
+		
+		// For post-fetch activities
+		$this->sql = ' WHERE (posts.post_id IN (' . implode(', ', $this->post_ids) . '))';
 		
 		// Return posts.post_ids
 		return $this->posts;
@@ -536,6 +544,46 @@ class Post extends Alkaline{
 			$this->posts[$i]['post_alpha'] = ucwords($this->numberToWords($values[$i]));
 		}
 	}
+	
+	/**
+	 * Get comments data, append comment <input> HTML data
+	 *
+	 * @param bool Published (true) or all (false)
+	 * @return array Associative array of comments
+	 */
+	public function getComments($published=true){
+		if($published == true){
+			$query = $this->prepare('SELECT * FROM comments, posts' . $this->sql . ' AND comments.post_id = posts.post_id AND comments.comment_status > 0;');
+		}
+		else{
+			$query = $this->prepare('SELECT * FROM comments, posts' . $this->sql . ' AND comments.post_id = posts.post_id;');
+		}
+		$query->execute();
+		$this->comments = $query->fetchAll();
+		
+		foreach($this->comments as &$comment){
+			if(!empty($comment['comment_author_avatar'])){
+				$comment['comment_author_avatar'] = '<img src="' . $comment['comment_author_avatar'] . '" alt="" />';
+			}
+			$comment['comment_created'] = parent::formatTime($comment['comment_created']);
+		}
+		
+		// Store post comment fields
+		for($i = 0; $i < $this->post_count; ++$i){
+			$this->posts[$i]['post_comment_text'] = '<textarea id="comment_' . $this->posts[$i]['post_id'] . '_text" name="comment_' . $this->posts[$i]['post_id'] . '_text" class="comment_text"></textarea>';
+			
+			$this->posts[$i]['post_comment_author_name'] = '<input type="text" id="comment_' . $this->posts[$i]['post_id'] . '_author_name" name="comment_' . $this->posts[$i]['post_id'] . '_author_name" class="comment_author_name" />';
+			
+			$this->posts[$i]['post_comment_author_email'] = '<input type="text" id="comment_' . $this->posts[$i]['post_id'] . '_author_email" name="comment_' . $this->posts[$i]['post_id'] . '_author_email" class="comment_author_email" />';
+			
+			$this->posts[$i]['post_comment_author_uri'] = '<input type="text" id="comment_' . $this->posts[$i]['post_id'] . '_author_uri" name="comment_' . $this->posts[$i]['post_id'] . '_author_uri" class="comment_author_uri" />';
+		
+			$this->posts[$i]['post_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->posts[$i]['post_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
+		}
+		
+		return $this->comments;
+	}
+	
 }
 
 ?>

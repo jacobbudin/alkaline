@@ -111,16 +111,16 @@ class Canvas extends Alkaline{
 		$this->template = str_ireplace('{' . $var . '}', $value, $this->template);
 		$this->template = self::scrub($var, $this->template);
 		
-		preg_match_all('#\{' . $key . '\|([^\}]+)\}#si', $this->template, $keys_full, PREG_SET_ORDER);
+		preg_match_all('#\{' . $var . '\|([^\}]+)\}#si', $this->template, $vars_full, PREG_SET_ORDER);
 		
-		foreach($keys_full as $key_full){
+		foreach($vars_full as $var_full){
 			$this->value = $value;
-			$this->value = $this->filter($key_full[1]);
-			$this->template = str_ireplace($key_full[0], $this->value, $this->template);
+			$this->value = $this->filter($var_full[1]);
+			$this->template = str_ireplace($var_full[0], $this->value, $this->template);
 		}
 		
 		if(!empty($this->value)){
-			$this->template = self::scrub($key, $this->template);
+			$this->template = self::scrub($var, $this->template);
 		}
 		
 		unset($this->value);
@@ -224,7 +224,7 @@ class Canvas extends Alkaline{
 				
 				// Wrap in <form> for commenting
 				if(($match[1] == 'images') and ($this->form_wrap === true)){
-					$match[2] = '<form action="" id="image_{PHOTO_ID}" class="image" method="post">' . $match[2] . '</form>';
+					$match[2] = '<form action="" method="post">' . $match[2] . '</form>';
 				}
 				elseif(($match[1] == 'images') and ($this->slideshow === true)){
 					$match[2] = '<li><!-- ' . $match[2] . ' --></li>';
@@ -278,11 +278,16 @@ class Canvas extends Alkaline{
 							if(!empty($this->value)){
 								$loop_template = self::scrub($key, $loop_template);
 							}
+							
+							unset($this->value);
 						}
 						
 						// If tied to image array (either sub or super), execute inner blocks
 						if(!empty($reel[$i]['image_id'])){
-							$loop_template = self::loopSub($object, $loop_template, $reel[$i]['image_id']);
+							$loop_template = self::loopSub($object, $loop_template, 'image_id', $reel[$i]['image_id']);
+						}
+						if(!empty($reel[$i]['post_id'])){
+							$loop_template = self::loopSub($object, $loop_template, 'post_id', $reel[$i]['post_id']);
 						}
 						$done_once[] = $reel[$i][$field];
 					}
@@ -308,10 +313,11 @@ class Canvas extends Alkaline{
 	 *
 	 * @param string $array 
 	 * @param string $template 
-	 * @param string $image_id 
+	 * @param string $field
+	 * @param string $id 
 	 * @return void
 	 */
-	protected function loopSub($array, $template, $image_id){
+	protected function loopSub($array, $template, $field, $id){
 		$loops = array();
 		
 		$table_regex = implode('|', array_keys($this->tables));
@@ -344,8 +350,8 @@ class Canvas extends Alkaline{
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
 					
-					if(!empty($reel[$i]['image_id'])){
-						if($reel[$i]['image_id'] == $image_id){
+					if(!empty($reel[$i][$field])){
+						if($reel[$i][$field] == $id){
 							if(empty($loop_template)){
 								$loop_template = $loops[$j]['template'];
 							}
@@ -370,6 +376,8 @@ class Canvas extends Alkaline{
 								if(!empty($this->value)){
 									$loop_template = self::scrub($key, $loop_template);
 								}
+								
+								unset($this->value);
 							}
 						}
 					}
@@ -702,7 +710,7 @@ class Canvas extends Alkaline{
 	 * @return string Template
 	 */
 	public function scrubEmpty($template){
-		preg_match_all('#{if:([a-z0-9_\-]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
+		preg_match_all('#{if:([a-z0-9\_\-]*)}(.*?){/if:\1}#si', $template, $matches, PREG_SET_ORDER);
 		
 		$loops = array();
 		
@@ -715,9 +723,9 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
-			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
+			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}') !== false){
 				$loops[$j]['replacement'] = $loops[$j]['template'];
-				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
+				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement'], -1, $count);
 			}
 		}
 		

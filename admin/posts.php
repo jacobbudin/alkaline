@@ -57,6 +57,14 @@ if(!empty($_POST['post_id'])){
 			$post_text = nl2br($post_text_raw);
 		}
 		
+		// Comment disabling
+		if(@$_POST['post_comment_disabled'] == 'disabled'){
+			$post_comment_disabled = 1;
+		}
+		else{
+			$post_comment_disabled = 0;
+		}
+		
 		$post_published = @$_POST['post_published'];
 		
 		if(empty($post_published)){
@@ -81,6 +89,7 @@ if(!empty($_POST['post_id'])){
 			'post_images' => $post_images,
 			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_published' => $post_published,
+			'post_comment_disabled' => $post_comment_disabled,
 			'post_words' => $post_words);
 		
 		$alkaline->updateRow($fields, 'posts', $post_id);
@@ -300,6 +309,14 @@ else{
 					</div>
 				</td>
 			</tr>
+			<?php if($alkaline->returnConf('comm_enabled')){ ?>
+			<tr>
+				<td class="right center"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
+				<td>
+					<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
+				</td>
+			</tr>
+			<?php } ?>
 			<tr>
 				<td class="right center"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
 				<td><label for="post_delete">Delete this post.</label> This action cannot be undone.</td>

@@ -12,6 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $alkaline->recordStat('post');
+$alkaline->addComments();
 
 $id = $alkaline->findID($_GET['id']);
 
@@ -19,6 +20,7 @@ if($id){
 	$posts = new Post($id);
 	$posts->published();
 	$posts->fetch();
+	$posts->getComments(true);
 	$posts->formatTime();
 	$posts->updateViews();
 	$post = $posts->posts[0];
@@ -31,9 +33,9 @@ if($id){
 	$header->display();
 
 	$content = new Canvas;
+	$content->wrapForm();
 	$content->load('post');
 	$content->loop($posts);
-	$content->assignArray($post);
 	$content->display();
 
 	$footer = new Canvas;

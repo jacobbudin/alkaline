@@ -1194,11 +1194,18 @@ class Alkaline{
 			return false;
 		}
 		
-		if(empty($_POST['comment_id'])){
+		if(empty($_POST['image_id']) and empty($_POST['post_id'])){
 			return false;
 		}
 		
-		$id = self::findID($_POST['comment_id']);
+		if(!empty($_POST['image_id'])){
+			$id = self::findID($_POST['image_id']);
+			$id_type = 'image_id';
+		}
+		elseif(!empty($_POST['post_id'])){
+			$id = self::findID($_POST['post_id']);
+			$id_type = 'post_id';
+		}
 		
 		// Configuration: comm_mod
 		if($this->returnConf('comm_mod')){
@@ -1223,7 +1230,7 @@ class Alkaline{
 			$comment_text = nl2br($comment_text_raw);
 		}
 		
-		$fields = array('image_id' => $id,
+		$fields = array($id_type => $id,
 			'comment_status' => $comment_status,
 			'comment_text' => $comment_text,
 			'comment_text_raw' => $comment_text_raw,
@@ -1243,7 +1250,12 @@ class Alkaline{
 			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . strip_tags($comment_text));
 		}
 		
-		$this->updateCount('comments', 'images', 'image_comment_count', $id);
+		if($id_type == 'image_id'){
+			$this->updateCount('comments', 'images', 'image_comment_count', $id);
+		}
+		elseif($id_type = 'post_id'){
+			$this->updateCount('comments', 'posts', 'post_comment_count', $id);
+		}
 		
 		return true;
 	}

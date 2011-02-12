@@ -33,7 +33,7 @@ $images->getTags();
 $images->getPages();
 $images->getSets();
 $images->getRights();
-$images->getComments();
+$images->getComments(true);
 $images->hook();
 
 $header = new Canvas;
