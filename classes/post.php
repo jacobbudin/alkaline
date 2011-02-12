@@ -424,11 +424,13 @@ class Post extends Alkaline{
 		// Attach additional fields
 		for($i = 0; $i < $this->post_count; ++$i){
 			if(empty($this->posts[$i]['post_title_url'])){
-				$this->posts[$i]['post_uri'] = LOCATION . BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
+				$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
 			}
 			else{
-				$this->posts[$i]['post_uri'] = LOCATION . BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $this->posts[$i]['post_title_url'] . URL_RW;
+				$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $this->posts[$i]['post_title_url'] . URL_RW;
 			}
+			
+			$this->posts[$i]['image_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
 		}
 		
 		// Config: comm_enabled

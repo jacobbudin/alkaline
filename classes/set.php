@@ -53,11 +53,13 @@ class Set extends Alkaline{
 		// Attach additional fields
 		for($i = 0; $i < $this->set_count; ++$i){
 			if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
-				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
+				$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
 			}
 			else{
-				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
+				$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
 			}
+			
+			$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
 		}
 	}
 	

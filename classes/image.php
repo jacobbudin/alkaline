@@ -76,11 +76,14 @@ class Image extends Alkaline{
 				$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
 				$title_url = $this->makeURL($this->images[$i]['image_title']);
 				if(empty($title_url) or (URL_RW != '/')){
-					$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
+					$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
 				}
 				else{
-					$this->images[$i]['image_uri'] = LOCATION . BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . '-' . $title_url . URL_RW;
+					$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . '-' . $title_url . URL_RW;
 				}
+				
+				$this->images[$i]['image_uri'] = LOCATION . $this->images[$i]['image_uri_rel'];
+				
 				if($this->returnConf('comm_enabled') != true){
 					$this->images[$i]['image_comment_disabled'] = 1;
 				}
@@ -1642,11 +1645,13 @@ class Image extends Alkaline{
 		for($i = 0; $i < $this->tag_count; ++$i){
 			$title_url = $this->makeURL($this->tags[$i]['tag_name']);
 			if(empty($title_url) or (URL_RW != '/')){
-				$this->tags[$i]['tag_uri'] = LOCATION . BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . URL_RW;
+				$this->tags[$i]['tag_uri_rel'] = BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . URL_RW;
 			}
 			else{
-				$this->tags[$i]['tag_uri'] = LOCATION . BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . '-' . $title_url . URL_RW;
+				$this->tags[$i]['tag_uri_rel'] = BASE . 'tag' . URL_ID . $this->tags[$i]['tag_id'] . '-' . $title_url . URL_RW;
 			}
+			
+			$this->tags[$i]['tag_uri'] = LOCATION . $this->tags[$i]['tag_uri_rel'];
 		}
 		
 		foreach($tags as $tag){

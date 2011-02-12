@@ -53,11 +53,13 @@ class Page extends Alkaline{
 		// Attach additional fields
 		for($i = 0; $i < $this->page_count; ++$i){
 			if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
-				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
+				$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
 			}
 			else{
-				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
+				$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
 			}
+			
+			$this->pages[$i]['page_uri'] = LOCATION . $this->pages[$i]['page_uri_rel'];
 		}
 	}
 	
