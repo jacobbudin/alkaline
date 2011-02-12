@@ -628,7 +628,9 @@ $(document).ready(function(){
 	}).click(function() {
 		src = $(this).attr('href');
 		alt = $(this).children('img').attr('alt');
-		text = '<img src="' + src + '" alt="' + alt + '">';
+		id = $(this).children('img').attr('id');
+		uri_rel = $('.uri_rel.' + id).text();
+		text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a>';
 	
 		var input = $('textarea');
 		var range = input.caret();

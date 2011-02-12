@@ -188,7 +188,9 @@ else{
 						}
 						
 						foreach($images->images as $image){
-							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+							$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
+							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+							echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
 						}
 					
 						?>
