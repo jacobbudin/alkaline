@@ -254,6 +254,16 @@ class Canvas extends Alkaline{
 			if($reel_count > 0){
 				$done_once = array();
 				for($i = 0; $i < $reel_count; ++$i){
+					$field_label = substr($field, 0, -3);
+					if($i == 0){
+						$first_label = $field_label . '_first';
+						$reel[$i][$first_label] = 1;
+					}
+					elseif($i == ($reel_count -1)){
+						$last_label = $field_label . '_last';
+						$reel[$i][$last_label] = 1;
+					}
+					
 					if(!empty($reel[$i][$field]) and !in_array($reel[$i][$field], $done_once)){
 						$loop_template = $loops[$j]['template'];
 			
@@ -349,6 +359,16 @@ class Canvas extends Alkaline{
 			if($reel_count > 0){
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
+					
+					$field_label = substr($field, 0, -3);
+					if($i == 0){
+						$first_label = $field_label . '_first';
+						$reel[$i][$first_label] = 1;
+					}
+					elseif($i == ($reel_count -1)){
+						$last_label = $field_label . '_last';
+						$reel[$i][$last_label] = 1;
+					}
 					
 					if(!empty($reel[$i][$field])){
 						if($reel[$i][$field] == $id){
