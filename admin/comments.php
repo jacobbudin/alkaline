@@ -50,7 +50,7 @@ if(!$alkaline->returnConf('comm_enabled')){
 	$alkaline->addNote('New comments have been disabled.', 'notice');
 }
 
-define('TAB', 'features');
+define('TAB', 'comments');
 
 // GET COMMENTS TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
@@ -61,6 +61,7 @@ if(empty($comment_id)){
 	$comments->comments = $alkaline->stripTags($comments->comments);
 	
 	$image_ids = $comments->image_ids;
+	
 	$images = new Image($image_ids);
 	$images->getSizes('square');
 	
