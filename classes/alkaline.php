@@ -21,7 +21,7 @@ function __autoload($class){
 class Alkaline{
 	const build = 605;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
-	const edition = 'standard';
+	const edition = 'multiuser';
 	const product = 'Alkaline';
 	const version = '1.0';
 	
@@ -1249,12 +1249,12 @@ class Alkaline{
 		
 		$fields = $orbit->hook('comment_add', $fields, $fields);
 		
-		if(!$this->addRow($fields, 'comments')){
+		if(!$comment_id = $this->addRow($fields, 'comments')){
 			return false;
 		}
 		
 		if($this->returnConf('comm_email')){
-			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . strip_tags($comment_text));
+			$this->email(0, 'New comment', 'A new comment has been submitted:' . "\r\n\n" . strip_tags($comment_text) . "\r\n\n" . LOCATION . BASE . ADMIN . 'comments' . URL_ID . $comment_id . URL_RW);
 		}
 		
 		if($id_type == 'image_id'){
@@ -2613,7 +2613,7 @@ class Alkaline{
 	 * @param string $message 
 	 * @return True if successful
 	 */
-	protected function email($to=0, $subject, $message){
+	public function email($to=0, $subject, $message){
 		if(empty($subject) or empty($message)){ return false; }
 		
 		if($to == 0){
@@ -2627,8 +2627,12 @@ class Alkaline{
 			$to = $user['user_email'];
 		}
 		
-		$subject = 'Alkaline: ' . $subject;
-		$message = $message . "\r\n\n" . '-- Alkaline';
+		$source = strip_tags($this->returnConf('web_title'));
+		
+		if(empty($source)){ $source = 'Alkaline'; }
+		
+		$subject = $source . ': ' . $subject;
+		$message = $message . "\r\n\n" . '-- ' . $source;
 		$headers = 'From: ' . $this->returnConf('web_email') . "\r\n" .
 			'Reply-To: ' . $this->returnConf('web_email') . "\r\n" .
 			'X-Mailer: PHP/' . phpversion();
