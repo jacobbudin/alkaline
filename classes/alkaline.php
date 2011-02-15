@@ -1379,6 +1379,25 @@ class Alkaline{
 	}
 	
 	/**
+	 * Get Alkaline Dashboard header badges
+	 *
+	 * @return array Associate array of fields and integers
+	 */
+	public function getBadges(){
+		$badges = array();
+		
+		// New
+		$badges['library'] = $this->countDirectory(PATH . SHOEBOX);
+
+		$comments = new Comment();
+		$comments->status(0);
+		$comments->fetch();
+		$badges['comments'] = $comments->comment_count;
+		
+		return $badges;
+	}
+	
+	/**
 	 * Get array of tags
 	 *
 	 * @return array Associative array of tags

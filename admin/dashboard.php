@@ -15,6 +15,8 @@ $user = new User;
 
 $user->perm(true);
 
+
+// Vitals
 $stats = new Stat(strtotime('-30 days'));
 $stats->getDaily();
 
@@ -102,27 +104,21 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<?php
 
-		$shoebox_count = $alkaline->countDirectory(PATH . SHOEBOX);
-		
-		$comments = new Comment();
-		$comments->status(0);
-		$comments->fetch();
-
-		if(($shoebox_count > 0) or ($comments->comment_count > 0)){
+		if(($badges['library'] > 0) or ($badges['comments'] > 0)){
 			?>
 
 			<h3>New</h3>
 			<table class="census">
-				<?php if($shoebox_count > 0){ ?>
+				<?php if($badges['library'] > 0){ ?>
 					<tr>
-						<td class="right"><?php echo $shoebox_count; ?></td>
-						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($shoebox_count, 'image'); ?></a></td>
+						<td class="right"><?php echo $badges['library']; ?></td>
+						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($badges['library'], 'image'); ?></a></td>
 					</tr>
 				<?php } ?>
-				<?php if($comments->comment_count > 0){ ?>
+				<?php if($badges['comments'] > 0){ ?>
 					<tr>
 						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php echo $alkaline->returnCount($comments->comment_count, 'comment'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php echo $alkaline->returnCount($badges['comments'], 'comment'); ?></a></td>
 					</tr>
 				<?php } ?>
 			</table>

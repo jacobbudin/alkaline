@@ -379,11 +379,52 @@ a.nu{
 }
 
 #configuration td.input, #preferences td.input{
-	width: 0;
+	width: 10px;
 }
 
 img.ui-datepicker-trigger{
 	padding: 0 .5em;
+}
+
+.badge_holder{
+	position: relative;
+	top: -2.1em;
+	left: -1em;
+	display: inline;
+	z-index: 100;
+}
+
+.badge{
+	position: absolute;
+	background-color: #b00500;
+	color: #fff;
+	font-size: .75em;
+	text-shadow: 0 0 1px #7b0401;
+	font-weight: bold;
+	height: 16px;
+	width: 16px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	background-image: -webkit-gradient(
+	    linear,
+	    right bottom,
+	    left top,
+	    color-stop(1, rgb(199,62,58)),
+	    color-stop(0, rgb(176,6,0))
+	);
+	background-image: -moz-linear-gradient(
+	    right bottom,
+	    rgb(199,62,58) 100%,
+	    rgb(176,6,0) 0%
+	);
+	-moz-box-shadow: 0 0 2px #999;
+	-webkit-box-shadow: 0 0 2px #999;
+	text-align: center;
+}
+
+.badge a{
+	color: #fff;
+	text-decoration: none;
 }
 
 #search td.right{
