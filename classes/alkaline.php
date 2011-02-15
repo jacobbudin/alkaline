@@ -1446,6 +1446,31 @@ class Alkaline{
 	}
 	
 	/**
+	 * List tags by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
+	public function hintTag($hint){
+		$hint_lower = strtolower($hint);
+		
+		$sql = 'SELECT DISTINCT(tags.tag_name) FROM tags WHERE LOWER(tags.tag_name LIKE :hint_lower) ORDER BY tags.tag_name ASC';
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
+		$tags = $query->fetchAll();
+		
+		$tags_list = array();
+		
+		foreach($tags as $tag){
+			$tags_list[] = $tag['tag_name'];
+		}
+		
+		return $tags_list;
+	}
+	
+	
+	/**
 	 * Get array of all includes
 	 *
 	 * @return array Array of includes

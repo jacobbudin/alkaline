@@ -14,9 +14,8 @@ $alkaline = new Alkaline;
 
 $hint = strip_tags($_GET['term']);
 
-$geo = new Geo;
-$places = $geo->hint($hint);
+$tags = $alkaline->hintTag($hint);
 
-echo json_encode($places);
+echo json_encode($tags);
 
 ?>

@@ -607,6 +607,15 @@ $(document).ready(function(){
 		});
 	});
 	
+	// PRIMARY - TAG HINTING
+	$(".image_tag").live('focus', function(){
+		$(this).autocomplete({
+			source: BASE + ADMIN + 'tasks/tag-hint.php',
+			delay: 200,
+			minLength: 2
+		});
+	});
+	
 	// PRIMARY - MARKUP
 	$('select[name$="markup_ext"]').each(function() {
 		ext = $(this).attr("title");
