@@ -1901,7 +1901,7 @@ class Image extends Alkaline{
 			
 			$this->images[$i]['image_comment_author_uri'] = '<input type="text" id="comment_' . $this->images[$i]['image_id'] . '_author_uri" name="comment_' . $this->images[$i]['image_id'] . '_author_uri" class="comment_author_uri" />';
 		
-			$this->images[$i]['image_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->images[$i]['image_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
+			$this->images[$i]['image_comment_submit'] = '<input type="hidden" name="image_id" value="' . $this->images[$i]['image_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
 		}
 		
 		return $this->comments;

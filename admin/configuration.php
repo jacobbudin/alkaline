@@ -78,6 +78,8 @@ if(!empty($_POST['configuration_save'])){
 	if(@$_POST['comment_markup'] == ''){ $_POST['comment_markup_ext'] = ''; }
 	
 	$alkaline->setConf('comm_markup_ext', @$_POST['comm_markup_ext']);
+	$alkaline->setConf('comm_allow_html', @$_POST['comm_allow_html']);
+	$alkaline->setConf('comm_allow_html_tags', @$_POST['comm_allow_html_tags']);
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
@@ -372,10 +374,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
+			<td class="input pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
 			<td>
 				<label for="comm_markup">Markup new comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
 				To use this setting for all your comments, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-comment-markup' ?>">reset your comment markup</a>
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="comm_allow_html" name="comm_allow_html" <?php echo $alkaline->readConf('comm_allow_html'); ?> value="true" /></td>
+			<td>
+				<label for="comm_allow_html">Allow select HTML in comments</label><br />
+				Allow only the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="xs" />
 			</td>
 		</tr>
 	</table>

@@ -26,6 +26,7 @@ class Comment extends Alkaline{
 	public $page_next;
 	public $page_previous;
 	public $image_ids;
+	public $post_ids;
 	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
@@ -416,14 +417,23 @@ class Comment extends Alkaline{
 		// Grab comments.comment_ids of results
 		$this->comment_ids = array();
 		$this->image_ids = array();
+		$this->post_ids = array();
 		
 		foreach($comments as $comment){
 			$this->comment_ids[] = intval($comment['comment_id']);
-			$this->image_ids[] = $comment['image_id'];
+			if($comment['image_id'] != 0){
+				$this->image_ids[] = $comment['image_id'];
+			}
+			if($comment['post_id'] != 0){
+				$this->post_ids[] = $comment['post_id'];
+			}
 		}
 
 		$this->image_ids = array_unique($this->image_ids, SORT_NUMERIC);
 		$this->image_ids = array_values($this->image_ids);
+		
+		$this->post_ids = array_unique($this->post_ids, SORT_NUMERIC);
+		$this->post_ids = array_values($this->post_ids);
 		
 		// Count comments
 		$this->comment_count_result = count($this->comments);

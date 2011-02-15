@@ -171,7 +171,11 @@ else{
 	
 	?>
 	
+	<?php if($comment['image_id'] != 0){ ?>
 	<div class="actions"><a href="<?php echo BASE; ?>image/<?php echo $comment['image_id']; ?>/">Go to image</a></div>
+	<?php } if($comment['post_id'] != 0){ ?>
+	<div class="actions"><a href="<?php echo BASE; ?>post/<?php echo $comment['post_id']; ?>/">Go to post</a></div>
+	<?php } ?>
 	
 	<h1>Comment</h1>
 

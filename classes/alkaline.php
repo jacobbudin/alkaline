@@ -1215,8 +1215,6 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
-		$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
-		
 		$orbit = new Orbit;
 		
 		// Configuration: comm_markup
@@ -1228,6 +1226,13 @@ class Alkaline{
 		if(!isset($comment_text)){
 			$comm_markup_ext = '';
 			$comment_text = nl2br($comment_text_raw);
+		}
+		
+		if($this->returnConf('comm_allow_html')){
+			$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']), $this->returnConf('comm_allow_html_tags'));
+		}
+		else{
+			$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
 		}
 		
 		$fields = array($id_type => $id,
@@ -1253,7 +1258,7 @@ class Alkaline{
 		if($id_type == 'image_id'){
 			$this->updateCount('comments', 'images', 'image_comment_count', $id);
 		}
-		elseif($id_type = 'post_id'){
+		elseif($id_type == 'post_id'){
 			$this->updateCount('comments', 'posts', 'post_comment_count', $id);
 		}
 		

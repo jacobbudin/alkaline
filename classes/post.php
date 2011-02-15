@@ -430,7 +430,7 @@ class Post extends Alkaline{
 				$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $this->posts[$i]['post_title_url'] . URL_RW;
 			}
 			
-			$this->posts[$i]['image_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
+			$this->posts[$i]['post_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
 		}
 		
 		// Config: comm_enabled
@@ -580,7 +580,7 @@ class Post extends Alkaline{
 			
 			$this->posts[$i]['post_comment_author_uri'] = '<input type="text" id="comment_' . $this->posts[$i]['post_id'] . '_author_uri" name="comment_' . $this->posts[$i]['post_id'] . '_author_uri" class="comment_author_uri" />';
 		
-			$this->posts[$i]['post_comment_submit'] = '<input type="hidden" name="comment_id" value="' . $this->posts[$i]['post_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
+			$this->posts[$i]['post_comment_submit'] = '<input type="hidden" name="post_id" value="' . $this->posts[$i]['post_id'] . '" /><input type="submit" id="" name="" class="comment_submit" value="Submit comment" />';
 		}
 		
 		return $this->comments;

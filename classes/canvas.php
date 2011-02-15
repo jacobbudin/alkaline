@@ -226,6 +226,9 @@ class Canvas extends Alkaline{
 				if(($match[1] == 'images') and ($this->form_wrap === true)){
 					$match[2] = '<form action="" method="post">' . $match[2] . '</form>';
 				}
+				elseif(($match[1] == 'posts') and ($this->form_wrap === true)){
+					$match[2] = '<form action="" method="post">' . $match[2] . '</form>';
+				}
 				elseif(($match[1] == 'images') and ($this->slideshow === true)){
 					$match[2] = '<li><!-- ' . $match[2] . ' --></li>';
 				}
