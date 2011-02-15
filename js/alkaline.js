@@ -630,7 +630,13 @@ $(document).ready(function(){
 		alt = $(this).children('img').attr('alt');
 		id = $(this).children('img').attr('id');
 		uri_rel = $('.uri_rel.' + id).text();
-		text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a>';
+		if($('.none.wrap_class').length > 0){
+			wrap_class = $('.none.wrap_class').text();
+			text = '<div class="' + wrap_class + '"><a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a></div>';
+		}
+		else{
+			text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a>';
+		}
 	
 		var input = $('textarea');
 		var range = input.caret();

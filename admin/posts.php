@@ -250,7 +250,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo BASE; ?>post<?php echo URL_ID . @$post['post_title_url'] . URL_RW; ?>">Go to post</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo $post['post_uri']; ?>">Go to post</a></div>
 	
 	<h1>Post</h1>
 
@@ -299,6 +299,10 @@ else{
 						}
 						else{
 							$label = 'image_src_admin';
+						}
+						
+						if($alkaline->returnConf('post_div_wrap')){
+							echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
 						}
 						
 						foreach($images->images as $image){

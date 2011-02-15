@@ -58,6 +58,8 @@ if(!empty($_POST['configuration_save'])){
 	if(@$_POST['post_markup'] == ''){ $_POST['post_markup_ext'] = ''; }
 	
 	$alkaline->setConf('post_markup_ext', @$_POST['post_markup_ext']);
+	$alkaline->setConf('post_div_wrap', @$_POST['post_div_wrap']);
+	$alkaline->setConf('post_div_wrap_class', @$_POST['post_div_wrap_class']);
 	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
 	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
@@ -228,7 +230,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr class="markup">
-			<td class="pad"><input type="checkbox" id="image_markup" name="image_markup" <?php echo $alkaline->readConf('image_markup'); ?> value="true" /></td>
+			<td class="input pad"><input type="checkbox" id="image_markup" name="image_markup" <?php echo $alkaline->readConf('image_markup'); ?> value="true" /></td>
 			<td>
 				<label for="image_markup">Markup new image descriptions using <select name="image_markup_ext" title="<?php echo $alkaline->returnConf('image_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
 				To use this setting for all your images, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-image-markup' ?>">reset your image markup</a>
@@ -246,10 +248,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr class="markup">
-			<td class="pad"><input type="checkbox" id="post_markup" name="post_markup" <?php echo $alkaline->readConf('post_markup'); ?> value="true" /></td>
+			<td class="input pad"><input type="checkbox" id="post_markup" name="post_markup" <?php echo $alkaline->readConf('post_markup'); ?> value="true" /></td>
 			<td>
 				<label for="post_markup">Markup new posts using <select name="post_markup_ext" title="<?php echo $alkaline->returnConf('post_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
 				To use this setting for all your posts, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-post-markup' ?>">reset your post markup</a>
+			</td>
+		</tr>
+		<tr>
+			<td class="input middle"><input type="checkbox" id="post_div_wrap" name="post_div_wrap" <?php echo $alkaline->readConf('post_div_wrap'); ?> value="true" /></td>
+			<td>
+				<label for="post_div_wrap">Wrap thumbnails in a &#0060;div&#0062; wrapper with the classes:</label> <input type="text" id="post_div_wrap_class" name="post_div_wrap_class" value="<?php echo $alkaline->returnConf('post_div_wrap_class'); ?>" class="xs" />
 			</td>
 		</tr>
 	</table>
