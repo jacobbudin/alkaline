@@ -26,14 +26,22 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['user_id'])){
 	$user_db_id = $alkaline->findID($_POST['user_id']);
-	if(@$_POST['user_delete'] == 'delete'){
+	if(isset($_POST['user_delete']) and ($_POST['user_delete'] == 'delete')){
 		$alkaline->deleteRow('users', $user_db_id);
 	}
 	else{
+		if($_POST['user_reset_pass'] == 'reset_pass'){
+			$rand = $alkaline->randInt();
+			echo $rand;
+			$pass = substr(sha1($rand), 0, 8);
+			$alkaline->email($_POST['user_email'], 'Password reset', 'Your password has been reset:' . "\r\n\n" . $pass . "\r\n\n" . LOCATION . BASE . ADMIN);
+			$_POST['user_pass'] = $pass;
+		}
+		
 		$fields = array('user_name' => $alkaline->makeUnicode($_POST['user_name']),
 			'user_user' => $_POST['user_user'],
 			'user_email' => $_POST['user_email']);
-		if(!empty($_POST['user_pass'])){
+		if(!empty($_POST['user_pass']) and ($_POST['user_pass'] != '********')){
 			$fields['user_pass'] = sha1($_POST['user_pass']);
 		}
 		$alkaline->updateRow($fields, 'users', $user_db_id);
@@ -144,8 +152,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="user_pass">Password:</label></td>
 				<td>
-					<input type="text" id="user_pass" name="user_pass" value="" class="s" /><br />
-					Enter a password only if you wish to change it (optional)
+					<input type="password" id="user_pass" name="user_pass" value="<?php if(!empty($user_db['user_user'])){ echo '********'; } ?>" class="s" />
 				</td>
 			</tr>
 			<tr>
