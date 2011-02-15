@@ -71,6 +71,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('thumb_watermark_pos', @$_POST['thumb_watermark_pos']);
 	$alkaline->setConf('thumb_watermark_margin', intval(@$_POST['thumb_watermark_margin']));
 	$alkaline->setConf('tag_alpha', @$_POST['tag_alpha']);
+	$alkaline->setConf('page_div_wrap', @$_POST['page_div_wrap']);
+	$alkaline->setConf('page_div_wrap_class', @$_POST['page_div_wrap_class']);
 	$alkaline->setConf('comm_enabled', @$_POST['comm_enabled']);
 	$alkaline->setConf('comm_email', @$_POST['comm_email']);
 	$alkaline->setConf('comm_mod', @$_POST['comm_mod']);
@@ -347,6 +349,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input pad"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="page_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('page_size_id', $alkaline->returnConf('page_size_id')); ?> when adding images by point-and-click</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="input middle"><input type="checkbox" id="page_div_wrap" name="page_div_wrap" <?php echo $alkaline->readConf('page_div_wrap'); ?> value="true" /></td>
+			<td>
+				<label for="page_div_wrap">Wrap thumbnails in a &#0060;div&#0062; wrapper with the classes:</label> <input type="text" id="page_div_wrap_class" name="page_div_wrap_class" value="<?php echo $alkaline->returnConf('page_div_wrap_class'); ?>" class="xs" />
 			</td>
 		</tr>
 	</table>

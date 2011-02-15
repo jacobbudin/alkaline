@@ -187,6 +187,10 @@ else{
 							$label = 'image_src_admin';
 						}
 						
+						if($alkaline->returnConf('page_div_wrap')){
+							echo '<div class="none wrap_class">' . $alkaline->returnConf('page_div_wrap_class') . '</div>';
+						}
+						
 						foreach($images->images as $image){
 							$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
 							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
