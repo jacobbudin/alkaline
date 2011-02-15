@@ -163,6 +163,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			<div class="reveal">
 				<?php echo $image_colorkey; ?>
+				
+				<p>Download: <a href="<?php echo BASE . ADMIN . 'tasks/download-palette.php?image_id=' . $image['image_id'] . '&format=ase'; ?>" title="Adobe Swatch Exchange">ASE</a></p>
 			</div>
 			<?php } ?>
 			
