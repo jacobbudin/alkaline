@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'users');
 
 if(!empty($_GET['id'])){
 	$user_db_id = $alkaline->findID($_GET['id']);
@@ -38,9 +38,25 @@ if(!empty($_POST['user_id'])){
 			$_POST['user_pass'] = $pass;
 		}
 		
+		$permissions = array();
+		
+		if($_POST['user_permission_upload'] == 'true'){ $permissions[] = 'upload'; }
+		if($_POST['user_permission_shoebox'] == 'true'){ $permissions[] = 'shoebox'; }
+		if($_POST['user_permission_library'] == 'true'){ $permissions[] = 'library'; }
+		if($_POST['user_permission_editor'] == 'true'){ $permissions[] = 'editor'; }
+		if($_POST['user_permission_posts'] == 'true'){ $permissions[] = 'posts'; }
+		if($_POST['user_permission_thumbnails'] == 'true'){ $permissions[] = 'thumbnails'; }
+		if($_POST['user_permission_users'] == 'true'){ $permissions[] = 'users'; }
+		if($_POST['user_permission_guests'] == 'true'){ $permissions[] = 'guests'; }
+		if($_POST['user_permission_themes'] == 'true'){ $permissions[] = 'themes'; }
+		if($_POST['user_permission_extensions'] == 'true'){ $permissions[] = 'extensions'; }
+		if($_POST['user_permission_configuration'] == 'true'){ $permissions[] = 'configuration'; }
+		if($_POST['user_permission_maintenance'] == 'true'){ $permissions[] = 'maintenance'; }
+		
 		$fields = array('user_name' => $alkaline->makeUnicode($_POST['user_name']),
 			'user_user' => $_POST['user_user'],
-			'user_email' => $_POST['user_email']);
+			'user_email' => $_POST['user_email'],
+			'user_permissions' => serialize($permissions));
 		if(!empty($_POST['user_pass']) and ($_POST['user_pass'] != '********')){
 			$fields['user_pass'] = sha1($_POST['user_pass']);
 		}
@@ -118,6 +134,7 @@ else{
 	
 	// Get user
 	$user_db = $alkaline->getRow('users', $user_db_id);
+	$user_db_perms = unserialize($user_db['user_permissions']);
 	$user_db = $alkaline->makeHTMLSafe($user_db);
 	$user_image_count = $user_db['user_image_count'];
 	
@@ -159,6 +176,55 @@ else{
 				<td class="right middle"><label for="user_email">Email:</label></td>
 				<td><input type="text" id="user_email" name="user_email" value="<?php echo $user_db['user_email']; ?>" class="m" /></td>
 			</tr>
+			<?php
+			if($user_db['user_id'] != 1){
+				?>
+				<tr>
+					<td class="right pad"><label>Access control:</label></td>
+					<td>
+						<table>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_upload" name="user_permission_upload" value="true" <?php if(in_array('upload', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td style="width: 10em;"><label for="user_permission_upload">Upload</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_shoebox" name="user_permission_shoebox" value="true" <?php if(in_array('shoebox', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_shoebox">Shoebox</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_library" name="user_permission_library" value="true" <?php if(in_array('library', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_library">Library</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_editor" name="user_permission_editor" value="true" <?php if(in_array('editor', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_editor">Editor</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_posts" name="user_permission_posts" value="true" <?php if(in_array('posts', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_posts">Posts</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_thumbnails" name="user_permission_thumbnails" value="true" <?php if(in_array('thumbnails', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_thumbnails">Thumbnails</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_users" name="user_permission_users" value="true" <?php if(in_array('users', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_users">Users</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_guests" name="user_permission_guests" value="true" <?php if(in_array('guests', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_guests">Guests</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_themes" name="user_permission_themes" value="true" <?php if(in_array('themes', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_themes">Themes</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_extensions" name="user_permission_extensions" value="true" <?php if(in_array('extensions', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_extensions">Extensions</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_configuration" name="user_permission_configuration" value="true" <?php if(in_array('configuration', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_configuration">Configuration</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_maintenance" name="user_permission_maintenance" value="true" <?php if(in_array('maintenance', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_maintenance">Maintenance</label></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<?php
+			}
+			?>
 			<tr>
 				<td class="right"><input type="checkbox" id="user_reset_pass" name="user_reset_pass" value="reset_pass" /></td>
 				<td><strong><label for="user_reset_pass">Reset password.</label></strong> This action cannot be undone.</td>

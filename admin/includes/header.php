@@ -1,6 +1,8 @@
 <?php
 
-$badges = $alkaline->getBadges();
+if(defined('TAB') and ((@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'comments') or (@TAB == 'features') or (@TAB == 'settings'))){
+	$badges = $alkaline->getBadges();
+}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

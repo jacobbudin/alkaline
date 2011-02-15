@@ -193,11 +193,15 @@ class User extends Alkaline{
 			if(empty($permission)){
 				return true;
 			}
+			elseif($this->user['user_id'] == 1){
+				return true;
+			}
 			elseif(in_array($permission, $this->user['user_permissions'])){
 				return true;
 			}
 			else{
-				return false;
+				$this->addError(E_USER_ERROR, 'You do not have permission to access this function', null, null, 401);
+				exit();
 			}
 		}
 	}

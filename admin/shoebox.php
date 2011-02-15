@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'shoebox');
 
 // PROCESS SUBMITTED IMAGES
 if(!empty($_POST['image_ids'])){

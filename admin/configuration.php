@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $orbit = new Orbit;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'configuration');
 
 if(!empty($_POST['configuration_save'])){
 	$theme_id = intval($_POST['theme_id']);

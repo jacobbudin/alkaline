@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'upload');
 
 if(!empty($_FILES)){
 	$filename = $_FILES['user_file']['name'][0];

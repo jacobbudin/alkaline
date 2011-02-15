@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'editor');
 
 if(!empty($_GET['id'])){
 	$set_id = $alkaline->findID($_GET['id']);

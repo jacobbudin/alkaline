@@ -2599,7 +2599,7 @@ class Alkaline{
 			echo $_SERVER['HTTP_REFERER'];
 		}
 		else{
-			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard/');
+			echo LOCATION . BASE . ADMIN . 'dashboard/';
 		}
 	}
 	

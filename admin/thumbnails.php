@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'thumbnails');
 
 if(!empty($_GET['id'])){
 	$size_id = $alkaline->findID($_GET['id']);

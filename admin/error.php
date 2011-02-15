@@ -7,7 +7,7 @@
 // http://www.alkalineapp.com/
 */
 
-require_once('config.php');
+require_once('../config.php');
 
 @session_start();
 

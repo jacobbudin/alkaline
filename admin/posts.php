@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $orbit = new Orbit;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'posts');
 
 if(!empty($_GET['id'])){
 	$post_id = $alkaline->findID($_GET['id']);
