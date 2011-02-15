@@ -163,7 +163,7 @@ class Image extends Alkaline{
 			$image_ids[] = $image_id;
 
 			// Copy image to archive, delete original from shoebox
-			copy($file, parent::correctWinPath(PATH . PHOTOS . $image_id . '.' . $image_ext));
+			copy($file, parent::correctWinPath(PATH . IMAGES . $image_id . '.' . $image_ext));
 			@unlink($file);
 		}
 		
@@ -241,7 +241,7 @@ class Image extends Alkaline{
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
 				$size_watermark = $size['size_watermark'];
-				$size_dest = parent::correctWinPath(PATH . PHOTOS . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
+				$size_dest = parent::correctWinPath(PATH . IMAGES . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
 				
 				switch($size_type){
 					case 'fill':
@@ -1545,8 +1545,8 @@ class Image extends Alkaline{
 				$width = $size['size_width'];
 				$height = $size['size_height'];
 
-			    $this->images[$j][$size_label] = BASE . PHOTOS . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
-			    $this->images[$j][$size_img_label] = '<img src="' . BASE . PHOTOS . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
+			    $this->images[$j][$size_label] = BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
+			    $this->images[$j][$size_img_label] = '<img src="' . BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
 				
 				$width_orig = $this->images[$j]['image_width'];
 				$height_orig = $this->images[$j]['image_height'];
@@ -1915,7 +1915,7 @@ class Image extends Alkaline{
 	 */
 	public function deSizeImage($original=false){
 		// Open image directory
-		$dir = parent::correctWinPath(PATH . PHOTOS);
+		$dir = parent::correctWinPath(PATH . IMAGES);
 		$handle = opendir($dir);
 		$images = array();
 		

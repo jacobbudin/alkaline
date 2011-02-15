@@ -15,7 +15,7 @@ $user = new User;
 
 $user->perm(true);
 
-// PROCESS SUBMITTED PHOTOS
+// PROCESS SUBMITTED IMAGES
 if(!empty($_POST['image_ids'])){
 	$image_ids = explode(',', $_POST['image_ids']);
 	array_pop($image_ids);
@@ -48,7 +48,7 @@ if(!empty($_POST['image_ids'])){
 	exit();
 }
 
-// DETERMINE IF PHOTOS IN SHOEBOX
+// DETERMINE IF IMAGES IN SHOEBOX
 $images = $alkaline->seekDirectory(PATH . SHOEBOX);
 $image_count = count($images);
 

@@ -56,7 +56,7 @@ $_POST = array_map('strip_tags', $_POST);
 if($alkaline->checkPerm(PATH . DB) != '0777'){
 	$alkaline->addNote('Database (db/) folder is not writable (CHMOD 777).', 'error');
 }
-if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
+if($alkaline->checkPerm(PATH . IMAGES) != '0777'){
 	$alkaline->addNote('Images (images/) folder is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
