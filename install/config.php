@@ -109,10 +109,12 @@ define('PALETTE_SIZE', $palette_size);
 define('COLOR_TOLERANCE', $color_tolerance);
 
 define('ADMIN', FOLDER_PREFIX . 'admin/');
+define('CACHE', FOLDER_PREFIX . 'cache/');
 define('CLASSES', FOLDER_PREFIX . 'classes/');
 define('DB', FOLDER_PREFIX . 'db/');
 define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
 define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
+define('I18N', FOLDER_PREFIX . 'i18n/');
 define('INCLUDES', FOLDER_PREFIX . 'includes/');
 define('JS', FOLDER_PREFIX . 'js/');
 define('IMAGES', FOLDER_PREFIX . 'images/');

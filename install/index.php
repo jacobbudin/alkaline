@@ -62,6 +62,9 @@ if($alkaline->checkPerm(PATH . PHOTOS) != '0777'){
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
 	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
 }
+if($alkaline->checkPerm(PATH . CACHE) != '0777'){
+	$alkaline->addNote('Cache (cache/) folder is not writable (CHMOD 777).', 'error');
+}
 if($alkaline->checkPerm(PATH . 'config.json') != '0777'){
 	$alkaline->addNote('Configuration (config.json) file is not writable (CHMOD 777).', 'error');
 }
