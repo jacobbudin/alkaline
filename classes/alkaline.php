@@ -1172,9 +1172,11 @@ class Alkaline{
 	 */
 	public function randInt($min=null, $max=null){
 		if(function_exists('mt_rand')){
+			if(empty($max)){ $max = mt_getrandmax(); }
 			$num = mt_rand($min, $max);
 		}
 		else{
+			if(empty($max)){ $max = getrandmax(); }
 			$num = rand($min, $max);
 		}
 		
