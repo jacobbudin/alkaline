@@ -1949,10 +1949,10 @@ class Image extends Alkaline{
 	 */
 	public function formatTime($format=null){
 		foreach($this->images as &$image){
-			$image['image_taken'] = parent::formatTime($image['image_taken'], $format);
-			$image['image_uploaded'] = parent::formatTime($image['image_uploaded'], $format);
-			$image['image_published'] = parent::formatTime($image['image_published'], $format);
-			$image['image_updated'] = parent::formatTime($image['image_updated'], $format);
+			$image['image_taken_format'] = parent::formatTime($image['image_taken'], $format);
+			$image['image_uploaded_format'] = parent::formatTime($image['image_uploaded'], $format);
+			$image['image_published_format'] = parent::formatTime($image['image_published'], $format);
+			$image['image_updated_format'] = parent::formatTime($image['image_updated'], $format);
 		}
 	}
 	

@@ -342,7 +342,7 @@ class Comment extends Alkaline{
 	 */
 	public function formatTime($format=null){
 		foreach($this->comments as &$comment){
-			$comment['comment_created'] = parent::formatTime($comment['comment_created'], $format);
+			$comment['comment_created_format'] = parent::formatTime($comment['comment_created'], $format);
 		}
 		return true;
 	}

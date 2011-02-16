@@ -131,8 +131,8 @@ class Set extends Alkaline{
 	 */
 	public function formatTime($format=null){
 		foreach($this->sets as &$set){
-			$set['set_created'] = parent::formatTime($set['set_created'], $format);
-			$set['set_modified'] = parent::formatTime($set['set_modified'], $format);
+			$set['set_created_format'] = parent::formatTime($set['set_created'], $format);
+			$set['set_modified_format'] = parent::formatTime($set['set_modified'], $format);
 		}
 	}
 }

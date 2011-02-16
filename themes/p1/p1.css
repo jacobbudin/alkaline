@@ -129,7 +129,7 @@ p.description{
 	text-align: right;
 }
 
-#blog img, #post img, #page img{
+#blog img, #post img, #page img, #results-posts img{
 	margin-bottom: 1.5em;
 	-webkit-box-shadow: 0 0 10px #ddd;
 	-moz-box-shadow: 0 0 10px #ddd;
@@ -185,7 +185,7 @@ p.slim{
 .right{ text-align: right; }
 td.right{ text-align: right; vertical-align: middle; }
 
-#page, #results { font-size: 1.2em; line-height: 1.6em; }
+#page, #results-images { font-size: 1.2em; line-height: 1.6em; }
 
 img.ftr{ float: right; margin: 0 0 1.5em 1.5em; }
 img.ftl{ float: left; margin: 0 1.5em 1.5em 0; }

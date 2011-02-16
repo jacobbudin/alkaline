@@ -477,9 +477,9 @@ class Post extends Alkaline{
 	 */
 	public function formatTime($format=null){
 		foreach($this->posts as &$post){
-			$post['post_created'] = parent::formatTime($post['post_created'], $format);
-			$post['post_modified'] = parent::formatTime($post['post_modified'], $format);
-			$post['post_published'] = parent::formatTime($post['post_published'], $format);
+			$post['post_created_format'] = parent::formatTime($post['post_created'], $format);
+			$post['post_modified_format'] = parent::formatTime($post['post_modified'], $format);
+			$post['post_published_format'] = parent::formatTime($post['post_published'], $format);
 		}
 	}
 	

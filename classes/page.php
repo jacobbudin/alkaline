@@ -143,8 +143,8 @@ class Page extends Alkaline{
 	 */
 	public function formatTime($format=null){
 		foreach($this->pages as &$page){
-			$page['page_created'] = parent::formatTime($page['page_created'], $format);
-			$page['page_modified'] = parent::formatTime($page['page_modified'], $format);
+			$page['page_created_format'] = parent::formatTime($page['page_created'], $format);
+			$page['page_modified_format'] = parent::formatTime($page['page_modified'], $format);
 		}
 	}
 }
