@@ -32,6 +32,7 @@ $images->getRights();
 $images->getPages();
 $images->getComments();
 $images->addSequence('medium_last', 3);
+$images->hook();
 
 $header = new Canvas;
 $header->load('header');
