@@ -2008,6 +2008,12 @@ class Alkaline{
 			$duration = time() - $_SESSION['alkaline']['duration_start'];
 		}
 		
+		// Ignore bots
+		if(stripos($_SERVER['HTTP_USER_AGENT'], 'bot') !== false){ return; }
+		if(stripos($_SERVER['HTTP_USER_AGENT'], 'spider') !== false){ return; }
+		if(stripos($_SERVER['HTTP_USER_AGENT'], 'slurp') !== false){ return; }
+		if(stripos($_SERVER['HTTP_USER_AGENT'], 'crawl') !== false){ return; }
+		
 		$_SESSION['alkaline']['duration_recent'] = time();
 		
 		$referrer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
