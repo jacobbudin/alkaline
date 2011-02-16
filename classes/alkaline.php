@@ -402,6 +402,7 @@ class Alkaline{
 					$messages[] = $notification['message'];
 				}
 			}
+			$messages = array_unique($messages);
 			$return .= implode(' ', $messages) . '</p>';
 		}
 		
