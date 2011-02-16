@@ -25,8 +25,12 @@ if($_REQUEST['type'] == 'images'){
 	$images->formatTime();
 	$images->getSizes();
 	
+	$count = $image_ids->image_count;
 	$model = $image_ids;
 	$loop = $images;
+	
+	$content = new Canvas;
+	$content->load('results-images');
 }
 elseif($_REQUEST['type'] == 'posts'){
 	$posts = new Post;
@@ -42,17 +46,20 @@ elseif($_REQUEST['type'] == 'posts'){
 		}
 	}
 	
+	$count = $posts->post_count;
 	$model = $posts;
 	$loop = $posts;
+	
+	$content = new Canvas;
+	$content->load('results-posts');
 }
 
 $header = new Canvas;
 $header->load('header');
-$header->setTitle('Search Results (' . $image_ids->image_count . ')');
+$header->setTitle('Search Results (' . $count . ')');
 $header->display();
 
-$content = new Canvas;
-$content->load('results');
+$content->assign('Results_Count', $count);
 $content->assign('Page_Next', $model->page_next);
 $content->assign('Page_Previous', $model->page_previous);
 $content->assign('Page_Next_URI', $model->page_next_uri);

@@ -2,16 +2,25 @@
 
 <hr />
 
-<h2>Search Results</h2>
+<h2>Search Results ({Results_Count})</h2>
 
-<div id="results">
-	{if:Images}
-	{block:Images}
-		<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="small" /></a>
-	{/block:Images}
-	{else:Images}
+<div id="results-posts">
+	{if:Posts}
+	{block:Posts}
+		<div class="span-11 append-1 {Post_Sequence}">
+			{Post_hr}
+			
+			<div class="datetime">{Post_Created|reltime}</div>
+			<h2>{Post_Title}</h2>
+	
+			{Post_Text}
+	
+			<p><strong><a href="{Post_URI}">Permalink</a></strong></p>
+		</div>
+	{/block:Posts}
+	{else:Posts}
 		No images matched your search criteria.
-	{/if:Images}<br /><br />
+	{/if:Posts}<br /><br />
 </div>
 
 <hr />
