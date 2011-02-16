@@ -87,6 +87,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
 	$alkaline->setConf('stat_ignore_user', @$_POST['stat_ignore_user']);
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
+	$alkaline->setConf('syndication_summary_only', @$_POST['syndication_summary_only']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
@@ -433,6 +434,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="canvas_remove_unused" name="canvas_remove_unused" <?php echo $alkaline->readConf('canvas_remove_unused'); ?> value="true" /></td>
 			<td class="description">
 				<label for="canvas_remove_unused">Remove unused insertions before displaying templates</label>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Syndication</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="syndication_summary_only" name="syndication_summary_only" <?php echo $alkaline->readConf('syndication_summary_only'); ?> value="true" /></td>
+			<td class="description">
+				<label for="syndication_summary_only">Only include post summaries</label> (require click-through to read full post)
 			</td>
 		</tr>
 	</table>

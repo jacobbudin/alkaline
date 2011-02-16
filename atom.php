@@ -13,10 +13,13 @@ require_once(PATH . CLASSES . 'alkaline.php');
 header('Content-Type: application/xml');
 
 $alkaline = new Alkaline();
+$alkaline->recordStat('atom');
+
+// Gather images
 
 $image_ids = new Find();
 $image_ids->sort('images.image_published', 'DESC');
-$image_ids->page(1,20);
+$image_ids->page(1,10);
 $image_ids->published();
 $image_ids->find();
 
@@ -24,14 +27,12 @@ $images = new Image($image_ids);
 $images->getSizes('medium');
 $images->formatTime('c');
 
-// $images->images = $alkaline->makeHTMLSafe($images->images);
-
-$entries = new Canvas('
+$image_entries = new Canvas('
 {block:Images}
 	<entry>
 		<title type="text">{if:Image_Title}{Image_Title}{else:Image_Title}(Untitled){/if:Image_Title}</title>
-		<link href="" />
-		<id>{Location}{Base}{Image_ID}</id>
+		<link href="{Image_URI}" />
+		<id>{Image_URI}</id>
 		<updated>{Image_Updated}</updated>
 		<published>{Image_Published}</published>
 		{if:Image_Description}
@@ -43,15 +44,50 @@ $entries = new Canvas('
 		{/if:Image_Description}
 		<content type="xhtml">
 			<div xmlns="http://www.w3.org/1999/xhtml">
-				<a href=""><img src="{Location}{Image_Src_Medium}" alt="" title="{Image_Title}" /></a>
+				<a href="{Image_URI}"><img src="{Location}{Image_Src_Medium}" alt="" title="{Image_Title}" /></a>
 			</div>
 		</content>
 		<link rel="enclosure" type="{Image_MIME}" href="{Location}{Image_Src_Medium}" />
 	</entry>
 {/block:Images}');
-$entries->assign('BASE', BASE);
-$entries->assign('LOCATION', LOCATION);
-$entries->loop($images);
+$image_entries->assign('BASE', BASE);
+$image_entries->assign('LOCATION', LOCATION);
+$image_entries->loop($images);
+
+// Gather posts
+
+$posts = new Post;
+$posts->page(1,10);
+$posts->sort('posts.post_published', 'DESC');
+$posts->published();
+$posts->fetch();
+$posts->formatTime('c');
+
+if($alkaline->returnConf('syndication_summary_only')){
+	foreach($posts->posts as &$post){
+		$post['post_text'] = $alkaline->fitStringByWord(strip_tags($post['post_text']), 400);
+	}
+}
+
+$post_entries = new Canvas('
+{block:Posts}
+	<entry>
+		<title type="text">{if:Post_Title}{Post_Title}{else:Post_Title}(Untitled){/if:Post_Title}</title>
+		<link href="{Post_URI}" />
+		<id>{Post_URI}</id>
+		<updated>{Post_Modified}</updated>
+		<published>{Post_Published}</published>
+		<content type="xhtml">
+			<div xmlns="http://www.w3.org/1999/xhtml">
+				{Post_Text}
+			</div>
+		</content>
+	</entry>
+{/block:Posts}');
+$post_entries->assign('BASE', BASE);
+$post_entries->assign('LOCATION', LOCATION);
+$post_entries->loop($posts);
+
 
 echo '<?xml version="1.0" encoding="utf-8"?>';
 
@@ -68,6 +104,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 		<name><?php echo $alkaline->returnConf('web_name'); ?></name>
 	</author>
 	
-	<?php echo $entries; ?>
+	<?php echo $image_entries; ?>
+	
+	<?php echo $post_entries; ?>
 
 </feed>
