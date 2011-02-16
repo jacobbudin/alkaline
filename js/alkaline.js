@@ -641,10 +641,10 @@ $(document).ready(function(){
 		uri_rel = $('.uri_rel.' + id).text();
 		if($('.none.wrap_class').length > 0){
 			wrap_class = $('.none.wrap_class').text();
-			text = '<div class="' + wrap_class + '"><a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a></div>';
+			text = '<div class="' + wrap_class + '"><a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '" /></a></div>';
 		}
 		else{
-			text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '"></a>';
+			text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '" /></a>';
 		}
 	
 		var input = $('textarea');
