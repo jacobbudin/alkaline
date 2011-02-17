@@ -16,8 +16,8 @@
 class Comment extends Alkaline{
 	public $comments;
 	public $comment_ids;
-	public $comment_count;
-	public $comment_count_result;
+	public $comment_count = 0;
+	public $comment_count_result = 0;
 	public $page;
 	public $page_begin;
 	public $page_count;

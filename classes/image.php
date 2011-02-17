@@ -23,7 +23,7 @@ class Image extends Alkaline{
 	public $tags;
 	public $tag_count;
 	public $image_columns;
-	public $image_count;
+	public $image_count = 0;
 	public $image_import_ids = array();
 	public $image_ids = array();
 	public $user;

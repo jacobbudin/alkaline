@@ -18,8 +18,8 @@ class Find extends Alkaline{
 	public $image_ids;
 	public $image_ids_after;
 	public $image_ids_before;
-	public $image_count;
-	public $image_count_result;
+	public $image_count = 0;
+	public $image_count_result = 0;
 	public $image_offset_length;
 	public $image_order;
 	public $image_first;

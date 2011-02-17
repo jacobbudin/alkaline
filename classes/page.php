@@ -15,7 +15,7 @@
 
 class Page extends Alkaline{
 	public $page_ids;
-	public $page_count;
+	public $page_count = 0;
 	public $pages;
 	
 	/**

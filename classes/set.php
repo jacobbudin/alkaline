@@ -15,7 +15,7 @@
 
 class Set extends Alkaline{
 	public $set_ids;
-	public $set_count;
+	public $set_count = 0;
 	public $sets;
 	
 	/**

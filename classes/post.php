@@ -23,8 +23,8 @@ class Post extends Alkaline{
 	public $page_previous;
 	public $posts;
 	public $post_ids;
-	public $post_count;
-	public $post_count_result;
+	public $post_count = 0;
+	public $post_count_result = 0;
 	protected $sql;
 	protected $sql_conds;
 	protected $sql_limit;
