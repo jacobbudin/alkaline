@@ -240,6 +240,12 @@ else{
 	$post = $posts->posts[0];
 	$post = $alkaline->makeHTMLSafe($post);
 	
+	if(!empty($post_act) and ($post_act == 'add')){
+		if($user->returnPref('post_pub') === true){
+			$post['post_published'] = 'Now';
+		}
+	}
+	
 	if(!empty($post['post_title'])){	
 		define('TITLE', 'Alkaline Post: &#8220;' . $post['post_title']  . '&#8221;');
 	}
