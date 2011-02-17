@@ -51,10 +51,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div class="span-18 colborderl last">
 		<h1>Upload</h1>
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<p>
-				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-				<input type="file" multiple="multiple" id="upload" style="width: 100%; margin: 310px 0 54px 50px; z-index: 100;" />
-			</p>
+			<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+			<div style="height: 380px; margin-bottom: 1.5em;">
+				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
+			</div>
 		</form>
 	</div>
 </div>
