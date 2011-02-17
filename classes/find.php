@@ -112,7 +112,7 @@ class Find extends Alkaline{
 
 			// Smart search
 			if(!empty($_REQUEST['act'])){
-				$this->_smart($_REQUEST['act']);
+				$this->smart($_REQUEST['act']);
 			}
 
 			// Title and description
@@ -1122,7 +1122,7 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Specialized smart searches, use GET[id] values where necessary
+	 * Smart searches, use GET[id] values where necessary
 	 *
 	 * @param string $kind Untagged, unpublished, displayed, updated, nonpublic, untitled, views, tags, guests, sets, me, users, rights, pages
 	 * @return bool True if successful
@@ -1134,13 +1134,7 @@ class Find extends Alkaline{
 		
 		switch($kind){
 			case 'untagged':
-				// Join tables
-				$this->sql_join_on[] = 'images.image_id = links.image_id';
-				$this->sql_join_tables[] = 'links';
-				$this->sql_join_type = 'LEFT OUTER JOIN';
-				
-				// Set tags to find
-				$this->sql_conds[] = 'links.link_id IS NULL';
+				$this->_special('untagged');
 				break;
 			case 'unpublished':
 				$this->_published(false);
@@ -1156,7 +1150,7 @@ class Find extends Alkaline{
 				$this->_privacy(array(2, 3));
 				break;
 			case 'untitled':
-				$this->sql_conds[] = 'images.image_title IS NULL';
+				$this->_special('untitled');
 				break;
 			case 'views':
 				$this->_sort('image_views', 'DESC');
@@ -1184,6 +1178,38 @@ class Find extends Alkaline{
 				break;
 			case 'posts':
 				$this->_posts(@intval($_GET['id']));
+				break;
+			default:
+				return false;
+				break;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Special searches
+	 *
+	 * @param string $kind Unpublished, untitled
+	 * @return void
+	 */
+	protected function special($kind){
+		if(empty($kind)){
+			return false;
+		}
+		
+		switch($kind){
+			case 'untagged':
+				// Join tables
+				$this->sql_join_on[] = 'images.image_id = links.image_id';
+				$this->sql_join_tables[] = 'links';
+				$this->sql_join_type = 'LEFT OUTER JOIN';
+				
+				// Set tags to find
+				$this->sql_conds[] = 'links.link_id IS NULL';
+				break;
+			case 'untitled':
+				$this->sql_conds[] = 'images.image_title IS NULL';
 				break;
 			default:
 				return false;
