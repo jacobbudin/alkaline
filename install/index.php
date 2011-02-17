@@ -229,7 +229,9 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
 		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
-		$query->execute(array('Medium', 'medium', 640, 640, 'scale', '_m'));
+		$query->execute(array('Large', 'large', 950, 950, 'scale', '_l'));
+		$query->execute(array('Medium', 'medium', 270, 270, 'scale', '_m'));
+		$query->execute(array('Small', 'small', 100, 100, 'fill', '_s'));
 		
 		$query->closeCursor();
 		
@@ -241,7 +243,8 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		$query->closeCursor();
 		
 		$alkaline->setConf('theme_id', '1');
-		$alkaline->setConf('theme_folder', 'basic');
+		$alkaline->setConf('theme_folder', 'p1');
+		$alkaline->saveConf();
 	}
 }
 
