@@ -21,9 +21,10 @@ if(!empty($_POST['preferences_save'])){
 	$user->setPref('recent_images', @$_POST['recent_images']);
 	$user->setPref('recent_images_limit', @$_POST['recent_images_limit']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
+	$user->setPref('post_pub', @$_POST['post_pub']);
 	$user->savePref();
 	
-	$alkaline->addNote('Your prefences have been saved.', 'success');
+	$alkaline->addNote('Your preferences have been saved.', 'success');
 	
 	header('Location: ' . BASE . ADMIN . 'dashboard' . URL_CAP);
 	exit();
@@ -92,6 +93,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="true" /></td>
 			<td class="description">
 				<label for="shoe_pub">Set all images to be published immediately after processing by default</label>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Shoebox</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="post_pub" name="post_pub" <?php echo $user->readPref('post_pub'); ?> value="true" /></td>
+			<td class="description">
+				<label for="post_pub">Set all posts to be published immediately after creating by default</label>
 			</td>
 		</tr>
 	</table>
