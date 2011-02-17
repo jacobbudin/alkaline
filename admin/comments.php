@@ -47,7 +47,7 @@ if(!empty($_POST['comment_id'])){
 
 // Configuration: comm_enabled
 if(!$alkaline->returnConf('comm_enabled')){
-	$alkaline->addNote('New comments have been disabled.', 'notice');
+	$alkaline->addNote('New comments have been disabled. You can enabled comments in your <a href="' . BASE . ADMIN . 'configuration' . URL_CAP . '">configuration</a>.', 'notice');
 }
 
 define('TAB', 'comments');
