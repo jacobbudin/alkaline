@@ -1218,6 +1218,8 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
+		$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		
 		$orbit = new Orbit;
 		
 		// Configuration: comm_markup
@@ -1232,10 +1234,10 @@ class Alkaline{
 		}
 		
 		if($this->returnConf('comm_allow_html')){
-			$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']), $this->returnConf('comm_allow_html_tags'));
+			$comment_text = strip_tags($comment_text, $this->returnConf('comm_allow_html_tags'));
 		}
 		else{
-			$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+			$comment_text = strip_tags($comment_text);
 		}
 		
 		$fields = array($id_type => $id,
