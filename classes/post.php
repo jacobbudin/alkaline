@@ -435,7 +435,7 @@ class Post extends Alkaline{
 		
 		// Config: comm_enabled
 		if($this->returnConf('comm_enabled') != true){
-			$this->images[$i]['image_comment_disabled'] = 1;
+			$this->images[$i]['post_comment_disabled'] = 1;
 		}
 		
 		// Count posts
