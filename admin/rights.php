@@ -100,7 +100,7 @@ if(empty($right_id)){
 	
 		foreach($rights as $right){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'rights/' . $right['right_id'] . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($right['right_modified']) . '</td>';
 			echo '</tr>';
@@ -134,7 +134,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search/rights/<?php echo $right['right_id']; ?>/">View images (<?php echo $image_ids->image_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a></div>
 	
 	<h1>Rights Set</h1>
 	
