@@ -431,11 +431,11 @@ class Post extends Alkaline{
 			}
 			
 			$this->posts[$i]['post_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
-		}
-		
-		// Config: comm_enabled
-		if($this->returnConf('comm_enabled') != true){
-			$this->images[$i]['post_comment_disabled'] = 1;
+			
+			// Config: comm_enabled
+			if($this->returnConf('comm_enabled') != true){
+				$this->posts[$i]['post_comment_disabled'] = 1;
+			}
 		}
 		
 		// Count posts
