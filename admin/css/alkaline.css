@@ -386,7 +386,7 @@ img.ui-datepicker-trigger{
 	padding: 0 .5em;
 }
 
-.badge_holder{
+#navigation .badge_holder{
 	position: relative;
 	top: -2.1em;
 	left: -1em;
@@ -394,7 +394,7 @@ img.ui-datepicker-trigger{
 	z-index: 100;
 }
 
-.badge{
+#navigation .badge{
 	position: absolute;
 	background-color: #b00500;
 	color: #fff;
@@ -422,7 +422,7 @@ img.ui-datepicker-trigger{
 	text-align: center;
 }
 
-.badge a{
+#navigation .badge a{
 	color: #fff;
 	text-decoration: none;
 }

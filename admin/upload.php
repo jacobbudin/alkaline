@@ -53,7 +53,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
 			<p>
 				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px; z-index: 100;" />
+				<input type="file" multiple="multiple" id="upload" style="width: 100%; margin: 310px 0 54px 50px; z-index: 100;" />
 			</p>
 		</form>
 	</div>
