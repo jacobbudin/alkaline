@@ -220,7 +220,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		// Add admin user
 		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'users (user_user, user_pass, user_name, user_email, user_created, user_image_count, user_preferences) VALUES (?, ?, ?, ?, ?, ?, ?);');
 		
-		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0, 'a:5:{s:10:"page_limit";s:3:"100";s:13:"recent_images";b:1;s:8:"shoe_pub";b:1;s:19:"recent_images_limit";s:2:"25";s:11:"home_target";b:1;}'));
+		$query->execute(array($_POST['install_user'], sha1($_POST['install_pass']), $_POST['install_name'], $_POST['install_email'], date('Y-m-d H:i:s'), 0, 'a:6:{s:10:"page_limit";s:3:"100";s:13:"recent_images";b:1;s:8:"shoe_pub";b:1;s:8:"post_pub";b:1;s:19:"recent_images_limit";s:2:"25";s:11:"home_target";b:1;}'));
 		
 		$query->closeCursor();
 		
