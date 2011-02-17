@@ -99,11 +99,12 @@ class Canvas extends Alkaline{
 	 *
 	 * @param string $var
 	 * @param string $value
+	 * @param string $empty Assign empty (but set) variables such as the integer zero
 	 * @return bool True if successful
 	 */
-	public function assign($var, $value){
+	public function assign($var, $value, $empty=false){
 		// Error checking
-		if(empty($value)){
+		if(empty($value) and ($empty === false)){
 			return false;
 		}
 		
@@ -119,7 +120,7 @@ class Canvas extends Alkaline{
 			$this->template = str_ireplace($var_full[0], $this->value, $this->template);
 		}
 		
-		if(!empty($this->value)){
+		if(!empty($this->value) or ($empty !== false)){
 			$this->template = self::scrub($var, $this->template);
 		}
 		
@@ -132,9 +133,10 @@ class Canvas extends Alkaline{
 	 * Assign template variables via an associative array
 	 *
 	 * @param array $array
+	 * @param string $empty Assign empty (but set) variables such as the integer zero
 	 * @return bool True if successful
 	 */
-	public function assignArray($array){
+	public function assignArray($array, $empty=false){
 		// Error checking
 		if(empty($array)){
 			return false;
@@ -155,7 +157,7 @@ class Canvas extends Alkaline{
 						$this->template = str_ireplace($key_full[0], $this->value, $this->template);
 					}
 					
-					if(!empty($this->value)){
+					if(!empty($this->value) or ($empty !== false)){
 						$this->template = self::scrub($key, $this->template);
 					}
 					
