@@ -56,6 +56,7 @@ foreach($seek_themes as &$theme_folder){
 			'theme_version' => $xml->version,
 			'theme_creator_name' => $xml->creator->name,
 			'theme_creator_uri' => $xml->creator->uri);
+		
 		$theme_intalled_id = $alkaline->addRow($fields, 'themes');
 		$themes_installed[] = $theme_intalled_id;
 	}

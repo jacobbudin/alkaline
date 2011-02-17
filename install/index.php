@@ -34,6 +34,7 @@ define('BASE', '/' . $dir);
 define('FOLDER_PREFIX', '');
 
 define('ADMIN', FOLDER_PREFIX . 'admin/');
+define('CACHE', FOLDER_PREFIX . 'cache/');
 define('CLASSES', FOLDER_PREFIX . 'classes/');
 define('DB', FOLDER_PREFIX . 'db/');
 define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
