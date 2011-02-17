@@ -40,16 +40,14 @@
 		</p>
 	{/if:Tags}
 	
+	<p>
 	{if:Sets}
-		<p>
-			<em>As featured in the collections:</em>{block:Sets} &#0160; <a href="{Set_URI}">{Set_Title}</a>{/block:Sets}
-		</p>
+		<em>As featured in the collections:</em>{block:Sets} &#0160; <a href="{Set_URI}">{Set_Title}</a>{/block:Sets}<br />
 	{/if:Sets}
 	{if:Pages}
-		<p>
-			<em>As featured on the pages:</em>{block:Pages} &#0160; <a href="{Page_URI}">{Page_Title}</a>{/block:Pages}
-		</p>
+		<em>As featured on the pages:</em>{block:Pages} &#0160; <a href="{Page_URI}">{Page_Title}</a>{/block:Pages}
 	{/if:Pages}
+	</p>
 </div>
 {/block:Images}
 

@@ -4,8 +4,8 @@
 
 <h2>Search Results ({Results_Count})</h2>
 
-<div id="results-posts">
-	{if:Posts}
+{if:Posts}
+	<div id="results-posts">
 	{block:Posts}
 		<div class="span-11 append-1 {Post_Sequence}">
 			{Post_hr}
@@ -18,19 +18,21 @@
 			<p><strong><a href="{Post_URI}">Permalink</a></strong></p>
 		</div>
 	{/block:Posts}
-	{else:Posts}
-		No images matched your search criteria.
-	{/if:Posts}<br /><br />
-</div>
+	</div>
+{else:Posts}
+	<p class="big">No images matched your search criteria.</p>
+{/if:Posts}
 
-<hr />
-
-<div class="span-8">
-	{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
-</div>
-<div class="span-8 center">
-	{if:Page_Count}Page #{Page_Current} of {Page_Count}{/if:Page_Count}
-</div>
-<div class="span-8 right last">
-	&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
-</div>
+{if:Posts}
+	<hr />
+	
+	<div class="span-8">
+		{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+	</div>
+	<div class="span-8 center">
+		{if:Page_Count}Page #{Page_Current} of {Page_Count}{/if:Page_Count}
+	</div>
+	<div class="span-8 right last">
+		&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
+	</div>
+{/if:Posts}
