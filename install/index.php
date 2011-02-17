@@ -235,8 +235,8 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		
 		// Add default theme
 		
-		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'themes (theme_uid, theme_title, theme_build, theme_version, theme_folder, theme_creator, theme_creator_uri) VALUES (?, ?, ?, ?, ?, ?, ?);');
-		$query->execute(array('cc3a6ff5921c68f0887b28a1982e13d09747feb1', 'Basic', 1, '1.0', 'basic', 'Alkaline', 'http://www.alkalineapp.com/'));
+		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'themes (theme_uid, theme_title, theme_build, theme_version, theme_folder, theme_creator_name, theme_creator_uri) VALUES (?, ?, ?, ?, ?, ?, ?);');
+		$query->execute(array('225b134b655901223d2f2ee26599b71763b1e5fe', 'P1', 1, '1.0', 'p1', 'Wilkes & Barre', 'http://www.wilkesandbarre.com/'));
 		
 		$query->closeCursor();
 		
