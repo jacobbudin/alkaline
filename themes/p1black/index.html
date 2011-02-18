@@ -1,0 +1,64 @@
+<!-- {canvas:Hello_World} -->
+
+{block:Images}
+<div class="image">
+	<hr />
+	
+	{Image_Colorkey}
+	
+	<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Large}" alt="" /></a></div>
+	
+	<div class="float_right_big">
+		<div class="datetime">{Image_Published_Format}</div>
+		<div class="right_set">
+			{if:Image_Comment_Count}
+				{Image_Comment_Count|alpha0|ucwords} comments.<br />
+			{/if:Image_Comment_Count}
+			{if:Right_Title}
+				{Right_Title}
+			{else:Right_Title}
+				No rights set.
+			{/if:Right_Title}
+		</div>
+	</div>
+	
+	{if:Image_Title}
+		<h2>{Image_Title}</h2>
+	{else:Image_Title}
+		<h2>(Untitled)</h2>
+	{/if:Image_Title}
+	
+	{if:Image_Description}
+		{Image_Description}
+	{/if:Image_Description}
+	
+	{if:Tags}
+		<p>
+		{block:Tags}
+			<span class="tag"><a href="{Tag_URI}">{Tag_Name}</a></span>
+		{/block:Tags}
+		</p>
+	{/if:Tags}
+	
+	<p>
+	{if:Sets}
+		<em>As featured in the collections:</em>{block:Sets} &#0160; <a href="{Set_URI}">{Set_Title}</a>{/block:Sets}<br />
+	{/if:Sets}
+	{if:Pages}
+		<em>As featured on the pages:</em>{block:Pages} &#0160; <a href="{Page_URI}">{Page_Title}</a>{/block:Pages}
+	{/if:Pages}
+	</p>
+</div>
+{/block:Images}
+
+<hr />
+
+<div class="span-8">
+	{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+</div>
+<div class="span-8 center">
+	Page #{Page_Current} of {Page_Count}
+</div>
+<div class="span-8 right last">
+	&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
+</div>

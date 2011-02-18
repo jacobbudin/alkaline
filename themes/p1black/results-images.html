@@ -1,0 +1,28 @@
+<!-- {canvas:Hello_World} -->
+
+<hr />
+
+<h2>Search Results ({Results_Count})</h2>
+
+{if:Images}
+	<div id="results-images">
+	{block:Images}
+		<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="small" /></a>
+	{/block:Images}
+	</div>
+{else:Images}
+	<p class="big">No images matched your search criteria.</p>
+{/if:Images}
+
+{if:Images}
+	<hr />
+	<div class="span-8">
+		{if:Page_Previous}<strong><a href="{Page_Previous_URI}">&#8592; Previous page</a></strong>{/if:Page_Previous}&#0160;
+	</div>
+	<div class="span-8 center">
+		{if:Page_Count}Page #{Page_Current} of {Page_Count}{/if:Page_Count}
+	</div>
+	<div class="span-8 right last">
+		&#0160;{if:Page_Next}<strong><a href="{Page_Next_URI}">Next page &#8594;</a></strong>{/if:Page_Next}
+	</div>
+{/if:Images}
