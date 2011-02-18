@@ -38,6 +38,24 @@ class Alkaline{
 	 * @return void
 	 **/
 	public function __construct(){
+		// Disable magic_quotes
+		if(get_magic_quotes_gpc()){
+			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+			while(list($key, $val) = each($process)){
+				foreach ($val as $k => $v) {
+					unset($process[$key][$k]);
+					if(is_array($v)){
+						$process[$key][stripslashes($k)] = $v;
+						$process[] = &$process[$key][stripslashes($k)];
+					}
+					else{
+						$process[$key][stripslashes($k)] = stripslashes($v);
+					}
+				}
+			}
+			unset($process);
+		}
+		
 		// Send browser headers
 		if(!headers_sent()){
 			header('Cache-Control: no-cache, must-revalidate', false);
