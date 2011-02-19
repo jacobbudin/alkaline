@@ -11,6 +11,7 @@ require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
+$orbit = new Orbit;
 $user = new User;
 
 $user->perm(true, 'shoebox');
@@ -31,12 +32,24 @@ if(!empty($_POST['image_ids'])){
 
 		}
 		else{
+			$image_description_raw = $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-description-raw']);
+			
+			if($alkaline->returnConf('image_markup')){
+				$image_markup_ext = $alkaline->returnConf('image_markup_ext');
+				$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+			}
+			else{
+				$image_markup_ext = '';
+				$image_description = nl2br($image_description_raw);
+			}
+			
 			$fields = array('image_title' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']),
-				'image_description' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-description']),
+				'image_description_raw' => $image_description_raw,
+				'image_description' => $image_description,
 				'image_geo' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-geo']),
 				'image_published' => @$_POST['image-' . $image_id . '-published'],
 				'image_privacy' => @$_POST['image-' . $image_id . '-privacy'],
-				'right_id' => @$_POST['image-' . $image_id . '-id']);
+				'right_id' => @$_POST['right-' . $image_id . '-id']);
 			$image->updateFields($fields);
 			$image->updateTags(json_decode(@$_POST['image-' . $image_id . '-tags_input']));
 		}

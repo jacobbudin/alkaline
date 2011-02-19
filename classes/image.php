@@ -1319,7 +1319,8 @@ class Image extends Alkaline{
 			}
 			
 			$fields = array('image_title' => @$title,
-				'image_description' => @$description);
+				'image_description_raw' => @$description,
+				'image_description' => nl2br(@$description));
 			
 			$image = new Image($images[$i]['image_id']);
 			$image->updateFields($fields, false);
