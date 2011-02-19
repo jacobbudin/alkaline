@@ -288,7 +288,7 @@ function updateAllTags(){
 	$('.image_tag_container').each(function(index){
 		focusTags(this);
 	
-		$(this).find('.image_tag_add').click(function(){
+		$(this).find('.image_tag_add').click(function(event){
 			focusTags(this);
 			var tag = $(this).siblings('.image_tag').val();
 			tag = jQuery.trim(tag);
