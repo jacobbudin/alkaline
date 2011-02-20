@@ -41,6 +41,13 @@ class Fotomoto extends Orbit{
 	}
 	
 	public function orbit_config(){
+		$this->fm_account_id = $this->makeHTMLSafe($this->fm_account_id);
+		$this->fm_buy_html = $this->makeHTMLSafe($this->fm_buy_html);
+		$this->fm_print_html = $this->makeHTMLSafe($this->fm_print_html);
+		$this->fm_file_html = $this->makeHTMLSafe($this->fm_file_html);
+		$this->fm_card_html = $this->makeHTMLSafe($this->fm_card_html);
+		$this->fm_ecard_html = $this->makeHTMLSafe($this->fm_ecard_html);
+		
 		?>
 		<p>To use this extension you will need a <a href="http://www.fotomoto.com/">Fotomoto account</a>. For more information on Fotomoto, visit <a href="http://www.fotomoto.com/">Fotomoto&#8217;s Web site</a>.</p>
 		
@@ -93,12 +100,12 @@ class Fotomoto extends Orbit{
 	
 	public function orbit_config_save(){
 		if(isset($_POST['fm_account_id'])){
-			$this->setPref('fm_account_id', $_POST['fm_account_id']);
-			$this->setPref('fm_buy_html', $_POST['fm_buy_html']);
-			$this->setPref('fm_print_html', $_POST['fm_print_html']);
-			$this->setPref('fm_file_html', $_POST['fm_file_html']);
-			$this->setPref('fm_card_html', $_POST['fm_card_html']);
-			$this->setPref('fm_ecard_html', $_POST['fm_ecard_html']);
+			$this->setPref('fm_account_id', $this->reverseHTMLSafe($_POST['fm_account_id']));
+			$this->setPref('fm_buy_html', $this->reverseHTMLSafe($_POST['fm_buy_html']));
+			$this->setPref('fm_print_html',$this->reverseHTMLSafe($_POST['fm_print_html']));
+			$this->setPref('fm_file_html', $this->reverseHTMLSafe($_POST['fm_file_html']));
+			$this->setPref('fm_card_html', $this->reverseHTMLSafe($_POST['fm_card_html']));
+			$this->setPref('fm_ecard_html', $this->reverseHTMLSafe($_POST['fm_ecard_html']));
 			$this->savePref();
 		}
 	}
