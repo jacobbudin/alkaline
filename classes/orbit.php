@@ -224,7 +224,9 @@ class Orbit extends Alkaline{
 		
 		// Remove non-arguments
 		$arguments = array_slice($arguments, 1, count($arguments) - 2);
-		$argument_return_type = $this->getType($arguments[0]);
+		if($arguments[0]){
+			$argument_return_type = $this->getType($arguments[0]);
+		}
 		
 		// Find respective extensions, execute their code
 		if(!empty($this->extensions)){
@@ -235,7 +237,7 @@ class Orbit extends Alkaline{
 					$method = 'orbit_' . $hook;
 					if(method_exists($orbit, $method)){
 						$return = call_user_func_array(array($orbit, $method), $arguments);
-						if($this->getType($return) == $argument_return_type){
+						if(!empty($argument_return_type) and ($this->getType($return) == $argument_return_type)){
 							$arguments = array_merge(array($return), array_splice($arguments, 1));
 						}
 					}
