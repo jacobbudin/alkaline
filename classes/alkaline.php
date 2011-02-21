@@ -1159,7 +1159,7 @@ class Alkaline{
 	 */
 	public function stripTags($var){
 		if(is_string($var)){
-			$var = strip_tags($var);
+			$var = trim(strip_tags($var));
 		}
 		elseif(is_array($var)){
 			foreach($var as $key => $value){
