@@ -103,6 +103,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
 		
 		<?php
+		
+		$badges = $alkaline->getBadges();
 
 		if(($badges['library'] > 0) or ($badges['comments'] > 0)){
 			?>

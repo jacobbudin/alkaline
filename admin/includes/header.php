@@ -1,10 +1,3 @@
-<?php
-
-if(defined('TAB') and ((@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'comments') or (@TAB == 'features') or (@TAB == 'settings'))){
-	$badges = $alkaline->getBadges();
-}
-
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -66,14 +59,8 @@ if(defined('TAB') and ((@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 
 						?>
 						<li id="tab_dashboard"><a href="<?php echo BASE . ADMIN; ?>dashboard<?php echo URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
 						<li id="tab_library"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
-						<?php if(isset($badges['library']) and ($badges['library'] > 0)){ ?>
-						<!-- <div class="badge_holder"><div class="badge"><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><?php echo $badges['library']; ?></a></div></div> -->
-						<?php } ?>
 						<li id="tab_posts"><a href="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a></li>
 						<li id="tab_comments"><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"<?php if(@TAB == 'comments'){ echo ' class="selected"'; } ?>>Comments</a></li>
-						<?php if(isset($badges['comments']) and ($badges['comments'] > 0)){ ?>
-						<!-- <div class="badge_holder"><div class="badge"><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>"><?php echo $badges['comments']; ?></a></div></div> -->
-						<?php } ?>
 						<li id="tab_editor"><a href="<?php echo BASE . ADMIN; ?>features<?php echo URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Editor</a></li>
 						<li id="tab_settings"><a href="<?php echo BASE . ADMIN; ?>settings<?php echo URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
 						<li id="tab_help"><a href="http://www.alkalineapp.com/guide/" target="_blank">Help</a></li>
