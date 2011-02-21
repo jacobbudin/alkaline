@@ -708,6 +708,24 @@ $(document).ready(function(){
 		});
 	}
 	
+	// GUESTS
+	
+	if(page == 'Guest'){
+		function guestKeyUpdate(){
+			key = $('#guest_key').val();
+			url = $('#guest_key_url').html();
+			regex = /access\/[a-zA-Z0-9_\-\/]*/gim;
+			new_url = url.replace(regex, 'access/' + key + '/');
+			$('#guest_key_url').html(new_url);
+		}
+		
+		guestKeyUpdate();
+		
+		$('#guest_key').keyup(function(){
+			guestKeyUpdate();
+		});
+	}
+	
 	// MAINTENACE
 	
 	if(page == 'Maintenance'){

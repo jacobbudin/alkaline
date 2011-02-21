@@ -123,7 +123,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate Guest</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
 	
 	<h1>Guest</h1>
 	
@@ -134,8 +134,11 @@ else{
 				<td><input type="text" id="guest_title" name="guest_title" value="<?php echo $guest['guest_title']; ?>" class="m" /></td>
 			</tr>
 			<tr>
-				<td class="right middle"><label for="guest_key">Key:</label></td>
-				<td><input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s" /></td>
+				<td class="right pad"><label for="guest_key">Key:</label></td>
+				<td>
+					<input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s" /><br />
+					<span id="guest_key_url" class="quiet">Once saved, your guests can access via: <a href="<?php echo LOCATION . BASE . 'access/'; ?>"><?php echo LOCATION . BASE . 'access/'; ?></a></span>
+				</td>
 			</tr>
 			<tr>
 				<td class="right"><label for="guest_sets">Privileges:</label></td>
