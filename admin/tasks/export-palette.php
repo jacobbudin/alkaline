@@ -158,28 +158,37 @@ if($format == 'ase'){
 	); 
 
 	$palette = mkASE($palettes);
+	
+	$encoding = 'binary';
+	$mime = 'application/octet-stream';
 }
-
-$tmpfname = tempnam(PATH . CACHE, 'pal');
-$temp = fopen($tmpfname, 'wb');
-fwrite($temp, $palette); 
-fseek($temp, 0);
-$bytes = filesize($tmpfname);
+elseif($format == 'css'){
+	$palette = '';
+	$i = 1;
+	foreach($hex_colors as $color){
+		$palette .= '.color' . $i++ . ' { background-color: #' . $color[0] . '; }' . "\n";
+	}
+	
+	$encoding = 'ascii';
+	$mime = 'text/x-c';
+}
+else{
+	exit();
+}
 
 if(ini_get('zlib.output_compression')){ ini_set('zlib.output_compression', 'Off'); }
 header('Pragma: public'); // required
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Cache-Control: private',false); // required for certain browsers
-header('Content-Disposition: attachment; filename="' . $image_id . '-color_palette.ase";');
+header('Cache-Control: private', false); // required for certain browsers
+header('Content-Disposition: attachment; filename="' . $image_id . '-color_palette.' . $format . '";');
 // Send Content-Transfer-Encoding HTTP header
 // (use binary to prevent files from being encoded/messed up during transfer)
-header('Content-Transfer-Encoding: binary');
+header('Content-Transfer-Encoding: ' . $encoding);
 header('Content-Length: ' . $bytes);
-header('Content-Type: application/octet-stream');
+header('Content-Type: ' . $mime);
 header('Content-Description: File Transfer');
-fread($temp, $bytes);
-fclose($temp);
+echo $palette;
 
 ?>

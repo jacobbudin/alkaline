@@ -164,7 +164,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<div class="reveal">
 				<?php echo $image_colorkey; ?>
 				
-				<p>Download: <a href="<?php echo BASE . ADMIN . 'tasks/download-palette.php?image_id=' . $image['image_id'] . '&format=ase'; ?>" title="Adobe Swatch Exchange">ASE</a></p>
+				<p>Export: <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=css'; ?>" title="Cascading Style Sheets">CSS</a></p>
 			</div>
 			<?php } ?>
 			
