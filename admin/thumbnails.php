@@ -161,7 +161,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="size_title">Title:</label></td>
-				<td><input type="text" id="size_title" name="size_title" value="<?php echo $size['size_title']; ?>" class="m" /></td>
+				<td><input type="text" id="size_title" name="size_title" value="<?php echo $size['size_title']; ?>" class="m notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="size_label">Label:</label></td>

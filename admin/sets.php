@@ -157,7 +157,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="set_title">Title:</label></td>
-				<td><input type="text" id="set_title" name="set_title" value="<?php echo $set['set_title']; ?>" class="title" /></td>
+				<td><input type="text" id="set_title" name="set_title" value="<?php echo $set['set_title']; ?>" class="title notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="set_title_url">Custom URL:</label></td>

@@ -264,7 +264,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="post_title">Title:</label></td>
-				<td><input type="text" id="post_title" name="post_title" value="<?php echo @$post['post_title']; ?>" class="title" /></td>
+				<td><input type="text" id="post_title" name="post_title" value="<?php echo @$post['post_title']; ?>" class="title notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="post_title_url">Custom URL:</label></td>

@@ -142,7 +142,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="right_title">Title:</label></td>
-				<td><input type="text" id="right_title" name="right_title" value="<?php echo $right['right_title']; ?>" class="title" /></td>
+				<td><input type="text" id="right_title" name="right_title" value="<?php echo $right['right_title']; ?>" class="title notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="right_description">Description:</label></td>

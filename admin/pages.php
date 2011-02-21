@@ -150,7 +150,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="page_title">Title:</label></td>
-				<td><input type="text" id="page_title" name="page_title" value="<?php echo @$page['page_title']; ?>" class="title" /></td>
+				<td><input type="text" id="page_title" name="page_title" value="<?php echo @$page['page_title']; ?>" class="title notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>

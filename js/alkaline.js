@@ -721,10 +721,21 @@ $(document).ready(function(){
 		
 		guestKeyUpdate();
 		
-		$('#guest_key').keyup(function(){
+		$('#guest_key').keyup(function(event){
 			guestKeyUpdate();
 		});
 	}
+	
+	// NOTEMPTY
+	$('input[type="submit"]').click(function(event){
+		if($('input.notempty').length == 0){ return; }
+		val = $('input.notempty').val();
+		is_delete = $('input[id$="_delete"]').attr('checked');
+		if(empty(val) && (is_delete != true)){
+			alert('You must title this item to save it. (Otherwise, delete or press cancel.)');
+			event.preventDefault();
+		}
+	});
 	
 	// MAINTENACE
 	
@@ -737,7 +748,7 @@ $(document).ready(function(){
 			task = task[1];
 			executeTask();
 		}
-		$("#tasks a").click(function(){
+		$("#tasks a").click(function(event){
 			task = $(this).attr("href").slice(1);
 			executeTask();
 		});

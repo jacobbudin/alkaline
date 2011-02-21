@@ -164,7 +164,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right middle"><label for="user_user">Username:</label></td>
-				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" class="s" /></td>
+				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" class="s notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="user_pass">Password:</label></td>

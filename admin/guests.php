@@ -131,7 +131,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="guest_title">Title:</label></td>
-				<td><input type="text" id="guest_title" name="guest_title" value="<?php echo $guest['guest_title']; ?>" class="m" /></td>
+				<td><input type="text" id="guest_title" name="guest_title" value="<?php echo $guest['guest_title']; ?>" class="m notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right pad"><label for="guest_key">Key:</label></td>
