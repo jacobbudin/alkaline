@@ -129,7 +129,7 @@ if(empty($comment_id)){
 					echo '<em>(Unsigned)</em>';
 				}
 				echo '</a></strong> wrote:<br />&#8220;' . $alkaline->fitString($comment['comment_text'], 225) . '&#8221;</div></td>';
-				echo '<td>' . $comment['comment_created'] . '</td>';
+				echo '<td>' . $comment['comment_created_format'] . '</td>';
 			echo '</tr>';
 		}
 		

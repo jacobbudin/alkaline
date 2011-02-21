@@ -195,8 +195,8 @@ if(empty($post_id)){
 					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_title_url'] . URL_RW . '" class="nu">/' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
-					echo '<td>' . $post['post_created'] . '</td>';
-					echo '<td>' . $post['post_modified'] . '</td>';
+					echo '<td>' . $post['post_created_format'] . '</td>';
+					echo '<td>' . $post['post_modified_format'] . '</td>';
 				echo '</tr>';
 			}
 
@@ -274,13 +274,13 @@ else{
 				</td>
 			</tr>
 			<tr>
-				<td class="right"><label for="post_text_raw">Text:</label></td>
+				<td class="right pad"><label for="post_text_raw">Text:</label></td>
 				<td><textarea id="post_text_raw" name="post_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$post['post_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
-				<td class="right pad"><label for="post_published">Publish date:</label></td>
+				<td class="right middle"><label for="post_published">Publish date:</label></td>
 				<td class="quiet">
-					<input type="text" id="post_published" name="post_published" value="<?php echo @$post['post_published']; ?>" class="m" />
+					<input type="text" id="post_published" name="post_published" value="<?php echo @$post['post_published_format']; ?>" class="m" />
 				</td>
 			</tr>
 			<tr>

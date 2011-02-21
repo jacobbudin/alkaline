@@ -117,8 +117,8 @@ if(empty($page_id)){
 				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
-				echo '<td>' . $page['page_created'] . '</td>';
-				echo '<td>' . $page['page_modified'] . '</td>';
+				echo '<td>' . $page['page_created_format'] . '</td>';
+				echo '<td>' . $page['page_modified_format'] . '</td>';
 			echo '</tr>';
 		}
 
