@@ -125,6 +125,16 @@ img.frame{
 	-webkit-box-shadow: 0 0 3px #ddd;
 }
 
+img.frame_mini{
+	float: right;
+	height: 35px;
+	width: 35px;
+	border: solid 3px #fff;
+	margin: .2em .2em .2em 1em;
+	-moz-box-shadow: 0 0 3px #ddd;
+	-webkit-box-shadow: 0 0 3px #ddd;
+}
+
 img.frame_selected{
 	border: solid 3px #fbde42;
 	margin: .2em .4em .2em 0;
@@ -389,6 +399,17 @@ a.nu{
 img.ui-datepicker-trigger{
 	padding: 0 .5em;
 }
+
+.comment, .comment_mini{
+	display: block;
+	text-decoration: none;
+	background-color: #eee;
+	font-family: Georgia, serif;
+	font-size: 1.2em;
+	padding: 1em;
+}
+
+.comment_mini{ height: 7.25em; overflow: hidden; }
 
 #search td.right{
 	padding-top: 10px;

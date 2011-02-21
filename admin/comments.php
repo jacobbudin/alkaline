@@ -11,6 +11,7 @@ require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
+$orbit = new Orbit;
 $user = new User;
 
 $user->perm(true, 'editor');
@@ -33,13 +34,34 @@ if(!empty($_POST['comment_id'])){
 		$alkaline->deleteRow('comments', $comment_id);
 	}
 	else{
+		$comment_text_raw = $_POST['comment_text_raw'];
+		$comment_text = $comment_text_raw;
+		
+		// Configuration: comm_markup
+		if(!empty($_POST['comm_markup'])){
+			$comment_markup_ext = $_POST['comm_markup'];
+			$comment_text = $orbit->hook('markup_' . $comment_markup_ext, $comment_text_raw, $comment_text);
+		}
+		elseif($alkaline->returnConf('comm_markup')){
+			$comment_markup_ext = $alkaline->returnConf('comm_markup_ext');
+			$comment_text = $orbit->hook('markup_' . $comment_markup_ext, $comment_text_raw, $comment_text);
+		}
+		else{
+			$comment_markup_ext = '';
+			$comment_text = nl2br($comment_text_raw);
+		}
+		
+		
 		if(@$_POST['comment_spam'] == 'spam'){
 			$comment_status = -1;
 		}
 		else{
 			$comment_status = 1;
 		}
-		$fields = array('comment_status' => $comment_status);
+		
+		$fields = array('comment_text_raw' => $alkaline->makeUnicode($comment_text_raw),
+			'comment_text' => $alkaline->makeUnicode($comment_text),
+			'comment_status' => $comment_status);
 		$alkaline->updateRow($fields, 'comments', $comment_id);
 	}
 	unset($comment_id);
@@ -105,36 +127,29 @@ if(empty($comment_id)){
 		</div>
 	</form>
 	
-	<table>
-		<tr>
-			<th></th>
-			<th>Comment</th>
-			<th style="width: 30%;">Created</th>
-		</tr>
+	<div class="span-24 last">	
 		<?php
-		
+		$i = 1;
 		foreach($comments->comments as $comment){
-			echo '<tr>';
-				echo '<td class="right">';
-				$key = array_search($comment['image_id'], $image_ids);
-				if(is_int($key)){
-					echo '<a href="' . BASE . ADMIN . 'image' . URL_ID . $images->images[$key]['image_id'] . URL_RW . '"><img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame" /></a>';
-				}
-				echo '</td>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '">';
-				if(!empty($comment['comment_author_name'])){
-					echo $comment['comment_author_name'];
-				}
-				else{
-					echo '<em>(Unsigned)</em>';
-				}
-				echo '</a></strong> wrote:<br />&#8220;' . $alkaline->fitString($comment['comment_text'], 225) . '&#8221;</div></td>';
-				echo '<td>' . $comment['comment_created_format'] . '</td>';
-			echo '</tr>';
+			if($i == 3){ $last = 'last'; $i = 0; }
+			else{ $last = ''; $i++; }
+			
+			echo '<div class="span-8 append-bottom ' . $last . '">';
+			echo '<a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="comment_mini">';
+			$key = array_search($comment['image_id'], $image_ids);
+			if(is_int($key)){
+				echo '<img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame_mini" />';
+			}
+			if(!empty($comment['comment_author_name'])){
+				echo '<strong>' . $comment['comment_author_name'] . '</strong>: ';
+			}
+			echo '&#8220;' . $comment['comment_text'] . '&#8221;';
+			echo '</a></div>';
 		}
-		
+	
 		?>
-	</table>
+	</div>
+	
 	<?php
 	
 	if($comments->page_count > 1){
@@ -193,24 +208,26 @@ else{
 						echo '<em>(Unsigned)</em>';
 					}
 					
-					
-					if(!empty($comment['comment_author_email'])){
-						echo ' (<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a>)<br />';
-					}
-					
-					if(!empty($comment['comment_author_uri'])){
-						echo '<a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a>';
-					}
-					
 					?>
 				</td>
 			</tr>
+			<?php
+			if(!empty($comment['comment_author_email'])){
+				echo '<tr><td class="right"><label>Email:</label></td><td><a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a></td></tr>';
+			}
+			?>
+			<?php		
+			if(!empty($comment['comment_author_uri'])){
+				echo '<tr><td class="right"><label>Web site:</label></td><td><a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a></td></tr>';
+			}
+			
+			?>
 			<tr>
-				<td class="right"><label for="comment_text">Text:</label></td>
-				<td><?php echo $comment['comment_text']; ?></td>
+				<td class="right"><label for="post_text_raw">Text:</label></td>
+				<td><textarea id="comment_text_raw" name="comment_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$comment['comment_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
-				<td class="right"><label for="comment_text">IP Address:</label></td>
+				<td class="right"><label for="comment_ip_address">IP address:</label></td>
 				<td><?php echo $comment['comment_author_ip']; ?></td>
 			</tr>
 			<tr>
@@ -223,7 +240,7 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" /><input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
+				<td><input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" /><input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $post['comm_markup']; ?>" /><input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>
