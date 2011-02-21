@@ -224,10 +224,7 @@ class Orbit extends Alkaline{
 		
 		// Remove non-arguments
 		$arguments = array_slice($arguments, 1, count($arguments) - 2);
-		$argument_count = count($arguments);
-		
-		// Add an empty argument for returns
-		$arguments[] = '';
+		$argument_return_type = $this->getType($arguments[0]);
 		
 		// Find respective extensions, execute their code
 		if(!empty($this->extensions)){
@@ -238,20 +235,15 @@ class Orbit extends Alkaline{
 					$method = 'orbit_' . $hook;
 					if(method_exists($orbit, $method)){
 						$return = call_user_func_array(array($orbit, $method), $arguments);
-						if(!empty($return) and !is_bool($return)){
-							$arguments = array_slice($arguments, 0, $argument_count);
-							$arguments[] = $return;
+						if($this->getType($return) == $argument_return_type){
+							$arguments = array_merge(array($return), array_splice($arguments, 1));
 						}
 					}
 				}
 			}
 		}
 		
-		if(empty($arguments[$argument_count])){
-			return $argument_pass;
-		}
-		
-		return $arguments[$argument_count];
+		return $arguments[0];
 	}
 }
 
