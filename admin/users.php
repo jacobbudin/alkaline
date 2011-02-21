@@ -160,7 +160,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="user_name">Name:</label></td>
-				<td><input type="text" id="user_name" name="user_name" value="<?php echo $user_db['user_name']; ?>" class="s" /></td>
+				<td><input type="text" id="user_name" name="user_name" value="<?php echo $user_db['user_name']; ?>" class="s notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right middle"><label for="user_user">Username:</label></td>
@@ -169,7 +169,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="user_pass">Password:</label></td>
 				<td>
-					<input type="password" id="user_pass" name="user_pass" value="<?php if(!empty($user_db['user_user'])){ echo '********'; } ?>" class="s" />
+					<input type="password" id="user_pass" name="user_pass" value="<?php if(!empty($user_db['user_user'])){ echo '********'; } ?>" class="s notempty" />
 				</td>
 			</tr>
 			<tr>

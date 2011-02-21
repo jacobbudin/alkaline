@@ -136,7 +136,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="guest_key">Key:</label></td>
 				<td>
-					<input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s" /><br />
+					<input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s notempty" /><br />
 					<span id="guest_key_url" class="quiet">Once saved, your guests can access via: <a href="<?php echo LOCATION . BASE . 'access/'; ?>"><?php echo LOCATION . BASE . 'access/'; ?></a></span>
 				</td>
 			</tr>

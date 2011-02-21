@@ -166,12 +166,12 @@ else{
 			<tr>
 				<td class="right pad"><label for="size_label">Label:</label></td>
 				<td>
-					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s" />
+					<input type="text" id="size_label" name="size_label" value="<?php echo @$size['size_label']; ?>" class="s notempty" />
 				</td>
 			</tr>
 			<tr>
 				<td class="right middle"><label>Dimensions:</label></td>
-				<td><input type="text" id="size_width" name="size_width" value="<?php echo $size['size_width']; ?>" style="width: 4em;" /> pixels (width) &#0215; <input type="text" id="size_height" name="size_height" value="<?php echo $size['size_height']; ?>" style="width: 4em;" /> pixels (height)</td>
+				<td><input type="text" id="size_width" name="size_width" value="<?php echo $size['size_width']; ?>" class="nonzero" style="width: 4em;" /> pixels (width) &#0215; <input type="text" id="size_height" name="size_height" value="<?php echo $size['size_height']; ?>" class="nonzero" style="width: 4em;" /> pixels (height)</td>
 			</tr>
 			<tr>
 				<td class="right"><label>Type:</label></td>

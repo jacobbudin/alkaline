@@ -116,7 +116,7 @@ else{
 		<table>
 			<tr>
 				<td class="right middle"><label for="tag_name">Name:</label></td>
-				<td><input type="text" id="tag_name" name="tag_name" value="<?php echo $tag['tag_name']; ?>" class="m" /></td>
+				<td><input type="text" id="tag_name" name="tag_name" value="<?php echo $tag['tag_name']; ?>" class="m notempty" /></td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="tag_delete" name="tag_delete" value="delete" /></td>

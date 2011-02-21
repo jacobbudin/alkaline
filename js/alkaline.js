@@ -728,11 +728,18 @@ $(document).ready(function(){
 	
 	// NOTEMPTY
 	$('input[type="submit"]').click(function(event){
-		if($('input.notempty').length == 0){ return; }
-		val = $('input.notempty').val();
+		stop = false;
+		$('input.notempty').each(function(index){
+			val = $(this).val();
+			if(val == ''){ stop = true; }
+		});
+		$('input.nonzero').each(function(index){
+			val = $(this).val();
+			if(val == 0){ stop = true; }
+		});
 		is_delete = $('input[id$="_delete"]').attr('checked');
-		if(empty(val) && (is_delete != true)){
-			alert('You must title this item to save it. (Otherwise, delete or press cancel.)');
+		if(stop && (is_delete != true)){
+			alert('Fill in the required fields to save. (Otherwise, delete or press cancel.)');
 			event.preventDefault();
 		}
 	});
@@ -808,6 +815,13 @@ $(document).ready(function(){
 			
 			$('#image_ids').val(ids.join(', '));
 		}
+		
+		$('#act_do').click(function(event){
+			if(count == 0){
+				alert('Select at least one image to perform an action.');
+				event.preventDefault();
+			}
+		});
 		
 		$('#act').mouseup(function() {
 		  actEditor();
