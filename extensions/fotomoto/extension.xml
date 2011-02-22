@@ -4,8 +4,8 @@
 	<file>fotomoto</file>
 	<class>Fotomoto</class>
 	<title>Fotomoto</title>
-	<build>1</build>
-	<version>1.0</version>
+	<build>2</build>
+	<version>1.0.1</version>
 	<description>Implements Fotomoto image sharing and selling.</description>
 	<creator>
 		<name>Alkaline Labs</name>
