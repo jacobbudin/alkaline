@@ -1272,58 +1272,13 @@ class Image extends Alkaline{
 				$tags = array_unique(array_map('trim', $tags));
 			}
 			
-			// If there are tags, add them (IPTC keywords)
-			if(@count($tags) > 0){
-				
-				$sql_params = array();
-				$tag_count = count($tags);
-
-				// Grab tag IDs
-				for($j=0; $j<$tag_count; ++$j){
-					$sql_params[':tag' . $j] = $tags[$j];
-				}
-
-				$sql_param_keys = array_keys($sql_params);
-				
-				// Find tags that already exist, add links
-				$query = $this->prepare('SELECT tags.tag_name, tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
-				$query->execute($sql_params);
-				$tags_db = $query->fetchAll();
-				
-				foreach($tags_db as $tag){
-					// Remove from tags input
-					$tag_key = array_search($tag['tag_name'], $tags);
-					unset($tags[$tag_key]);
-					
-					// Add link
-					$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $images[$i]['image_id'] . ', ' . $tag['tag_id'] . ');';
-					$this->exec($query);
-				}
-				
-				// For tags that don't exist, add tags and links
-				if(count($tags) > 0){
-					foreach($tags as $tag){
-						// Error checking
-						if(empty($tag)){ continue; }
-						
-						// Add tag
-						$query = $this->prepare('INSERT INTO tags (tag_name) VALUES (:tag);');
-						$query->execute(array(':tag' => $tag));
-						$tag_id = intval($this->db->lastInsertId(TABLE_PREFIX . 'tags_tag_id_seq'));
-					
-						// Add link
-						$query = 'INSERT INTO links (image_id, tag_id) VALUES (' . $images[$i]['image_id'] . ', ' . $tag_id . ');';
-						$this->exec($query);
-					}
-				}
-			}
-			
 			$fields = array('image_title' => @$title,
 				'image_description_raw' => @$description,
 				'image_description' => nl2br(@$description));
 			
 			$image = new Image($images[$i]['image_id']);
 			$image->updateFields($fields, false);
+			$image->addTags($tags);
 		}
 		
 		return true;
