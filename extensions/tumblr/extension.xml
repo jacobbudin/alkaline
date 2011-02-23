@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>3eeb19ddfb1f927485604e6539fd438ba7cc6802</uid>
+	<file>tumblr</file>
+	<class>Tumblr</class>
+	<title>Tumblr</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Posts to Tumblr.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>
