@@ -49,7 +49,7 @@ class Twitter extends Orbit{
 	
 	public function orbit_config(){
 		?>
-		<p>Every time you publish a image or post, your <a href="http://www.twitter.com/">Twitter</a> status will be updated. (If you publish multiple images or posts simultaneously, your status will only be updated once.)</p>
+		<p>Every time you publish an image or post, your <a href="http://www.twitter.com/">Twitter</a> status will be updated. (If you publish multiple images or posts simultaneously, your status will only be updated once.)</p>
 		<?php
 		if($this->twitter_active){
 			$this->twitter_format_image = $this->makeHTMLSafe($this->twitter_format_image);
@@ -212,7 +212,7 @@ class Twitter extends Orbit{
 		
 		if(strpos($this->twitter_transmit, 'image')){
 			if(empty($_POST['twitter_format_image'])){
-				$alkaline->addNote('You must format your tweet in order for the Twitter extension to work.', 'notice');
+				$this->addNote('You must format your tweet in order for the Twitter extension to work.', 'notice');
 			}
 			
 			if(empty($this->twitter_last_image_id)){
@@ -228,7 +228,7 @@ class Twitter extends Orbit{
 		
 		if(strpos($this->twitter_transmit, 'post')){
 			if(empty($_POST['twitter_format_post'])){
-				$alkaline->addNote('You must format your tweet in order for the Twitter extension to work.', 'notice');
+				$this->addNote('You must format your tweet in order for the Twitter extension to work.', 'notice');
 			}
 			
 			if(empty($this->twitter_last_post_id)){
