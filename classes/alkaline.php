@@ -1170,6 +1170,50 @@ class Alkaline{
 	}
 	
 	/**
+	 * Close open HTML tags
+	 *
+	 * @param string $html 
+	 * @return string
+	 */
+	public function closeTags($html){
+		preg_match_all("#<([a-z0-9]+)( .*)?(?!/)>#iU", $html, $result, PREG_OFFSET_CAPTURE);
+		
+		if(!isset($result[1])){ return $html; } 
+		
+		$openedtags = $result[1];
+		$len_opened = count($openedtags);
+		
+		if(!$len_opened){ return $html; }
+		
+		preg_match_all("#</([a-z0-9]+)>#iU", $html, $result, PREG_OFFSET_CAPTURE);
+		$closedtags = array();
+		
+		foreach($result[1] as $tag){
+			$closedtags[$tag[1]] = $tag[0];
+		}
+		
+		$openedtags = array_reverse($openedtags);
+		
+		for($i = 0; $i < $len_opened; $i++) {
+			if(preg_match('/(img|br|hr)/i', $openedtags[$i][0])){
+				continue;
+			}
+			
+			$found = array_search($openedtags[$i][0], $closedtags);
+			
+			if(!$found || $found < $openedtags[$i][1]){
+				$html .= "</".$openedtags[$i][0].">";
+			}
+			
+			if($found){
+				unset($closedtags[$found]);
+			}
+		}
+		
+		return $html;
+	}
+	
+	/**
 	 * Count the number of words in a string (more reliable than str_word_count();)
 	 *
 	 * @param string $string 
@@ -2485,6 +2529,7 @@ class Alkaline{
 		$string = trim($string);
 		if(strlen($string) > $length){
 			$string = rtrim(substr($string, 0, $length - 3)) . '&#0133;';
+			$string = self::closeTags($string);
 		}
 		return $string;
 	}
@@ -2505,6 +2550,7 @@ class Alkaline{
 			$space = strpos($string, ' ', $length);
 			if($space !== false){
 				$string = substr($string, 0, $space) . '&#0133;';
+				$string = self::closeTags($string);
 			}
 		}
 		return $string;
