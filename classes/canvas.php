@@ -709,6 +709,15 @@ class Canvas extends Alkaline{
 		return ucfirst($this->value);
 	}
 	
+	/**
+	 * Strip PHP and HTML tags
+	 *
+	 * @return string
+	 */
+	public function stripTags(){
+		return Alkaline::stripTags($this->value);
+	}
+	
 	
 	// PREPROCESSING
 	
