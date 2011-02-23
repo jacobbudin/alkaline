@@ -226,11 +226,17 @@ class Tumblr extends Orbit{
 		
 		// Get image, tags
 		$images = new Image($latest_image['image_id']);
-		$latest_image_tags = $images->getTags();
+		$tags = $images->getTags();
 		$latest_image = $images->images[0];
 		
+		$latest_image_tags = array();
+		
+		foreach($tags as $tag){
+			$latest_image_tags[] = $tag['tag_name'];
+		}
+		
 		// Format tags
-		$latest_image_tags = '"' . implode('","') . '"';
+		$latest_image_tags = '"' . implode('","', $latest_image_tags) . '"';
 		
 		// Save this image as last
 		$this->setPref('tumblr_last_image_time', $latest);
