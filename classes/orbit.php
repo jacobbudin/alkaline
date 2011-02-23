@@ -224,7 +224,7 @@ class Orbit extends Alkaline{
 		
 		// Remove non-arguments
 		$arguments = array_slice($arguments, 1, count($arguments) - 2);
-		if($arguments[0]){
+		if(isset($arguments[0])){
 			$argument_return_type = $this->getType($arguments[0]);
 		}
 		
@@ -245,7 +245,9 @@ class Orbit extends Alkaline{
 			}
 		}
 		
-		return $arguments[0];
+		if(isset($arguments[0])){
+			return $arguments[0];
+		}
 	}
 }
 
