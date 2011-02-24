@@ -304,8 +304,16 @@ class Image extends Alkaline{
 						$fields[$key] = $value;
 					}
 					else{
+						$value = str_ireplace(' on ', ', ', $value);
 						$value = str_ireplace(' at ', ', ', $value);
-						$value = date('Y-m-d H:i:s', strtotime($value));
+						$value = strtotime($value);
+						if($value !== false){
+							$value = date('Y-m-d H:i:s', $value);
+						}
+						else{
+							$this->addNote('The image&#8217;s publish date could not be determined, and was left unpublished.', 'error');
+							$value = '';
+						}
 						$fields[$key] = $value;
 					}
 				}
