@@ -1963,7 +1963,7 @@ class Alkaline{
 		if($default === true){
 			switch($table){
 				case 'images':
-					$fields['image_modified'] = date('Y-m-d H:i:s');
+					$fields['image_updated'] = date('Y-m-d H:i:s');
 					break;
 				case 'sets':
 					$fields['set_modified'] = date('Y-m-d H:i:s');
@@ -2273,7 +2273,7 @@ class Alkaline{
 	 * @return array Image IDs
 	 */
 	public function findIDRef($str){
-		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $str, $matches, PREG_SET_ORDER);
+		preg_match_all('#["\']{1}(?=' . LOCATION . '/|/)[^"\']*?([0-9]+)[^/.]*\.(?:' . IMG_EXT . ')#si', $str, $matches, PREG_SET_ORDER);
 		
 		$image_ids = array();
 		
