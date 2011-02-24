@@ -479,7 +479,7 @@ ol.errors li{
 }
 
 .large{ line-height: 1.5em; }
-.error, .notice, .success { padding: 1em 15px; width: 916px; margin: 0; }
+.error, .notice, .success { padding: 1em 15px; width: 916px; margin: 0 0 1.5em 0; }
 .center{ text-align: center; }
 .right{ text-align: right; }
 .none{ display: none; }

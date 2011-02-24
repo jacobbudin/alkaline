@@ -402,6 +402,14 @@ function setSort(set){
 	set.siblings('#set_images').val(images.join(', '));
 };
 
+function addNote(note, type){
+	if(empty(type)){ type = 'notice'; }
+	$('.js_gen_error').fadeOut();
+	html = $('<p class="' + type + ' js_gen_error none">' + note + '</p>');
+	$('#content').prepend(html);
+	html.slideDown('fast');
+}
+
 $(document).ready(function(){
 	if($(document).has('ul#slideshow').length){
 		$('ul#slideshow').hide();
@@ -739,8 +747,9 @@ $(document).ready(function(){
 		});
 		is_delete = $('input[id$="_delete"]').attr('checked');
 		if(stop && (is_delete != true)){
-			alert('Fill in the required fields to save. (Otherwise, delete or press cancel.)');
+			addNote('Fill in the required fields to save. (Otherwise, delete or press cancel.)', 'error');
 			event.preventDefault();
+			// alert('Fill in the required fields to save. (Otherwise, delete or press cancel.)');
 		}
 	});
 	
