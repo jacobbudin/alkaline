@@ -24,13 +24,17 @@ if(!$image_id = $alkaline->findID($_GET['id'])){
 
 // SAVE CHANGES
 if(!empty($_POST['image_id'])){
+	if(!$image_id = $alkaline->findID($_POST['image_id'])){
+		header('Location: ' . LOCATION . BASE . ADMIN . 'library' . URL_CAP);
+		exit();
+	}
+	
 	$images = new Image($image_id);
-	$image_id = $alkaline->findID($_POST['image_id']);
+	
 	if(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){
 			$alkaline->addNote('Your image has been deleted.', 'success');
 		}
-
 	}
 	else{
 		$image_description_raw = @$_POST['image_description_raw'];
