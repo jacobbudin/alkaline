@@ -470,6 +470,104 @@ class Post extends Alkaline{
 	}
 	
 	/**
+	 * Update post table
+	 *
+	 * @param array $array Associative array of columns and fields
+	 * @param bool $overwrite 
+	 * @return void
+	 */
+	public function updateFields($array, $overwrite=true){
+		// Error checking
+		if(!is_array($array)){
+			return false;
+		}
+		
+		for($i = 0; $i < $this->post_count; ++$i){
+			// Verify each key has changed; if not, unset the key
+			foreach($array as $key => $value){
+				if($array[$key] == $this->posts[$i][$key]){
+					unset($array[$key]);
+				}
+				if(!empty($this->posts[$i][$key]) and ($overwrite === false)){
+					unset($array[$key]);
+				}
+			}
+			
+			// If no keys have changed, break
+			if(count($array) == 0){
+				continue;
+			}
+			
+			$fields = array();
+			
+			// Prepare input
+			foreach($array as $key => $value){
+				if($key == 'post_published'){
+					if(empty($value)){
+						$fields[$key] = null;
+					}
+					elseif(strtolower($value) == 'now'){
+						$value = date('Y-m-d H:i:s');
+						$fields[$key] = $value;
+					}
+					else{
+						$value = str_ireplace(' on ', ', ', $value);
+						$value = str_ireplace(' at ', ', ', $value);
+						$value = strtotime($value);
+						if($value !== false){
+							$value = date('Y-m-d H:i:s', $value);
+						}
+						else{
+							$this->addNote('The post&#8217;s publish date could not be determined, and was left unpublished.', 'error');
+							$value = '';
+						}
+						$fields[$key] = $value;
+					}
+				}
+				elseif($key == 'post_geo'){
+					$geo = new Geo($value);
+					if(!empty($geo->city)){
+						if($geo->city['country_name'] == 'United States'){
+							$fields['post_geo'] = $geo->city['city_name'] . ', ' . $geo->city['city_state'] .', ' . $geo->city['country_name'];
+						}
+						else{
+							$fields['post_geo'] = $geo->city['city_name'] . ', ' . $geo->city['country_name'];
+						}
+					}
+					elseif(!empty($geo->raw)){
+						$fields['post_geo'] = ucwords($geo->raw);
+					}
+					else{
+						$fields['post_geo'] = '';
+					}
+					
+					if(!empty($geo->lat) and !empty($geo->long)){
+						$fields['post_geo_lat'] = $geo->lat;
+						$fields['post_geo_long'] = $geo->long;
+					}
+				}
+				else{
+					$fields[$key] = $value;
+				}
+			}
+			
+			// Set post_updated field to now
+			$fields['post_modified'] = date('Y-m-d H:i:s');
+			
+			$columns = array_keys($fields);
+			$values = array_values($fields);
+			
+			// Add row to database
+			$query = $this->prepare('UPDATE posts SET ' . implode(' = ?, ', $columns) . ' = ? WHERE post_id = ' . $this->posts[$i]['post_id'] . ';');
+			if(!$query->execute($values)){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Format time
 	 *
 	 * @param string $format Same format as date();

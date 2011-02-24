@@ -16,6 +16,7 @@ $user = new User;
 
 $user->perm(true, 'posts');
 
+// GET POST
 if(!empty($_GET['id'])){
 	$post_id = $alkaline->findID($_GET['id']);
 }
@@ -26,7 +27,14 @@ if(!empty($_GET['act'])){
 
 // SAVE CHANGES
 if(!empty($_POST['post_id'])){
-	$post_id = $alkaline->findID($_POST['post_id']);
+	if(!$post_id = $alkaline->findID($_POST['post_id'])){
+		header('Location: ' . LOCATION . BASE . ADMIN . 'posts' . URL_CAP);
+		exit();
+	}
+	
+	$posts = new Post($post_id);
+	$posts->fetch();
+	
 	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		$alkaline->deleteRow('posts', $post_id);
 	}
@@ -65,19 +73,6 @@ if(!empty($_POST['post_id'])){
 			$post_comment_disabled = 0;
 		}
 		
-		$post_published = @$_POST['post_published'];
-		
-		if(empty($post_published)){
-			$post_published = null;
-		}
-		elseif(strtolower($post_published) == 'now'){
-			$post_published = date('Y-m-d H:i:s');
-		}
-		else{
-			$post_published = str_ireplace(' at ', ', ', $post_published);
-			$post_published = date('Y-m-d H:i:s', strtotime($post_published));
-		}
-		
 		$post_images = implode(', ', $alkaline->findIDRef($post_text));
 		
 		$post_words = $alkaline->countWords($_POST['post_text_raw'], 0);
@@ -88,12 +83,13 @@ if(!empty($_POST['post_id'])){
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
 			'post_text' => $alkaline->makeUnicode($post_text),
-			'post_published' => $post_published,
+			'post_published' => @$_POST['post_published'],
 			'post_comment_disabled' => $post_comment_disabled,
 			'post_words' => $post_words);
 		
-		$alkaline->updateRow($fields, 'posts', $post_id);
+		$posts->updateFields($fields);
 	}
+	
 	unset($post_id);
 }
 else{
@@ -109,7 +105,7 @@ if(!empty($post_act) and ($post_act == 'add')){
 
 // GET POSTS TO VIEW OR PAGE TO EDIT
 if(empty($post_id)){
-	$posts = new Post();
+	$posts = new Post;
 	$posts->page(null, 50);
 	$posts->fetch();
 	$posts->formatTime();
