@@ -50,7 +50,7 @@ $salt = '';
 //
 
 // Valid extensions, separate by |
-$img_ext = 'gif|GIF|jpg|JPG|jpeg|JPEG|png|PNG';
+$img_ext = 'gif|jpg|jpeg|png|pdf|svg';
 
 // Length, an integer in seconds, to remember a user's previous login
 $user_remember = 1209600;
@@ -76,7 +76,7 @@ if($url_rewrite){
 	define('URL_ID', '/');
 	define('URL_ACT', '/');
 	define('URL_AID', '/');
-	define('URL_PAGE', '/');
+	define('URL_PAGE', '/page');
 	define('URL_RW', '/');
 }
 else{
@@ -121,5 +121,6 @@ define('IMAGES', FOLDER_PREFIX . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');
 define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
 define('THEMES', FOLDER_PREFIX . 'themes/');
+define('WATERMARKS', FOLDER_PREFIX . 'watermarks/');
 
 ?>
