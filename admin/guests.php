@@ -123,9 +123,18 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>guests<?php echo URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate Guest</a> <a href="<?php echo BASE; ?>guest<?php echo URL_ID . $guest['guest_id'] . URL_RW; ?>">Go to guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'guests' . URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate Guest</a> <a href="<?php echo BASE . 'access.php?key=' .  $guest['guest_key']; ?>">Go to guest</a></div>
 	
-	<h1>Guest</h1>
+	<?php
+	
+	if(empty($guest['guest_title'])){
+		echo '<h1>New Guest</h1>';
+	}
+	else{
+		echo '<h1>Guest: ' . $guest['guest_title'] . '</h1>';
+	}
+	
+	?>
 	
 	<form id="guest" action="<?php echo BASE . ADMIN . 'guests' . URL_CAP; ?>" method="post">
 		<table>

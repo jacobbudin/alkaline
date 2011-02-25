@@ -154,7 +154,16 @@ else{
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View images (<?php echo $user_image_count; ?>)</a></div>
 	
-	<h1>User</h1>
+	<?php
+	
+	if(empty($user['user_name'])){
+		echo '<h1>New User</h1>';
+	}
+	else{
+		echo '<h1>User: ' . $user['user_name'] . '</h1>';
+	}
+	
+	?>
 	
 	<form id="user" action="<?php echo BASE . ADMIN . 'users' . URL_CAP; ?>" method="post">
 		<table>

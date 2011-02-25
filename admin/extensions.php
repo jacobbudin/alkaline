@@ -265,7 +265,7 @@ else{
 	
 		?>
 	
-		<h1><?php echo $extension['extension_title']; ?></h1>
+		<h1>Extension: <?php echo $extension['extension_title']; ?></h1>
 	
 		<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 			<div>
