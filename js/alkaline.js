@@ -767,7 +767,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	// MAINTENACE
+	// MAINTENANCE
 	
 	if(page == 'Maintenance'){
 		$("#progress").hide(0);
@@ -779,8 +779,10 @@ $(document).ready(function(){
 			executeTask();
 		}
 		$("#tasks a").click(function(event){
-			task = $(this).attr("href").slice(1);
-			executeTask();
+			if($(this).attr("href").slice(0,1) == '#'){
+				task = $(this).attr("href").slice(1);
+				executeTask();
+			}
 		});
 	}
 	
