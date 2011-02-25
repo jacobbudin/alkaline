@@ -2936,7 +2936,7 @@ class Alkaline{
 			}
 			
 			$_SESSION['alkaline']['error'] = array('error_title' => $severity, 'error_message' => $message);
-			require(PATH . BASE . 'error.php');
+			header('Location: ' . LOCATION . BASE . 'error.php');
 			exit();
 		}
 		
@@ -2950,7 +2950,7 @@ class Alkaline{
 			case E_USER_ERROR:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				session_write_close();
-				require(PATH . BASE . ADMIN . 'error.php');
+				header('Location: ' . LOCATION . BASE . ADMIN . 'error.php');
 				exit();
 				break;
 			default:
