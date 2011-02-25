@@ -83,9 +83,8 @@ define('TAB', 'features');
 
 // GET PAGES TO VIEW OR PAGE TO EDIT
 if(empty($page_id)){
-	$pages = new Page();
-	$pages->fetchAll();
-	$pages->formatTime();
+	$pages = $alkaline->getTable('pages', null, null, null, 'page_modified DESC');
+	$page_count = @count($pages);
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -94,7 +93,7 @@ if(empty($page_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>">Add page</a></div>
 	
-	<h1>Pages (<?php echo $pages->page_count; ?>)</h1>
+	<h1>Pages (<?php echo $page_count; ?>)</h1>
 	
 	<p>Pages are freeform areas for text-based content.</p>
 	
@@ -112,13 +111,13 @@ if(empty($page_id)){
 		</tr>
 		<?php
 
-		foreach($pages->pages as $page){
+		foreach($pages as $page){
 			echo '<tr>';
 				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
-				echo '<td>' . $page['page_created_format'] . '</td>';
-				echo '<td>' . $page['page_modified_format'] . '</td>';
+				echo '<td>' . $alkaline->formatTime($page['page_created']) . '</td>';
+				echo '<td>' . $alkaline->formatRelTime($page['page_modified']) . '</td>';
 			echo '</tr>';
 		}
 
@@ -144,7 +143,16 @@ else{
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Go to page</a></div>
 	
-	<h1>Page</h1>
+	<?php
+	
+	if(empty($page['page_title'])){
+		echo '<h1>New Page</h1>';
+	}
+	else{
+		echo '<h1>Page: ' . $page['page_title'] . '</h1>';
+	}
+	
+	?>
 
 	<form id="page" action="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>" method="post">
 		<table>

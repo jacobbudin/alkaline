@@ -172,7 +172,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</div>
 			<?php } ?>
 			
-			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show thumbnail files</a></p>
+			<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show image files</a></p>
 			
 			<div class="reveal">
 				<ul>

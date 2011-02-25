@@ -187,9 +187,15 @@ else{
 	?>
 	
 	<?php if($comment['image_id'] != 0){ ?>
-	<div class="actions"><a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>">Go to image</a></div>
+		<div class="actions">
+			<a href="<?php echo BASE . ADMIN . 'images' . URL_ID . $comment['image_id'] . URL_RW; ?>">View image</a>
+			<a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>">Go to image</a>
+		</div>
 	<?php } if($comment['post_id'] != 0){ ?>
-	<div class="actions"><a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>">Go to post</a></div>
+		<div class="actions">
+			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ID . $comment['post_id'] . URL_RW; ?>">View post</a>
+			<a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>">Go to post</a>
+		</div>
 	<?php } ?>
 	
 	<h1>Comment</h1>

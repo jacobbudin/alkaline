@@ -108,7 +108,6 @@ if(empty($post_id)){
 	$posts = new Post;
 	$posts->page(null, 50);
 	$posts->fetch();
-	$posts->formatTime();
 	$posts->hook();
 	
 	define('TITLE', 'Alkaline Posts');
@@ -191,8 +190,8 @@ if(empty($post_id)){
 					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_title_url'] . URL_RW . '" class="nu">/' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
-					echo '<td>' . $post['post_created_format'] . '</td>';
-					echo '<td>' . $post['post_modified_format'] . '</td>';
+					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
+					echo '<td>' . $alkaline->formatRelTime($post['post_modified']) . '</td>';
 				echo '</tr>';
 			}
 
@@ -254,7 +253,16 @@ else{
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo $post['post_uri']; ?>">Go to post</a></div>
 	
-	<h1>Post</h1>
+	<?php
+	
+	if(empty($post['post_title'])){
+		echo '<h1>New Post</h1>';
+	}
+	else{
+		echo '<h1>Post: ' . $post['post_title'] . '</h1>';
+	}
+	
+	?>
 
 	<form id="post" action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>" method="post">
 		<table>

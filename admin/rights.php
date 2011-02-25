@@ -71,7 +71,7 @@ define('TAB', 'features');
 // GET RIGHTS SETS TO VIEW OR RIGHTS SET TO EDIT
 if(empty($right_id)){
 	$alkaline->updateCounts('images', 'rights', 'right_image_count');
-	$rights = $alkaline->getTable('rights');
+	$rights = $alkaline->getTable('rights', null, null, null, 'right_modified DESC');
 	$rights = $alkaline->stripTags($rights);
 	$right_count = @count($rights);
 	
@@ -84,7 +84,7 @@ if(empty($right_id)){
 
 	<h1>Right Sets (<?php echo $right_count; ?>)</h1>
 	
-	<p>Right sets clarify which copyrights you retain on your imagegraphy to discourage illicit use.</p>
+	<p>Right sets clarify which copyrights you retain on your images to discourage illicit use.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -92,17 +92,19 @@ if(empty($right_id)){
 	
 	<table class="filter">
 		<tr>
-			<th style="width: 60%;">Title</th>
+			<th>Title</th>
 			<th class="center">Images</th>
+			<th>Created</th>
 			<th>Last modified</th>
 		</tr>
 		<?php
 	
 		foreach($rights as $right){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '">' . $right['right_title'] . '</a></strong><br />' . $alkaline->fitString($right['right_description'], 150) . '&#0160;</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search/rights/' . $right['right_id'] . '">' . $right['right_image_count'] . '</a></td>';
-				echo '<td>' . $alkaline->formatTime($right['right_modified']) . '</td>';
+				echo '<td>' . $alkaline->formatTime($right['right_created']) . '</td>';
+				echo '<td>' . $alkaline->formatRelTime($right['right_modified']) . '</td>';
 			echo '</tr>';
 		}
 	
@@ -136,7 +138,16 @@ else{
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a></div>
 	
-	<h1>Rights Set</h1>
+	<?php
+	
+	if(empty($right['right_title'])){
+		echo '<h1>New Right Set</h1>';
+	}
+	else{
+		echo '<h1>Right Set: ' . $right['right_title'] . '</h1>';
+	}
+	
+	?>
 	
 	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>" method="post">
 		<table>

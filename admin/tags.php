@@ -107,8 +107,17 @@ else{
 	?>
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a></div>
+		
+	<?php
 	
-	<h1>Tag</h1>
+	if(empty($tag['tag_name'])){
+		echo '<h1>New Tag</h1>';
+	}
+	else{
+		echo '<h1>Tag: ' . $tag['tag_name'] . '</h1>';
+	}
+	
+	?>
 	
 	<p>You can rename the tag&#8212;including to the name of a preexisting tag to merge them.</p>
 	

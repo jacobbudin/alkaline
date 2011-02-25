@@ -85,7 +85,7 @@ define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($set_id)){
-	$sets = $alkaline->getTable('sets');
+	$sets = $alkaline->getTable('sets', null, null, null, 'set_modified DESC');
 	$set_count = @count($sets);
 	
 	define('TITLE', 'Alkaline Sets');
@@ -105,9 +105,10 @@ if(empty($set_id)){
 	
 	<table class="filter">
 		<tr>
-			<th style="width: 60%;">Title</th>
+			<th>Title</th>
 			<th class="center">Views</th>
 			<th class="center">Images</th>
+			<th>Created</th>
 			<th>Last modified</th>
 		</tr>
 		<?php
@@ -117,7 +118,8 @@ if(empty($set_id)){
 				echo '<td><strong><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu">/' . $set['set_title_url'] . '</td>';
 				echo '<td class="center">' . $set['set_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW . '">' . $set['set_image_count'] . '</a></td>';
-				echo '<td>' . $alkaline->formatTime($set['set_modified']) . '</td>';
+				echo '<td>' . $alkaline->formatTime($set['set_created']) . '</td>';
+				echo '<td>' . $alkaline->formatRelTime($set['set_modified']) . '</td>';
 			echo '</tr>';
 		}
 	
@@ -151,7 +153,16 @@ else{
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Go to set</a></div>
 	
-	<h1>Set</h1>
+	<?php
+	
+	if(empty($set['set_title'])){
+		echo '<h1>New Set</h1>';
+	}
+	else{
+		echo '<h1>Set: ' . $set['set_title'] . '</h1>';
+	}
+	
+	?>
 	
 	<form id="set" action="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>" method="post">
 		<table>
@@ -177,30 +188,28 @@ else{
 					<input type="radio" name="set_type" id="set_type_static" value="static" <?php if($set['set_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="set_type_static">Static</label> &#8212; Only include the images originally selected
 				</td>
 			</tr>
-			<?php if($set['set_type'] == 'static'){ ?>
-				<tr>
-					<td class="right"><label>Sort:</label></td>
-					<td>
-						<p>
-							<span class="switch">&#9656;</span> <a href="#" class="show">Show set</a> <span class="quiet">(sort images by dragging and dropping)</span>
-						</p>
+			<tr>
+				<td class="right"><label>Images:</label></td>
+				<td>
+					<p>
+						<span class="switch">&#9656;</span> <a href="#" class="show">Show set</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
+					</p>
 
-						<div class="reveal" id="set_image_sort">
-							<?php
-						
-							$images = new Image($set['set_images']);
-							$images->getSizes('square');
-						
-							foreach($images->images as $image){
-								echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';
-							}
-						
-							?><br /><br />
-						</div>
-						<input type="hidden" id="set_images" name="set_images" value="<?php echo $set['set_images']; ?>" />
-					</td>
-				</tr>
-			<?php } ?>
+					<div class="reveal" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
+						<?php
+					
+						$images = new Image($set['set_images']);
+						$images->getSizes('square');
+					
+						foreach($images->images as $image){
+							echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';
+						}
+					
+						?><br /><br />
+					</div>
+					<input type="hidden" id="set_images" name="set_images" value="<?php echo $set['set_images']; ?>" />
+				</td>
+			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
 				<td><strong><label for="set_delete">Delete this set.</label></strong> This action cannot be undone.</td>
