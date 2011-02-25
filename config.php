@@ -121,5 +121,6 @@ define('IMAGES', FOLDER_PREFIX . 'images/');
 define('INSTALL', FOLDER_PREFIX . 'install/');
 define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
 define('THEMES', FOLDER_PREFIX . 'themes/');
+define('WATERMARKS', FOLDER_PREFIX . 'watermarks/');
 
 ?>

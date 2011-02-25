@@ -241,6 +241,7 @@ class Image extends Alkaline{
 				$size_prepend = $size['size_prepend'];
 				$size_append = $size['size_append'];
 				$size_watermark = $size['size_watermark'];
+				$size_label = $size['size_label'];
 				$size_dest = parent::correctWinPath(PATH . IMAGES . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
 				
 				switch($size_type){
@@ -255,7 +256,10 @@ class Image extends Alkaline{
 				}
 				
 				if($this->returnConf('thumb_watermark') and ($size_watermark == 1)){
-					$watermark = parent::correctWinPath(PATH . 'watermark.png');
+					$watermark = parent::correctWinPath(PATH . WATERMARKS . $size_label .  '.png');
+					if(!file_exists($watermark)){
+						$watermark = parent::correctWinPath(PATH . WATERMARKS . 'watermark.png');
+					}
 					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $images[$i]['image_ext']);
 				}
 			}
@@ -1941,6 +1945,9 @@ class Image extends Alkaline{
 		$src = parent::correctWinPath($src);
 		$dest = parent::correctWinPath($dest);
 		$watermark = parent::correctWinPath($watermark);
+		
+		// Check to see if watermark exists
+		if(!file_exists($watermark)){ $this->addNote('Watermark file could not be found', 'error'); return; }
 		
 		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
 			$image = new Imagick($src);
