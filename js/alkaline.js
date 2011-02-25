@@ -404,7 +404,7 @@ function setSort(set){
 
 function addNote(note, type){
 	if(empty(type)){ type = 'notice'; }
-	$('.js_gen_error').fadeOut();
+	$('.js_gen_error').css('position', 'absolute').css('z-index', '100').fadeOut();
 	html = $('<p class="' + type + ' js_gen_error none">' + note + '</p>');
 	$('#content').prepend(html);
 	html.slideDown('fast');
@@ -738,18 +738,32 @@ $(document).ready(function(){
 	$('input[type="submit"]').click(function(event){
 		stop = false;
 		$('input.notempty').each(function(index){
+			$(this).css('background-color', '');
 			val = $(this).val();
 			if(val == ''){ stop = true; }
 		});
 		$('input.nonzero').each(function(index){
+			$(this).css('background-color', '');
 			val = $(this).val();
 			if(val == 0){ stop = true; }
 		});
 		is_delete = $('input[id$="_delete"]').attr('checked');
 		if(stop && (is_delete != true)){
+			$('input.notempty').each(function(index){
+				val = $(this).val();
+				if(val == ''){
+					$(this).css('background-color', '#FBE3E4');
+				}
+			});
+			$('input.nonzero').each(function(index){
+				val = $(this).val();
+				if(val == 0){
+					$(this).css('background-color', '#FBE3E4');
+				}
+			});
+			
 			addNote('Fill in the required fields to save. (Otherwise, delete or press cancel.)', 'error');
 			event.preventDefault();
-			// alert('Fill in the required fields to save. (Otherwise, delete or press cancel.)');
 		}
 	});
 	
