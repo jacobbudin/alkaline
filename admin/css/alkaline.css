@@ -429,6 +429,7 @@ img.ui-datepicker-trigger{
 }
 
 .actions{
+	margin-top: .65em;
 	float: right;
 	text-align: right;
 	min-width: 310px;
@@ -487,6 +488,7 @@ ol.errors li{
 .quiet a{ color: #666; }
 .full { width:100%; }
 .code{ font-family: "Anonymous Pro", "Courier New", Courier, serif; background-color: #eee; }
+.highlight{ background-color: #fcee7f; padding: 0 .2em; }
 
 .page_no { color: #666; font-weight: bold; padding: .1em .4em; }
 a.page_no { color: #333; font-weight: bold; border: 2px solid #ccc; padding: .1em .4em; margin: 0 .2em; text-decoration: none; }
