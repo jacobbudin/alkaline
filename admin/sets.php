@@ -115,7 +115,7 @@ if(empty($set_id)){
 	
 		foreach($sets as $set){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu">/' . $set['set_title_url'] . '</td>';
+				echo '<td><strong><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu">' . $set['set_title_url'] . '</td>';
 				echo '<td class="center">' . $set['set_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW . '">' . $set['set_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($set['set_created']) . '</td>';
@@ -173,8 +173,8 @@ else{
 			<tr>
 				<td class="right pad"><label for="set_title_url">Custom URL:</label></td>
 				<td class="quiet">
-					<input type="text" id="set_title_url" name="set_title_url" value="<?php echo $set['set_title_url']; ?>" style="width: 300px;" /><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'set' . URL_ID; ?><span id="set_title_url_link"></span></span>
+					<input type="text" id="set_title_url" name="set_title_url" value="<?php echo $set['set_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
+					<span class="quiet"><?php echo LOCATION . BASE . 'set' . URL_ID . $set['set_id']; ?>-<span id="set_title_url_link"></span></span>
 				</td>
 			</tr>
 			<tr>

@@ -187,7 +187,7 @@ if(empty($post_id)){
 
 			foreach($posts->posts as $post){
 				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_title_url'] . URL_RW . '" class="nu">/' . $post['post_title_url'] . '</td>';
+					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_title_url'] . URL_RW . '" class="nu">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
@@ -273,8 +273,8 @@ else{
 			<tr>
 				<td class="right pad"><label for="post_title_url">Custom URL:</label></td>
 				<td class="quiet">
-					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'post' . URL_ID; ?><span id="post_title_url_link"></span></span>
+					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
+					<span class="quiet"><?php echo LOCATION . BASE . 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
 				</td>
 			</tr>
 			<tr>

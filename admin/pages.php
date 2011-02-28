@@ -113,7 +113,7 @@ if(empty($page_id)){
 
 		foreach($pages as $page){
 			echo '<tr>';
-				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">/' . $page['page_title_url'] . '</td>';
+				echo '<td><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '"><strong>' . $page['page_title'] . '</strong></a><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu">' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
 				echo '<td>' . $alkaline->formatTime($page['page_created']) . '</td>';
@@ -154,7 +154,7 @@ else{
 	
 	?>
 
-	<form id="page" action="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>" method="post">
+	<form id="page" action="" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="page_title">Title:</label></td>
@@ -163,7 +163,7 @@ else{
 			<tr>
 				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
 				<td class="quiet">
-					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
+					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
 					<span class="quiet"><?php echo LOCATION . BASE . 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
 				</td>
 			</tr>

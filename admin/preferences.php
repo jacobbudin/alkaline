@@ -97,7 +97,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
-	<h3>Shoebox</h3>
+	<h3>Posts</h3>
 	
 	<table>
 		<tr>
