@@ -156,11 +156,11 @@ else{
 	
 	<?php
 	
-	if(empty($user['user_name'])){
+	if(empty($user_db['user_name'])){
 		echo '<h1>New User</h1>';
 	}
 	else{
-		echo '<h1>User: ' . $user['user_name'] . '</h1>';
+		echo '<h1>User: ' . $user_db['user_name'] . '</h1>';
 	}
 	
 	?>
