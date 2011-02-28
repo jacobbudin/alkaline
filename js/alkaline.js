@@ -720,11 +720,18 @@ $(document).ready(function(){
 	
 	if(page == 'Guest'){
 		function guestKeyUpdate(){
-			key = $('#guest_key').val();
-			url = $('#guest_key_url').html();
-			regex = /access\/[a-zA-Z0-9_\-\/]*/gim;
-			new_url = url.replace(regex, 'access/' + key + '/');
-			$('#guest_key_url').html(new_url);
+			val = $('#guest_key').val();
+			newval = val.replace(/[^a-z0-9\-\_]/i, '');
+			if(val != newval){
+				$('#guest_key').val(newval);
+			}
+			if(!empty(newval)){
+				newval = '<span class="highlight">' + newval + '</span>';
+				$('#guest_key_link').html(newval);
+			}
+			else{
+				$('#guest_key_link').html('');
+			}
 		}
 		
 		guestKeyUpdate();
@@ -733,6 +740,32 @@ $(document).ready(function(){
 			guestKeyUpdate();
 		});
 	}
+	
+	// CUSTOM LINK
+	
+	function titleUrlUpdate(selector){
+		id = selector.attr('id');
+		id_link = id + '_link';
+		val = selector.val();
+		newval = val.replace(/[^a-z0-9\-\_]/i, '');
+		if(val != newval){
+			selector.val(newval);
+		}
+		if(!empty(newval)){
+			newval = '<span class="highlight">' + newval + '</span>';
+			$('#' + id_link).html(newval);
+		}
+		else{
+			$('#' + id_link).html('');
+		}
+	}
+	
+	$('input[id$="_title_url"]').each(function(){
+		titleUrlUpdate($(this));
+		$(this).keyup(function(event){
+			titleUrlUpdate($(this));
+		});
+	});
 	
 	// NOTEMPTY
 	$('input[type="submit"]').click(function(event){

@@ -274,7 +274,7 @@ else{
 				<td class="right pad"><label for="post_title_url">Custom URL:</label></td>
 				<td class="quiet">
 					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /><br />
-					Optional. Use only letters, numbers, underscores, and hyphens.
+					<span class="quiet"><?php echo LOCATION . BASE . 'post' . URL_ID; ?><span id="post_title_url_link"></span></span>
 				</td>
 			</tr>
 			<tr>

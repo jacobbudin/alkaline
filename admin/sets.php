@@ -174,7 +174,7 @@ else{
 				<td class="right pad"><label for="set_title_url">Custom URL:</label></td>
 				<td class="quiet">
 					<input type="text" id="set_title_url" name="set_title_url" value="<?php echo $set['set_title_url']; ?>" style="width: 300px;" /><br />
-					Optional. Use only letters, numbers, underscores, and hyphens.
+					<span class="quiet"><?php echo LOCATION . BASE . 'set' . URL_ID; ?><span id="set_title_url_link"></span></span>
 				</td>
 			</tr>
 			<tr>

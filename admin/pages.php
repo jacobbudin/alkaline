@@ -164,11 +164,11 @@ else{
 				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
 				<td class="quiet">
 					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
-					Optional. Use only letters, numbers, underscores, and hyphens.
+					<span class="quiet"><?php echo LOCATION . BASE . 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
 				</td>
 			</tr>
 			<tr>
-				<td class="right"><label for="page_text_raw">Text:</label></td>
+				<td class="right pad"><label for="page_text_raw">Text:</label></td>
 				<td><textarea id="page_text_raw" name="page_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$page['page_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
