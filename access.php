@@ -11,7 +11,7 @@ require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
-$alkaline->access($_REQUEST['key']);
+$alkaline->access($_REQUEST['id']);
 
 header('Location: ' . LOCATION . BASE);
 exit();
