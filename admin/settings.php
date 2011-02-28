@@ -123,13 +123,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</table>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/users.png" alt="" /> Users &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/guests.png" alt="" /> Guests &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/thumbnails.png" alt="" /> Thumbnails &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/themes.png" alt="" /> Themes &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extensions &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/configuration.png" alt="" /> Configuration &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/maintenance.png" alt="" /> Maintenance &#9656;</a></h2>
+		<h2 id="h2_users"><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/users.png" alt="" /> Users</a></h2>
+		<h2 id="h2_guests"><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/guests.png" alt="" /> Guests</a></h2>
+		<h2 id="h2_thumbnails"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/thumbnails.png" alt="" /> Thumbnails</a></h2>
+		<h2 id="h2_themes"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/themes.png" alt="" /> Themes</a></h2>
+		<h2 id="h2_extensions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extensions</a></h2>
+		<h2 id="h2_configuration"><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/configuration.png" alt="" /> Configuration</a></h2>
+		<h2 id="h2_maintenance"><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/maintenance.png" alt="" /> Maintenance</a></h2>
 	</div>
 </div>
 

@@ -229,8 +229,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		?>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?>&#9656;</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</a></h2>
+		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?></a></h2>
 		<hr />
 
 		<h3>Find</h3>

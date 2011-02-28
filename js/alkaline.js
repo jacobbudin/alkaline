@@ -7,9 +7,11 @@
 
 var BASE = $('meta[name="base"]').attr('content');
 var FOLDER_PREFIX = $('meta[name="folder_prefix"]').attr('content');
+var PERMISSIONS = $('meta[name="permissions"]').attr('content');
 
 var ADMIN = FOLDER_PREFIX + 'admin/';
 var IMAGES = FOLDER_PREFIX + 'images/';
+var JS = FOLDER_PREFIX + 'js/';
 
 var slideshow;
 var slideshow_image;
@@ -411,6 +413,35 @@ function addNote(note, type){
 }
 
 $(document).ready(function(){
+	// PERMISSIONS
+	if(!empty(PERMISSIONS)){
+		perms = PERMISSIONS.split(', ');
+		$('#navigation').find('li').each(function(){
+			id = $(this).attr('id');
+			if(id == 'tab_dashboard'){ return; }
+			is_perm = perms.some(function(item){ return 'tab_' + item == id; });
+			if(is_perm === false){
+				$(this).hide();
+			}
+		});
+		$('#sub_navigation').find('li').each(function(){
+			id = $(this).attr('id');
+			if(id == 'sub_preferences'){ return; }
+			is_perm = perms.some(function(item){ return 'sub_' + item == id; });
+			if(is_perm === false){
+				$(this).hide();
+			}
+		});
+		$('#content').find('h2').each(function(){
+			id = $(this).attr('id');
+			if(id == 'h2_preferences'){ return; }
+			is_perm = perms.some(function(item){ return 'h2_' + item == id; });
+			if(is_perm === false){
+				$(this).hide();
+			}
+		});
+	}
+	
 	if($(document).has('ul#slideshow').length){
 		$('ul#slideshow').hide();
 		
@@ -692,7 +723,7 @@ $(document).ready(function(){
 				return true;
 			},
 			setName: function(text) {
-				$("#shoebox_link").slideUp(500);
+				$("#h2_shoebox").slideUp(500);
 				$("#progress").delay(500).slideDown(500);
 			},
 			setProgress: function(val) {
@@ -710,7 +741,7 @@ $(document).ready(function(){
 				$("#upload_count_text").text(upload_count_text);
 				if(number == (total - 1)){
 					$("#progress").slideUp(500);
-					$("#shoebox_link").delay(500).slideDown(500);
+					$("#h2_shoebox").delay(500).slideDown(500);
 				}
 			}
 		});

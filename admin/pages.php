@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $orbit = new Orbit;
 $user = new User;
 
-$user->perm(true, 'editor');
+$user->perm(true, 'pages');
 
 if(!empty($_GET['id'])){
 	$page_id = $alkaline->findID($_GET['id']);

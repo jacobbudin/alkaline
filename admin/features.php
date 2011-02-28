@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true, 'editor');
+$user->perm(true, 'features');
 
 if(!empty($_GET['act']) and ($_GET['act'] != 'bulk')){
 	Find::clearMemory();
@@ -183,85 +183,98 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-		<div class="actions">
-			<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
-		</div>
+		<?php
 		
-		<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->image_count); ?>)</h1>
+		if($user->perm(false, 'editor')){
+			?>
+			<div class="actions">
+				<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
+			</div>
 		
-		<form action="" method="post">
+			<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->image_count); ?>)</h1>
+		
+			<form action="" method="post">
+				<p>
+					<select name="act" id="act">
+						<option value="tag_add">Add tag</option>
+						<option value="tag_remove">Remove tag</option>
+						<option value="set_add">Add to static set</option>
+						<option value="set_remove">Remove from static set</option>
+						<option value="right">Switch to rights set</option>
+						<option value="privacy">Switch to privacy level</option>
+						<option value="publish">Publish now</option>
+						<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
+					</select>
+					<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
+					<?php echo $alkaline->showSets('act_set_id', true); ?>
+					<?php echo $alkaline->showRights('act_right_id'); ?>
+					<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
+					<input type="hidden" name="image_ids" id="image_ids" value="" />
+					<input type="submit" id="act_do" name="do" value="Do" />
+				</p>
+			</form>
+		
 			<p>
-				<select name="act" id="act">
-					<option value="tag_add">Add tag</option>
-					<option value="tag_remove">Remove tag</option>
-					<option value="set_add">Add to static set</option>
-					<option value="set_remove">Remove from static set</option>
-					<option value="right">Switch to rights set</option>
-					<option value="privacy">Switch to privacy level</option>
-					<option value="publish">Publish now</option>
-					<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
-				</select>
-				<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
-				<?php echo $alkaline->showSets('act_set_id', true); ?>
-				<?php echo $alkaline->showRights('act_right_id'); ?>
-				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
-				<input type="hidden" name="image_ids" id="image_ids" value="" />
-				<input type="submit" id="act_do" name="do" value="Do" />
-			</p>
-		</form>
-		
-		<p>
-			<?php
+				<?php
 
-			foreach($images->images as $image){
-				$selected = '';
-				if(!empty($selected_image_ids)){
-					if(@in_array($image['image_id'], $selected_image_ids)){
+				foreach($images->images as $image){
+					$selected = '';
+					if(!empty($selected_image_ids)){
+						if(@in_array($image['image_id'], $selected_image_ids)){
+							$selected = '_selected';
+						}
+					}
+					elseif(!empty($_SESSION['alkaline']['search']['results'])){
 						$selected = '_selected';
 					}
-				}
-				elseif(!empty($_SESSION['alkaline']['search']['results'])){
-					$selected = '_selected';
-				}
-				?>
-				<img src="<?php echo $image['image_src_square']; ?>" alt="" id="image-<?php echo $image['image_id']; ?>" title="<?php echo $image['image_title']; ?>" class="frame<?php echo $selected; ?>" />
-				<?php
-			}
-			?>
-		</p>
-		<?php
-		if($image_ids->page_count > 1){
-			?>
-			<p>
-				<?php
-				if(!empty($image_ids->page_previous)){
-					for($i = 1; $i <= $image_ids->page_previous; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
-					}
-				}
-				?>
-				<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
-				<?php
-				if(!empty($image_ids->page_next)){
-					for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
-					}
+					?>
+					<img src="<?php echo $image['image_src_square']; ?>" alt="" id="image-<?php echo $image['image_id']; ?>" title="<?php echo $image['image_title']; ?>" class="frame<?php echo $selected; ?>" />
+					<?php
 				}
 				?>
 			</p>
+			<?php if($image_ids->page_count > 1){ ?>
+				<p>
+					<?php
+					if(!empty($image_ids->page_previous)){
+						for($i = 1; $i <= $image_ids->page_previous; ++$i){
+							echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						}
+					}
+					?>
+					<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
+					<?php
+					if(!empty($image_ids->page_next)){
+						for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
+							echo '<a href="' . BASE . ADMIN . 'features' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						}
+					}
+					?>
+				</p>
+			<?php } ?>
+			
+			<p class="quiet">
+				<em>Tip: Hold down the Shift key to select a series of images.</em>
+			</p>
+		<?php
+		
+		}
+		else{
+			?>
+			<h1>Editor</h1>
+			
+			<p>You do not have permission to access this module.</p>
 			<?php
 		}
+		
 		?>
-		<p class="quiet">
-			<em>Tip: Hold down the Shift key to select a series of images.</em>
-		</p>
 	</div>
 	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/tags.png" alt="" /> Tags &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comments &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages &#9656;</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/rights.png" alt="" /> Rights &#9656;</a></h2>
+		<h2 id="h2_tags"><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/tags.png" alt="" /> Tags</a></h2>
+		<h2 id="h2_sets"><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets</a></h2>
+		<h2 id="h2_comments"><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comments</a></h2>
+		<h2 id="h2_pages"><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages</a></h2>
+		<h2 id="h2_rights"><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/rights.png" alt="" /> Rights</a></h2>
 	</div>
 </div>
 

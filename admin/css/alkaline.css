@@ -29,7 +29,7 @@ hr{
 
 textarea{
 	width: 100%;
-	height: 10em;
+	height: 15em;
 }
 
 input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }

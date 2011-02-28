@@ -40,18 +40,24 @@ if(!empty($_POST['user_id'])){
 		
 		$permissions = array();
 		
-		if($_POST['user_permission_upload'] == 'true'){ $permissions[] = 'upload'; }
-		if($_POST['user_permission_shoebox'] == 'true'){ $permissions[] = 'shoebox'; }
-		if($_POST['user_permission_library'] == 'true'){ $permissions[] = 'library'; }
-		if($_POST['user_permission_editor'] == 'true'){ $permissions[] = 'editor'; }
-		if($_POST['user_permission_posts'] == 'true'){ $permissions[] = 'posts'; }
-		if($_POST['user_permission_thumbnails'] == 'true'){ $permissions[] = 'thumbnails'; }
-		if($_POST['user_permission_users'] == 'true'){ $permissions[] = 'users'; }
-		if($_POST['user_permission_guests'] == 'true'){ $permissions[] = 'guests'; }
-		if($_POST['user_permission_themes'] == 'true'){ $permissions[] = 'themes'; }
-		if($_POST['user_permission_extensions'] == 'true'){ $permissions[] = 'extensions'; }
-		if($_POST['user_permission_configuration'] == 'true'){ $permissions[] = 'configuration'; }
-		if($_POST['user_permission_maintenance'] == 'true'){ $permissions[] = 'maintenance'; }
+		if(@$_POST['user_permission_upload'] == 'true'){ $permissions[] = 'upload'; $permissions[] = 'library'; }
+		if(@$_POST['user_permission_shoebox'] == 'true'){ $permissions[] = 'shoebox'; $permissions[] = 'library'; }
+		if(@$_POST['user_permission_library'] == 'true'){ $permissions[] = 'images'; $permissions[] = 'library'; }
+		if(@$_POST['user_permission_editor'] == 'true'){ $permissions[] = 'editor'; $permissions[] = 'features'; }
+		if(@$_POST['user_permission_tags'] == 'true'){ $permissions[] = 'tags'; $permissions[] = 'features'; }
+		if(@$_POST['user_permission_sets'] == 'true'){ $permissions[] = 'sets'; $permissions[] = 'features'; }
+		if(@$_POST['user_permission_pages'] == 'true'){ $permissions[] = 'pages'; $permissions[] = 'features'; }
+		if(@$_POST['user_permission_rights'] == 'true'){ $permissions[] = 'rights'; $permissions[] = 'features'; }
+		if(@$_POST['user_permission_posts'] == 'true'){ $permissions[] = 'posts'; }
+		if(@$_POST['user_permission_thumbnails'] == 'true'){ $permissions[] = 'thumbnails'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_users'] == 'true'){ $permissions[] = 'users'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_guests'] == 'true'){ $permissions[] = 'guests'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_themes'] == 'true'){ $permissions[] = 'themes'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_extensions'] == 'true'){ $permissions[] = 'extensions'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_configuration'] == 'true'){ $permissions[] = 'configuration'; $permissions[] = 'settings'; }
+		if(@$_POST['user_permission_maintenance'] == 'true'){ $permissions[] = 'maintenance'; $permissions[] = 'settings'; }
+		
+		$permissions = array_unique($permissions);
 		
 		$fields = array('user_name' => $alkaline->makeUnicode($_POST['user_name']),
 			'user_user' => $_POST['user_user'],
@@ -194,19 +200,31 @@ else{
 						<table>
 							<tr>
 								<td class="input"><input type="checkbox" id="user_permission_upload" name="user_permission_upload" value="true" <?php if(in_array('upload', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
-								<td style="width: 10em;"><label for="user_permission_upload">Upload</label></td>
+								<td style="width: 15em;"><label for="user_permission_upload">Upload</label></td>
 								<td class="input"><input type="checkbox" id="user_permission_shoebox" name="user_permission_shoebox" value="true" <?php if(in_array('shoebox', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
 								<td><label for="user_permission_shoebox">Shoebox</label></td>
 							</tr>
 							<tr>
 								<td class="input"><input type="checkbox" id="user_permission_library" name="user_permission_library" value="true" <?php if(in_array('library', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
-								<td><label for="user_permission_library">Library</label></td>
-								<td class="input"><input type="checkbox" id="user_permission_editor" name="user_permission_editor" value="true" <?php if(in_array('editor', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
-								<td><label for="user_permission_editor">Editor</label></td>
-							</tr>
-							<tr>
+								<td><label for="user_permission_library">Library</label> (edit images)</td>
 								<td class="input"><input type="checkbox" id="user_permission_posts" name="user_permission_posts" value="true" <?php if(in_array('posts', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
 								<td><label for="user_permission_posts">Posts</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_tags" name="user_permission_tags" value="true" <?php if(in_array('tags', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_tags">Tags</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_sets" name="user_permission_sets" value="true" <?php if(in_array('sets', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_sets">Sets</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_pages" name="user_permission_pages" value="true" <?php if(in_array('pages', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_pages">Pages</label></td>
+								<td class="input"><input type="checkbox" id="user_permission_rights" name="user_permission_rights" value="true" <?php if(in_array('rights', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_rights">Rights</label></td>
+							</tr>
+							<tr>
+								<td class="input"><input type="checkbox" id="user_permission_editor" name="user_permission_editor" value="true" <?php if(in_array('editor', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
+								<td><label for="user_permission_editor">Editor</label> (bulk edit images)</td>
 								<td class="input"><input type="checkbox" id="user_permission_thumbnails" name="user_permission_thumbnails" value="true" <?php if(in_array('thumbnails', $user_db_perms)){ echo 'checked="checked"'; } ?> /></td>
 								<td><label for="user_permission_thumbnails">Thumbnails</label></td>
 							</tr>

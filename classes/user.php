@@ -185,7 +185,7 @@ class User extends Alkaline{
 				header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
 				exit();
 			}
-			elseif($required === false){
+			else{
 				return false;
 			}
 		}
@@ -200,8 +200,13 @@ class User extends Alkaline{
 				return true;
 			}
 			else{
-				$this->addError(E_USER_ERROR, 'You do not have permission to access this function', null, null, 401);
-				exit();
+				if($required === true){
+					$this->addError(E_USER_ERROR, 'You do not have permission to access this module', null, null, 401);
+					exit();
+				}
+				else{
+					return false;
+				}
 			}
 		}
 	}

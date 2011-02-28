@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $orbit = new Orbit;
 $user = new User;
 
-$user->perm(true, 'library');
+$user->perm(true, 'images');
 
 // GET PHOTO
 if(!$image_id = $alkaline->findID($_GET['id'])){
