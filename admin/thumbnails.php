@@ -198,7 +198,7 @@ else{
 				<td class="right"><input type="checkbox" id="size_watermark" name="size_watermark" value="watermark" <?php if($size['size_watermark'] == 1){ echo 'checked="checked"'; } ?> /></td>
 				<td>
 					<label for="size_watermark">Apply watermark to this thumbnail size.</label>
-					<div class="quiet" id="size_watermark_note">You can apply a custom watermark by uploading a file here:<br />
+					<div class="quiet none" id="size_watermark_note">You can apply a custom watermark by uploading a file here:<br />
 					<span id="size_watermark_link"></span></div>
 				</td>
 			</tr>

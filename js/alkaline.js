@@ -843,20 +843,33 @@ $(document).ready(function(){
 			sizeLabelUpdate($(this));
 		});
 		
-		function sizeWatermarkNote(selector){
+		function sizeWatermarkNote(selector, dofalse){
 			val = selector.attr('checked');
 			if(val == true){
 				$('#size_watermark_note').slideDown();
 			}
 			else{
-				$('#size_watermark_note').slideUp();
+				if(dofalse == true){
+					$('#size_watermark_note').slideUp();
+				}
 			}
 		}
 		
-		sizeWatermarkNote($('#size_watermark'));
+		sizeWatermarkNote($('#size_watermark'), false);
 		$('#size_watermark').click(function(){
 			val = $(this).attr('checked');
-			sizeWatermarkNote($(this));
+			sizeWatermarkNote($(this), true);
+		});
+		
+		$('input[type="submit"]').click(function(event){
+			append = $('#size_append').val();
+			prepend = $('#size_prepend').val();
+			if(empty(append) && empty(prepend)){
+				$('#size_prepend').css('background-color', '#FFF6BF');
+				$('#size_append').css('background-color', '#FFF6BF');
+				addNote('Fill in append to or prepend to filename fields to save. (Otherwise, delete or press cancel.)', 'error');
+				event.preventDefault();
+			}
 		});
 	}
 	
