@@ -1879,19 +1879,35 @@ class Image extends Alkaline{
 	 * Delete image thumbnail files
 	 *
 	 * @param string $original Delete original image
+	 * @param array|true $save_labels Save these thumbnail labels, or true to save all
 	 * @return void
 	 */
-	public function deSizeImage($original=false){
+	public function deSizeImage($original=false, $save_labels=null){
 		// Open image directory
 		$dir = parent::correctWinPath(PATH . IMAGES);
 		$handle = opendir($dir);
 		$images = array();
 		
+		$save_me = array();
+		
+		if(!empty($save_labels)){
+			$sizes = $this->getTable('sizes');
+			foreach($sizes as $size){
+				if(($save_labels === true) or in_array($size['size_label'], $save_labels)){
+					for($i = 0; $i < $this->image_count; ++$i){
+						$save_me[] = $size['size_prepend'] . $this->images[$i]['image_id'] . $size['size_append'] . '.' . $this->images[$i]['image_ext'];
+					}
+				}
+			}
+		}
+		
 		while($filename = readdir($handle)){
 			for($i = 0; $i < $this->image_count; ++$i){
 				// Find image thumnails
 				if(preg_match('/^((.*[\D]+' . $this->images[$i]['image_id'] . '|' . $this->images[$i]['image_id'] . '[\D]+.*|.*[\D]+' . $this->images[$i]['image_id'] . '[\D]+.*)\..+)$/', $filename)){
-					$images[] = $dir . $filename;
+					if(!in_array($filename, $save_me)){
+						$images[] = $dir . $filename;
+					}
 				}
 				if($original === true){
 					if(preg_match('/^' . $this->images[$i]['image_id'] . '\..+$/', $filename)){
