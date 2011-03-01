@@ -97,6 +97,15 @@ else{
 	$comment_action = '';
 }
 
+$now = time();
+$published = strtotime($image['image_published']);
+if($published <= $now){
+	$launch_action = '<a href="' . BASE . 'image' . URL_ID . $image['image_id'] . URL_RW . '">Launch image</a>';
+}
+else{
+	$launch_action = '';
+}
+
 $image_colorkey = $image['image_colorkey'];
 $image = $alkaline->makeHTMLSafe($image);
 
@@ -122,7 +131,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 last">
-			<p class="actions"><a href="<?php echo BASE . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>">Go to image</a><?php echo $comment_action; ?></p>
+			<p class="actions">
+				<?php echo $comment_action; ?>
+				<?php echo $launch_action; ?>
+			</p>
 			<div class="image_tag_container">
 				<label for="image_tag">Tags:</label><br />
 				<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />

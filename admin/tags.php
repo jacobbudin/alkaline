@@ -108,7 +108,7 @@ else{
 	
 	<div class="actions">
 		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a>
-		<a href="<?php echo BASE . 'tag' . URL_ID . $tag['tag_id'] . URL_RW; ?>">Go to tag</a>
+		<a href="<?php echo BASE . 'tag' . URL_ID . $tag['tag_id'] . URL_RW; ?>">Launch tag</a>
 	</div>
 		
 	<?php

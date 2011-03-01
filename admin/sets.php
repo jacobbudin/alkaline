@@ -151,7 +151,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Go to set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Launch set</a></div>
 	
 	<?php
 	

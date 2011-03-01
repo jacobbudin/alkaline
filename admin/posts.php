@@ -252,7 +252,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo $post['post_uri']; ?>">Go to post</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo $post['post_uri']; ?>">Launch post</a></div>
 	
 	<?php
 	

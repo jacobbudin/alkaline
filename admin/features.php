@@ -167,7 +167,7 @@ if(!$max = $user->returnPref('page_limit')){
 }
 
 $image_ids = new Find();
-$image_ids->memory();
+$is_memory = $image_ids->memory();
 $image_ids->page(null, $max);
 $image_ids->find();
 
@@ -188,7 +188,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		if($user->perm(false, 'editor')){
 			?>
 			<div class="actions">
-				<a href="#select_all" id="select_all">Select all</a> <a href="#deselect_all" id="deselect_all">Deselect all</a> <a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
+				<a href="#select_all" id="select_all">Select all</a>
+				<a href="#deselect_all" id="deselect_all">Deselect all</a>
+				<?php if($is_memory === true){ ?>
+					<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
+				<?php } ?>
 			</div>
 		
 			<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->image_count); ?>)</h1>
