@@ -149,7 +149,7 @@ img.frame_selected{
 
 canvas.colorkey{
 	border: solid 3px #fff;
-	margin-bottom: 1.5em;
+	margin-bottom: .5em;
 	-moz-box-shadow: 0 0 3px #ddd;
 	-webkit-box-shadow: 0 0 3px #ddd;
 }

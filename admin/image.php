@@ -122,8 +122,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 last">
-			<div class="actions"><a href="<?php echo BASE . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>">Go to image</a><?php echo $comment_action; ?></div>
-			
+			<p class="actions"><a href="<?php echo BASE . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>">Go to image</a><?php echo $comment_action; ?></p>
 			<div class="image_tag_container">
 				<label for="image_tag">Tags:</label><br />
 				<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />
