@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
-$user->perm(true);
+$user->perm(true, 'statistics');
 
 // PAST 24 HOURS
 
