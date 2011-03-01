@@ -108,13 +108,14 @@ class Stat extends Alkaline{
 		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
 		while(!(($next_month <= $current_month) and ($next_year <= $current_year))){
+			$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
+			$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_month++;
+			
 			if($current_month == 13){
 				$current_year++;
 				$current_month = 1;
 			}
-			$stat_ts_js = strtotime($current_year . '-' . $current_month) * 1000;
-			$this->stats[] = array('stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-			$current_month++;
 		}
 		
 		foreach($this->stats as &$monthly){
@@ -177,7 +178,11 @@ class Stat extends Alkaline{
 		$current_month = intval(substr($this->stat_begin, 5, 2));
 		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
-		while(!(($next_day <= $current_day) and ($next_month <= $current_month) and ($next_year <= $current_year))){
+		while(!(($next_day <= $current_day) and ($next_month <= $current_month) and ($next_year <= $current_year))){			
+			$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
+			$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_day++;
+			
 			if(!checkdate($current_month, $current_day, $current_year)){
 				$current_month++;
 				$current_day = 1;
@@ -186,10 +191,6 @@ class Stat extends Alkaline{
 					$current_month = 1;
 				}
 			}
-			
-			$stat_ts_js = strtotime($current_year . '-' . $current_month . '-' . $current_day) * 1000;
-			$this->stats[] = array('stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-			$current_day++;
 		}
 		
 		foreach($this->stats as &$daily){
@@ -244,7 +245,6 @@ class Stat extends Alkaline{
 		
 		$this->stats = array();
 		$next = date('Y-m-d H', $this->stat_end_ts + 3600);
-		
 		$next_hour = intval(substr($next, 11, 2));
 		$next_day = intval(substr($next, 8, 2));
 		$next_month = intval(substr($next, 5, 2));
@@ -256,6 +256,12 @@ class Stat extends Alkaline{
 		$current_year = intval(substr($this->stat_begin, 0, 4));
 		
 		while(!(($next_hour == $current_hour) and ($next_day == $current_day) and ($next_month == $current_month) and ($next_year == $current_year))){
+			if($current_year == 2012){ exit(); }
+			
+			$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
+			$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
+			$current_hour++;
+			
 			if($current_hour == 24){
 				$current_hour = 0;
 				$current_day++;
@@ -268,9 +274,6 @@ class Stat extends Alkaline{
 					}
 				}
 			}
-			$stat_ts_js = (strtotime($current_year . '-' . $current_month . '-' . $current_day . ' ' . $current_hour . ':00:00') - 18000) * 1000;
-			$this->stats[] = array('stat_hour' => $current_hour, 'stat_day' => $current_day, 'stat_month' => $current_month, 'stat_year' => $current_year, 'stat_views' => 0, 'stat_visitors' => 0, 'stat_ts_js' => $stat_ts_js);
-			$current_hour++;
 		}
 		
 		foreach($this->stats as &$hourly){
@@ -387,6 +390,18 @@ class Stat extends Alkaline{
 		$query = $this->prepare('SELECT stat_referrer, COUNT(stat_referrer) as stat_referrer_count FROM stats WHERE stat_referrer != :stat_referrer AND stat_date >= :stat_date_begin AND stat_date <= :stat_date_end ' . @$where_local . ' GROUP BY stat_referrer ORDER BY stat_referrer_count DESC LIMIT 0, ' . $limit . ';');
 		$query->execute(array(':stat_referrer' => '', ':stat_date_begin' => $this->stat_begin, ':stat_date_end' => $this->stat_end));
 		$this->referrers_popular = $query->fetchAll();
+	}
+	
+	/**
+	 * Pad an integer with zeros to the left
+	 *
+	 * @param string $int Integer
+	 * @param string $length Desired length of integer
+	 * @return void
+	 */
+	public function padZero($int, $length){
+	    $sPrintfString = '%0' . (int)$length . 's';
+	    return sprintf($sPrintfString, $int);
 	}
 }
 
