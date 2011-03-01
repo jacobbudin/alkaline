@@ -122,6 +122,9 @@ class User extends Alkaline{
 	 * @return bool True if successful
 	 */
 	private function prep($remember=false){
+		// Delete extra users on standard licenses
+		$this->deleteDisallowedUsers();
+		
 		// If overlapping users exist, destroy object
 		if(count($this->user) != 1){
 			unset($this->user);

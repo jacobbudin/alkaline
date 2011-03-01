@@ -1827,8 +1827,14 @@ class Alkaline{
 		}
 		
 		$query->execute($sql_params);
-		$table = $query->fetchAll();
-		return $table;
+		$contents = $query->fetchAll();
+		
+		// Delete extra users on standard licenses
+		if(($table == 'users') and (count($contents) > 1)){
+			$this->deleteDisallowedUsers();
+		}
+		
+		return $contents;
 	}
 	
 	/**
@@ -2768,8 +2774,8 @@ class Alkaline{
 					}
 					elseif(is_integer($header)){
 						if($header == 100){
-							header('HTTP/1.0 404 Not Found', true);
-							header('Status: 404 Not Found', true);
+							header('HTTP/1.0 100 Continue', true);
+							header('Status: 100 Continue', true);
 						}
 						elseif($header == 101){
 							header('HTTP/1.0 101 Switching Protocols', true);
@@ -3049,6 +3055,32 @@ class Alkaline{
 			$this->addError(E_USER_ERROR, 'Cannot write to report file');
 		}
 		fclose($handle);
+	}
+	
+	public function deleteDisallowedUsers(){
+		if(Alkaline::edition == 'multiuser'){ return false; }
+		
+		$query = $this->prepare('SELECT * FROM users ORDER BY user_id ASC;');
+		$query->execute();
+		$users = $query->fetchAll();
+		
+		foreach($users as $user){
+			$user_ids[] = $user['user_id'];
+		}
+		
+		$user_ids = array_splice($user_ids, 1);
+		
+		if(count($user_ids) < 1){ return false; }
+		
+		unset($_SESSION['alkaline']['user']);
+		
+		unset($_COOKIE['uid']);
+		unset($_COOKIE['key']);
+		
+		$this->deleteRow('users', $user_ids);
+		$this->addError(E_USER_ERROR, 'Alkaline Multiuser is required for multiuser functionality');
+		
+		return true;
 	}
 }
 
