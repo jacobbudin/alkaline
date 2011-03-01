@@ -238,6 +238,7 @@ else{
 	if(!empty($post_act) and ($post_act == 'add')){
 		if($user->returnPref('post_pub') === true){
 			$post['post_published'] = 'Now';
+			$post['post_published_format'] = 'Now';
 		}
 	}
 	
