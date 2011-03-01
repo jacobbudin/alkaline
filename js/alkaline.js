@@ -256,7 +256,7 @@ function updateMaintProgress(){
 		$.ajaxq("default", {
 			type: "POST",
 		    url: BASE + ADMIN + "tasks/add-notification.php",
-			data: { message: "Your maintenace task is complete.", type: "success" },
+			data: { message: "Your maintenance task is complete.", type: "success" },
 		    cache: false,
 		    success: function(data)
 		    {
@@ -783,7 +783,6 @@ $(document).ready(function(){
 			selector.val(newval);
 		}
 		if(!empty(newval)){
-			newval = '<span class="highlight">' + newval + '</span>';
 			$('#' + id_link).html(newval);
 		}
 		else{
@@ -816,13 +815,13 @@ $(document).ready(function(){
 			$('input.notempty').each(function(index){
 				val = $(this).val();
 				if(val == ''){
-					$(this).css('background-color', '#FBE3E4');
+					$(this).css('background-color', '#FFF6BF');
 				}
 			});
 			$('input.nonzero').each(function(index){
 				val = $(this).val();
 				if(val == 0){
-					$(this).css('background-color', '#FBE3E4');
+					$(this).css('background-color', '#FFF6BF');
 				}
 			});
 			

@@ -32,6 +32,11 @@ textarea{
 	height: 15em;
 }
 
+.error, .notice, .success {border:1px solid #ddd; border-radius: 3px; -moz-border-radius: 3px;}
+.error {background:#FFF6BF;color:#514721;border-color:#FFD324;}
+.notice {background:#eee;color:#555;border-color:#ddd;}
+.success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+
 input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }
 input[type=text], input.text, input[type=password], input.password { padding:.35em; width: 60%; }
 
