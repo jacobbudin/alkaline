@@ -143,7 +143,7 @@ else{
 	
 	// Dashboard thumbnail warning
 	if(($size['size_label'] == 'admin') or ($size['size_label'] == 'square')){
-		$alkaline->addNote('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'notice');
+		$alkaline->addNote('This thumbnail is crucial to the proper functioning of your dashboard. Modify at your own risk.', 'error');
 	}
 	
 	if(!empty($size['size_title'])){	
@@ -196,15 +196,19 @@ else{
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_watermark" name="size_watermark" value="watermark" <?php if($size['size_watermark'] == 1){ echo 'checked="checked"'; } ?> /></td>
-				<td><strong><label for="size_watermark">Apply watermark to this thumbnail size.</label></strong></td>
+				<td>
+					<label for="size_watermark">Apply watermark to this thumbnail size.</label>
+					<div class="quiet" id="size_watermark_note">You can apply a custom watermark by uploading a file here:<br />
+					<span id="size_watermark_link"></span></div>
+				</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_build" name="size_build" value="build" <?php if(empty($size['size_title'])){ echo 'checked="checked"'; } ?> /></td>
-				<td><strong><label for="size_build">Build thumbnails of this size.</label></strong> This action cannot be undone.</td>
+				<td><label for="size_build">Build thumbnails of this size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /></td>
-				<td><strong><label for="size_delete">Delete this thumbnail size.</label></strong> This action cannot be undone.</td>
+				<td><label for="size_delete">Delete this thumbnail size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
 				<td></td>

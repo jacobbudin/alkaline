@@ -12,6 +12,7 @@ var PERMISSIONS = $('meta[name="permissions"]').attr('content');
 var ADMIN = FOLDER_PREFIX + 'admin/';
 var IMAGES = FOLDER_PREFIX + 'images/';
 var JS = FOLDER_PREFIX + 'js/';
+var WATERMARKS = FOLDER_PREFIX + 'watermarks/';
 
 var slideshow;
 var slideshow_image;
@@ -817,6 +818,47 @@ $(document).ready(function(){
 		// Example content CSS (should be your site CSS)
 		content_css : BASE + ADMIN + "css/alkaline.css",
 	});
+	
+	// WATERMARK
+	
+	if(page == 'Thumbnail'){
+		
+		function sizeLabelUpdate(selector){
+			id = selector.attr('id');
+			val = selector.val();
+			newval = val.replace(/[^a-z0-9\-\_]/i, '');
+			if(val != newval){
+				selector.val(newval);
+			}
+			if(!empty(newval)){
+				$('#size_watermark_link').html(BASE + WATERMARKS + newval + '.png');
+			}
+			else{
+				$('#size_watermark_link').html('');
+			}
+		}
+		
+		sizeLabelUpdate($('#size_label'));
+		$('#size_label').keyup(function(event){
+			sizeLabelUpdate($(this));
+		});
+		
+		function sizeWatermarkNote(selector){
+			val = selector.attr('checked');
+			if(val == true){
+				$('#size_watermark_note').slideDown();
+			}
+			else{
+				$('#size_watermark_note').slideUp();
+			}
+		}
+		
+		sizeWatermarkNote($('#size_watermark'));
+		$('#size_watermark').click(function(){
+			val = $(this).attr('checked');
+			sizeWatermarkNote($(this));
+		});
+	}
 	
 	// NOTEMPTY
 	$('input[type="submit"]').click(function(event){
