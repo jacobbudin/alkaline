@@ -14,29 +14,28 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('page');
 
 $id = $alkaline->findID($_GET['id']);
+if(!$id){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
-if($id){
-	$pages = new Page($id);
-	$pages->formatTime();
-	$pages->updateViews();
-	$page = $pages->pages[0];
-	
-	if(!$page){ $alkaline->addError('No page was not found.', 'Try searching for the page you were seeking.', null, null, 404); }
+$pages = new Page($id);
+$pages->formatTime();
+$pages->updateViews();
+$page = $pages->pages[0];
 
-	$header = new Canvas;
-	$header->load('header');
-	$header->setTitle($page['page_title']);
-	$header->display();
+if(!$page){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
-	$content = new Canvas;
-	$content->load('page');
-	$content->loop($pages);
-	$content->assignArray($page);
-	$content->display();
+$header = new Canvas;
+$header->load('header');
+$header->setTitle($page['page_title']);
+$header->display();
 
-	$footer = new Canvas;
-	$footer->load('footer');
-	$footer->display();
-}
+$content = new Canvas;
+$content->load('page');
+$content->loop($pages);
+$content->assignArray($page);
+$content->display();
+
+$footer = new Canvas;
+$footer->load('footer');
+$footer->display();
 
 ?>

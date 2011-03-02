@@ -15,13 +15,14 @@ $alkaline->recordStat('image');
 $alkaline->addComments();
 
 $id = $alkaline->findID($_GET['id'], true);
-if(!$id){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
+if(!$id){ $alkaline->addError('No image was found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
 $image_ids = new Find($id);
 $image_ids->published();
 $image_ids->privacy('public');
 $image_ids->find();
-if(empty($image_ids->image_ids)){ $alkaline->addError(E_USER_ERROR, 'No image was found'); }
+
+if(empty($image_ids->image_ids)){ $alkaline->addError('No image was found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
 $images = new Image($image_ids);
 $images->updateViews();

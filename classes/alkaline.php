@@ -100,32 +100,39 @@ class Alkaline{
 		// Initiate database connection, if necessary
 		$no_db_classes = array('Canvas');
 		
-		if(!in_array($class, $no_db_classes)){
-			if(defined('DB_TYPE') and defined('DB_DSN')){
-				// Determine database type
-				$this->db_type = DB_TYPE;
+		try{
+			if(!in_array($class, $no_db_classes)){
+				if(defined('DB_TYPE') and defined('DB_DSN')){
+					// Determine database type
+					$this->db_type = DB_TYPE;
 			
-				if($this->db_type == 'mssql'){
-					// $this->db = new PDO(DB_DSN);
-				}
-				elseif($this->db_type == 'mysql'){
-					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-				}
-				elseif($this->db_type == 'pgsql'){
-					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
-					$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-				}
-				elseif($this->db_type == 'sqlite'){
-					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+					if($this->db_type == 'mssql'){
+						// $this->db = new PDO(DB_DSN);
+					}
+					elseif($this->db_type == 'mysql'){
+						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+					}
+					elseif($this->db_type == 'pgsql'){
+						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+						$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+					}
+					elseif($this->db_type == 'sqlite'){
+						$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 				
-					$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
-					$this->db->sqliteCreateFunction('COS', 'cos', 1);
-					$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
-					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
-				}
+						$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+						$this->db->sqliteCreateFunction('COS', 'cos', 1);
+						$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+						$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+					}
 				
-				$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
+					$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
+				}
 			}
+		}
+		catch(PDOException $e){
+			$message = $e->getMessage();
+			$message = 'Database: ' . $message;
+			$this->addError(E_USER_ERROR, $message, null, null, 500);
 		}
 		
 		// Delete saved Orbit extension session references
@@ -2944,8 +2951,17 @@ class Alkaline{
 				}
 			}
 			
+			// Write to session
 			$_SESSION['alkaline']['error'] = array('error_title' => $severity, 'error_message' => $message);
-			require(PATH . 'error.php');
+			session_write_close();
+			
+			// Get error page
+			ob_start();
+			chdir(PATH);
+			require('error.php');
+			ob_flush();
+			
+			// Quit
 			exit();
 		}
 		
@@ -2959,7 +2975,14 @@ class Alkaline{
 			case E_USER_ERROR:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				session_write_close();
-				require(PATH . ADMIN . 'error.php');
+				
+				// Get error page
+				ob_start();
+				chdir(PATH . ADMIN);
+				require('error.php');
+				ob_flush();
+				
+				// Quit
 				exit();
 				break;
 			default:
