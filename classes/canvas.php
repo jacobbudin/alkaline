@@ -597,7 +597,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function fitStringByWord50(){
+	public function fit50(){
 		return Alkaline::fitStringByWord($this->value, 50);
 	}
 	
@@ -615,7 +615,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function fitStringByWord100(){
+	public function fit100(){
 		return Alkaline::fitStringByWord($this->value, 100);
 	}
 	
@@ -624,7 +624,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function fitStringByWord250(){
+	public function fit250(){
 		return Alkaline::fitStringByWord($this->value, 250);
 	}
 	
@@ -633,7 +633,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function fitStringByWord500(){
+	public function fit500(){
 		return Alkaline::fitStringByWord($this->value, 500);
 	}
 	
@@ -642,7 +642,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function fitStringByWord1000(){
+	public function fit1000(){
 		return Alkaline::fitStringByWord($this->value, 1000);
 	}
 	
@@ -696,7 +696,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return string
 	 */
-	public function ucwords(){
+	public function upperwords(){
 		return ucwords($this->value);
 	}
 	
@@ -705,7 +705,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return string
 	 */
-	public function ucfirst(){
+	public function upperfirst(){
 		return ucfirst($this->value);
 	}
 	
@@ -714,7 +714,7 @@ class Canvas extends Alkaline{
 	 *
 	 * @return string
 	 */
-	public function stripTags(){
+	public function sterilize(){
 		return Alkaline::stripTags($this->value);
 	}
 	

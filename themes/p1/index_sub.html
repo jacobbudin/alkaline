@@ -17,9 +17,9 @@
 	
 		<div class="center"><a href="{Image_URI}"><img src="{Image_Src_Medium}" alt="" class="" /></a></div>
 		
-		<p class="quiet slim">{Image_Published|reltime|ucfirst}</p>
+		<p class="quiet slim">{Image_Published|reltime|upperfirst}</p>
 		
-		{Image_Description|fitStringByWord100}
+		{Image_Description|fit100}
 	</div>
 	{if:Image_Sequence}
 	</div>
