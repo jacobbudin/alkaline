@@ -13,6 +13,8 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->access($_REQUEST['id']);
 
+session_write_close();
+
 header('Location: ' . LOCATION . BASE);
 exit();
 

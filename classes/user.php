@@ -26,12 +26,12 @@ class User extends Alkaline{
 		// Login user by session data
 		if(!empty($_SESSION['alkaline']['user'])){
 			$this->user = $_SESSION['alkaline']['user'];
-			unset($_SESSION['alkaline']['guest']);
 		}
 		// Login user by ID, key
 		elseif(!empty($_COOKIE['uid']) and !empty($_COOKIE['key'])){
 			$user_id = strip_tags($_COOKIE['uid']);
 			$user_key = strip_tags($_COOKIE['key']);
+			unset($_SESSION['alkaline']['guest']);
 			self::authByCookie($user_id, $user_key);
 		}
 	}
@@ -167,7 +167,14 @@ class User extends Alkaline{
 	 */
 	public function deauth(){
 		unset($this->user);
+		
+		// Destroy session
+		$_SESSION = array();
+		if(isset($_COOKIE[session_name()])){
+			setcookie(session_name(), '', time()-42000, '/');
+		}
 		session_destroy();
+		
 		setcookie('uid', '', time()-3600, '/');
 		setcookie('key', '', time()-3600, '/');
 		session_start();

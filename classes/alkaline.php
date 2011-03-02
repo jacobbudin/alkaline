@@ -327,6 +327,9 @@ class Alkaline{
 	 * @return void Redirects if unsuccessful
 	 */
 	public function access($key=null){
+		// Logout
+		unset($_SESSION['alkaline']['guest']);
+		
 		// Error checking
 		if(empty($key)){ return false; }
 		
@@ -338,7 +341,7 @@ class Alkaline{
 		$guest = $guests[0];
 		
 		if(!$guest){
-			$this->addError(E_USER_ERROR, 'You are not authorized');
+			$this->addError('Guest not found.', 'You are not authorized for this material.', null, null, 401);
 		}
 		
 		$_SESSION['alkaline']['guest'] = $guest;
@@ -2942,7 +2945,7 @@ class Alkaline{
 			}
 			
 			$_SESSION['alkaline']['error'] = array('error_title' => $severity, 'error_message' => $message);
-			header('Location: ' . LOCATION . BASE . 'error.php');
+			require(PATH . 'error.php');
 			exit();
 		}
 		
@@ -2956,7 +2959,7 @@ class Alkaline{
 			case E_USER_ERROR:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				session_write_close();
-				header('Location: ' . LOCATION . BASE . ADMIN . 'error.php');
+				require(PATH . ADMIN . 'error.php');
 				exit();
 				break;
 			default:

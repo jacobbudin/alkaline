@@ -457,7 +457,7 @@ img.ui-datepicker-trigger{
 .actions a, a.button{
 	margin-left: .5em;
 	padding: .5em .8em;
-	background: left center url(../images/button_bg.png) repeat-x #8dc9e8;
+	background: left center url(../images/button_bg.png) repeat-x #66b8de;
 	color: #fff;
 	text-shadow: #4d7285 0 -1px 1px;
 	font-size: .9em;
@@ -469,7 +469,7 @@ img.ui-datepicker-trigger{
 }
 
 .actions a:hover, .actions a:active, a.button:hover, a.button:active{
-	background: #0096db;
+	background: #186897;
 	color: #fff;
 }
 
