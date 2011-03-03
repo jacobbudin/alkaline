@@ -58,8 +58,8 @@ function ioncube_event_handler($err_code, $params){
 			$error = 'An unknown encoding error occurred';
 			break;
 	}
+	
+	exit($error . '.');
 }
-
-exit($error . '.');
 
 ?>
