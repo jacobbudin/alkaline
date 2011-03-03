@@ -192,6 +192,9 @@ class User extends Alkaline{
 	public function perm($required=false, $permission=null){
 		if(empty($this->user)){
 			if($required === true){
+				$_SESSION['alkaline']['destination'] = $this->location();
+				session_write_close();
+				
 				header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
 				exit();
 			}

@@ -32,7 +32,16 @@ if(!empty($username) or !empty($password)){
 			$alkaline->addNote('A new version of Alkaline (v' . $latest['version'] . ') is available. Learn more and download the update at <a href="http://www.alkalineapp.com/">alkalineapp.com</a>.', 'notice');
 		}
 		
-		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
+		unset($_SESSION['alkaline']['destination']);
+		session_write_close();
+		
+		if(empty($_POST['destination'])){
+			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
+		}
+		else{
+			header('Location: ' . strip_tags($_POST['destination']));
+		}
+		
 		exit();
 	}
 	else{
@@ -76,6 +85,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<tr>
 				<td></td>
 				<td>
+					<input type="hidden" name="destination" value="<?php echo $_SESSION['alkaline']['destination']; ?>" />
 					<input type="submit" value="Login" />
 				</td>
 			</tr>
