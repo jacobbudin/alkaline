@@ -6,7 +6,7 @@
 {block:Images}
 	<div class="medium append-bottom {Image_Sequence}">
 		<div class="float_right">
-			<span class="comment_count"><a href="{Image_URI}">{Image_Comment_Count}</a></span> <span class="tag_count"><a href="{Image_URI}">{Image_Tag_Count}</a></span>
+			{if:Image_Comment_Count}<span class="comment_count"><a href="{Image_URI}">{Image_Comment_Count}</a></span>{/if:Image_Comment_Count} {if:Image_Tag_Count}<span class="tag_count"><a href="{Image_URI}">{Image_Tag_Count}</a></span>{/if:Image_Tag_Count}
 		</div>
 		
 		{if:Image_Title}
