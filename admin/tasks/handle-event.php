@@ -10,8 +10,6 @@
 header('HTTP/1.0 500 Internal Server Error', true);
 header('Status: 500 Internal Server Error', true);
 
-if(session_id() == ''){ session_start(); }
-
 function ioncube_event_handler($err_code, $params){
 	switch($err_code){
 		case 1:
@@ -62,9 +60,6 @@ function ioncube_event_handler($err_code, $params){
 	}
 }
 
-$_SESSION['alkaline']['errors'][] = array('constant' => E_USER_ERROR, 'severity' => 'error', 'message' => $error);
-
-require(PATH . BASE . ADMIN . 'error.php');
-exit();
+exit($error . '.');
 
 ?>
