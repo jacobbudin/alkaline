@@ -187,7 +187,7 @@ if(empty($post_id)){
 
 			foreach($posts->posts as $post){
 				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_title_url'] . URL_RW . '" class="nu">' . $post['post_title_url'] . '</td>';
+					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
