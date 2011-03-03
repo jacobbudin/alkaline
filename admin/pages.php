@@ -21,7 +21,7 @@ if(!empty($_GET['id'])){
 }
 
 if(!empty($_GET['act'])){
-	$page_act = @$_GET['act'];
+	$page_act = $_GET['act'];
 }
 
 // SAVE CHANGES
@@ -154,7 +154,7 @@ else{
 	
 	?>
 
-	<form id="page" action="" method="post">
+	<form id="page" action="<?php echo BASE . ADMIN; ?>pagesw<?php echo URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right middle"><label for="page_title">Title:</label></td>
