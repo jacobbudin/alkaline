@@ -32,6 +32,23 @@ if(!empty($_POST['comment_id'])){
 	$comment_id = $alkaline->findID($_POST['comment_id']);
 	if(@$_POST['comment_delete'] == 'delete'){
 		$alkaline->deleteRow('comments', $comment_id);
+		
+		// Update comment counts
+		if(!empty($_POST['image_id'])){
+			$id = $alkaline->findID($_POST['image_id']);
+			$id_type = 'image_id';
+		}
+		elseif(!empty($_POST['post_id'])){
+			$id = $alkaline->findID($_POST['post_id']);
+			$id_type = 'post_id';
+		}
+		
+		if($id_type == 'image_id'){
+			$alkaline->updateCount('comments', 'images', 'image_comment_count', $id);
+		}
+		elseif($id_type == 'post_id'){
+			$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
+		}
 	}
 	else{
 		$comment_text_raw = $_POST['comment_text_raw'];
@@ -246,7 +263,12 @@ else{
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" /><input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $post['comm_markup']; ?>" /><input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
+				<td>
+					<input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" />
+					<input type="hidden" name="image_id" value="<?php echo $comment['image_id']; ?>" />
+					<input type="hidden" name="post_id" value="<?php echo $comment['post_id']; ?>" />
+					<input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $comment['comment_markup']; ?>" />
+					<input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
 			</tr>
 		</table>
 	</form>
