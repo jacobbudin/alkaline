@@ -33,8 +33,8 @@ $image_entries = new Canvas('
 		<title type="text">{if:Image_Title}{Image_Title}{else:Image_Title}(Untitled){/if:Image_Title}</title>
 		<link href="{Image_URI}" />
 		<id>{Image_URI}</id>
-		<updated>{Image_Updated}</updated>
-		<published>{Image_Published}</published>
+		<updated>{Image_Updated_Format}</updated>
+		<published>{Image_Published_Format}</published>
 		{if:Image_Description}
 			<summary type="xhtml">
 				<div xmlns="http://www.w3.org/1999/xhtml">
@@ -75,8 +75,8 @@ $post_entries = new Canvas('
 		<title type="text">{if:Post_Title}{Post_Title}{else:Post_Title}(Untitled){/if:Post_Title}</title>
 		<link href="{Post_URI}" />
 		<id>{Post_URI}</id>
-		<updated>{Post_Modified}</updated>
-		<published>{Post_Published}</published>
+		<updated>{Post_Modified_Format}</updated>
+		<published>{Post_Published_Format}</published>
 		<content type="xhtml">
 			<div xmlns="http://www.w3.org/1999/xhtml">
 				{Post_Text}
