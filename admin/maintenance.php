@@ -50,8 +50,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<ul>
 		<li>
+			<strong><a href="#update-counts">Update counts</a></strong><br />
+			Recount various count fields that may have become inaccurate&#8212;particularly if you manually edit the database tables
+		</li>
+		<li>
 			<strong><a href="#rebuild-sets">Rebuild set catalog</a></strong><br />
-			Reasses each set&#8217;s contents using its original user-selected criteria, ensuring each set is up-to-date
+			Reassess each set&#8217;s contents using its original user-selected criteria, ensuring each set is up-to-date
 		</li>
 		<li>
 			<strong><a href="#rebuild-geo">Rebuild geographic library</a></strong><br />
