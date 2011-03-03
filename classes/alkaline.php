@@ -19,7 +19,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 846;
+	const build = 852;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
