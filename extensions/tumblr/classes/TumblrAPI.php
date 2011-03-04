@@ -1,167 +1,245 @@
 <?php
 
-/**
- * Modified version of Evan Walsh's Tumblr class
- * (http://code.evanwalsh.net/Projects/Tumblr).
+/*
+ * Abraham Williams (abraham@abrah.am) http://abrah.am
  *
- * Modified by Alex Dunae (dialect.ca).
- *
- * This version adds methods to cache Tumblr API data.
- * @package   Tumblr
+ * The first PHP Library to support OAuth for Twitter's REST API.
  */
-class TumblrAPI{
 
-        /*
-                Tumblr API PHP class by Evan Walsh
-                http://code.evanwalsh.net/Projects/Tumblr
-        */
+/* Load OAuth lib. You can find it at http://oauth.net */
+require_once('OAuth.php');
 
-		var $_cache_duration;
-		var $_cache_path = '';
+/**
+ * Twitter OAuth class
+ */
+class TumblrAPI {
+  /* Contains the last HTTP status code returned. */
+  public $http_code;
+  /* Contains the last API call. */
+  public $url;
+  /* Set up the API root URL. */
+  public $host = "http://www.tumblr.com/api/";
+  /* Set timeout default. */
+  public $timeout = 30;
+  /* Set connect timeout. */
+  public $connecttimeout = 30; 
+  /* Verify SSL Cert. */
+  public $ssl_verifypeer = FALSE;
+  /* Respons format. */
+  public $format = 'xml';
+  /* Decode returned json data. */
+  public $decode_json = TRUE;
+  /* Contains the last HTTP headers returned. */
+  public $http_info;
+  /* Set the useragnet. */
+  public $useragent = 'TwitterOAuth v0.2.0-beta2';
+  /* Immediately retry the API call if the response was not successful. */
+  //public $retry = TRUE;
 
 
-        function init($email,$password,$generator = "Tumblr PHP class"){
-                $this->email = $email;
-                $this->password = $password;
-                $this->generator = $generator;
+
+
+  /**
+   * Set API URLS
+   */
+	function accessTokenURL()  { return 'http://www.tumblr.com/oauth/access_token'; }
+	function authenticateURL() { return 'http://www.tumblr.com/oauth/authorize'; }
+	function authorizeURL()    { return 'http://www.tumblr.com/oauth/authorize'; }
+	function requestTokenURL() { return 'http://www.tumblr.com/oauth/request_token'; }
+
+  /**
+   * Debug helpers
+   */
+  function lastStatusCode() { return $this->http_status; }
+  function lastAPICall() { return $this->last_api_call; }
+
+  /**
+   * construct TwitterOAuth object
+   */
+  function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
+    $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
+    $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
+    if (!empty($oauth_token) && !empty($oauth_token_secret)) {
+      $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
+    } else {
+      $this->token = NULL;
+    }
+  }
+
+
+  /**
+   * Get a request_token from Twitter
+   *
+   * @returns a key/value array containing oauth_token and oauth_token_secret
+   */
+  function getRequestToken($oauth_callback = NULL) {
+    $parameters = array();
+    if (!empty($oauth_callback)) {
+      $parameters['oauth_callback'] = $oauth_callback;
+    } 
+    $request = $this->oAuthRequest($this->requestTokenURL(), 'GET', $parameters);
+    $token = OAuthUtil::parse_parameters($request);
+    $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    return $token;
+  }
+
+  /**
+   * Get the authorize URL
+   *
+   * @returns a string
+   */
+  function getAuthorizeURL($token, $sign_in_with_twitter = TRUE) {
+    if (is_array($token)) {
+      $token = $token['oauth_token'];
+    }
+    if (empty($sign_in_with_twitter)) {
+      return $this->authorizeURL() . "?oauth_token={$token}";
+    } else {
+       return $this->authenticateURL() . "?oauth_token={$token}";
+    }
+  }
+
+  /**
+   * Exchange request token and secret for an access token and
+   * secret, to sign API calls.
+   *
+   * @returns array("oauth_token" => "the-access-token",
+   *                "oauth_token_secret" => "the-access-secret",
+   *                "user_id" => "9436992",
+   *                "screen_name" => "abraham")
+   */
+  function getAccessToken($oauth_verifier = FALSE) {
+    $parameters = array();
+    if (!empty($oauth_verifier)) {
+      $parameters['oauth_verifier'] = $oauth_verifier;
+    }
+    $request = $this->oAuthRequest($this->accessTokenURL(), 'GET', $parameters);
+    $token = OAuthUtil::parse_parameters($request);
+    $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    return $token;
+  }
+
+  /**
+   * One time exchange of username and password for access token and secret.
+   *
+   * @returns array("oauth_token" => "the-access-token",
+   *                "oauth_token_secret" => "the-access-secret",
+   *                "user_id" => "9436992",
+   *                "screen_name" => "abraham",
+   *                "x_auth_expires" => "0")
+   */  
+  function getXAuthToken($username, $password) {
+    $parameters = array();
+    $parameters['x_auth_username'] = $username;
+    $parameters['x_auth_password'] = $password;
+    $parameters['x_auth_mode'] = 'client_auth';
+    $request = $this->oAuthRequest($this->accessTokenURL(), 'POST', $parameters);
+    $token = OAuthUtil::parse_parameters($request);
+    $this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    return $token;
+  }
+
+  /**
+   * GET wrapper for oAuthRequest.
+   */
+  function get($url, $parameters = array()) {
+    $response = $this->oAuthRequest($url, 'GET', $parameters);
+    if ($this->format === 'json' && $this->decode_json) {
+      return json_decode($response);
+    }
+    return $response;
+  }
+  
+  /**
+   * POST wrapper for oAuthRequest.
+   */
+  function post($url, $parameters = array()) {
+    $response = $this->oAuthRequest($url, 'POST', $parameters);
+    if ($this->format === 'json' && $this->decode_json) {
+      return json_decode($response);
+    }
+    return $response;
+  }
+
+  /**
+   * DELETE wrapper for oAuthReqeust.
+   */
+  function delete($url, $parameters = array()) {
+    $response = $this->oAuthRequest($url, 'DELETE', $parameters);
+    if ($this->format === 'json' && $this->decode_json) {
+      return json_decode($response);
+    }
+    return $response;
+  }
+
+  /**
+   * Format and sign an OAuth / API request
+   */
+  function oAuthRequest($url, $method, $parameters) {
+    if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
+      $url = "{$this->host}{$url}";
+    }
+    $request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
+    $request->sign_request($this->sha1_method, $this->consumer, $this->token);
+    switch ($method) {
+    case 'GET':
+      return $this->http($request->to_url(), 'GET');
+    default:
+      return $this->http($request->get_normalized_http_url(), $method, $request->to_postdata());
+    }
+  }
+
+  /**
+   * Make an HTTP request
+   *
+   * @return API results
+   */
+  function http($url, $method, $postfields = NULL) {
+    $this->http_info = array();
+    $ci = curl_init();
+    /* Curl settings */
+    curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
+    curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
+    curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
+    curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ci, CURLOPT_HTTPHEADER, array('Expect:'));
+    curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
+    curl_setopt($ci, CURLOPT_HEADERFUNCTION, array($this, 'getHeader'));
+    curl_setopt($ci, CURLOPT_HEADER, FALSE);
+
+    switch ($method) {
+      case 'POST':
+        curl_setopt($ci, CURLOPT_POST, TRUE);
+        if (!empty($postfields)) {
+          curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
         }
-
-		/**
-		* Set up read cache.
-		*
-		* @param int     $duration   Number of seconds to cache data
-		* @param string  $path       Where to store the cache files (e.g. '_cache/')
-		*/
-		function init_cache($duration, $path = '') {
-			$this->_cache_duration = $duration;
-			$this->_cache_path = $path;
-		}
-
-        function read($url,$json = false){
-				$output = $this->_read_from_cache($url, $json);
-
-				if(!empty($output))
-					return $output;
-
-                $url = "$url/api/read";
-                if($json){
-                        $url .= "/json";
-                }
-
-                $url .= '?filter=text';
-                if(ini_get("allow_url_fopen")){
-                        $output = file_get_contents($url);
-                        $this->_save_to_cache($url, $json, $output);
-                }
-                elseif(function_exists("curl_version")){
-                        $c = curl_init($url);
-                        curl_setopt($c,CURLOPT_HEADER,1);
-                        curl_setopt($c,CURLOPT_RETURNTRANSFER,1);
-                        $output = curl_exec($c);
-                        $this->_save_to_cache($url, $json, $output);
-                }
-                else{
-                        $output = "error: cannot fetch file";
-                }
-                return $output;
+        break;
+      case 'DELETE':
+        curl_setopt($ci, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        if (!empty($postfields)) {
+          $url = "{$url}?{$postfields}";
         }
+    }
 
-        function post($data){
-                if(function_exists("curl_version")){
-                        $data["email"] = $this->email;
-                        $data["password"] = $this->password;
-                        $data["generator"] = $this->generator;
-                        $request = http_build_query($data);
-                        $c = curl_init('http://www.tumblr.com/api/write');
-                        curl_setopt($c,CURLOPT_POST,true);
-                        curl_setopt($c,CURLOPT_POSTFIELDS,$request);
-                        curl_setopt($c,CURLOPT_RETURNTRANSFER,true);
-                        $return = curl_exec($c);
-                        $status = curl_getinfo($c,CURLINFO_HTTP_CODE);
-                        curl_close($c);
-                        if($status == "201"){
-                            return true;
-                        }
-                        elseif($status == "403"){
-                            return false;
-                        }
-                        else{
-                            return "error: $return";
-                        }
-                }
-                else{
-                        return "error: cURL not installed";
-                }
-        }
+    curl_setopt($ci, CURLOPT_URL, $url);
+    $response = curl_exec($ci);
+    $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
+    $this->http_info = array_merge($this->http_info, curl_getinfo($ci));
+    $this->url = $url;
+    curl_close ($ci);
+    return $response;
+  }
 
-        function check($action){
-                $accepted = array("authenticate","check-vimeo","check-audio");
-                if(in_array($action,$accepted)){
-                        $data["email"] = $this->email;
-                        $data["password"] = $this->password;
-                        $data["generator"] = $this->generator;
-                        $data["action"] = $action;
-                        if(function_exists("curl_version")){
-                                $c = curl_init('http://www.tumblr.com/api/write');
-                                curl_setopt($c,CURLOPT_POST,true);
-                                curl_setopt($c,CURLOPT_POSTFIELDS,$data);
-                                curl_setopt($c,CURLOPT_RETURNTRANSFER,true);
-                                $result = curl_exec($c);
-                                $status = curl_getinfo($c,CURLINFO_HTTP_CODE);
-                                curl_close($c);
-                                if($status == "200"){
-                                        $status = true;
-                                }
-                                elseif($status == "403" || $status == "400"){
-                                        $status = false;
-                                }
-                                return $status;
-                        }
-                        else{
-                                return "error: cURL not installed";
-                        }
-                }
-        }
-
-		/**
-		* Attempt to read the results of a read request from the cache.
-		*
-		* @returns string Either an empty string or the cached data
-		*/
-		function _read_from_cache($url, $json) {
-			// no caching
-			if(!$this->_cache_duration)
-				return '';
-
-			$cache_file = $this->_cache_path . 'tumblr-' . md5($url . $json) . '.js';
-
-			$cache_created = (@file_exists($cachefile))? @filemtime($cachefile) : 0;
-			clearstatcache();
-
-			// cache has expired
-			if (time() - $this->_cache_duration > $cache_created)
-				return '';
-
-
-			$output = @file_get_contents($cache_file, false);
-
-			return ($res === false ? '' : $output);
-		}
-
-
-		/**
-		* Save the results of a read request.
-		*
-		* @returns bool
-		*/
-		function _save_to_cache($url, $json, $data) {
-			// no caching
-			if(!$this->_cache_duration) return;
-
-			$cache_file = $this->_cache_path . 'tumblr-' . md5($url . $json) . '.js';
-
-			$res = @file_put_contents($cache_file, $data, FILE_TEXT | LOCK_EX);
-
-			return ($res === false ? false : true);
-		}
+  /**
+   * Get the header info to store.
+   */
+  function getHeader($ch, $header) {
+    $i = strpos($header, ':');
+    if (!empty($i)) {
+      $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
+      $value = trim(substr($header, $i + 2));
+      $this->http_header[$key] = $value;
+    }
+    return strlen($header);
+  }
 }

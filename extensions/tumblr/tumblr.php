@@ -20,15 +20,33 @@ class Tumblr extends Orbit{
 		
 		require_once('classes/TumblrAPI.php');
 		
-		$this->tumblr_email = $this->returnPref('tumblr_email');
-		$this->tumblr_password = $this->returnPref('tumblr_password');
+		$this->tumblr_name = $this->returnPref('tumblr_name');
+		$this->tumblr_oauth_token = $this->returnPref('tumblr_oauth_token');
+		$this->tumblr_oauth_secret = $this->returnPref('tumblr_oauth_secret');
 		
+		/*
 		if(!empty($this->tumblr_email) and !empty($this->tumblr_password)){
 			ini_set('default_socket_timeout', 1);
 			$this->tumblr = new TumblrAPI();
 			ini_restore('default_socket_timeout');
 			$this->tumblr->init($this->tumblr_email, $this->tumblr_password, 'Tumblr by Alkaline Labs');
 			$this->tumblr->init_cache(60, PATH . CACHE);
+		}
+		*/
+		
+		if(!empty($this->tumblr_oauth_token) and !empty($this->tumblr_oauth_secret)){
+			ini_set('default_socket_timeout', 1);
+			$this->tumblr = new TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
+				'Kx8nJZplPAtEH7bgXBItlQMW9CsAsCDhIELU4ktXKQ1Cf7Akc9',
+				$this->tumblr_oauth_token,
+				$this->tumblr_oauth_secret);
+			ini_restore('default_socket_timeout');
+		}
+		else{
+			ini_set('default_socket_timeout', 1);
+			$this->tumblr = new TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
+				'Kx8nJZplPAtEH7bgXBItlQMW9CsAsCDhIELU4ktXKQ1Cf7Akc9');
+			ini_restore('default_socket_timeout');
 		}
 	}
 	
@@ -38,7 +56,7 @@ class Tumblr extends Orbit{
 	
 	public function orbit_config(){
 		?>
-		<p>Every time you publish an image or post, your <a href="http://www.tumblr.com/">Tumblr</a> will be updated. (If you publish multiple images or posts simultaneously, your Tumblog will only be updated once.)</p>
+		<p>Every time you publish an image or post, your <a href="http://www.tumblr.com/">Tumblr</a> will be updated. (If you publish multiple images or posts simultaneously, your Tumblelog will only be updated once.)</p>
 		<?php
 		if($this->tumblr_active){
 			$this->tumblr_format_image = $this->makeHTMLSafe($this->tumblr_format_image);
@@ -46,8 +64,8 @@ class Tumblr extends Orbit{
 			?>
 			<table>
 				<tr>
-					<td class="right"><label>Email:</label></td>
-					<td><?php echo $this->tumblr_email; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>" class="button">Unlink from Tumblr</a></td>
+					<td class="right"><label>Name:</label></td>
+					<td><a href="http://<?php echo $this->tumblr_name; ?>.tumblr.com/"><?php echo $this->tumblr_name; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>" class="button">Unlink from Tumblr</a></td>
 				</tr>
 				<tr>
 					<td class="right middle"><label for="tumblr_transmit">Transmit:</label></td>
@@ -80,15 +98,10 @@ class Tumblr extends Orbit{
 			?>
 			<table>
 				<tr>
-					<td class="right middle"><label>Email:</label></td>
+					<td class="right"><label>Title:</label></td>
 					<td>
-						<input type="text" id="tumblr_email" name="tumblr_email" value="" class="m" />
-					</td>
-				</tr>
-				<tr>
-					<td class="right middle"><label>Password:</label></td>
-					<td>
-						<input type="password" id="tumblr_password" name="tumblr_password" value="" class="s" />
+						<a href="<?php echo $this->locationFull(array('link' => 'tumblr')); ?>" class="button">Link to Tumblr</a><br /><br />
+						<span class="quiet">Note: Alkaline will be linked to whichever Tumblr account you are currently logged into.</span>
 					</td>
 				</tr>
 			</table>
@@ -97,6 +110,66 @@ class Tumblr extends Orbit{
 	}
 	
 	public function orbit_config_load(){
+		if(!empty($_GET['from'])){
+			switch($_GET['from']){
+				case 'tumblr':
+					$tumblr_access_token = $this->tumblr->getAccessToken($_GET['oauth_verifier']);
+					
+					$this->tumblr_active = true;
+					$this->setPref('tumblr_active', true);
+					
+					$user = $this->tumblr->post('authenticate');
+					$xml = simplexml_load_string($user);
+					$this->setPref('tumblr_name', (string)$xml->tumblelog['name']);
+					
+					$this->setPref('tumblr_oauth_token', $tumblr_access_token['oauth_token']);
+					$this->setPref('tumblr_oauth_secret', $tumblr_access_token['oauth_token_secret']);
+					
+					$this->savePref();
+					
+					$this->addNote('You successfully linked your Tumblr account.', 'success');
+					header('Location: ' . $this->location());
+					exit();
+					
+					break;
+			}
+		}
+		
+		if(!empty($_GET['link'])){
+			switch($_GET['link']){
+				case 'tumblr':
+					$tumblr_token = $this->tumblr->getRequestToken($this->locationFull(array('from' => 'tumblr')));
+					$tumblr_authorize_uri = $this->tumblr->getAuthorizeURL($tumblr_token['oauth_token']);
+					
+					$this->setPref('tumblr_oauth_token', $tumblr_token['oauth_token']);
+					$this->setPref('tumblr_oauth_secret', $tumblr_token['oauth_token_secret']);
+					$this->savePref();
+					
+					header('Location: ' . $tumblr_authorize_uri);
+					exit();
+					
+					break;
+			}
+		}
+		
+		if(!empty($_GET['unlink'])){
+			switch($_GET['unlink']){
+				case 'tumblr':
+					$this->tumblr_active = false;
+					$this->setPref('tumblr_active', false);
+					$this->setPref('tumblr_name', '');
+					$this->setPref('tumblr_oauth_token', '');
+					$this->setPref('tumblr_oauth_secret', '');
+					$this->savePref();
+					
+					$this->addNote('You successfully unlinked your Tumblr account.', 'success');
+					header('Location: ' . $this->location());
+					exit();
+					
+					break;
+			}
+		}
+		
 		/*
 		if(!empty($_GET['from'])){
 			switch($_GET['from']){
@@ -121,7 +194,6 @@ class Tumblr extends Orbit{
 					break;
 			}
 		}
-		*/
 		
 		if(!empty($_GET['unlink'])){
 			switch($_GET['unlink']){
@@ -139,32 +211,10 @@ class Tumblr extends Orbit{
 					break;
 			}
 		}
+		*/
 	}
 	
 	public function orbit_config_save(){
-		if(!empty($_POST['tumblr_email']) or !empty($_POST['tumblr_password'])){
-			$this->tumblr = new TumblrAPI();
-			$this->tumblr->init($_POST['tumblr_email'], $_POST['tumblr_password'], 'Tumblr by Alkaline Labs');
-			$this->tumblr->init_cache(60, PATH . CACHE);
-			$check = $this->tumblr->check('authenticate');
-			
-			if($check === true){
-				$this->tumblr_active = true;
-				$this->setPref('tumblr_active', true);
-				$this->setPref('tumblr_email', $_POST['tumblr_email']);
-				$this->setPref('tumblr_password', $_POST['tumblr_password']);
-				$this->savePref();
-				
-				$this->addNote('You successfully linked your Tumblr account.', 'success');
-			}
-			else{
-				$this->addNote('Your Tumblr account was not linked. Check your email address and password, and whether Tumblr&#8217;s Web site is currently available.', 'error');
-			}
-			
-			header('Location: ' . $this->location());
-			exit();
-		}
-		
 		$now = time();
 		$this->setPref('tumblr_last_image_time', $now);
 		$this->setPref('tumblr_last_post_time', $now);
@@ -265,7 +315,7 @@ class Tumblr extends Orbit{
 			'caption' => $canvas->template,
 			'click-through-url' => $latest_image['image_uri']);
 		
-		$this->tumblr->post($parameters);
+		$this->tumblr->post('write', $parameters);
 	}
 	
 	public function orbit_post($posts){
@@ -318,7 +368,7 @@ class Tumblr extends Orbit{
 			'title' => $latest_post['post_title'],
 			'body' => $canvas->template);
 
-		$this->tumblr->post($parameters);
+		$this->tumblr->post('write', $parameters);
 	}
 }
 
