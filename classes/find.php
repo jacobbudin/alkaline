@@ -364,6 +364,66 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by date published or publish status
+	 *
+	 * @param string|bool $begin Date begin or publish status
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
+	public function published($begin=true, $end=null){
+		// Error checking
+		if(!isset($begin) and empty($end)){ return false; }
+		
+		// Set status
+		if($begin === 'false'){ $published = false; }
+		elseif($begin === 'true'){ $published = true; }
+		
+		$now = date('Y-m-d H:i:s');
+		
+		if($begin === true){
+			$this->sql_conds[] = 'images.image_published < :image_published';
+			$this->sql_params[':image_published'] = $now;
+			return true;
+		}
+		if($begin === false){
+			$this->sql_conds[] = '(images.image_published > :image_published OR image_published IS NULL)';
+			$this->sql_params[':image_published'] = $now;
+			return true;
+		}
+		
+		// Set auto-interval
+		if(!empty($begin) and empty($end)){
+			if(is_int($begin)){ $begin = strval($begin); }
+			if(strlen($begin) == 4){ $end = $begin . '-12-31'; $begin .= '-01-01'; }
+			if((strlen($begin) == 6) or (strlen($begin) == 7)){ $end = $begin . '-31'; $begin .= '-01'; }
+			
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = 'images.image_published >= :image_published_begin';
+			$this->sql_params[':image_published_begin'] = $begin . ' 00:00:00';
+			
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = 'images.image_published <= :image_published_end';
+			$this->sql_params[':image_published_end'] = $end . ' 23:59:59"';
+		}
+		// Set interval
+		elseif(!empty($begin) and !empty($end)){
+			if(is_int($begin)){ $begin = strval($begin); }
+			if(strlen($begin) == 4){ $begin .= '-01-01'; }
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = 'images.image_published >= :image_published_begin';
+			$this->sql_params[':image_published_begin'] = $begin . ' 00:00:00';
+			
+			if(is_int($end)){ $end = strval($end); }
+			if(strlen($end) == 4){ $end .= '-01-01'; }
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = 'images.image_published <= :image_published_end';
+			$this->sql_params[':image_published_end'] = $end . ' 23:59:59"';
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Find by date uploaded
 	 *
 	 * @param string $begin Date begin
@@ -931,26 +991,6 @@ class Find extends Alkaline{
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Find by publish status
-	 *
-	 * @param bool $published
-	 * @return void
-	 */
-	public function published($published=true){
-		if($published === 'false'){ $published = false; }
-		$now = date('Y-m-d H:i:s');
-		
-		if($published == true){
-			$this->sql_conds[] = 'images.image_published < :image_published';
-			$this->sql_params[':image_published'] = $now;
-		}
-		if($published == false){
-			$this->sql_conds[] = '(images.image_published > :image_published OR image_published IS NULL)';
-			$this->sql_params[':image_published'] = $now;
-		}
 	}
 	
 	/**
