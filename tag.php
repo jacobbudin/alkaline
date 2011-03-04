@@ -30,7 +30,6 @@ $image_ids->find();
 $images = new Image($image_ids);
 $images->formatTime();
 $images->getSizes('medium');
-$images->getEXIF();
 $images->getColorkey(670, 10);
 $images->getTags();
 $images->getRights();
