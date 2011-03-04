@@ -2501,6 +2501,7 @@ class Alkaline{
 		$uri = $_SERVER['REQUEST_URI'];
 		
 		if((URL_RW == '/') and !strpos($uri, '?')){
+			$uri = @preg_replace('#with/[^/]*(/)?#si', '', $uri);
 			$uri = @preg_replace('#(\?)?page\=[0-9]+#si', '', $uri);
 			if(preg_match('#page[0-9]+#si', $uri)){
 				$uri = preg_replace('#(/)?page[0-9]+(/)?#si', '\\1page' . $page . '\\2', $uri);
@@ -2514,6 +2515,7 @@ class Alkaline{
 			}
 		}
 		else{
+			$uri = @preg_replace('#[?&]{1,1}with=[^&]*(&)?#si', '\\1', $uri);
 			$uri = @preg_replace('#[\?\&]?page\=[0-9]#si', '', $uri);
 			$uri = @preg_replace('#\/page[0-9]+(/)?#si', '', $uri);
 
