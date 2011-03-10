@@ -173,7 +173,7 @@ table.census a{
 
 #panels{
 	position: relative;
-	bottom: -2em;
+	bottom: -1em;
 	color: #444;
 	text-align: right;
 }
@@ -198,8 +198,21 @@ table.census a{
 	text-decoration: none;
 }
 
+#search_panel{
+	background: transparent url(../images/hr_vertical.png) repeat-y 210px 0;
+	height: 40px;
+}
+
+#search_panel input{
+	width: 15em;
+	margin: 0 0 .1em 0;
+}
+
+#search_panel{ font-size: .9em; }
+
 #user_panel{
 	background: transparent url(../images/hr_vertical.png) repeat-y 210px 0;
+	height: 40px;
 }
 
 #footer{

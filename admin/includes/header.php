@@ -28,19 +28,24 @@
 	<div id="header_holder">
 		<div class="container">
 			<div id="header" class="span-24 last">
-				<div class="span-12 append-1">
+				<div class="span-6 append-1">
 					<a href="<?php echo BASE . ADMIN; ?>"><img src="<?php echo BASE . ADMIN; ?>images/shutter.png" alt="Alkaline" /></a>
 				</div>
-				<div id="panels" class="span-11 last">
+				<div id="panels" class="span-17 last">
 					<?php
 					if(!empty($user) and $user->perm()){
 						?>
+						<div id="search_panel" class="span-5 append-1">
+							<form action="<?php echo BASE . ADMIN . 'search' . URL_CAP; ?>" method="post">
+								<input type="search" name="q" results="10" /><br /><a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>#advanced" class="advanced_link">Advanced Search</a>
+							</form>
+						</div>
 						<div id="user_panel" class="span-5 append-1">
 							<strong><img src="<?php echo BASE . ADMIN; ?>images/icons/user.png" alt="" /> <?php echo $user->user['user_user']; ?></strong><br />
 							<span class="small">
 								<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Uploads</a> &#0183;
-								<a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>">Preferences</a> &#0183;
-								<a href="<?php echo BASE . ADMIN; ?>logout<?php echo URL_CAP; ?>">Logout</a>
+								<a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>">Preferences</a> &#0183;
+								<a href="<?php echo BASE . ADMIN . 'logout' . URL_CAP; ?>">Logout</a>
 							</span>
 						</div>
 						<div id="site_panel" class="span-5 last">

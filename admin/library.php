@@ -55,7 +55,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 
 			<p>
-				<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
+				<span class="switch">&#9656;</span> <a href="#" class="show advanced" style="line-height: 2.5em;">Show options</a>
 			</p>
 			
 			<div class="reveal">

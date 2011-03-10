@@ -590,6 +590,22 @@ $(document).ready(function(){
 		$(this).after('<input type="submit" name="install" value="Installing..." disabled="disabled" />');
 	});
 	
+	// ADVANCED SEARCH
+	
+	if(page == 'Images'){
+		$('a.advanced_link').click(function(){
+			$('a.advanced').click();
+		});
+		url = location.href;
+		task_in_url = /\#([a-z0-9_\-]+)$/i;
+		task = url.match(task_in_url);
+		if(!empty(task)){
+			if(task[1] == 'advanced'){
+				$('a.advanced').click();
+			}
+		}
+	}
+	
 	// PRIMARY - LABEL SELECT CHECKBOXES
 	
 	$("label select").click(
