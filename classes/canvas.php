@@ -204,7 +204,9 @@ class Canvas extends Alkaline{
 	 * @param Image $object Image object
 	 * @return bool True if successful
 	 */
-	public function loop($object){
+	public function loop($object, $offset=0, $length=null){
+		if(empty($offset)){ $offset = 0; }
+		
 		$class = strtolower(get_class($object));
 		$this->objects[$class] = $object;
 		
@@ -241,6 +243,7 @@ class Canvas extends Alkaline{
 			return false;
 		}
 		
+		
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
@@ -255,10 +258,19 @@ class Canvas extends Alkaline{
 			
 			$field = $this->tables[$loops[$j]['reel']];
 			
+			
 			// Determine if block has items
 			if($reel_count > 0){
 				$done_once = array();
-				for($i = 0; $i < $reel_count; ++$i){
+				
+				if(!is_int($length)){
+					$finish = $loop_count;
+				}
+				else{
+					$finish = $offset + $length;
+				}
+				
+				for($i = $offset; $i < $finish; ++$i){
 					$field_label = substr($field, 0, -3);
 					if($i == 0){
 						$first_label = $field_label . '_first';
