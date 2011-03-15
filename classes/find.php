@@ -318,6 +318,20 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Retrieve page numbers on demand
+	 *
+	 * @param $name page_#_uri
+	 */
+	public function __get($name){
+		if(substr($name, 0, 5) != 'page_'){ return; }
+		if(substr($name, -4) != '_uri'){ return; }
+		
+		$page_number = intval(substr($name, 5, -4));
+		
+		return $this->magicURL($page_number);
+	}
+	
+	/**
 	 * Translate $this->ids array to comma-separated string
 	 *
 	 * @return string Comma-separated IDs

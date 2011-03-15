@@ -206,7 +206,8 @@ if(empty($post_id)){
 				<?php
 				if(!empty($post_ids->page_previous)){
 					for($i = 1; $i <= $post_ids->page_previous; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'posts' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						$post_ids = 'page_' . $i . '_uri';
+						echo '<a href="' . $post_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
@@ -214,7 +215,8 @@ if(empty($post_id)){
 				<?php
 				if(!empty($post_ids->page_next)){
 					for($i = $post_ids->page_next; $i <= $post_ids->page_count; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'posts' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						$post_ids = 'page_' . $i . '_uri';
+						echo '<a href="' . $post_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>

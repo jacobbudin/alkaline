@@ -211,7 +211,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				if(!empty($image_ids->page_previous)){
 					for($i = 1; $i <= $image_ids->page_previous; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						$page_uri = 'page_' . $i . '_uri';
+						echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
@@ -219,7 +220,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php
 				if(!empty($image_ids->page_next)){
 					for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
-						echo '<a href="' . BASE . ADMIN . 'library' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+						$page_uri = 'page_' . $i . '_uri';
+						echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
