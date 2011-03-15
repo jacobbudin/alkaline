@@ -206,16 +206,16 @@ if(empty($post_id)){
 				<?php
 				if(!empty($post_ids->page_previous)){
 					for($i = 1; $i <= $post_ids->page_previous; ++$i){
-						$post_ids = 'page_' . $i . '_uri';
+						$page_uri = 'page_' . $i . '_uri';
 						echo '<a href="' . $post_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
-				<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
+				<span class="page_no">Page <?php echo $post_ids->page; ?> of <?php echo $post_ids->page_count; ?></span>
 				<?php
 				if(!empty($post_ids->page_next)){
 					for($i = $post_ids->page_next; $i <= $post_ids->page_count; ++$i){
-						$post_ids = 'page_' . $i . '_uri';
+						$page_uri = 'page_' . $i . '_uri';
 						echo '<a href="' . $post_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 					}
 				}

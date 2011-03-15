@@ -72,6 +72,9 @@ class Find extends Alkaline{
 	public function __construct($table=null, $ids=null, $auto_guest=true, $process_request=true){
 		parent::__construct();
 		
+		// Error handling
+		if(empty($table)){ return false; }
+		
 		// Store data to object
 		$this->call = array();
 		$this->ids = array();
@@ -352,6 +355,7 @@ class Find extends Alkaline{
 		}
 		
 		$this->ids = $orbit->hook('find', $this->ids, $this->ids);
+		$this->ids = $orbit->hook('find_' . $this->table, $this->ids, $this->ids);
 	}
 
 	/**
