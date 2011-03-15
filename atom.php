@@ -56,11 +56,13 @@ $image_entries->loop($images);
 
 // Gather posts
 
-$posts = new Post;
-$posts->page(1,10);
-$posts->sort('posts.post_published', 'DESC');
-$posts->published();
-$posts->fetch();
+$post_ids = new Find('posts');
+$post_ids->sort('posts.post_published', 'DESC');
+$post_ids->page(1,10);
+$post_ids->published();
+$post_ids->find();
+
+$posts = new Post($post_ids);
 $posts->formatTime('c');
 
 if($alkaline->returnConf('syndication_summary_only')){
