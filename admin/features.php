@@ -143,19 +143,12 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 			}
 		}
 		elseif($act == 'publish'){
+			$publish = $_POST['act_publish'];
+			
 			$images = new Image($image_ids);
-			$now = date('Y-m-d H:i:s');
-			$time = time();
-			foreach($images->images as $image){
-				if(empty($image['image_published']) or (strtotime($image['image_published']) > $time)){
-					$bool = $alkaline->updateRow(array('image_published' => $now), 'images', $image['image_id'], false);
-				}
-				else{
-					$bool = true;
-				}
-			}
+			$bool = $images->updateFields(array('image_published' => $publish));
 			if($bool === true){
-				$alkaline->addNote('The images were successfully published.', 'success');
+				$alkaline->addNote('You successfully set the publication date.', 'success');
 			}
 		}
 		elseif($act == 'delete'){
@@ -216,11 +209,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						<option value="right">Switch to rights set</option>
 						<option value="privacy">Switch to privacy level</option>
 						<option value="geo">Set location</option>
-						<option value="publish">Publish now</option>
+						<option value="publish">Publish on</option>
 						<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
 					</select>
 					<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
 					<input type="text" class="s image_geo" id="act_geo" name="act_geo" />
+					<input type="text" class="s" id="act_publish" name="act_publish" />
 					<?php echo $alkaline->showSets('act_set_id', true); ?>
 					<?php echo $alkaline->showRights('act_right_id'); ?>
 					<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>

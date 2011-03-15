@@ -934,6 +934,7 @@ $(document).ready(function(){
 	if(page == 'Editor'){
 		function actEditor(){
 			$('#act_geo').hide();
+			$('#act_publish').hide();
 			$('#act_tag_name').hide();
 			$('#act_set_id').hide();
 			$('#act_right_id').hide();
@@ -960,6 +961,9 @@ $(document).ready(function(){
 			}
 			else if(act == 'privacy'){
 				$('#act_privacy_id').show();
+			}
+			else if(act == 'publish'){
+				$('#act_publish').show();
 			}
 		}
 		
