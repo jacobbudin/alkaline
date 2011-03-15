@@ -133,6 +133,15 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				}
 			}
 		}
+		elseif($act == 'geo'){
+			$geo = $_POST['act_geo'];
+			
+			$images = new Image($image_ids);
+			$bool = $images->updateFields(array('image_geo' => $geo));
+			if($bool === true){
+				$alkaline->addNote('You successfully set the location.', 'success');
+			}
+		}
 		elseif($act == 'publish'){
 			$images = new Image($image_ids);
 			$now = date('Y-m-d H:i:s');
@@ -206,10 +215,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						<option value="set_remove">Remove from static set</option>
 						<option value="right">Switch to rights set</option>
 						<option value="privacy">Switch to privacy level</option>
+						<option value="geo">Set location</option>
 						<option value="publish">Publish now</option>
 						<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
 					</select>
 					<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
+					<input type="text" class="s image_geo" id="act_geo" name="act_geo" />
 					<?php echo $alkaline->showSets('act_set_id', true); ?>
 					<?php echo $alkaline->showRights('act_right_id'); ?>
 					<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>

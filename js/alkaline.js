@@ -933,6 +933,7 @@ $(document).ready(function(){
 	// FEATURES EDITOR
 	if(page == 'Editor'){
 		function actEditor(){
+			$('#act_geo').hide();
 			$('#act_tag_name').hide();
 			$('#act_set_id').hide();
 			$('#act_right_id').hide();
@@ -953,6 +954,9 @@ $(document).ready(function(){
 			}
 			else if(act == 'right'){
 				$('#act_right_id').show();
+			}
+			else if(act == 'geo'){
+				$('#act_geo').show();
 			}
 			else if(act == 'privacy'){
 				$('#act_privacy_id').show();
