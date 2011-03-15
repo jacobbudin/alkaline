@@ -91,7 +91,7 @@ if(empty($tag_id)){
 }
 else{
 	// Update image count on rights set
-	$image_ids = new Find;
+	$image_ids = new Find('images');
 	$image_ids->tags($tag_id);
 	$image_ids->find();
 	

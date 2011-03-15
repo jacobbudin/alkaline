@@ -35,7 +35,7 @@ if($_REQUEST['type'] == 'posts'){
 	$content->load('results-posts');
 }
 else{
-	$image_ids = new Find;
+	$image_ids = new Find('images');
 	$image_ids->sort('images.image_published', 'DESC');
 	$image_ids->published();
 	$image_ids->page();

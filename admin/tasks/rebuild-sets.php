@@ -31,7 +31,7 @@ if(empty($id)){
 	echo json_encode($set_ids);
 }
 else{
-	$images = new Find;
+	$images = new Find('images');
 	$images->sets(intval($id));
 }
 

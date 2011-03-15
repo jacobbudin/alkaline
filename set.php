@@ -23,11 +23,11 @@ if(!$set){ $alkaline->addError('No set was found.', 'Try searching for the set y
 $set['set_created'] = $alkaline->formatTime($set['set_created']);
 $set['set_modified'] = $alkaline->formatTime($set['set_modified']);
 
-$image_ids = new Find;
-$image_ids->page(null,0);
+$image_ids = new Find('images');
+$image_ids->page(null, 0);
 $image_ids->published();
 $image_ids->privacy('public');
-$image_ids->sets($set['set_id']);
+$image_ids->sets(intval($set['set_id']));
 $image_ids->find();
 
 $images = new Image($image_ids);

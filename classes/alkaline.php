@@ -1979,7 +1979,10 @@ class Alkaline{
 		if($default === true){
 			switch($table){
 				case 'images':
-					$fields['image_updated'] = date('Y-m-d H:i:s');
+					$fields['image_modified'] = date('Y-m-d H:i:s');
+					break;
+				case 'rights':
+					$fields['right_modified'] = date('Y-m-d H:i:s');
 					break;
 				case 'sets':
 					$fields['set_modified'] = date('Y-m-d H:i:s');

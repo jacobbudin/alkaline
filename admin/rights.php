@@ -118,7 +118,7 @@ if(empty($right_id)){
 }
 else{	
 	// Update image count on rights set
-	$image_ids = new Find;
+	$image_ids = new Find('images');
 	$image_ids->rights($right_id);
 	$image_ids->find();
 	

@@ -17,9 +17,9 @@ $user->perm(true);
 
 if(!empty($_SESSION['alkaline']['maintenance']['size_id'])){
 	if(empty($_POST['image_id'])){
-		$image_ids = new Find();
+		$image_ids = new Find('images');
 		$image_ids->find();
-		echo json_encode($image_ids->image_ids);
+		echo json_encode($image_ids->ids);
 	}
 	else{
 		$image = new Image($_POST['image_id']);

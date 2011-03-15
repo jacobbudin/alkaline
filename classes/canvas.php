@@ -264,7 +264,7 @@ class Canvas extends Alkaline{
 				$done_once = array();
 				
 				if(!is_int($length)){
-					$finish = $loop_count;
+					$finish = $reel_count;
 				}
 				else{
 					$finish = $offset + $length;

@@ -33,7 +33,6 @@ if(!empty($_POST['post_id'])){
 	}
 	
 	$posts = new Post($post_id);
-	$posts->fetch();
 	
 	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		$alkaline->deleteRow('posts', $post_id);
@@ -105,9 +104,11 @@ if(!empty($post_act) and ($post_act == 'add')){
 
 // GET POSTS TO VIEW OR PAGE TO EDIT
 if(empty($post_id)){
-	$posts = new Post;
-	$posts->page(null, 50);
-	$posts->fetch();
+	$post_ids = new Find('posts');
+	$post_ids->page(null, 50);
+	$post_ids->find();
+	
+	$posts = new Post($post_ids);
 	$posts->hook();
 	
 	define('TITLE', 'Alkaline Posts');
@@ -199,20 +200,20 @@ if(empty($post_id)){
 		</table>
 	
 		<?php
-		if($posts->page_count > 1){
+		if($post_ids->page_count > 1){
 			?>
 			<p>
 				<?php
-				if(!empty($posts->page_previous)){
-					for($i = 1; $i <= $image_ids->page_previous; ++$i){
+				if(!empty($post_ids->page_previous)){
+					for($i = 1; $i <= $post_ids->page_previous; ++$i){
 						echo '<a href="' . BASE . ADMIN . 'posts' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
 				?>
 				<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
 				<?php
-				if(!empty($posts->page_next)){
-					for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
+				if(!empty($post_ids->page_next)){
+					for($i = $post_ids->page_next; $i <= $post_ids->page_count; ++$i){
 						echo '<a href="' . BASE . ADMIN . 'posts' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
 					}
 				}
@@ -229,7 +230,6 @@ if(empty($post_id)){
 }
 else{
 	$posts = new Post($post_id);
-	$posts->fetch();
 	$posts->formatTime();
 	
 	$post = $posts->posts[0];
@@ -297,7 +297,7 @@ else{
 					<div class="reveal image_click">
 						<?php
 						
-						$image_ids = new Find;
+						$image_ids = new Find('images');
 						$image_ids->sort('image_uploaded', 'DESC');
 						$image_ids->post(1, 100);
 						$image_ids->find();

@@ -22,12 +22,12 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$image_ids = new Find();
+$image_ids = new Find('images');
 $image_ids->clearMemory();
 $image_ids->page(null, $max);
 $image_ids->find();
 
-$images = new Image($image_ids->image_ids);
+$images = new Image($image_ids);
 $images->getSizes('square');
 $images->hook();
 

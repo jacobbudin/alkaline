@@ -180,7 +180,7 @@ else{
 					<div class="reveal image_click">
 						<?php
 						
-						$image_ids = new Find;
+						$image_ids = new Find('images');
 						$image_ids->sort('image_uploaded', 'DESC');
 						$image_ids->page(1, 100);
 						$image_ids->find();

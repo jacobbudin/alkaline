@@ -14,9 +14,9 @@
  */
 
 class Image extends Alkaline{
+	public $comments;
 	public $db;
 	public $images = array();
-	public $comments;
 	public $pages;
 	public $sets;
 	public $sizes;
@@ -42,7 +42,7 @@ class Image extends Alkaline{
 		
 		// Input handling
 		if(is_object($image_ids)){
-			$image_ids = $image_ids->image_ids;
+			$image_ids = $image_ids->ids;
 		}
 		
 		$this->image_ids = parent::convertToIntegerArray($image_ids);
@@ -348,8 +348,8 @@ class Image extends Alkaline{
 				}
 			}
 			
-			// Set image_updated field to now
-			$fields['image_updated'] = date('Y-m-d H:i:s');
+			// Set image_modified field to now
+			$fields['image_modified'] = date('Y-m-d H:i:s');
 			
 			$columns = array_keys($fields);
 			$values = array_values($fields);
@@ -472,9 +472,9 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
 			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
+				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -579,9 +579,9 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
 			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
+				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -630,9 +630,9 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_updated = :image_updated WHERE image_id = :image_id;');
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
 			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_updated' => $now, ':image_id' => $image_id));
+				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
 			}
 		}
 		
@@ -1936,7 +1936,7 @@ class Image extends Alkaline{
 			$image['image_taken_format'] = parent::formatTime($image['image_taken'], $format);
 			$image['image_uploaded_format'] = parent::formatTime($image['image_uploaded'], $format);
 			$image['image_published_format'] = parent::formatTime($image['image_published'], $format);
-			$image['image_updated_format'] = parent::formatTime($image['image_updated'], $format);
+			$image['image_modified_format'] = parent::formatTime($image['image_modified'], $format);
 		}
 	}
 	

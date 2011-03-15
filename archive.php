@@ -21,14 +21,14 @@ $date = $year;
 if(!empty($month)){ $date .= '-' . $month; }
 if(!empty($day)){ $date .= '-' . $day; }
 
-$image_ids = new Find;
+$image_ids = new Find('images');
 $image_ids->page(null, 12);
 $image_ids->published($date);
 $image_ids->privacy('public');
 $image_ids->sort('image_published', 'ASC');
 $image_ids->find();
 
-if(empty($image_ids->image_ids)){ $alkaline->addError('No images were found.', 'Try searching for the images you were seeking.', null, null, 404); }
+if(empty($image_ids)){ $alkaline->addError('No images were found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
 $images = new Image($image_ids);
 $images->formatTime();

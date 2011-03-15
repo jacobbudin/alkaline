@@ -61,7 +61,7 @@ if($set_act == 'build'){
 	$set_call = Find::recentMemory();
 	if(!empty($set_call)){
 		$fields = array('set_call' => serialize($set_call),
-			'set_request' => serialize($_SESSION['alkaline']['search']['request']),
+			'set_request' => serialize($_SESSION['alkaline']['search']['images']['request']),
 			'set_type' => 'auto');
 	}
 	else{
@@ -69,7 +69,7 @@ if($set_act == 'build'){
 	}
 	$set_id = $alkaline->addRow($fields, 'sets');
 	
-	$images = new Find;
+	$images = new Find('images');
 	$images->sets($set_id);
 	$images->find();
 	
@@ -137,7 +137,7 @@ else{
 	$set = $alkaline->makeHTMLSafe($set);
 	
 	// Update set
-	$image_ids = new Find;
+	$image_ids = new Find('images');
 	$image_ids->sets($set_id);
 	$image_ids->find();
 	

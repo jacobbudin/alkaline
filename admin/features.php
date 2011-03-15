@@ -166,12 +166,12 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$image_ids = new Find();
+$image_ids = new Find('images');
 $is_memory = $image_ids->memory();
 $image_ids->page(null, $max);
 $image_ids->find();
 
-$images = new Image($image_ids->image_ids);
+$images = new Image($image_ids);
 $images->getSizes('square');
 $images->hook();
 
@@ -195,7 +195,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php } ?>
 			</div>
 		
-			<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->image_count); ?>)</h1>
+			<h1>Editor (<span id="image_count_selected">0</span> of <?php echo number_format($image_ids->count); ?>)</h1>
 		
 			<form action="" method="post">
 				<p>
@@ -228,7 +228,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 							$selected = '_selected';
 						}
 					}
-					elseif(!empty($_SESSION['alkaline']['search']['results'])){
+					elseif(!empty($_SESSION['alkaline']['search']['images']['results'])){
 						$selected = '_selected';
 					}
 					?>

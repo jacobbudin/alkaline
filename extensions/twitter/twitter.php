@@ -216,7 +216,7 @@ class Twitter extends Orbit{
 			}
 			
 			if(empty($this->twitter_last_image_id)){
-				$image_ids = new Find;
+				$image_ids = new Find('images');
 				$image_ids->published();
 				$image_ids->sort('image_published', 'DESC');
 				$image_ids->privacy('public');
@@ -232,10 +232,11 @@ class Twitter extends Orbit{
 			}
 			
 			if(empty($this->twitter_last_post_id)){
-				$posts = new Post;
-				$posts->published();
-				$posts->sort('post_published', 'DESC');
-				$posts->fetch();
+				$post_ids = new Find('posts');
+				$post_ids->published();
+				$post_ids->sort('post_published', 'DESC');
+				$post_ids->find();
+				$posts = new Post($post_ids);
 				$posts->hook();
 			}
 		}

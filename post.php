@@ -17,9 +17,11 @@ $alkaline->addComments();
 $id = $alkaline->findID($_GET['id']);
 if(!$id){ $alkaline->addError('No post was found.', 'Try searching for the post you were seeking.', null, null, 404); }
 
+$post_ids = new Find('posts', $id);
+$post_ids->published();
+$post_ids->find();
+
 $posts = new Post($id);
-$posts->published();
-$posts->fetch();
 $posts->getComments(true);
 $posts->formatTime();
 $posts->updateViews();

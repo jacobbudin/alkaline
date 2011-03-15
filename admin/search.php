@@ -22,13 +22,13 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
-$image_ids = new Find();
+$image_ids = new Find('images');
 $image_ids->page(null, $max);
 $image_ids->memory();
 $image_ids->find();
 $image_ids->saveMemory();
 
-$images = new Image($image_ids->image_ids);
+$images = new Image($image_ids);
 $images->getSizes('square');
 
 define('TAB', 'library');
@@ -39,11 +39,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="actions"><a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW; ?>">Bulk edit</a> <a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build set</a> <a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">New search</a></div>
 
-<h1>Search Results (<?php echo number_format($image_ids->image_count); ?>)</h1>
+<h1>Search Results (<?php echo number_format($image_ids->count); ?>)</h1>
 
 <?php
 
-if($image_ids->image_count_result > 0){
+if($image_ids->count_result > 0){
 	?>
 	<p>
 	<?php

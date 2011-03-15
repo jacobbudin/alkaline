@@ -16,9 +16,9 @@ $user = new User;
 $user->perm(true);
 
 if(empty($_POST['image_id'])){
-	$image_ids = new Find();
+	$image_ids = new Find('images');
 	$image_ids->find();
-	echo json_encode($image_ids->image_ids);
+	echo json_encode($image_ids->ids);
 }
 else{
 	$alkaline->updateCount('comments', 'images', 'image_comment_count', $_POST['image_id']);

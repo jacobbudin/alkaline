@@ -72,7 +72,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					$max = 10;
 				}
 			
-				$image_ids = new Find;
+				$image_ids = new Find('images');
 				$image_ids->page(1,$max);
 				$image_ids->sort('images.image_uploaded', 'DESC');
 				$image_ids->find();

@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->recordStat('slideshow');
 
-$image_ids = new Find;
+$image_ids = new Find('images');
 $image_ids->sort('images.image_published', 'DESC');
 $image_ids->privacy('public');
 $image_ids->find();

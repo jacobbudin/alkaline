@@ -16,7 +16,7 @@ $alkaline->recordStat('home');
 $with_id = $alkaline->findID($_GET['with'], true);
 if(!$with_id and !empty($_GET['with'])){ $alkaline->addError('No image was found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
-$image_ids = new Find;
+$image_ids = new Find('images');
 $image_ids->page(null, 12, 1);
 if($with_id){ $image_ids->with($with_id); }
 $image_ids->published();

@@ -20,7 +20,7 @@ $tag = $alkaline->getRow('tags', $id);
 
 if(!$tag){ $alkaline->addError('No tag was found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
-$image_ids = new Find;
+$image_ids = new Find('images');
 $image_ids->page(null, 0);
 $image_ids->published();
 $image_ids->privacy('public');

@@ -17,7 +17,7 @@ $alkaline->recordStat('atom');
 
 // Gather images
 
-$image_ids = new Find();
+$image_ids = new Find('images');
 $image_ids->sort('images.image_published', 'DESC');
 $image_ids->page(1,10);
 $image_ids->published();
