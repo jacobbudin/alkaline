@@ -17,9 +17,16 @@ $user->perm(true, 'themes');
 
 // Load current themes
 $themes = $alkaline->getTable('themes');
+
+$theme_ids = array();
+$theme_uids = array();
+$theme_builds = array();
 $theme_folders = array();
 
 foreach($themes as $theme){
+	$theme_ids[] = $theme['theme_id'];
+	$theme_uids[] = $theme['theme_uid'];
+	$theme_builds[] = $theme['theme_build'];
 	$theme_folders[] = $theme['theme_folder'];
 }
 
@@ -60,6 +67,25 @@ foreach($seek_themes as &$theme_folder){
 		$theme_intalled_id = $alkaline->addRow($fields, 'themes');
 		$themes_installed[] = $theme_intalled_id;
 	}
+	else{
+		$data = file_get_contents(PATH . THEMES . $theme_folder . '/theme.xml');
+		$xml = new SimpleXMLElement($data);
+		$keys = array_keys($theme_uids, $xml->uid);
+		foreach($keys as $key){
+			if($xml->build != $theme_builds[$key]){
+				$id = $theme_ids[$key];
+		
+				$fields = array('theme_title' => $xml->title,
+					'theme_folder' => $theme_folder,
+					'theme_build' => $xml->build,
+					'theme_version' => $xml->version,
+					'theme_creator_name' => $xml->creator->name,
+					'theme_creator_uri' => $xml->creator->uri);
+				$alkaline->updateRow($fields, 'themes', $id);
+				$themes_updated[] = $id;
+			}
+		}
+	}
 }
 
 $themes_installed_count = count($themes_installed);
@@ -69,6 +95,20 @@ if($themes_installed_count > 0){
 	}
 	else{
 		$notification = 'You have successfully installed ' . $themes_installed_count . ' themes.';
+	}
+	
+	$alkaline->addNote($notification, 'success');
+	
+	$themes = $alkaline->getTable('themes');
+}
+
+$themes_updated_count = count($themes_updated);
+if($themes_updated_count > 0){
+	if($themes_updated_count == 1){
+		$notification = 'You have successfully updated 1 theme.';
+	}
+	else{
+		$notification = 'You have successfully updated ' . $themes_updated_count . ' themes.';
 	}
 	
 	$alkaline->addNote($notification, 'success');

@@ -80,9 +80,16 @@ $extensions = $alkaline->getTable('extensions');
 // Seek all extensions
 $seek_extensions = $alkaline->seekDirectory(PATH . EXTENSIONS, '');
 
+$extension_ids = array();
+$extension_uids = array();
+$extension_builds = array();
 $extension_folders = array();
 $extension_classes = array();
+
 foreach($extensions as $extension){
+	$extension_ids[] = $extension['extension_id'];
+	$extension_uids[] = $extension['extension_uid'];
+	$extension_builds[] = $extension['extension_build'];
 	$extension_folders[] = $extension['extension_folder'];
 	$extension_classes[] = $extension['extension_class'];
 }
@@ -100,7 +107,7 @@ foreach($extensions as $extension){
 
 $alkaline->deleteRow('extensions', $extension_deleted);
 
-// Determine which extensions are new, intall them
+// Determine which extensions are new, install them
 $extensions_installed = array();
 
 foreach($seek_extensions as &$extension_folder){
@@ -141,6 +148,40 @@ foreach($seek_extensions as &$extension_folder){
 		$extension_intalled_id = $alkaline->addRow($fields, 'extensions');
 		$extensions_installed[] = $extension_intalled_id;
 	}
+	else{
+		$data = file_get_contents(PATH . EXTENSIONS . $extension_folder . '/extension.xml');
+		$xml = new SimpleXMLElement($data);
+		$keys = array_keys($extension_classes, $xml->class);
+		foreach($keys as $key){
+			if($xml->build != $extension_builds[$key]){
+				$id = $extension_ids[$key];
+		
+				require_once(PATH . EXTENSIONS . $extension_folder . '/' . $xml->file . '.php');
+		
+				$extension_methods = get_class_methods(strval($xml->class));
+				$extension_hooks = array();
+		
+				foreach($extension_methods as $method){
+					if(strpos($method, 'orbit_') === 0){
+						$extension_hooks[] = substr($method, 6);
+					}
+				}
+		
+				$fields = array('extension_class' => $xml->class,
+					'extension_title' => $xml->title,
+					'extension_file' => $xml->file,
+					'extension_folder' => $extension_folder,
+					'extension_build' => $xml->build,
+					'extension_version' => $xml->version,
+					'extension_hooks' => serialize($extension_hooks),
+					'extension_description' => $xml->description,
+					'extension_creator_name' => $xml->creator->name,
+					'extension_creator_uri' => $xml->creator->uri);
+				$alkaline->updateRow($fields, 'extensions', $id);
+				$extensions_updated[] = $id;
+			}
+		}
+	}
 }
 
 $extensions_installed_count = count($extensions_installed);
@@ -150,6 +191,20 @@ if($extensions_installed_count > 0){
 	}
 	else{
 		$notification = 'You have successfully installed ' . $extensions_installed_count . ' extensions.';
+	}
+	
+	$alkaline->addNote($notification, 'success');
+	
+	$extensions = $alkaline->getTable('extensions');
+}
+
+$extensions_updated_count = count($extensions_updated);
+if($extensions_updated_count > 0){
+	if($extensions_updated_count == 1){
+		$notification = 'You have successfully updated 1 extension.';
+	}
+	else{
+		$notification = 'You have successfully updated ' . $extensions_updated_count . ' extensions.';
 	}
 	
 	$alkaline->addNote($notification, 'success');
