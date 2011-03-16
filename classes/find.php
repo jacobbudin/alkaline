@@ -110,7 +110,7 @@ class Find extends Alkaline{
 		
 		if(($auto_guest == true) and ($this->table == 'images')){
 			// Guest access
-			if(isset($_SESSION['alkaline']['guest'])){
+			if(isset($_SESSION['alkaline']['guest']) and (strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) !== 0)){
 				$this->privacy(2);
 				if(!empty($_SESSION['alkaline']['guest']['guest_sets'])){
 					$this->sets(intval($_SESSION['alkaline']['guest']['guest_sets']));
