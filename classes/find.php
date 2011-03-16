@@ -285,6 +285,16 @@ class Find extends Alkaline{
 						break;
 				}
 			}
+			
+			// Status
+			if(!empty($_REQUEST['status'])){
+				$this->status($_REQUEST['status']);
+			}
+			
+			// Image association
+			if(!empty($_REQUEST['image'])){
+				$this->image($_REQUEST['image']);
+			}
 		}
 	}
 	
@@ -956,10 +966,11 @@ class Find extends Alkaline{
 	 * Find by search
 	 * Images: image title, image description, image geography, and image tags
 	 *
-	 * @param string $search 
+	 * @param string $search
+	 * @param array $fields Required for tables not built into Alkaline 
 	 * @return bool True if successful
 	 */
-	public function search($search=null){
+	public function search($search=null, $fields=null){
 		// Error checking
 		if(empty($search)){ return false; }
 		
@@ -997,6 +1008,17 @@ class Find extends Alkaline{
 
 			foreach($posts as $post){
 				$ids[] = $post['post_id'];
+			}
+		}
+		elseif($this->table == 'comments'){
+			$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_uri) LIKE :comment_author_uri) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
+			$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
+			$comments = $query->fetchAll();
+
+			$comment_ids = array();
+
+			foreach($comments as $comment){
+				$ids[] = $comment['comment_id'];
 			}
 		}
 		
@@ -1194,35 +1216,110 @@ class Find extends Alkaline{
 	}
 	
 	/**
-	 * Find by posts
+	 * Find by post association
 	 *
 	 * @param int|array $id Posts IDs
 	 * @return bool True if successful
 	 */
-	public function posts($id=null){
-		if(empty($id)){ return false; }
-		if(!intval($id)){ return false; }
+	public function posts($post_ids=null){
+		if(empty($post_ids)){ return false; }
 		
-		$id = intval($id);
+		if($this->table == 'images'){
+			if(!intval($post_ids)){ return false; }
+
+			$post_id = intval($post_ids);
+			
+			$posts = $this->getTable('posts', $post_id);
+			
+			$ids = array();
+			
+			foreach($posts as $post){
+				$ids_on_post = explode(', ', $post['post_images']);
+				foreach($ids_on_post as $image_id){
+					$ids[] = $image_id;
+				}
+			}
 		
-		$posts = $this->getTable('posts', $id);
-		
-		$ids = array();
-		
-		foreach($posts as $post){
-			$ids_on_post = explode(', ', $post['post_images']);
-			foreach($ids_on_post as $image_id){
-				$ids[] = $image_id;
+			$ids = array_unique($ids);
+			
+			if(count($ids) > 0){
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+			}
+			else{
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (NULL)';
+			}
+		}
+		else{
+			$post_ids = parent::convertToIntegerArray($post_ids);
+			
+			if(count($post_ids) > 0){
+				$this->sql_conds[] = $this->table . '.post_id IN (' . implode(', ', $post_ids) . ')';
+			}
+			else{
+				$this->sql_conds[] = $this->table . '.post_id IN (NULL)';
 			}
 		}
 		
-		$ids = array_unique($ids);
+		return true;
+	}
+	
+	/**
+	 * Find by image association
+	 *
+	 * @param int|array $image_ids Image IDs
+	 * @return bool True if successful
+	 */
+	public function image($image_ids=null){
+		// Error checking
+		if(empty($image_ids)){ return false; }
 		
-		if(count($ids) > 0){
-			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+		$image_ids = parent::convertToIntegerArray($image_ids);
+		
+		if(count($image_ids) > 0){
+			$this->sql_conds[] = $this->table . '.image_id IN (' . implode(', ', $image_ids) . ')';
 		}
 		else{
-			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (NULL)';
+			$this->sql_conds[] = $this->table . '.post_id IN (NULL)';
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Find by comment status
+	 *
+	 * @param int|string $status Comment status
+	 * @return bool True if successful
+	 */
+	public function status($status=null){
+		// Error checking
+		if(!isset($status)){ return false; }
+		
+		// Convert strings
+		if(is_string($status)){
+			$levels = array('spam' => -1, 'unpublished' => 0, 'published' => 1);
+			if(array_key_exists($status, $levels)){
+				$status = $levels[$status];
+			}
+			else{
+				return false;
+			}
+			
+			// Set fields to search
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'status = ' . $status;
+		}
+		elseif(is_integer($status)){
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'status = ' . $status;
+			
+		}
+		elseif(is_array($status)){
+			parent::convertToIntegerArray($privacy);
+			
+			// Set fields to search
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'status IN (' . implode(', ', $status) . ')';
+		}
+		else{
+			return false;
 		}
 		
 		return true;

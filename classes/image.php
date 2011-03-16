@@ -27,6 +27,7 @@ class Image extends Alkaline{
 	public $image_import_ids = array();
 	public $image_ids = array();
 	public $user;
+	
 	protected $sql;
 	
 	/**

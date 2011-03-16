@@ -18,48 +18,60 @@ class Page extends Alkaline{
 	public $page_count = 0;
 	public $pages;
 	
+	protected $sql;
+	
 	/**
 	 * Initiate Page object
 	 *
 	 * @param int|array|string $page Page search (IDs or page title)
 	 */
-	public function __construct($page=null){
+	public function __construct($page_ids=null){
 		parent::__construct();
 		
-		if(!empty($page)){
-			$sql_params = array();
-			
-			if(is_int($page)){
-				$page_id = $page;
-				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . $page_id . ';');
-			}
-			elseif(is_string($page)){
-				$query = $this->prepare('SELECT * FROM pages WHERE (LOWER(page_title_url) LIKE :page_title_url);');
-				$sql_params[':page_title_url'] = '%' . strtolower($page) . '%';
-			}
-			elseif(is_array($page)){
-				$page_ids = $this->convertToIntegerArray($page);
-				$query = $this->prepare('SELECT * FROM pages WHERE page_id = ' . implode(' OR page_id = ', $page_ids) . ';');
-			}
-			
-			if(!empty($query)){
-				$query->execute($sql_params);
-				$this->pages = $query->fetchAll();
-				
-				$this->page_count = count($this->pages);
-			}
+		// Repage page array
+		$this->pages = array();
+		
+		// Input handling
+		if(is_object($page_ids)){
+			$page_ids = $page_ids->ids;
 		}
 		
-		// Attach additional fields
-		for($i = 0; $i < $this->page_count; ++$i){
-			if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
-				$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
-			}
-			else{
-				$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
-			}
+		$this->page_ids = parent::convertToIntegerArray($page_ids);
+		
+		// Error checking
+		$this->sql = ' WHERE (pages.page_id IS NULL)';
+		
+		if(count($this->page_ids) > 0){
+			// Retrieve pages from database
+			$this->sql = ' WHERE (pages.page_id IN (' . implode(', ', $this->page_ids) . '))';
 			
-			$this->pages[$i]['page_uri'] = LOCATION . $this->pages[$i]['page_uri_rel'];
+			$query = $this->prepare('SELECT * FROM pages' . $this->sql . ';');
+			$query->execute();
+			$pages = $query->fetchAll();
+		
+			// Ensure pages array correlates to page_ids array
+			foreach($this->page_ids as $page_id){
+				foreach($pages as $page){
+					if($page_id == $page['page_id']){
+						$this->pages[] = $page;
+					}
+				}
+			}
+		
+			// Store page count as integer
+			$this->page_count = count($this->pages);
+		
+			// Attach additional fields
+			for($i = 0; $i < $this->page_count; ++$i){
+				if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
+					$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
+				}
+				else{
+					$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
+				}
+
+				$this->pages[$i]['page_uri'] = LOCATION . $this->pages[$i]['page_uri_rel'];
+			}
 		}
 	}
 	
@@ -81,41 +93,13 @@ class Page extends Alkaline{
 		$this->pages = $orbit->hook('page', $this->pages, $this->pages);
 	}
 	
-	public function create(){
-		
-	}
-	
-	/**
-	 * Fetch all pages
-	 *
-	 * @return void
-	 */
-	public function fetchAll(){
-		$query = $this->prepare('SELECT page_id FROM pages;');
-		$query->execute();
-		$pages = $query->fetchAll();
-		
-		$page_ids = array();
-		
-		foreach($pages as $page){
-			$page_ids[] = $page['page_id'];
-		}
-		
-		// Reconstruct
-		self::__construct($page_ids);
-	}
-	
-	public function search($search=null){
-		
-	}
-	
 	/**
 	 * Update page fields
 	 *
 	 * @param string $fields Associative array of columns and fields
 	 * @return PDOStatement
 	 */
-	public function update($fields){
+	public function updateFields($fields){
 		$ids = array();
 		foreach($this->pages as $page){
 			$ids[] = $page['page_id'];

@@ -93,9 +93,11 @@ define('TAB', 'comments');
 
 // GET COMMENTS TO VIEW OR PILE TO EDIT
 if(empty($comment_id)){
-	$comments = new Comment();
-	$comments->page(null);
-	$comments->fetch();
+	$comment_ids = new Find('comments');
+	$comment_ids->page(null, 50);
+	$comment_ids->find();
+	
+	$comments = new Comment($comment_ids);
 	$comments->formatTime();
 	$comments->comments = $alkaline->stripTags($comments->comments);
 	
@@ -169,21 +171,23 @@ if(empty($comment_id)){
 	
 	<?php
 	
-	if($comments->page_count > 1){
+	if($comment_ids->page_count > 1){
 		?>
 		<p>
 			<?php
-			if(!empty($comments->page_previous)){
-				for($i = 1; $i <= $comments->page_previous; ++$i){
-					echo '<a href="' . BASE . ADMIN . 'comments' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+			if(!empty($comment_ids->page_previous)){
+				for($i = 1; $i <= $comment_ids->page_previous; ++$i){
+					$page_uri = 'page_' . $i . '_uri';
+					echo '<a href="' . $comment_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 				}
 			}
 			?>
-			<span class="page_no">Page <?php echo $comments->page; ?> of <?php echo $comments->page_count; ?></span>
+			<span class="page_no">Page <?php echo $comment_ids->page; ?> of <?php echo $comment_ids->page_count; ?></span>
 			<?php
-			if(!empty($comments->page_next)){
-				for($i = $comments->page_next; $i <= $comments->page_count; ++$i){
-					echo '<a href="' . BASE . ADMIN . 'comments' . URL_PAGE . $i . URL_RW . '" class="page_no">' . number_format($i) . '</a>';
+			if(!empty($comment_ids->page_next)){
+				for($i = $comment_ids->page_next; $i <= $comment_ids->page_count; ++$i){
+					$page_uri = 'page_' . $i . '_uri';
+					echo '<a href="' . $comment_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
 				}
 			}
 			?>

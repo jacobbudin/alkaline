@@ -18,48 +18,60 @@ class Set extends Alkaline{
 	public $set_count = 0;
 	public $sets;
 	
+	protected $sql;
+	
 	/**
 	 * Initiate Set object
 	 *
-	 * @param array|int|string $set Search sets (set IDs, set titles)
+	 * @param array|int|string $set_ids Search sets (set IDs, set titles)
 	 */
-	public function __construct($set=null){
+	public function __construct($set_ids=null){
 		parent::__construct();
 		
-		if(!empty($set)){
-			$sql_params = array();
-			
-			if(is_int($set)){
-				$set_id = $set;
-				$query = $this->prepare('SELECT * FROM sets WHERE set_id = ' . $set_id . ';');
-			}
-			elseif(is_string($set)){
-				$query = $this->prepare('SELECT * FROM sets WHERE (LOWER(set_title_url) LIKE :set_title_url);');
-				$sql_params[':set_title_url'] = '%' . strtolower($set) . '%';
-			}
-			elseif(is_array($set)){
-				$set_ids = $this->convertToIntegerArray($set);
-				$query = $this->prepare('SELECT * FROM sets WHERE set_id = ' . implode(' OR set_id = ', $set_ids) . ';');
-			}
-			
-			if(!empty($query)){
-				$query->execute($sql_params);
-				$this->sets = $query->fetchAll();
-				
-				$this->set_count = count($this->sets);
-			}
+		// Reset set array
+		$this->sets = array();
+		
+		// Input handling
+		if(is_object($set_ids)){
+			$set_ids = $set_ids->ids;
 		}
 		
-		// Attach additional fields
-		for($i = 0; $i < $this->set_count; ++$i){
-			if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
-				$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
-			}
-			else{
-				$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
-			}
+		$this->set_ids = parent::convertToIntegerArray($set_ids);
+		
+		// Error checking
+		$this->sql = ' WHERE (sets.set_id IS NULL)';
+		
+		if(count($this->set_ids) > 0){
+			// Retrieve sets from database
+			$this->sql = ' WHERE (sets.set_id IN (' . implode(', ', $this->set_ids) . '))';
 			
-			$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
+			$query = $this->prepare('SELECT * FROM sets' . $this->sql . ';');
+			$query->execute();
+			$sets = $query->fetchAll();
+		
+			// Ensure sets array correlates to set_ids array
+			foreach($this->set_ids as $set_id){
+				foreach($sets as $set){
+					if($set_id == $set['set_id']){
+						$this->sets[] = $set;
+					}
+				}
+			}
+		
+			// Store set count as integer
+			$this->set_count = count($this->sets);
+		
+			// Attach additional fields
+			for($i = 0; $i < $this->set_count; ++$i){
+				if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
+					$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
+				}
+				else{
+					$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
+				}
+
+				$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
+			}
 		}
 	}
 	
@@ -81,46 +93,30 @@ class Set extends Alkaline{
 		$this->sets = $orbit->hook('set', $this->sets, $this->sets);
 	}
 	
-	public function create(){
-		
-	}
-	
 	/**
-	 * Fetch all pages
-	 *
-	 * @return void
-	 */
-	public function fetchAll(){
-		$query = $this->prepare('SELECT set_id FROM sets;');
-		$query->execute();
-		$sets = $query->fetchAll();
-		
-		$set_ids = array();
-		
-		foreach($sets as $set){
-			$set_ids[] = $set['set_id'];
-		}
-		
-		// Reconstruct
-		self::__construct($set_ids);
-	}
-	
-	public function search($search=null){
-		
-	}
-	
-	/**
-	 * Update pages
+	 * Update sets
 	 *
 	 * @param array $fields Associate array of columns and fields
 	 * @return void
 	 */
-	public function update($fields){
+	public function updateFields($fields){
 		$ids = array();
 		foreach($this->sets as $set){
 			$ids[] = $set['set_id'];
 		}
 		return parent::updateRow($fields, 'sets', $ids);
+	}
+	
+	/**
+	 * Increase set_views field by 1
+	 *
+	 * @return void
+	 */
+	public function updateViews(){
+		for($i = 0; $i < $this->set_count; ++$i){
+			$this->sets[$i]['set_views']++;
+			$this->exec('UPDATE sets SET set_views = ' . $this->sets[$i]['set_views'] . ' WHERE set_id = ' . $this->sets[$i]['set_id'] . ';');
+		}
 	}
 	
 	/**

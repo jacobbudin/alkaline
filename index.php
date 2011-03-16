@@ -42,11 +42,15 @@ $header->load('header');
 $header->setTitle('Welcome');
 $header->display();
 
-$pages = new Page;
-$pages->fetchAll();
+$page_ids = new Find('pages');
+$page_ids->find();
 
-$sets = new Set;
-$sets->fetchAll();
+$pages = new Page($page_ids);
+
+$set_ids = new Find('sets');
+$set_ids->find();
+
+$sets = new Set($set_ids);
 
 $directory = new Canvas;
 $directory->load('directory');

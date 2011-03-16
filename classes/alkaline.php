@@ -1499,10 +1499,11 @@ class Alkaline{
 		// New
 		$badges['library'] = $this->countDirectory(PATH . SHOEBOX);
 
-		$comments = new Comment();
-		$comments->status(0);
-		$comments->fetch();
-		$badges['comments'] = $comments->comment_count;
+		$comment_ids = new Find();
+		$comment_ids->status(0);
+		$comment_ids->find();
+		
+		$badges['comments'] = $comment_ids->count;
 		
 		return $badges;
 	}
