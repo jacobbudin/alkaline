@@ -141,7 +141,17 @@ class Find extends Alkaline{
 			if(!empty($_REQUEST['rights'])){
 				$this->_rights(intval($_REQUEST['rights']));
 			}
-
+			
+			// Date created
+			if(!empty($_REQUEST['created_begin']) or !empty($_REQUEST['created_end'])){
+				$this->_created($_REQUEST['created_begin'], $_REQUEST['created_end']);
+			}
+			
+			// Date modified
+			if(!empty($_REQUEST['modified_begin']) or !empty($_REQUEST['modified_end'])){
+				$this->_modified($_REQUEST['modified_begin'], $_REQUEST['modified_end']);
+			}
+		
 			// Date taken
 			if(!empty($_REQUEST['taken_begin']) or !empty($_REQUEST['taken_end'])){
 				$this->_taken($_REQUEST['taken_begin'], $_REQUEST['taken_end']);
@@ -385,6 +395,38 @@ class Find extends Alkaline{
 			$end = date('Y-m-d', strtotime($end));
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'taken <= :image_taken_end';
 			$this->sql_params[':image_taken_end'] = $end . ' 23:59:59"';
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Find by date modified
+	 *
+	 * @param string $begin Date begin
+	 * @param string $end Date end
+	 * @return bool True if successful
+	 */
+	public function modified($begin=null, $end=null){
+		// Error checking
+		if(empty($begin) and empty($end)){ return false; }
+		
+		// Set begin date
+		if(!empty($begin)){
+			if(is_int($begin)){ $begin = strval($begin); }
+			if(strlen($begin) == 4){ $begin .= '-01-01'; }
+			$begin = date('Y-m-d', strtotime($begin));
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'modified >= :image_modified_begin';
+			$this->sql_params[':image_modified_begin'] = $begin . ' 00:00:00';
+		}
+		
+		// Set end date
+		if(!empty($end)){
+			if(is_int($end)){ $end = strval($end); }
+			if(strlen($end) == 4){ $end .= '-01-01'; }
+			$end = date('Y-m-d', strtotime($end));
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'modified <= :image_modified_end';
+			$this->sql_params[':image_modified_end'] = $end . ' 23:59:59"';
 		}
 		
 		return true;
