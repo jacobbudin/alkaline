@@ -137,8 +137,8 @@ if(empty($post_id)){
 						<td class="quiet">
 							<select id="published" name="published">
 								<option value="">All</option>
-								<option value="true">Published</option>
-								<option value="false">Unpublished</option>
+								<option value="published">Published</option>
+								<option value="unpublished">Unpublished</option>
 							</select>
 						</td>
 					</tr>
