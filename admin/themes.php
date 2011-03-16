@@ -47,6 +47,7 @@ $alkaline->deleteRow('themes', $theme_deleted);
 
 // Determine which themes are new, install them
 $themes_installed = array();
+$themes_updated = array();
 
 foreach($seek_themes as &$theme_folder){
 	$theme_folder = $alkaline->getFilename($theme_folder);

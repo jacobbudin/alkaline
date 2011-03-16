@@ -109,6 +109,7 @@ $alkaline->deleteRow('extensions', $extension_deleted);
 
 // Determine which extensions are new, install them
 $extensions_installed = array();
+$extensions_updated = array();
 
 foreach($seek_extensions as &$extension_folder){
 	$extension_folder = $alkaline->getFilename($extension_folder);
