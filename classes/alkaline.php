@@ -706,35 +706,44 @@ class Alkaline{
 			$format = DATE_FORMAT;
 		}
 		
-		$time = str_ireplace('at', '', $time);
+		$time = str_ireplace(' at ', ' ', $time);
+		$time = str_ireplace(' on ', ' ', $time);
 		
 		$time = strtotime($time);
 		$seconds = time() - $time;
 		
-		switch($seconds){
-			case($seconds < 3600):
-				$minutes = intval($seconds / 60);
-				if($minutes < 2){ $span = 'a minute ago'; }
-				else{ $span = $minutes . ' minutes ago'; }
-				break;
-			case($seconds < 86400):
-				$hours = intval($seconds / 3600);
-				if($hours < 2){ $span = 'an hour ago'; }
-				else{ $span = $hours . ' hours ago'; }
-				break;
-			case($seconds < 2419200):
-				$days = intval($seconds / 86400);
-				if($days < 2){ $span = 'yesterday'; }
-				else{ $span = $days . ' days ago'; }
-				break;
-			case($seconds < 29030400):
-				$months = intval($seconds / 2419200);
-				if($months < 2){ $span = 'a month ago'; }
-				else{ $span = $months . ' months ago'; }
-				break;
-			default:
-				$span = date($format, $time);
-				break;
+		if(empty($seconds)){
+			$span = 'Just now';
+		}
+		else{
+			switch($seconds){
+				case(empty($seconds) or ($seconds < 15)):
+					$span = 'Just now';
+					break;
+				case($seconds < 3600):
+					$minutes = intval($seconds / 60);
+					if($minutes < 2){ $span = 'a minute ago'; }
+					else{ $span = $minutes . ' minutes ago'; }
+					break;
+				case($seconds < 86400):
+					$hours = intval($seconds / 3600);
+					if($hours < 2){ $span = 'an hour ago'; }
+					else{ $span = $hours . ' hours ago'; }
+					break;
+				case($seconds < 2419200):
+					$days = intval($seconds / 86400);
+					if($days < 2){ $span = 'yesterday'; }
+					else{ $span = $days . ' days ago'; }
+					break;
+				case($seconds < 29030400):
+					$months = intval($seconds / 2419200);
+					if($months < 2){ $span = 'a month ago'; }
+					else{ $span = $months . ' months ago'; }
+					break;
+				default:
+					$span = date($format, $time);
+					break;
+			}
 		}
 		
 		return $span;
