@@ -47,7 +47,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-		<h1>Images (<?php echo number_format($image_ids->image_count); ?>)</h1>
+		<h1>Images (<?php echo number_format($image_ids->count); ?>)</h1>
 		
 		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
 			<p style="margin-bottom: 0;">
