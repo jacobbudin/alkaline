@@ -282,7 +282,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right pad"><label for="post_text_raw">Text:</label></td>
-				<td><textarea id="post_text_raw" name="post_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$post['post_text_raw']; ?></textarea></td>
+				<td><textarea id="post_text_raw" name="post_text_raw" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
 				<td class="right middle"><label for="post_published">Publish date:</label></td>

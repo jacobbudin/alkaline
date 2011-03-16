@@ -713,12 +713,12 @@ class Alkaline{
 		$seconds = time() - $time;
 		
 		if(empty($seconds)){
-			$span = 'Just now';
+			$span = 'just now';
 		}
 		else{
 			switch($seconds){
 				case(empty($seconds) or ($seconds < 15)):
-					$span = 'Just now';
+					$span = 'just now';
 					break;
 				case($seconds < 3600):
 					$minutes = intval($seconds / 60);

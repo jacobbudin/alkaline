@@ -179,7 +179,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right pad"><label for="set_description">Description:</label></td>
-				<td><textarea id="set_description" name="set_description"><?php echo $set['set_description']; ?></textarea></td>
+				<td><textarea id="set_description" name="set_description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $set['set_description']; ?></textarea></td>
 			</tr>
 			<tr>
 				<td class="right"><label for="set_type">Type:</label></td>

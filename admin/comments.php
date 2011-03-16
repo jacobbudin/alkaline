@@ -247,7 +247,7 @@ else{
 			?>
 			<tr>
 				<td class="right pad"><label for="post_text_raw">Text:</label></td>
-				<td><textarea id="comment_text_raw" name="comment_text_raw" style="height: 300px; font-size: 1.1em; line-height: 1.5em;"><?php echo @$comment['comment_text_raw']; ?></textarea></td>
+				<td><textarea id="comment_text_raw" name="comment_text_raw" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$comment['comment_text_raw']; ?></textarea></td>
 			</tr>
 			<tr>
 				<td class="right"><label for="comment_ip_address">IP address:</label></td>

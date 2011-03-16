@@ -125,7 +125,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<img src="<?php echo $image['image_src_admin']; ?>" alt="" />
 			<p>
 				<input type="text" id="image_title" name="image_title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
-				<textarea id="image_description_raw" name="image_description_raw"><?php echo $image['image_description_raw']; ?></textarea>
+				<textarea id="image_description_raw" name="image_description_raw" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
 				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
 				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 			</p>

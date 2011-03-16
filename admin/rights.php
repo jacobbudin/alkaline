@@ -157,7 +157,7 @@ else{
 			</tr>
 			<tr>
 				<td class="right pad"><label for="right_description">Description:</label></td>
-				<td><textarea id="right_description" name="right_description"><?php echo $right['right_description']; ?></textarea></td>
+				<td><textarea id="right_description" name="right_description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $right['right_description']; ?></textarea></td>
 			</tr>
 			<tr>
 				<td class="right pad"><input type="checkbox" id="right_merge" name="right_merge" value="merge" /></td>

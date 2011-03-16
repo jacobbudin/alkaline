@@ -18,6 +18,10 @@ $user->perm(true);
 if(!empty($_POST['preferences_save'])){
 	$user->setPref('page_limit', @$_POST['page_limit']);
 	$user->setPref('home_target', @$_POST['home_target']);
+	$user->setPref('text_code', @$_POST['text_code']);
+	$user->setPref('text_code_style', @$_POST['text_code_style']);
+	$user->setPref('text_code_size', @$_POST['text_code_size']);
+	$user->setPref('text_code_class', @$_POST['text_code_style'] . ' ' . @$_POST['text_code_size']);
 	$user->setPref('recent_images', @$_POST['recent_images']);
 	$user->setPref('recent_images_limit', @$_POST['recent_images_limit']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
@@ -62,6 +66,22 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input middle"><input type="checkbox" id="home_target" name="home_target" <?php echo $user->readPref('home_target'); ?> value="true"  /></td>
 			<td class="description">
 				<label for="home_target">Open the home page in new tab or window when using the link in the header</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="input middle"><input type="checkbox" id="text_code" name="text_code" <?php echo $user->readPref('text_code'); ?> value="true"  /></td>
+			<td class="description">
+				<label for="text_code">Stylize
+					<select name="text_code_style">
+						<option value="code" <?php echo $user->readPref('text_code_style', 'code'); ?>>code</option>
+						<option value="serif" <?php echo $user->readPref('text_code_style', 'serif'); ?>>serif</option>
+					</select>
+					<select name="text_code_size">
+						<option value="" <?php echo $user->readPref('text_code_size', ''); ?>>normal</option>
+						<option value="l" <?php echo $user->readPref('text_code_size', 'l'); ?>>larger</option>
+						<option value="xl" <?php echo $user->readPref('text_code_size', 'xl'); ?>>largest</option>
+					</select>
+					text areas where markup can be applied</label>
 			</td>
 		</tr>
 		
