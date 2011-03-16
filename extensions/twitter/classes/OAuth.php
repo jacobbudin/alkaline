@@ -3,11 +3,11 @@
 
 /* Generic exception class
  */
-class OAuthException extends Exception {
+class Twitter_OAuthException extends Exception {
   // pass
 }
 
-class OAuthConsumer {
+class Twitter_OAuthConsumer {
   public $key;
   public $secret;
 
@@ -22,7 +22,7 @@ class OAuthConsumer {
   }
 }
 
-class OAuthToken {
+class Twitter_Twitter_OAuthToken {
   // access tokens and request tokens
   public $key;
   public $secret;
@@ -56,7 +56,7 @@ class OAuthToken {
  * A class for implementing a Signature Method
  * See section 9 ("Signing Requests") in the spec
  */
-abstract class OAuthSignatureMethod {
+abstract class Twitter_OAuthSignatureMethod {
   /**
    * Needs to return the name of the Signature Method (ie HMAC-SHA1)
    * @return string
@@ -66,20 +66,20 @@ abstract class OAuthSignatureMethod {
   /**
    * Build up the signature
    * NOTE: The output of this function MUST NOT be urlencoded.
-   * the encoding is handled in OAuthRequest when the final
+   * the encoding is handled in Twitter_OAuthRequest when the final
    * request is serialized
-   * @param OAuthRequest $request
+   * @param Twitter_OAuthRequest $request
    * @param OAuthConsumer $consumer
-   * @param OAuthToken $token
+   * @param Twitter_OAuthToken $token
    * @return string
    */
   abstract public function build_signature($request, $consumer, $token);
 
   /**
    * Verifies that a given signature is correct
-   * @param OAuthRequest $request
+   * @param Twitter_OAuthRequest $request
    * @param OAuthConsumer $consumer
-   * @param OAuthToken $token
+   * @param Twitter_OAuthToken $token
    * @param string $signature
    * @return bool
    */
@@ -96,7 +96,7 @@ abstract class OAuthSignatureMethod {
  * character (ASCII code 38) even if empty.
  *   - Chapter 9.2 ("HMAC-SHA1")
  */
-class OAuthSignatureMethod_HMAC_SHA1 extends OAuthSignatureMethod {
+class Twitter_OAuthSignatureMethod_HMAC_SHA1 extends Twitter_OAuthSignatureMethod {
   function get_name() {
     return "HMAC-SHA1";
   }
@@ -122,7 +122,7 @@ class OAuthSignatureMethod_HMAC_SHA1 extends OAuthSignatureMethod {
  * over a secure channel such as HTTPS. It does not use the Signature Base String.
  *   - Chapter 9.4 ("PLAINTEXT")
  */
-class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
+class Twitter_OAuthSignatureMethod_PLAINTEXT extends Twitter_OAuthSignatureMethod {
   public function get_name() {
     return "PLAINTEXT";
   }
@@ -134,7 +134,7 @@ class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
    *   - Chapter 9.4.1 ("Generating Signatures")
    *
    * Please note that the second encoding MUST NOT happen in the SignatureMethod, as
-   * OAuthRequest handles this!
+   * Twitter_OAuthRequest handles this!
    */
   public function build_signature($request, $consumer, $token) {
     $key_parts = array(
@@ -158,7 +158,7 @@ class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
  * specification.
  *   - Chapter 9.3 ("RSA-SHA1")
  */
-abstract class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {
+abstract class Twitter_OAuthSignatureMethod_RSA_SHA1 extends Twitter_OAuthSignatureMethod {
   public function get_name() {
     return "RSA-SHA1";
   }
@@ -217,7 +217,7 @@ abstract class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {
   }
 }
 
-class OAuthRequest {
+class Twitter_OAuthRequest {
   private $parameters;
   private $http_method;
   private $http_url;
@@ -283,7 +283,7 @@ class OAuthRequest {
 
     }
 
-    return new OAuthRequest($http_method, $http_url, $parameters);
+    return new Twitter_OAuthRequest($http_method, $http_url, $parameters);
   }
 
   /**
@@ -291,16 +291,16 @@ class OAuthRequest {
    */
   public static function from_consumer_and_token($consumer, $token, $http_method, $http_url, $parameters=NULL) {
     @$parameters or $parameters = array();
-    $defaults = array("oauth_version" => OAuthRequest::$version,
-                      "oauth_nonce" => OAuthRequest::generate_nonce(),
-                      "oauth_timestamp" => OAuthRequest::generate_timestamp(),
+    $defaults = array("oauth_version" => Twitter_OAuthRequest::$version,
+                      "oauth_nonce" => Twitter_OAuthRequest::generate_nonce(),
+                      "oauth_timestamp" => Twitter_OAuthRequest::generate_timestamp(),
                       "oauth_consumer_key" => $consumer->key);
     if ($token)
       $defaults['oauth_token'] = $token->key;
 
     $parameters = array_merge($defaults, $parameters);
 
-    return new OAuthRequest($http_method, $http_url, $parameters);
+    return new Twitter_OAuthRequest($http_method, $http_url, $parameters);
   }
 
   public function set_parameter($name, $value, $allow_duplicates = true) {
@@ -428,7 +428,7 @@ class OAuthRequest {
     foreach ($this->parameters as $k => $v) {
       if (substr($k, 0, 5) != "oauth") continue;
       if (is_array($v)) {
-        throw new OAuthException('Arrays not supported in headers');
+        throw new Twitter_OAuthException('Arrays not supported in headers');
       }
       $out .= ($first) ? ' ' : ',';
       $out .= OAuthUtil::urlencode_rfc3986($k) .
@@ -478,7 +478,7 @@ class OAuthRequest {
   }
 }
 
-class OAuthServer {
+class Twitter_OAuthServer {
   protected $timestamp_threshold = 300; // in seconds, five minutes
   protected $version = '1.0';             // hi blaine
   protected $signature_methods = array();
@@ -561,7 +561,7 @@ class OAuthServer {
       $version = '1.0';
     }
     if ($version !== $this->version) {
-      throw new OAuthException("OAuth version '$version' not supported");
+      throw new Twitter_OAuthException("OAuth version '$version' not supported");
     }
     return $version;
   }
@@ -576,12 +576,12 @@ class OAuthServer {
     if (!$signature_method) {
       // According to chapter 7 ("Accessing Protected Ressources") the signature-method
       // parameter is required, and we can't just fallback to PLAINTEXT
-      throw new OAuthException('No signature method parameter. This parameter is required');
+      throw new Twitter_OAuthException('No signature method parameter. This parameter is required');
     }
 
     if (!in_array($signature_method,
                   array_keys($this->signature_methods))) {
-      throw new OAuthException(
+      throw new Twitter_OAuthException(
         "Signature method '$signature_method' not supported " .
         "try one of the following: " .
         implode(", ", array_keys($this->signature_methods))
@@ -596,12 +596,12 @@ class OAuthServer {
   private function get_consumer(&$request) {
     $consumer_key = @$request->get_parameter("oauth_consumer_key");
     if (!$consumer_key) {
-      throw new OAuthException("Invalid consumer key");
+      throw new Twitter_OAuthException("Invalid consumer key");
     }
 
     $consumer = $this->data_store->lookup_consumer($consumer_key);
     if (!$consumer) {
-      throw new OAuthException("Invalid consumer");
+      throw new Twitter_OAuthException("Invalid consumer");
     }
 
     return $consumer;
@@ -616,7 +616,7 @@ class OAuthServer {
       $consumer, $token_type, $token_field
     );
     if (!$token) {
-      throw new OAuthException("Invalid $token_type token: $token_field");
+      throw new Twitter_OAuthException("Invalid $token_type token: $token_field");
     }
     return $token;
   }
@@ -644,7 +644,7 @@ class OAuthServer {
     );
 
     if (!$valid_sig) {
-      throw new OAuthException("Invalid signature");
+      throw new Twitter_OAuthException("Invalid signature");
     }
   }
 
@@ -653,14 +653,14 @@ class OAuthServer {
    */
   private function check_timestamp($timestamp) {
     if( ! $timestamp )
-      throw new OAuthException(
+      throw new Twitter_OAuthException(
         'Missing timestamp parameter. The parameter is required'
       );
     
     // verify that timestamp is recentish
     $now = time();
     if (abs($now - $timestamp) > $this->timestamp_threshold) {
-      throw new OAuthException(
+      throw new Twitter_OAuthException(
         "Expired timestamp, yours $timestamp, ours $now"
       );
     }
@@ -671,7 +671,7 @@ class OAuthServer {
    */
   private function check_nonce($consumer, $token, $nonce, $timestamp) {
     if( ! $nonce )
-      throw new OAuthException(
+      throw new Twitter_OAuthException(
         'Missing nonce parameter. The parameter is required'
       );
 
@@ -683,13 +683,13 @@ class OAuthServer {
       $timestamp
     );
     if ($found) {
-      throw new OAuthException("Nonce already used: $nonce");
+      throw new Twitter_OAuthException("Nonce already used: $nonce");
     }
   }
 
 }
 
-class OAuthDataStore {
+class Twitter_OAuthDataStore {
   function lookup_consumer($consumer_key) {
     // implement me
   }
@@ -715,7 +715,7 @@ class OAuthDataStore {
 
 }
 
-class OAuthUtil {
+class Twitter_OAuthUtil {
   public static function urlencode_rfc3986($input) {
   if (is_array($input)) {
     return array_map(array('OAuthUtil', 'urlencode_rfc3986'), $input);

@@ -13,7 +13,15 @@ class Markdown extends Orbit{
 		require_once('functions/markdown.php');
 		require_once('functions/smartypants.php');
 		
-		$page_text = SmartyPants(Markdown($page_text_raw));
+		$page_text = $page_text_raw;
+		
+		// Markdown
+		$parser = new Markdown_Parser;
+		$page_text = $parser->transform($page_text);
+		
+		// SmartyPants
+		$parser = new Markdown_SmartyPants;
+		$page_text = $parser->transform($page_text);
 		
 		return $page_text;
 	}

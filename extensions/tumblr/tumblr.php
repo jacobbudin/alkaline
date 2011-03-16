@@ -36,7 +36,7 @@ class Tumblr extends Orbit{
 		
 		if(!empty($this->tumblr_oauth_token) and !empty($this->tumblr_oauth_secret)){
 			ini_set('default_socket_timeout', 1);
-			$this->tumblr = new TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
+			$this->tumblr = new Tumblr_TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
 				'Kx8nJZplPAtEH7bgXBItlQMW9CsAsCDhIELU4ktXKQ1Cf7Akc9',
 				$this->tumblr_oauth_token,
 				$this->tumblr_oauth_secret);
@@ -44,7 +44,7 @@ class Tumblr extends Orbit{
 		}
 		else{
 			ini_set('default_socket_timeout', 1);
-			$this->tumblr = new TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
+			$this->tumblr = new Tumblr_TumblrAPI('4P6gWXvDKLeuRy0hTLdMXxADrclI2QMbNQXPa3O78jeap7005S',
 				'Kx8nJZplPAtEH7bgXBItlQMW9CsAsCDhIELU4ktXKQ1Cf7Akc9');
 			ini_restore('default_socket_timeout');
 		}
@@ -342,8 +342,8 @@ class Tumblr extends Orbit{
 		}
 		
 		// Save this post as last
-		if($latest_post['post_id'] == $this->tumblr_last_post_id){ return; }
 		if(empty($latest_post)){ return; }
+		if($latest_post['post_id'] == $this->tumblr_last_post_id){ return; }
 		
 		$this->setPref('tumblr_last_post_time', $latest);
 		$this->setPref('tumblr_last_post_id', $latest_post['post_id']);

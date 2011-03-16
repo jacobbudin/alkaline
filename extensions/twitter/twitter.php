@@ -32,13 +32,13 @@ class Twitter extends Orbit{
 		$this->twitter_oauth_secret = $this->returnPref('twitter_oauth_secret'); 
 		
 		if(!empty($this->twitter_oauth_token) and !empty($this->twitter_oauth_secret)){
-			$this->twitter = new TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
+			$this->twitter = new Twitter_TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
 				't55gKYkDtn5uKo1enMyF1E00RwOec9aDzNo7TFhzZx4',
 				$this->twitter_oauth_token,
 				$this->twitter_oauth_secret);
 		}
 		else{
-			$this->twitter = new TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
+			$this->twitter = new Twitter_TwitterOAuth('Ss0F1kxtvxkkmKGgvPx8w',
 				't55gKYkDtn5uKo1enMyF1E00RwOec9aDzNo7TFhzZx4');
 		}
 	}
@@ -314,8 +314,8 @@ class Twitter extends Orbit{
 			}
 		}
 		
-		if($latest_post['post_id'] == $this->twitter_last_post_id){ return; }
 		if(empty($latest_post)){ return; }
+		if($latest_post['post_id'] == $this->twitter_last_post_id){ return; }
 		
 		$this->setPref('twitter_last_post_time', $latest);
 		$this->setPref('twitter_last_post_id', $latest_post['post_id']);

@@ -4,8 +4,8 @@
 	<file>markdown</file>
 	<class>Markdown</class>
 	<title>Markdown</title>
-	<build>1</build>
-	<version>1.0</version>
+	<build>2</build>
+	<version>1.0.1</version>
 	<description>Adds Markdown markup.</description>
 	<creator>
 		<name>Alkaline Labs</name>

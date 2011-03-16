@@ -12,7 +12,8 @@ class TextileHandler extends Orbit{
 	public function orbit_markup_textile($page_text_raw){
 		require_once('classes/classTextile.php');
 		
-		$textile = new Textile;
+		$textile = new TextileHandler_Textile;
+		$textile->Textile();
 		$page_text = $textile->TextileThis($page_text_raw);
 				
 		return $page_text;
