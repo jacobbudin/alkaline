@@ -98,7 +98,20 @@ class Comment extends Alkaline{
 		
 		$this->comments = $orbit->hook('comment', $this->comments, $this->comments);
 	}
-
+	
+	/**
+	 * Update comment fields
+	 *
+	 * @param string $fields Associative array of columns and fields
+	 * @return PDOStatement
+	 */
+	public function updateFields($fields){
+		$ids = array();
+		foreach($this->comments as $comment){
+			$ids[] = $comment['comment_id'];
+		}
+		return parent::updateRow($fields, 'comments', $ids);
+	}
 	
 	/**
 	 * Format time
