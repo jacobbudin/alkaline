@@ -8,7 +8,7 @@
 	<div id="results-posts">
 	{block:Posts}
 		<div class="span-11 append-1 {Post_Sequence}">
-			{Post_hr}
+			{if:Post_hr}{Post_hr}{/if:Post_hr}
 			
 			<div class="datetime">{Post_Created|reltime}</div>
 			<h2>{Post_Title}</h2>

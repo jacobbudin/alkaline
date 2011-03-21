@@ -14,10 +14,13 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
 if($_REQUEST['type'] == 'posts'){
-	$posts = new Post;
-	$posts->page(null, 3);
-	$posts->published();
-	$posts->fetch();
+	$post_ids = new Find('posts');
+	$post_ids->sort('posts.post_published', 'DESC');
+	$post_ids->published();
+	$post_ids->page(null, 3);
+	$post_ids->find();
+	
+	$posts = new Post($post_ids);
 	$posts->formatTime();
 	$posts->addSequence('last', 2);
 
@@ -27,8 +30,8 @@ if($_REQUEST['type'] == 'posts'){
 		}
 	}
 	
-	$count = $posts->post_count;
-	$model = $posts;
+	$count = $post_ids->count;
+	$model = $post_ids;
 	$loop = $posts;
 	
 	$content = new Canvas;
@@ -46,7 +49,7 @@ else{
 	$images->formatTime();
 	$images->getSizes();
 	
-	$count = $image_ids->image_count;
+	$count = $image_ids->count;
 	$model = $image_ids;
 	$loop = $images;
 	
