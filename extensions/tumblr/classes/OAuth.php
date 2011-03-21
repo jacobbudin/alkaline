@@ -42,9 +42,9 @@ class Tumblr_Tumblr_OAuthToken {
    */
   function to_string() {
     return "oauth_token=" .
-           OAuthUtil::urlencode_rfc3986($this->key) .
+          Tumblr_OAuthUtil::urlencode_rfc3986($this->key) .
            "&oauth_token_secret=" .
-           OAuthUtil::urlencode_rfc3986($this->secret);
+           Tumblr_OAuthUtil::urlencode_rfc3986($this->secret);
   }
 
   function __toString() {
@@ -110,7 +110,7 @@ class Tumblr_OAuthSignatureMethod_HMAC_SHA1 extends Tumblr_OAuthSignatureMethod 
       ($token) ? $token->secret : ""
     );
 
-    $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);
+    $key_parts = Tumblr_OAuthUtil::urlencode_rfc3986($key_parts);
     $key = implode('&', $key_parts);
 
     return base64_encode(hash_hmac('sha1', $base_string, $key, true));
@@ -142,7 +142,7 @@ class Tumblr_OAuthSignatureMethod_PLAINTEXT extends Tumblr_OAuthSignatureMethod 
       ($token) ? $token->secret : ""
     );
 
-    $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);
+    $key_parts = Tumblr_OAuthUtil::urlencode_rfc3986($key_parts);
     $key = implode('&', $key_parts);
     $request->base_string = $key;
 
@@ -228,7 +228,7 @@ class Tumblr_OAuthRequest {
 
   function __construct($http_method, $http_url, $parameters=NULL) {
     @$parameters or $parameters = array();
-    $parameters = array_merge( OAuthUtil::parse_parameters(parse_url($http_url, PHP_URL_QUERY)), $parameters);
+    $parameters = array_merge(Tumblr_OAuthUtil::parse_parameters(parse_url($http_url, PHP_URL_QUERY)), $parameters);
     $this->parameters = $parameters;
     $this->http_method = $http_method;
     $this->http_url = $http_url;
@@ -255,10 +255,10 @@ class Tumblr_OAuthRequest {
     // parsed parameter-list
     if (!$parameters) {
       // Find request headers
-      $request_headers = OAuthUtil::get_headers();
+      $request_headers = Tumblr_OAuthUtil::get_headers();
 
       // Parse the query-string to find GET parameters
-      $parameters = OAuthUtil::parse_parameters($_SERVER['QUERY_STRING']);
+      $parameters = Tumblr_OAuthUtil::parse_parameters($_SERVER['QUERY_STRING']);
 
       // It's a POST request of the proper content-type, so parse POST
       // parameters and add those overriding any duplicates from GET
@@ -266,7 +266,7 @@ class Tumblr_OAuthRequest {
           && @strstr($request_headers["Content-Type"],
                      "application/x-www-form-urlencoded")
           ) {
-        $post_data = OAuthUtil::parse_parameters(
+        $post_data = Tumblr_OAuthUtil::parse_parameters(
           file_get_contents(self::$POST_INPUT)
         );
         $parameters = array_merge($parameters, $post_data);
@@ -275,7 +275,7 @@ class Tumblr_OAuthRequest {
       // We have a Authorization-header with OAuth data. Parse the header
       // and add those overriding any duplicates from GET or POST
       if (@substr($request_headers['Authorization'], 0, 6) == "OAuth ") {
-        $header_parameters = OAuthUtil::split_header(
+        $header_parameters = Tumblr_OAuthUtil::split_header(
           $request_headers['Authorization']
         );
         $parameters = array_merge($parameters, $header_parameters);
@@ -344,7 +344,7 @@ class Tumblr_OAuthRequest {
       unset($params['oauth_signature']);
     }
 
-    return OAuthUtil::build_http_query($params);
+    return Tumblr_OAuthUtil::build_http_query($params);
   }
 
   /**
@@ -361,7 +361,7 @@ class Tumblr_OAuthRequest {
       $this->get_signable_parameters()
     );
 
-    $parts = OAuthUtil::urlencode_rfc3986($parts);
+    $parts = Tumblr_OAuthUtil::urlencode_rfc3986($parts);
 
     return implode('&', $parts);
   }
@@ -410,7 +410,7 @@ class Tumblr_OAuthRequest {
    * builds the data one would send in a POST request
    */
   public function to_postdata() {
-    return OAuthUtil::build_http_query($this->parameters);
+    return Tumblr_OAuthUtil::build_http_query($this->parameters);
   }
 
   /**
@@ -419,7 +419,7 @@ class Tumblr_OAuthRequest {
   public function to_header($realm=null) {
     $first = true;
 	if($realm) {
-      $out = 'Authorization: OAuth realm="' . OAuthUtil::urlencode_rfc3986($realm) . '"';
+      $out = 'Authorization: OAuth realm="' . Tumblr_OAuthUtil::urlencode_rfc3986($realm) . '"';
       $first = false;
     } else
       $out = 'Authorization: OAuth';
@@ -431,9 +431,9 @@ class Tumblr_OAuthRequest {
         throw new Tumblr_OAuthException('Arrays not supported in headers');
       }
       $out .= ($first) ? ' ' : ',';
-      $out .= OAuthUtil::urlencode_rfc3986($k) .
+      $out .= Tumblr_OAuthUtil::urlencode_rfc3986($k) .
               '="' .
-              OAuthUtil::urlencode_rfc3986($v) .
+              Tumblr_OAuthUtil::urlencode_rfc3986($v) .
               '"';
       $first = false;
     }
@@ -718,7 +718,7 @@ class Tumblr_OAuthDataStore {
 class Tumblr_OAuthUtil {
   public static function urlencode_rfc3986($input) {
   if (is_array($input)) {
-    return array_map(array('OAuthUtil', 'urlencode_rfc3986'), $input);
+    return array_map(array('Tumblr_OAuthUtil', 'urlencode_rfc3986'), $input);
   } else if (is_scalar($input)) {
     return str_replace(
       '+',
@@ -750,7 +750,7 @@ class Tumblr_OAuthUtil {
       $header_name = $matches[2][0];
       $header_content = (isset($matches[5])) ? $matches[5][0] : $matches[4][0];
       if (preg_match('/^oauth_/', $header_name) || !$only_allow_oauth_parameters) {
-        $params[$header_name] = OAuthUtil::urldecode_rfc3986($header_content);
+        $params[$header_name] = Tumblr_OAuthUtil::urldecode_rfc3986($header_content);
       }
       $offset = $match[1] + strlen($match[0]);
     }
@@ -819,8 +819,8 @@ class Tumblr_OAuthUtil {
     $parsed_parameters = array();
     foreach ($pairs as $pair) {
       $split = explode('=', $pair, 2);
-      $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
-      $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
+      $parameter = Tumblr_OAuthUtil::urldecode_rfc3986($split[0]);
+      $value = isset($split[1]) ? Tumblr_OAuthUtil::urldecode_rfc3986($split[1]) : '';
 
       if (isset($parsed_parameters[$parameter])) {
         // We have already recieved parameter(s) with this name, so add to the list
@@ -844,8 +844,8 @@ class Tumblr_OAuthUtil {
     if (!$params) return '';
 
     // Urlencode both keys and values
-    $keys = OAuthUtil::urlencode_rfc3986(array_keys($params));
-    $values = OAuthUtil::urlencode_rfc3986(array_values($params));
+    $keys = Tumblr_OAuthUtil::urlencode_rfc3986(array_keys($params));
+    $values =Tumblr_OAuthUtil::urlencode_rfc3986(array_values($params));
     $params = array_combine($keys, $values);
 
     // Parameters are sorted by name, using lexicographical byte value ordering.

@@ -34,9 +34,6 @@ class AkismetHandler extends Orbit{
 			$this->setPref('akismet_spam_caught', ++$this->akismet_spam_caught);
 			$this->savePref();
 		}
-		else{
-			$fields['comment_status'] = 1;
-		}
 		
 		return $fields;
 	}
