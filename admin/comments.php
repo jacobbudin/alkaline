@@ -95,6 +95,7 @@ define('TAB', 'comments');
 if(empty($comment_id)){
 	$comment_ids = new Find('comments');
 	$comment_ids->page(null, 50);
+	$comment_ids->status();
 	$comment_ids->find();
 	
 	$comments = new Comment($comment_ids);
@@ -163,7 +164,7 @@ if(empty($comment_id)){
 				echo '<strong>' . $comment['comment_author_name'] . '</strong>: ';
 			}
 			echo '&#8220;' . $comment['comment_text'] . '&#8221;';
-			echo '</a></div>';
+			echo '</a><div class="comment_status status_' . $comment['comment_status'] . '">' . $comment['comment_created_format'] . '</div></div>';
 		}
 	
 		?>

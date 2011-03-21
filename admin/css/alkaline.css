@@ -429,6 +429,10 @@ img.ui-datepicker-trigger{
 
 .comment_mini{ height: 7.25em; overflow: hidden; }
 
+.comment_status { background-color: #ddd; padding: .5em 1em; }
+.comment_status.status_0 { background-color: #008000; color: #fff; padding: .5em 1em; }
+.comment_status.status_-1 { background-color: #800000; color: #fff; padding: .5em 1em; }
+
 #search td.right{
 	padding-top: 10px;
 }
