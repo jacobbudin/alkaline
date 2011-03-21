@@ -212,7 +212,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 						<option value="publish">Publish on</option>
 						<?php if($alkaline->returnConf('bulk_delete')){ echo '<option value="delete">Delete</option>'; } ?>
 					</select>
-					<input type="text" class="s" id="act_tag_name" name="act_tag_name" />
+					<input type="text" class="s image_tag" id="act_tag_name" name="act_tag_name" />
 					<input type="text" class="s image_geo" id="act_geo" name="act_geo" />
 					<input type="text" class="s" id="act_publish" name="act_publish" />
 					<?php echo $alkaline->showSets('act_set_id', true); ?>
