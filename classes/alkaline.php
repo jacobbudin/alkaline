@@ -15,7 +15,9 @@
 
 function __autoload($class){
 	$file = strtolower($class) . '.php';
-	require_once(PATH . CLASSES . $file);
+	if(file_exists(PATH . CLASSES . $file)){
+		require_once(PATH . CLASSES . $file);
+	}
 }
 
 class Alkaline{

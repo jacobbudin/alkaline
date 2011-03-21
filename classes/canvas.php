@@ -738,14 +738,20 @@ class Canvas extends Alkaline{
 	 *
 	 * @param string $var Variable
 	 * @param string $template Template
+	 * @param string $suffix Suffix ('Class' as {ifClass:})
 	 * @return string Template
 	 */
-	public function scrub($var, $template){
-		$template = str_ireplace('{if:' . $var . '}', '', $template);
-		if(stripos($template, '{else:' . $var . '}')){
-			$template = preg_replace('#{else:' . $var . '}(.*?){/if:' . $var . '}#is', '', $template);
+	public function scrub($var, $template, $suffix=null){
+		if(!empty($suffix)){
+			$suffix = ucfirst($suffix);
 		}
-		$template = str_ireplace('{/if:' . $var . '}', '', $template);
+		
+		$template = str_ireplace('{if' . $suffix . ':' . $var . '}', '', $template);
+		if(stripos($template, '{else' . $suffix .  ':' . $var . '}')){
+			$template = preg_replace('#{else' . $suffix . ':' . $var . '}(.*?){/if' . $suffix . ':' . $var . '}#is', '', $template);
+		}
+		$template = str_ireplace('{/if' . $suffix . ':' . $var . '}', '', $template);
+		
 		return $template;
 	}
 	
@@ -890,6 +896,55 @@ class Canvas extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Process extension Class conditionals before displaying
+	 *
+	 * @param string $template Template
+	 * @return string Template
+	 */
+	public function scrubClasses($template){
+		$orbit = new Orbit;
+		
+		$extension_classes = array();
+		foreach($orbit->extensions as $extension){
+			$extension_classes[] = $extension['extension_class'];
+		}
+		
+		preg_match_all('#{ifClass:([a-z0-9\_\-]*)}(.*?){/ifClass:\1}#si', $template, $matches, PREG_SET_ORDER);
+		
+		$loops = array();
+		
+		if(count($matches) > 0){
+			foreach($matches as $match){
+				$loops[] = array('replace' => $match[0], 'var' => $match[1], 'template' => $match[2], 'replacement' => '');
+			}
+		}
+		
+		$loop_count = count($loops);
+		
+		for($j = 0; $j < $loop_count; ++$j){
+			
+			if(!class_exists($loops[$j]['var']) and !in_array($loops[$j]['var'], $extension_classes)){
+				if(stripos($loops[$j]['template'], '{elseClass:' . $loops[$j]['var'] . '}') !== false){
+					$loops[$j]['replacement'] = $loops[$j]['template'];
+					$loops[$j]['replacement'] = preg_replace('#(?:.*){elseClass:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement'], -1, $count);
+				}
+				else{
+					$loops[$j]['replacement'] = '';
+				}
+			}
+			else{
+				$loops[$j]['replacement'] = $this->scrub($loops[$j]['var'], $loops[$j]['replace'], 'class');
+			}
+		}
+		
+		foreach($loops as $loop){
+			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+		}
+		
+		return $template;
+	}
+	
 	// PROCESSING
 	
 	/**
@@ -913,6 +968,7 @@ class Canvas extends Alkaline{
 		$this->initConfig();
 		
 		// Remove unused conditionals and insertions
+		$this->template = $this->scrubClasses($this->template);
 		$this->template = $this->scrubEmpty($this->template);
 	}
 	
