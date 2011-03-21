@@ -22,6 +22,10 @@ if(!$max = $user->returnPref('page_limit')){
 	$max = 100;
 }
 
+if(!empty($_GET['act']) or !empty($_REQUEST['q'])){
+	Find::clearMemory();
+}
+
 $image_ids = new Find('images');
 $image_ids->page(null, $max);
 $image_ids->memory();
