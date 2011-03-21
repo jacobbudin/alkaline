@@ -1832,9 +1832,7 @@ class Find extends Alkaline{
 	 * @return void
 	 */
 	public function clearMemory(){
-		unset($_SESSION['alkaline']['search'][$this->table]['request']);
-		unset($_SESSION['alkaline']['search'][$this->table]['call']);
-		unset($_SESSION['alkaline']['search'][$this->table]['ids']);
+		unset($_SESSION['alkaline']['search']);
 	}
 }
 
