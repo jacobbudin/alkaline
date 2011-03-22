@@ -41,20 +41,26 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h3>Status</h3>
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
-		<h3>Instructions</h3>
-		<p>Drag images from a folder on your computer or from most applications including iImage and Aperture into the grey retaining area.</p>
+		<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>		
+			<h3>Instructions</h3>
+			<p>Drag images from a folder on your computer or from most applications including iImage and Aperture into the grey retaining area.</p>
 		
-		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
+			<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
-		<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
+			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
+		<?php } ?>
 	</div>
 	<div class="span-18 colborderl last">
 		<h1>Upload</h1>
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-			<div style="height: 380px; margin-bottom: 1.5em;">
-				<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
-			</div>
+			<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>
+				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+				<div style="height: 380px; margin-bottom: 1.5em;">
+					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
+				</div>
+			<?php } else{ ?>
+				<input type="file" multiple="multiple" id="upload" />
+			<?php } ?>
 		</form>
 	</div>
 </div>
