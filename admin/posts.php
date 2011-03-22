@@ -23,6 +23,16 @@ if(!empty($_GET['id'])){
 
 if(!empty($_GET['act'])){
 	$post_act = @$_GET['act'];
+	if($post_act == 'search'){
+		Find::clearMemory();
+
+		$post_ids = new Find('posts');
+		$post_ids->find();
+		$post_ids->saveMemory();
+		
+		header('Location: ' . LOCATION . BASE . ADMIN . 'posts' . URL_ACT . 'results' . URL_RW);
+		exit();
+	}
 }
 
 // SAVE CHANGES
@@ -106,6 +116,7 @@ if(!empty($post_act) and ($post_act == 'add')){
 if(empty($post_id)){
 	$post_ids = new Find('posts');
 	$post_ids->page(null, 50);
+	if($post_act == 'results'){ $post_ids->memory(); }
 	$post_ids->find();
 	
 	$posts = new Post($post_ids);

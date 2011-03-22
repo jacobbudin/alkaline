@@ -25,6 +25,16 @@ if(!empty($_GET['act'])){
 	if($comment_act == 'unpublished'){
 		$_REQUEST['status'] = 'unpublished';
 	}
+	if($comment_act == 'search'){
+		Find::clearMemory();
+
+		$comment_ids = new Find('comments');
+		$comment_ids->find();
+		$comment_ids->saveMemory();
+		
+		header('Location: ' . LOCATION . BASE . ADMIN . 'comments' . URL_ACT . 'results' . URL_RW);
+		exit();
+	}
 }
 
 // SAVE CHANGES
@@ -95,7 +105,7 @@ define('TAB', 'comments');
 if(empty($comment_id)){
 	$comment_ids = new Find('comments');
 	$comment_ids->page(null, 50);
-	$comment_ids->status();
+	if($comment_act == 'results'){ $comment_ids->memory(); }
 	$comment_ids->find();
 	
 	$comments = new Comment($comment_ids);
