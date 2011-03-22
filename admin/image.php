@@ -79,7 +79,7 @@ if(!empty($_POST['image_id'])){
 
 $images = new Image($image_id);
 $sizes = $images->getSizes();
-$images->getTags();
+$images->getTags(true);
 $images->getColorkey(300, 40);
 $comments = $images->getComments();
 $exifs = $images->getEXIF();

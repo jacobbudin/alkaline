@@ -408,7 +408,7 @@ class Image extends Alkaline{
 		$tags_to_update = $tags;
 		
 		// Get current tags
-		$this->getTags();
+		$this->getTags(true);
 		
 		$affected_image_ids = array();
 		
@@ -529,7 +529,7 @@ class Image extends Alkaline{
 		$tags_to_add = $tags;
 		
 		// Get current tags
-		$this->getTags();
+		$this->getTags(true);
 		
 		$affected_image_ids = array();
 		
@@ -609,7 +609,7 @@ class Image extends Alkaline{
 		$tags = array_unique($tags);
 		
 		// Get current tags
-		$this->getTags();
+		$this->getTags(true);
 		
 		$tags_db_ids = array();
 		$affected_image_ids = array();
@@ -1593,9 +1593,10 @@ class Image extends Alkaline{
 	/**
 	 * Get image tags and append to image array
 	 *
+	 * @param bool $show_hidden_tags Include hidden tags
 	 * @return array Associative array of tags
 	 */
-	public function getTags(){
+	public function getTags($show_hidden_tags=false){
 		// Sort by tag name
 		if($this->returnConf('tag_alpha')){
 			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images' . $this->sql . ' AND tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
@@ -1606,7 +1607,17 @@ class Image extends Alkaline{
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
-		$this->tags = $tags;
+		
+		if($show_hidden_tags === true){
+			$this->tags = $tags;
+		}
+		else{
+			foreach($tags as $tag){
+				if(stripos($tag['tag_name'], '!') !== 0){
+					$this->tags[] = $tag;
+				}
+			}
+		}
 		
 		$this->tag_count = count($this->tags);
 		

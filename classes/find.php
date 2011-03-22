@@ -867,7 +867,6 @@ class Find extends Alkaline{
 		
 		// If static, use stored image IDs
 		elseif($set['set_type'] == 'static'){
-			echo 1;
 			if(!empty($set['set_images'])){
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . $set['set_images'] . ')';
 				$this->order = $this->convertToIntegerArray($set['set_images']);

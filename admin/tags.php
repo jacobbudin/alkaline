@@ -53,7 +53,7 @@ else{
 	$alkaline->deleteEmptyRow('tags', array('tag_name'));
 }
 
-$tags = $alkaline->getTags();
+$tags = $alkaline->getTags(true);
 $tag_count = count($tags);
 
 define('TAB', 'features');

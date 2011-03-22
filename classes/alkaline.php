@@ -1513,9 +1513,10 @@ class Alkaline{
 	/**
 	 * Get array of tags
 	 *
+	 * @param bool $show_hidden_tags Include hidden tags
 	 * @return array Associative array of tags
 	 */
-	public function getTags(){
+	public function getTags($show_hidden_tags=false){
 		if($this->returnConf('tag_alpha')){
 			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
 		}
@@ -1524,6 +1525,16 @@ class Alkaline{
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
+		
+		if($show_hidden_tags !== true){
+			$tags_new = array();
+			foreach($tags as $tag){
+				if(stripos($tag['tag_name'], '!') !== 0){
+					$tags_new[] = $tag;
+				}
+			}
+			$tags = $tags_new;
+		}
 		
 		$tag_ids = array();
 		$tag_names = array();
