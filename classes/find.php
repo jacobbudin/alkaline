@@ -1014,10 +1014,23 @@ class Find extends Alkaline{
 			$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
 			$comments = $query->fetchAll();
 
-			$comment_ids = array();
-
 			foreach($comments as $comment){
 				$ids[] = $comment['comment_id'];
+			}
+		}
+		else{
+			$field_count = count($fields);
+			if($field_count > 0){
+				$query = $this->prepare('SELECT ' . $this->table . '.' . $this->table_prefix . 'id FROM ' . $this->table . ' WHERE (LOWER(' .  implode(' LIKE ?) OR (LOWER(', $fields) . ' LIKE ?);');
+			
+				$search_array = array_fill(0, $field_count, $search_lower);
+			
+				$query->execute($search_array);
+				$rows = $query->fetchAll();
+
+				foreach($rows as $row){
+					$ids[] = $row[$this->table_prefix . 'id'];
+				}
 			}
 		}
 		
