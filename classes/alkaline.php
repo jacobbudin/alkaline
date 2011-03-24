@@ -1529,7 +1529,7 @@ class Alkaline{
 		if($show_hidden_tags !== true){
 			$tags_new = array();
 			foreach($tags as $tag){
-				if(stripos($tag['tag_name'], '!') !== 0){
+				if($tag['tag_name'][0] != '!'){
 					$tags_new[] = $tag;
 				}
 			}

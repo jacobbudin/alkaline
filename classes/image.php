@@ -1613,7 +1613,7 @@ class Image extends Alkaline{
 		}
 		else{
 			foreach($tags as $tag){
-				if(stripos($tag['tag_name'], '!') !== 0){
+				if($tag['tag_name'][0] != '!'){
 					$this->tags[] = $tag;
 				}
 			}
