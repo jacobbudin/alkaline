@@ -1272,7 +1272,8 @@ class Image extends Alkaline{
 				// Parse IPTC data
 			    $iptc = iptcparse($info['APP13']);
 				
-				$title = (!empty($iptc["2#105"][0])) ? $iptc["2#105"][0] : '';
+				$title = (!empty($iptc["2#005"][0])) ? $iptc["2#005"][0] : '';
+				$title = (!empty($iptc["2#105"][0])) ? $iptc["2#105"][0] : $title;
 				$description = (!empty($iptc["2#120"][0])) ? $iptc["2#120"][0] : '';
 				$tags = (!empty($iptc["2#025"][0])) ? $iptc['2#025'] : array();
 				$city = (!empty($iptc["2#090"][0])) ? $iptc["2#090"][0] : '';
