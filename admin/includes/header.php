@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="base" content="<?php echo LOCATION . BASE; ?>" />
 	<meta name="folder_prefix" content="<?php echo FOLDER_PREFIX; ?>" />
-	<meta name="permissions" content="<?php if(!empty($user) and $user->perm()){ echo implode(', ', $user->user['user_permissions']); } ?>" />
+	<meta name="permissions" content="<?php if(!empty($user) and $user->perm()){ echo @implode(', ', $user->user['user_permissions']); } ?>" />
 	<title><?php echo (defined('TITLE') ? TITLE : 'Alkaline'); ?></title>
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/screen.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/print.css" type="text/css" media="print" />	
@@ -49,7 +49,7 @@
 							</span>
 						</div>
 						<div id="site_panel" class="span-5 last">
-							<strong><img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" /> <?php echo ((BASE == '/') ? DOMAIN : DOMAIN . BASE ); ?></strong><br />
+							<strong><img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" /> <?php echo ((BASE == '/') ? $alkaline->minimizeURL(DOMAIN) : $alkaline->minimizeURL(DOMAIN . BASE) ); ?></strong><br />
 							<span class="small"><a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>"><?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : 'Launch'); ?></a></span>
 						</div>
 						<?php

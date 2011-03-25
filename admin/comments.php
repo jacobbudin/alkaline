@@ -25,7 +25,7 @@ if(!empty($_GET['act'])){
 	if($comment_act == 'unpublished'){
 		$_REQUEST['status'] = 'unpublished';
 	}
-	if($comment_act == 'search'){
+	elseif($comment_act == 'search'){
 		Find::clearMemory();
 
 		$comment_ids = new Find('comments');
@@ -105,7 +105,7 @@ define('TAB', 'comments');
 if(empty($comment_id)){
 	$comment_ids = new Find('comments');
 	$comment_ids->page(null, 50);
-	if($comment_act == 'results'){ $comment_ids->memory(); }
+	if(isset($comment_act) and ($comment_act == 'results')){ $comment_ids->memory(); }
 	$comment_ids->find();
 	
 	$comments = new Comment($comment_ids);
@@ -124,7 +124,7 @@ if(empty($comment_id)){
 	
 	<h1>Comments (<?php echo $comments->comment_count; ?>)</h1>
 	
-	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
+	<form action="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'search' . URL_RW; ?>" method="post">
 		<p style="margin-bottom: 0;">
 			<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 		</p>
@@ -136,7 +136,7 @@ if(empty($comment_id)){
 		<div class="reveal">
 			<table>
 				<tr>
-					<td class="right middle"><label for="published">Publication status:</label></td>
+					<td class="right middle"><label for="status">Publication status:</label></td>
 					<td class="quiet">
 						<select id="status" name="status">
 							<option value="">All</option>
