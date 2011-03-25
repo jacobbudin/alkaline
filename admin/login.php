@@ -20,8 +20,14 @@ if(!empty($_POST['login_remember'])){ $remember = strip_tags($_POST['login_remem
 if(!empty($remember) and ($remember == 1)){ $remember = true; }
 
 if($user->perm()){
-	header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
-	exit();
+	if(file_exists(PATH . 'update/index.php')){
+		header('Location: ' . LOCATION . BASE . 'update/');
+		exit();
+	}
+	else{
+		header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
+		exit();
+	}
 }
 
 if(!empty($username) or !empty($password)){
@@ -35,7 +41,10 @@ if(!empty($username) or !empty($password)){
 		unset($_SESSION['alkaline']['destination']);
 		session_write_close();
 		
-		if(empty($_POST['destination'])){
+		if(file_exists(PATH . 'update/index.php')){
+			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
+		}
+		elseif(empty($_POST['destination'])){
 			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
 		}
 		else{
@@ -75,7 +84,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				</td>
 			</tr>
 			<tr>
-				<td style="text-align: right;">
+				<td class="right middle" style="padding-top: .65em;">
 					<input type="checkbox" name="login_remember" id="login_remember" value="1" checked="checked">
 				</td>
 				<td style="padding-top: .65em;">

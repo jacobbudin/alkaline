@@ -24,7 +24,7 @@ foreach($queries as $query){
 	}
 }
 
-$alkaline->addNote('You have successfully updated Alkaline. You should now remove the /upgrade directory.', 'success');
+$alkaline->addNote('You have successfully updated Alkaline. You should now remove the /update directory.', 'success');
 
 header('Location: ' . LOCATION . BASE . ADMIN);
 exit();
