@@ -21,7 +21,7 @@ $image_ids = new Find('images');
 $image_ids->find();
 $image_ids->saveMemory();
 
-header('Location: ' . LOCATION . BASE . ADMIN . 'results' . URL_RW);
+header('Location: ' . LOCATION . BASE . ADMIN . 'results' . URL_CAP);
 exit();
 
 ?>
