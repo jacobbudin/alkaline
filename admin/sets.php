@@ -58,7 +58,8 @@ else{
 
 // CREATE PILE
 if($set_act == 'build'){
-	$set_call = Find::recentMemory();
+	$image_ids = new Find('images');
+	$set_call = $image_ids->recentMemory();
 	if(!empty($set_call)){
 		$fields = array('set_call' => serialize($set_call),
 			'set_request' => serialize($_SESSION['alkaline']['search']['images']['request']),
@@ -73,8 +74,8 @@ if($set_act == 'build'){
 	$images->sets($set_id);
 	$images->find();
 	
-	$set_images = @implode(', ', $images->image_ids);
-	$set_image_count = $images->image_count;
+	$set_images = @implode(', ', $images->ids);
+	$set_image_count = $images->count;
 	
 	$fields = array('set_images' => $set_images,
 		'set_image_count' => $set_image_count);
@@ -151,7 +152,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Launch set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Launch set</a></div>
 	
 	<?php
 	

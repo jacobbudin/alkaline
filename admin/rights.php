@@ -122,7 +122,7 @@ else{
 	$image_ids->rights($right_id);
 	$image_ids->find();
 	
-	$fields = array('right_image_count' => $image_ids->image_count);
+	$fields = array('right_image_count' => $image_ids->count);
 	$alkaline->updateRow($fields, 'rights', $right_id, false);
 	
 	// Get rights set
@@ -136,7 +136,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>">View images (<?php echo $image_ids->image_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>">View images (<?php echo $image_ids->count; ?>)</a></div>
 	
 	<?php
 	
