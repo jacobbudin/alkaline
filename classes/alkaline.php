@@ -2151,6 +2151,10 @@ class Alkaline{
 			$local = 1;
 		}
 		
+		if((BASE != '/') and (stripos($page, BASE) === 0)){
+			$page = substr($page, strlen(BASE) - 1);
+		}
+		
 		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
 		
 		$query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
