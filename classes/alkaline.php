@@ -1501,7 +1501,7 @@ class Alkaline{
 		// New
 		$badges['library'] = $this->countDirectory(PATH . SHOEBOX);
 
-		$comment_ids = new Find();
+		$comment_ids = new Find('comments');
 		$comment_ids->status(0);
 		$comment_ids->find();
 		
@@ -2510,8 +2510,8 @@ class Alkaline{
 	 * @return string
 	 */
 	public function minimizeURL($url){
-		$url = preg_replace('#^http\:\/\/www\.#s', '', $url);
-		$url = preg_replace('#^http\:\/\/#s', '', $url);
+		$url = preg_replace('#^https?\:\/\/www\.#s', '', $url);
+		$url = preg_replace('#^https?\:\/\/#s', '', $url);
 		$url = preg_replace('#^www\.#s', '', $url);
 		$url = preg_replace('#\/$#s', '', $url);
 		return $url;
