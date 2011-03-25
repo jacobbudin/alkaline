@@ -288,12 +288,12 @@ class Find extends Alkaline{
 			
 			// Status
 			if(!empty($_REQUEST['status'])){
-				$this->status($_REQUEST['status']);
+				$this->_status($_REQUEST['status']);
 			}
 			
 			// Image association
 			if(!empty($_REQUEST['image'])){
-				$this->image($_REQUEST['image']);
+				$this->_image($_REQUEST['image']);
 			}
 		}
 	}
