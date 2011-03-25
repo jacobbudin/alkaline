@@ -964,9 +964,11 @@ class Find extends Alkaline{
 	/**
 	 * Find by search
 	 * Images: image title, image description, image geography, and image tags
+	 * Posts: post title, post text
+	 * Comments: comment text, comment author name, comment author URI, comment author email, comment author IP
 	 *
-	 * @param string $search
-	 * @param array $fields Required for tables not built into Alkaline 
+	 * @param string $search Search query
+	 * @param string|array $fields Required for tables not built into Alkaline (or for overriding built-in search parameters)
 	 * @return bool True if successful
 	 */
 	public function search($search=null, $fields=null){
@@ -980,7 +982,7 @@ class Find extends Alkaline{
 		
 		$ids = array();
 		
-		if($this->table == 'images'){
+		if(($this->table == 'images') and empty($fields)){
 			// Search title, description
 			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title_lower OR LOWER(images.image_description) LIKE :image_description_lower OR LOWER(images.image_geo) LIKE :image_geo_lower)');
 			$query->execute(array(':image_title_lower' => $search_lower, ':image_description_lower' => $search_lower, ':image_geo_lower' => $search_lower));
@@ -1000,7 +1002,7 @@ class Find extends Alkaline{
 				$ids[] = $image[$this->table_prefix . 'id'];
 			}
 		}
-		elseif($this->table == 'posts'){
+		elseif(($this->table == 'posts') and empty($fields)){
 			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title);');
 			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower));
 			$posts = $query->fetchAll();
@@ -1009,7 +1011,7 @@ class Find extends Alkaline{
 				$ids[] = $post['post_id'];
 			}
 		}
-		elseif($this->table == 'comments'){
+		elseif(($this->table == 'comments') and empty($fields)){
 			$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_uri) LIKE :comment_author_uri) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
 			$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
 			$comments = $query->fetchAll();
@@ -1019,9 +1021,11 @@ class Find extends Alkaline{
 			}
 		}
 		else{
+			if(is_string($fields)){ $fields = array($fields); }
+			
 			$field_count = count($fields);
 			if($field_count > 0){
-				$query = $this->prepare('SELECT ' . $this->table . '.' . $this->table_prefix . 'id FROM ' . $this->table . ' WHERE (LOWER(' .  implode(' LIKE ?) OR (LOWER(', $fields) . ' LIKE ?);');
+				$query = $this->prepare('SELECT ' . $this->table . '.' . $this->table_prefix . 'id FROM ' . $this->table . ' WHERE (LOWER(' .  implode(' LIKE ?)) OR (LOWER(', $fields) . ' LIKE ?));');
 			
 				$search_array = array_fill(0, $field_count, $search_lower);
 			
@@ -1039,6 +1043,90 @@ class Find extends Alkaline{
 		}
 		else{
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Find by negative search
+	 * Images: image title, image description, image geography, and image tags
+	 * Posts: post title, post text
+	 * Comments: comment text, comment author name, comment author URI, comment author email, comment author IP
+	 *
+	 * @param string $search Search query
+	 * @param string|array $fields Required for tables not built into Alkaline (or for overriding built-in search parameters)
+	 * @return bool True if successful
+	 */
+	public function hide($search=null, $fields=null){
+		// Error checking
+		if(empty($search)){ return false; }
+		
+		// Prepare input
+		$search_lower = strtolower($search);
+		$search_lower = preg_replace('#\s#', '%', $search_lower);
+		$search_lower = '%' . $search_lower . '%';
+		
+		$ids = array();
+		
+		if(($this->table == 'images') and empty($fields)){
+			// Search title, description
+			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title_lower OR LOWER(images.image_description) LIKE :image_description_lower OR LOWER(images.image_geo) LIKE :image_geo_lower)');
+			$query->execute(array(':image_title_lower' => $search_lower, ':image_description_lower' => $search_lower, ':image_geo_lower' => $search_lower));
+			$images = $query->fetchAll();
+		
+			foreach($images as $image){
+				$ids[] = $image[$this->table_prefix . 'id'];
+			}
+		
+			// Search tags
+			$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
+			$query->execute(array(':tag_name_lower' => $search_lower));
+		
+			$images = $query->fetchAll();
+		
+			foreach($images as $image){
+				$ids[] = $image[$this->table_prefix . 'id'];
+			}
+		}
+		elseif(($this->table == 'posts') and empty($fields)){
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title);');
+			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower));
+			$posts = $query->fetchAll();
+
+			foreach($posts as $post){
+				$ids[] = $post['post_id'];
+			}
+		}
+		elseif(($this->table == 'comments') and empty($fields)){
+			$query = $this->prepare('SELECT comments.comment_id FROM comments WHERE (LOWER(comment_text) LIKE :comment_text) OR (LOWER(comment_author_name) LIKE :comment_author_name) OR (LOWER(comment_author_uri) LIKE :comment_author_uri) OR (LOWER(comment_author_email) LIKE :comment_author_email) OR (LOWER(comment_author_ip) LIKE :comment_author_ip);');
+			$query->execute(array(':comment_text' => $search_lower, ':comment_author_name' => $search_lower, ':comment_author_uri' => $search_lower, ':comment_author_email' => $search_lower, ':comment_author_ip' => $search_lower));
+			$comments = $query->fetchAll();
+
+			foreach($comments as $comment){
+				$ids[] = $comment['comment_id'];
+			}
+		}
+		else{
+			if(is_string($fields)){ $fields = array($fields); }
+			
+			$field_count = count($fields);
+			if($field_count > 0){
+				$query = $this->prepare('SELECT ' . $this->table . '.' . $this->table_prefix . 'id FROM ' . $this->table . ' WHERE (LOWER(' .  implode(' LIKE ?)) OR (LOWER(', $fields) . ' LIKE ?));');
+			
+				$search_array = array_fill(0, $field_count, $search_lower);
+			
+				$query->execute($search_array);
+				$rows = $query->fetchAll();
+
+				foreach($rows as $row){
+					$ids[] = $row[$this->table_prefix . 'id'];
+				}
+			}
+		}
+		
+		if(count($ids) > 0){
+			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id NOT IN (' . implode(', ', $ids) . ')';
 		}
 		
 		return true;
@@ -1818,9 +1906,11 @@ class Find extends Alkaline{
 			return false;
 		}
 		
-		$_SESSION['alkaline']['search'][$this->table]['request'] = $_REQUEST;
-		$_SESSION['alkaline']['search'][$this->table]['call'] = $this->call;
-		$_SESSION['alkaline']['search'][$this->table]['ids'] = $this->ids;
+		$table = $this->table;
+		
+		$_SESSION['alkaline']['search'][$table]['request'] = $_REQUEST;
+		$_SESSION['alkaline']['search'][$table]['call'] = $this->call;
+		$_SESSION['alkaline']['search'][$table]['ids'] = $this->ids;
 		
 		return true;
 	}
@@ -1831,11 +1921,13 @@ class Find extends Alkaline{
 	 * @return string|false
 	 */
 	public function recentMemory(){
-		if(empty($_SESSION['alkaline']['search'][$this->table]['call'])){
+		$table = $this->table;
+		
+		if(empty($_SESSION['alkaline']['search'][$table]['call'])){
 			return false;
 		}
 		
-		return $_SESSION['alkaline']['search'][$this->table]['call'];
+		return $_SESSION['alkaline']['search'][$table]['call'];
 	}
 	
 	/**
