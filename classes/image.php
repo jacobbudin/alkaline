@@ -280,7 +280,11 @@ class Image extends Alkaline{
 			return false;
 		}
 		
+		$array_original = $array;
+				
 		for($i = 0; $i < $this->image_count; ++$i){
+			 $array = $array_original;
+			
 			// Verify each key has changed; if not, unset the key
 			foreach($array as $key => $value){
 				if($array[$key] == $this->images[$i][$key]){
