@@ -231,17 +231,7 @@ class Find extends Alkaline{
 
 			// Privacy
 			if(!empty($_REQUEST['privacy'])){
-				switch($_REQUEST['privacy']){
-					case 'public':
-						$this->_privacy(1);
-						break;
-					case 'protected':
-						$this->_privacy(2);
-						break;
-					case 'private':
-						$this->_privacy(3);
-						break;
-				}
+				$this->_privacy($_REQUEST['privacy']);
 			}
 
 			// Published
@@ -330,7 +320,7 @@ class Find extends Alkaline{
 		call_user_func_array(array($this, $method), $arguments);
 		
 		// Remove unsaveable methods
-		$nosave_methods = array('page', 'privacy');
+		$nosave_methods = array('page');
 		
 		if(in_array($method, $nosave_methods)){
 			return;
@@ -1135,7 +1125,7 @@ class Find extends Alkaline{
 	/**
 	 * Find by privacy levels
 	 *
-	 * @param int|string $privacy Privacy ID or string
+	 * @param int|string|array $privacy Privacy ID or string
 	 * @param string $all Also include all images of lower privacy levels
 	 * @return bool True if successful
 	 */
