@@ -14,6 +14,7 @@ class AlkalineCS{
 	
 	public $compatible;
 	
+	public $ic_version;
 	public $php_version;
 	public $php_extensions;
 	public $phpinfo;
@@ -22,6 +23,10 @@ class AlkalineCS{
 	function __construct(){
 		$this->compatible = true;
 		$this->php_version = phpversion();
+		if(function_exists('ioncube_loader_version')){
+			$this->ic_version = ioncube_loader_version();
+			$this->ic_version = intval(preg_replace('#^([0-9]+)\..*#si', '\\1', $this->ic_version));
+		}
 		$this->php_extensions = get_loaded_extensions();
 		ob_start();
 		phpinfo();
@@ -205,9 +210,9 @@ $test = new AlkalineCS();
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>
 				<tr>
-					<?php $result = $test->isExt('ionCube Loader'); echo $test->boolToIMG($result); ?>
+					<?php $result = ($test->isExt('ionCube Loader') and !empty($test->ic_version) and ($test->ic_version >= 4)); echo $test->boolToIMG($result); ?>
 					<td>
-						<strong>ionCube Loader</strong><br />
+						<strong>ionCube Loader 4</strong><br />
 						<span class="quiet">ionCube Loader is used to verify the authenticity of Alkaline.</span>
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
@@ -305,35 +310,12 @@ $test = new AlkalineCS();
 				}
 				?>
 			</p>
-			
-			<?php
-			if($test->compatible == true){
-				?>
-				
-				<div style="background-color: #eee; padding: 20px 20px 1px 20px;">
-					<h2>Beta Registration</h2>
-			
-					<p>
-						Learn more about the Alkaline Beta at <a href="http://www.alkalineapp.com/beta/">alkalineapp.com/beta</a>.
-					</p>
-			
-					<form action="http://www.alkalineapp.com/beta/" method="post">
-						<p>
-							<label for="email">Your email address:</label> &#0160;
-							<input type="hidden" name="time" value="<?php echo time(); ?>" />
-							<input type="text" name="email" id="email" value="" style="width: 200px;" />
-							<input type="submit" value="Submit" />
-						</p>
-					</form>
-				</div>
-				<?php
-			}
-			?>
-			
-		<hr />
+
+			<hr />
 		
-		<div id="footer" class="span-24 last">
-			<img src="http://www.alkalineapp.com/remote/cs/images/icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
+			<div id="footer" class="span-24 last">
+				<img src="http://www.alkalineapp.com/remote/cs/images/icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
+			</div>
 		</div>
 	</div>
 </body>
