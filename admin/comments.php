@@ -22,10 +22,7 @@ if(!empty($_GET['id'])){
 
 if(!empty($_GET['act'])){
 	$comment_act = $_GET['act'];
-	if($comment_act == 'unpublished'){
-		$_REQUEST['status'] = 'unpublished';
-	}
-	elseif($comment_act == 'search'){
+	if($comment_act == 'search'){
 		Find::clearMemory();
 
 		$comment_ids = new Find('comments');
@@ -106,6 +103,7 @@ if(empty($comment_id)){
 	$comment_ids = new Find('comments');
 	$comment_ids->page(null, 50);
 	if(isset($comment_act) and ($comment_act == 'results')){ $comment_ids->memory(); }
+	if(isset($comment_act) and ($comment_act == 'new')){ $comment_ids->status('unpublished'); }
 	$comment_ids->find();
 	
 	$comments = new Comment($comment_ids);

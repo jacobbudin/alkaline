@@ -120,7 +120,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php if($badges['comments'] > 0){ ?>
 					<tr>
 						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT; ?>unpublished<?php echo URL_RW; ?>">new <?php echo $alkaline->returnCount($badges['comments'], 'comment'); ?></a></td>
+						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'new' .  URL_RW; ?>">new <?php echo $alkaline->returnCount($badges['comments'], 'comment'); ?></a></td>
 					</tr>
 				<?php } ?>
 			</table>
