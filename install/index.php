@@ -341,10 +341,10 @@ else{
 									echo '<option value="mysql">MySQL</option>';
 									break;
 								case 'pgsql':
-									echo '<option value="sqlite">SQLite</option>';
+									echo '<option value="pgsql">PostgreSQL</option>';
 									break;
 								case 'sqlite':
-									echo '<option value="pgsql">PostgreSQL</option>';
+									echo '<option value="sqlite">SQLite</option>';
 									break;
 								default:
 									break;
