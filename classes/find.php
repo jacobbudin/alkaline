@@ -1863,6 +1863,9 @@ class Find extends Alkaline{
 				}
 				$this->ids_after = array_slice($ids, $offset, null, true);
 			}
+			
+			$this->ids_before = array_merge($this->ids_before);
+			$this->ids_after = array_merge($this->ids_after);
 		}
 		
 		// Determine keys of images
