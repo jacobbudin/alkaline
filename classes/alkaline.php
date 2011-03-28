@@ -1916,6 +1916,7 @@ class Alkaline{
 				$fields['guest_created'] = date('Y-m-d H:i:s');
 				break;
 			case 'rights':
+				$fields['right_created'] = date('Y-m-d H:i:s');
 				$fields['right_modified'] = date('Y-m-d H:i:s');
 				break;
 			case 'pages':
