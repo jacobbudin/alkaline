@@ -451,7 +451,7 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
-			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}')){
+			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}') !== false){
 				$loops[$j]['replacement'] = $loops[$j]['template'];
 				$loops[$j]['replacement'] = preg_replace('#(?:.*){else:' . $loops[$j]['var'] . '}(.*)#is', '$1', $loops[$j]['replacement']);
 			}
@@ -747,7 +747,7 @@ class Canvas extends Alkaline{
 		}
 		
 		$template = str_ireplace('{if' . $suffix . ':' . $var . '}', '', $template);
-		if(stripos($template, '{else' . $suffix .  ':' . $var . '}')){
+		if(stripos($template, '{else' . $suffix .  ':' . $var . '}') !== false){
 			$template = preg_replace('#{else' . $suffix . ':' . $var . '}(.*?){/if' . $suffix . ':' . $var . '}#is', '', $template);
 		}
 		$template = str_ireplace('{/if' . $suffix . ':' . $var . '}', '', $template);
@@ -774,6 +774,8 @@ class Canvas extends Alkaline{
 		
 		$loop_count = count($loops);
 		
+		$loops = array_reverse($loops);
+		
 		for($j = 0; $j < $loop_count; ++$j){
 			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}') !== false){
 				$loops[$j]['replacement'] = $loops[$j]['template'];
@@ -782,11 +784,11 @@ class Canvas extends Alkaline{
 		}
 		
 		foreach($loops as $loop){
-			$template = str_replace($loop['replace'], $loop['replacement'], $template);
+			$template = preg_replace('#{if:' . $loop['var'] . '}(.*?){/if:' . $loop['var'] . '}#si', $loop['replacement'], $template);
 		}
 		
 		if($this->returnConf('canvas_remove_unused')){
-			$template = preg_replace('#\{[a-z0-9_\-]*}#si', '', $template);
+			$template = preg_replace('#\{.*?}#si', '', $template);
 		}
 		
 		return $template;
