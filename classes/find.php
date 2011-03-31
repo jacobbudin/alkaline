@@ -470,6 +470,8 @@ class Find extends Alkaline{
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'published >= :image_published_begin';
 			$this->sql_params[':image_published_begin'] = $begin . ' 00:00:00';
 			
+			if(empty($end)){ $end = $begin; }
+			
 			$end = date('Y-m-d', strtotime($end));
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'published <= :image_published_end';
 			$this->sql_params[':image_published_end'] = $end . ' 23:59:59"';
