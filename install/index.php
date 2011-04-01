@@ -126,6 +126,18 @@ if(@$_POST['install'] == 'Install'){
 		}
 		else{
 			$path = PATH . DB . 'alkaline.db';
+			$path = $alkaline->correctWinPath($path);
+			
+			$rand = $alkaline->randInt();
+			$rand = substr(md5($rand), 0, 8);
+			$path_new = PATH . DB . 'alkaline_' . $rand . '.db';
+			$path_new = $alkaline->correctWinPath($path_new);
+			
+			if(copy($path, $path_new)){
+				unlink($path);
+				$path = $path_new;
+				chmod($path, 0777);
+			}
 		}
 		
 		$path = $alkaline->correctWinPath($path);
@@ -427,7 +439,10 @@ else{
 				</td>
 				<td>
 					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet">Defaults to /<?php echo DB; ?>alkaline.db. Your database file be writable (CHMOD 777).</span>
+					<span class="quiet">
+						Defaults to /<?php echo DB; ?>alkaline.db. Your database file must be writable (CHMOD 777).<br />
+						For security purposes, this file will be renamed during installation.
+					</span>
 				</td>
 			</tr>
 		</table>
