@@ -1197,41 +1197,23 @@ class Alkaline{
 	 * @return string
 	 */
 	public function closeTags($html){
-		preg_match_all("#<([a-z0-9]+)( .*)?(?!/)>#iU", $html, $result, PREG_OFFSET_CAPTURE);
-		
-		if(!isset($result[1])){ return $html; } 
-		
-		$openedtags = $result[1];
-		$len_opened = count($openedtags);
-		
-		if(!$len_opened){ return $html; }
-		
-		preg_match_all("#</([a-z0-9]+)>#iU", $html, $result, PREG_OFFSET_CAPTURE);
-		$closedtags = array();
-		
-		foreach($result[1] as $tag){
-			$closedtags[$tag[1]] = $tag[0];
-		}
-		
-		$openedtags = array_reverse($openedtags);
-		
-		for($i = 0; $i < $len_opened; $i++) {
-			if(preg_match('/(img|br|hr)/i', $openedtags[$i][0])){
-				continue;
-			}
-			
-			$found = array_search($openedtags[$i][0], $closedtags);
-			
-			if(!$found || $found < $openedtags[$i][1]){
-				$html .= "</".$openedtags[$i][0].">";
-			}
-			
-			if($found){
-				unset($closedtags[$found]);
-			}
-		}
-		
-		return $html;
+	    preg_match_all('#<(?!meta|img|br|hr|input\b)\b([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+	    $openedtags = $result[1];
+	    preg_match_all('#</([a-z]+)>#iU', $html, $result);
+	    $closedtags = $result[1];
+	    $len_opened = count($openedtags);
+	    if (count($closedtags) == $len_opened) {
+	        return $html;
+	    }
+	    $openedtags = array_reverse($openedtags);
+	    for ($i=0; $i < $len_opened; $i++) {
+	        if (!in_array($openedtags[$i], $closedtags)) {
+	            $html .= '</'.$openedtags[$i].'>';
+	        } else {
+	            unset($closedtags[array_search($openedtags[$i], $closedtags)]);
+	        }
+	    }
+	    return $html;
 	}
 	
 	/**
