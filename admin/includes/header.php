@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="base" content="<?php echo LOCATION . BASE; ?>" />
 	<meta name="folder_prefix" content="<?php echo FOLDER_PREFIX; ?>" />
-	<meta name="permissions" content="<?php if(!empty($user) and $user->perm()){ echo @implode(', ', $user->user['user_permissions']); } ?>" />
+	<meta name="permissions" content="<?php if(!empty($user) and $user->perm() and !empty($user->user['user_permissions'])){ echo @implode(', ', $user->user['user_permissions']); } ?>" />
 	<title><?php echo (defined('TITLE') ? TITLE : 'Alkaline'); ?></title>
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/screen.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/print.css" type="text/css" media="print" />	
