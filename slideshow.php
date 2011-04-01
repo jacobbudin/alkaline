@@ -28,6 +28,7 @@ $images->getComments();
 
 $header = new Canvas;
 $header->load('slide_header');
+$header->setTitle('Slideshow');
 $header->display();
 
 $slideshow = new Canvas;
