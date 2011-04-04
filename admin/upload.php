@@ -43,7 +43,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		
 		<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>		
 			<h3>Instructions</h3>
-			<p>Drag images from a folder on your computer or from most applications including iImage and Aperture into the grey retaining area.</p>
+			<p>Drag images from a folder on your computer or from most applications including Aperture, Bridge, iPhoto, and Lightroom into the grey retaining area.</p>
 		
 			<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
