@@ -85,7 +85,7 @@ $then = strtotime('-60 days');
 $stats = new Stat($then);
 $stats->getDurations();
 
-$levels = array('&#0060; 1 minute' => 60, '1-5 minutes' => 300, '5-10 minutes' => 600, '10-30 minutes' => 1800, '&#0062; 30 minutes');
+$levels = array('&#0060;30 seconds' => 30, '30-60 seconds' => 60, '1-2 minutes' => 120, '2-5 minutes' => 300, '5-10 minutes' => 600, '10-30 minutes' => 1800, '&#0062; 30 minutes');
 $zeros = array_fill(0, count($levels), 0);
 $last = implode('', array_slice($levels, -1, 1));
 
