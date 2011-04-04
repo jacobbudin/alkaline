@@ -913,13 +913,13 @@ class Image extends Alkaline{
 				switch($ext){
 					case 'jpg':
 						copy($src, $dest);
-						break;
+						return true;
 					case 'png':
 						copy($src, $dest);
-						break;
+						return true;
 					case 'gif':
 						copy($src, $dest);
-						break;
+						return true;
 				}
 			}
 
@@ -974,7 +974,7 @@ class Image extends Alkaline{
 		
 			if(($width_orig <= $width) and ($height_orig <= $height)){
 				copy($src, $dest);
-				return true;	
+				return true;
 			}
 
 			$ratio_orig = $width_orig / $height_orig;
