@@ -144,7 +144,7 @@ class Image extends Alkaline{
 			// Add image to database
 			$image_ext = $this->getExt($file);
 			$image_mime = $this->getMIME($file);
-			$image_size = $this->getSize($file);
+			$image_size = $this->getSize($file, $image_ext);
 			
 			// Configuration: default rights set
 			if($this->returnConf('rights_default')){
@@ -715,16 +715,18 @@ class Image extends Alkaline{
 	 * @param string $file Full path to file
 	 * @return array Associative array with heigh and width keys
 	 */
-	public function getSize($file){
+	public function getSize($file, $ext=null){
 		// Error checking
 		if(empty($file)){
 			return false;
 		}
 		
+		if(empty($ext)){ $ext = self::getExt($src); }
+		
 		$size = array();
 		
 		// ImageMagick version
-		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
+		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
 			$image = new Imagick($file);
 			$size['width'] = $image->getImageWidth();
 			$size['height'] = $image->getImageHeight();
@@ -758,8 +760,8 @@ class Image extends Alkaline{
 		$dest = parent::correctWinPath($dest);
 		
 		// ImageMagick version
-		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
-			$size = $this->getSize($src);
+		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
+			$size = $this->getSize($src, $ext);
 			$width_orig = $size['width'];
 			$height_orig = $size['height'];
 			
@@ -902,10 +904,10 @@ class Image extends Alkaline{
 		$dest = parent::correctWinPath($dest);
 		
 		// ImageMagick version
-		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
+		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
 			$image = new Imagick($src);
 			
-			$size = $this->getSize($src);
+			$size = $this->getSize($src, $ext);
 			$width_orig = $size['width'];
 			$height_orig = $size['height'];
 			
