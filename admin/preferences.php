@@ -25,6 +25,7 @@ if(!empty($_POST['preferences_save'])){
 	$user->setPref('recent_images', @$_POST['recent_images']);
 	$user->setPref('recent_images_limit', @$_POST['recent_images_limit']);
 	$user->setPref('shoe_pub', @$_POST['shoe_pub']);
+	$user->setPref('shoe_to_bulk', @$_POST['shoe_to_bulk']);
 	$user->setPref('post_pub', @$_POST['post_pub']);
 	$user->savePref();
 	
@@ -113,6 +114,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="shoe_pub" name="shoe_pub" <?php echo $user->readPref('shoe_pub'); ?> value="true" /></td>
 			<td class="description">
 				<label for="shoe_pub">Set all images to be published immediately after processing by default</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="shoe_to_bulk" name="shoe_to_bulk" <?php echo $user->readPref('shoe_to_bulk'); ?> value="true" /></td>
+			<td class="description">
+				<label for="shoe_to_bulk">Send images to bulk editor after processing</label>
 			</td>
 		</tr>
 	</table>

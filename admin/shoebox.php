@@ -57,7 +57,20 @@ if(!empty($_POST['image_ids'])){
 	
 	$alkaline->addNote('Your shoebox has been processed.', 'success');
 	
-	header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
+	if($user->returnPref('shoe_to_bulk') === true){
+		Find::clearMemory();
+
+		$new_image_ids = new Find('images');
+		$new_image_ids->_ids($image_ids);
+		$new_image_ids->saveMemory();
+		
+		session_write_close();
+		
+		header('Location: ' . BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW);
+	}
+	else{
+		header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
+	}
 	exit();
 }
 
