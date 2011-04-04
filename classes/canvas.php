@@ -774,8 +774,6 @@ class Canvas extends Alkaline{
 		
 		$loop_count = count($loops);
 		
-		$loops = array_reverse($loops);
-		
 		for($j = 0; $j < $loop_count; ++$j){
 			if(stripos($loops[$j]['template'], '{else:' . $loops[$j]['var'] . '}') !== false){
 				$loops[$j]['replacement'] = $loops[$j]['template'];
@@ -783,8 +781,16 @@ class Canvas extends Alkaline{
 			}
 		}
 		
+		// $lengths = array();
+		// 
+		// foreach($loops as $key => $row){
+		// 	$lengths[$key] = $row['length'];
+		// }
+		// 
+		// array_multisort($lengths, SORT_ASC, $loops);
+		
 		foreach($loops as $loop){
-			$template = preg_replace('#{if:' . $loop['var'] . '}(.*?){/if:' . $loop['var'] . '}#si', $loop['replacement'], $template);
+			$template = preg_replace('#{if:' . $loop['var'] . '}(.*?){/if:' . $loop['var'] . '}#si', $loop['replacement'], $template, 1);
 		}
 		
 		if($this->returnConf('canvas_remove_unused')){
