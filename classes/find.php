@@ -1378,6 +1378,25 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by ID numbers
+	 *
+	 * @param int|array $image_ids IDs
+	 * @return bool True if successful
+	 */
+	public function ids($ids=null){
+		// Error checking
+		if(empty($ids)){ return false; }
+		
+		$ids = parent::convertToIntegerArray($ids);
+		
+		if(!(count($ids) > 0)){ return false; }
+		
+		$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+		
+		return true;
+	}
+	
+	/**
 	 * Find by comment status
 	 *
 	 * @param int|string $status Comment status
