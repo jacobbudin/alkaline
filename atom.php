@@ -67,7 +67,7 @@ $posts->formatTime('c');
 
 if($alkaline->returnConf('syndication_summary_only')){
 	foreach($posts->posts as &$post){
-		$post['post_text'] = $alkaline->fitStringByWord(strip_tags($post['post_text']), 400);
+		$post['post_text'] = $alkaline->fitStringByWord($post['post_text'], 400);
 	}
 }
 
