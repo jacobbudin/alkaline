@@ -21,7 +21,7 @@ $post_ids = new Find('posts', $id);
 $post_ids->published();
 $post_ids->find();
 
-$posts = new Post($id);
+$posts = new Post($post_ids);
 $posts->getComments(true);
 $posts->formatTime();
 $posts->updateViews();
