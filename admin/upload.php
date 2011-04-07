@@ -13,6 +13,25 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $user = new User;
 
+// cliqcliq Quickpic support
+if(isset($_REQUEST['context']) and ($_REQUEST['context'] == sha1(PATH . BASE . DB_DSN . DB_TYPE))){
+	header('Content-Type: application/x-plist');
+	
+	$file = $_FILES['upload_file'];
+	move_uploaded_file($file['tmp_name'], $alkaline->correctWinPath(PATH . SHOEBOX . $file['name']));
+	
+	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	<key>success</key>
+	<true/>
+	</dict>
+	</plist>
+	<?php
+}
+
 $user->perm(true, 'upload');
 
 if(!empty($_FILES)){
@@ -20,12 +39,22 @@ if(!empty($_FILES)){
 	$tmp_file = $_FILES['user_file']['tmp_name'][0];
 	copy($tmp_file, $alkaline->correctWinPath(PATH . SHOEBOX . $filename));
 	unlink($tmp_file);
+	
 	exit();
 }
 
 define('TAB', 'library');
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
+
+// cliqcliq Quickpic support
+if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
+	?>
+	<script type="text/javascript">
+		launchQuickpic();
+	</script>
+	<?php
+}
 
 ?>
 
@@ -53,7 +82,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<div class="span-18 colborderl last">
 		<h1>Upload</h1>
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>
+			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
 				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
 				<div style="height: 380px; margin-bottom: 1.5em;">
 					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
