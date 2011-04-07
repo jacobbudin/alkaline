@@ -820,15 +820,15 @@ class Image extends Alkaline{
 					if($ratio_orig > $ratio){
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromjpeg($src);
-						$pixel = ($width_orig - $height_orig) / 2;
-						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
+						$pixel = ($width_orig / 2) - ($width * 2);
+						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width *  ($ratio_orig / $ratio), $height, $width_orig, $height_orig);
 						imagejpeg($image_p, $dest, $quality);
 					}
 					else{
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromjpeg($src);
-						$pixel = ($height_orig - $width_orig) / 2;
-						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
+						$pixel = ($height_orig / 2) - ($height * 2);
+						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * ($ratio / $ratio_orig), $width_orig, $height_orig);
 						imagejpeg($image_p, $dest, $quality);
 					}
 
@@ -1751,7 +1751,6 @@ class Image extends Alkaline{
 				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
 			}
 		}
-		
 		
 		return $this->pages;
 	}
