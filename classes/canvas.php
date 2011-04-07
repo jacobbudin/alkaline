@@ -316,6 +316,12 @@ class Canvas extends Alkaline{
 						if(!empty($reel[$i]['post_id'])){
 							$loop_template = self::loopSub($object, $loop_template, 'post_id', $reel[$i]['post_id']);
 						}
+						if(!empty($reel[$i]['set_id'])){
+							$loop_template = self::loopSub($object, $loop_template, 'set_id', $reel[$i]['set_id']);
+						}
+						if(!empty($reel[$i]['page_id'])){
+							$loop_template = self::loopSub($object, $loop_template, 'page_id', $reel[$i]['page_id']);
+						}
 						$done_once[] = $reel[$i][$field];
 					}
 					else{
@@ -369,7 +375,12 @@ class Canvas extends Alkaline{
 		
 		for($j = 0; $j < $loop_count; ++$j){
 			$replacement = '';
+			
 			$reel = $array->$loops[$j]['reel'];
+			
+			if(is_object($reel)){
+				$reel = $reel->$loops[$j]['reel'];
+			}
 			
 			$reel_count = count($reel);
 			
