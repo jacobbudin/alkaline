@@ -116,7 +116,7 @@ if(!empty($post_act) and ($post_act == 'add')){
 if(empty($post_id)){
 	$post_ids = new Find('posts');
 	$post_ids->page(null, 50);
-	if($post_act == 'results'){ $post_ids->memory(); }
+	if(isset($post_act) and ($post_act == 'results')){ $post_ids->memory(); }
 	$post_ids->find();
 	
 	$posts = new Post($post_ids);
