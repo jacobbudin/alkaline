@@ -125,6 +125,69 @@ class Comment extends Alkaline{
 		}
 		return true;
 	}
+	
+	/**
+	 * Get word and numerical sequencing of comments
+	 *
+	 * @param int $start First number on page
+	 * @param bool $asc Sequence order (false if DESC)
+	 * @return void
+	 */
+	public function getSeries($start=null, $asc=true){
+		if(!iscomment($start)){
+			$start = 1;
+		}
+		else{
+			$start = intval($start);
+		}
+		
+		if($asc === true){
+			$values = range($start, $start+$this->comment_count);
+		}
+		else{
+			$values = range($start, $start-$this->comment_count);
+		}
+		
+		for($i = 0; $i < $this->comment_count; ++$i){
+			$this->comments[$i]['comment_numeric'] = $values[$i];
+			$this->comments[$i]['comment_alpha'] = ucwords($this->numberToWords($values[$i]));
+		}
+	}
+	
+	/**
+	 * Add string notation to particular sequence, good for CSS columns
+	 *
+	 * @param string $label String notation
+	 * @param int $frequency 
+	 * @param bool $start_first True if first comment should be selected and begin sequence
+	 * @return void
+	 */
+	public function addSequence($label, $frequency, $start_first=false){
+		if($start_first === false){
+			$i = 1;
+		}
+		else{
+			$i = $frequency;
+		}
+		
+		// Store comment comment fields
+		foreach($this->comments as &$comment){
+			if($i == $frequency){
+				if(empty($comment['comment_sequence'])){
+					$comment['comment_sequence'] = $label;
+				}
+				else{
+					$comment['comment_sequence'] .= ' ' . $label;
+				}
+				$i = 1;
+			}
+			else{
+				$i++;
+			}
+		}
+		
+		return true;
+	}
 }
 
 ?>
