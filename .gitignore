@@ -57,3 +57,5 @@ thumbs.db
 *.cert
 *.crt
 license.php
+config.php
+config.json
