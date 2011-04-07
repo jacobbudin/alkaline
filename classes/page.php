@@ -14,6 +14,7 @@
  */
 
 class Page extends Alkaline{
+	public $images;
 	public $page_ids;
 	public $page_count = 0;
 	public $pages;
@@ -130,6 +131,69 @@ class Page extends Alkaline{
 			$page['page_created_format'] = parent::formatTime($page['page_created'], $format);
 			$page['page_modified_format'] = parent::formatTime($page['page_modified'], $format);
 		}
+	}
+	
+	/**
+	 * Get word and numerical sequencing of pages
+	 *
+	 * @param int $start First number on page
+	 * @param bool $asc Sequence order (false if DESC)
+	 * @return void
+	 */
+	public function getSeries($start=null, $asc=true){
+		if(!ispage($start)){
+			$start = 1;
+		}
+		else{
+			$start = intval($start);
+		}
+		
+		if($asc === true){
+			$values = range($start, $start+$this->page_count);
+		}
+		else{
+			$values = range($start, $start-$this->page_count);
+		}
+		
+		for($i = 0; $i < $this->page_count; ++$i){
+			$this->pages[$i]['page_numeric'] = $values[$i];
+			$this->pages[$i]['page_alpha'] = ucwords($this->numberToWords($values[$i]));
+		}
+	}
+	
+	/**
+	 * Add string notation to particular sequence, good for CSS columns
+	 *
+	 * @param string $label String notation
+	 * @param int $frequency 
+	 * @param bool $start_first True if first page should be selected and begin sequence
+	 * @return void
+	 */
+	public function addSequence($label, $frequency, $start_first=false){
+		if($start_first === false){
+			$i = 1;
+		}
+		else{
+			$i = $frequency;
+		}
+		
+		// Store page comment fields
+		foreach($this->pages as &$page){
+			if($i == $frequency){
+				if(empty($page['page_sequence'])){
+					$page['page_sequence'] = $label;
+				}
+				else{
+					$page['page_sequence'] .= ' ' . $label;
+				}
+				$i = 1;
+			}
+			else{
+				$i++;
+			}
+		}
+		
+		return true;
 	}
 }
 
