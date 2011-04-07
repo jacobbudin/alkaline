@@ -14,6 +14,7 @@
  */
 
 class Set extends Alkaline{
+	public $images;
 	public $set_ids;
 	public $set_count = 0;
 	public $sets;
@@ -130,6 +131,118 @@ class Set extends Alkaline{
 			$set['set_created_format'] = parent::formatTime($set['set_created'], $format);
 			$set['set_modified_format'] = parent::formatTime($set['set_modified'], $format);
 		}
+	}
+	
+	/**
+	 * Get word and numerical sequencing of sets
+	 *
+	 * @param int $start First number on page
+	 * @param bool $asc Sequence order (false if DESC)
+	 * @return void
+	 */
+	public function getSeries($start=null, $asc=true){
+		if(!isset($start)){
+			$start = 1;
+		}
+		else{
+			$start = intval($start);
+		}
+		
+		if($asc === true){
+			$values = range($start, $start+$this->set_count);
+		}
+		else{
+			$values = range($start, $start-$this->set_count);
+		}
+		
+		for($i = 0; $i < $this->set_count; ++$i){
+			$this->sets[$i]['set_numeric'] = $values[$i];
+			$this->sets[$i]['set_alpha'] = ucwords($this->numberToWords($values[$i]));
+		}
+	}
+	
+	/**
+	 * Add string notation to particular sequence, good for CSS columns
+	 *
+	 * @param string $label String notation
+	 * @param int $frequency 
+	 * @param bool $start_first True if first set should be selected and begin sequence
+	 * @return void
+	 */
+	public function addSequence($label, $frequency, $start_first=false){
+		if($start_first === false){
+			$i = 1;
+		}
+		else{
+			$i = $frequency;
+		}
+		
+		// Store set comment fields
+		foreach($this->sets as &$set){
+			if($i == $frequency){
+				if(empty($set['set_sequence'])){
+					$set['set_sequence'] = $label;
+				}
+				else{
+					$set['set_sequence'] .= ' ' . $label;
+				}
+				$i = 1;
+			}
+			else{
+				$i++;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get sets' images
+	 *
+	 * @return Image
+	 */
+	public function getImages(){
+		$ids_cumulative = array();
+		$set_image_ids = array();
+		
+		foreach($this->sets as $set){
+			if(!empty($set['set_images'])){
+				$ids = explode(',', $set['set_images']);
+				$ids = array_map('intval', $ids);
+				foreach($ids as $id){
+					$set_image_ids[$id][] = intval($set['set_id']);
+					$ids_cumulative[] = $id;
+				}
+			}
+		}
+		
+		if(count($ids_cumulative) == 0){ return false; }
+		
+		$ids_cumulative = array_unique($ids_cumulative);
+		
+		$images = new Image($ids_cumulative);
+		
+		$new_images = array();
+		
+		for($i=0; $i < $images->image_count; $i++){
+			$image_sets = $set_image_ids[$images->images[$i]['image_id']];
+			foreach($this->set_ids as $set_id){
+				if(in_array($set_id, $image_sets)){
+					$new_image = $images->images[$i];
+					$new_image['set_id'] = $set_id;
+					$new_images[] = $new_image;
+				}
+			}
+		}
+		
+		$new_image_count = count($new_images);
+		
+		$images->images = $new_images;
+		$images->image_count = $new_image_count;
+		
+		$this->images = $images;
+		
+		return $this->images;
 	}
 }
 
