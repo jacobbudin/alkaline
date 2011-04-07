@@ -820,14 +820,14 @@ class Image extends Alkaline{
 					if($ratio_orig > $ratio){
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromjpeg($src);
-						$pixel = ($width_orig / 2) - ($width * 2);
-						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width *  ($ratio_orig / $ratio), $height, $width_orig, $height_orig);
+						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
+						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * ($ratio_orig / $ratio), $height, $width_orig, $height_orig);
 						imagejpeg($image_p, $dest, $quality);
 					}
 					else{
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromjpeg($src);
-						$pixel = ($height_orig / 2) - ($height * 2);
+						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
 						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * ($ratio / $ratio_orig), $width_orig, $height_orig);
 						imagejpeg($image_p, $dest, $quality);
 					}
@@ -842,14 +842,14 @@ class Image extends Alkaline{
 					if($ratio_orig > $ratio){
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefrompng($src);
-						$pixel = ($width_orig - $height_orig) / 2;
+						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
 						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
 						imagepng($image_p, $dest, $quality_tmp);
 					}
 					else{
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefrompng($src);
-						$pixel = ($height_orig - $width_orig) / 2;
+						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
 						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
 						imagepng($image_p, $dest, $quality_tmp);
 					}
@@ -862,14 +862,14 @@ class Image extends Alkaline{
 					if($ratio_orig > $ratio){
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromgif($src);
-						$pixel = ($width_orig - $height_orig) / 2;
+						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
 						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
 						imagegif($image_p, $dest);
 					}
 					else{
 						$image_p = imagecreatetruecolor($width, $height);
 						$image = imagecreatefromgif($src);
-						$pixel = ($height_orig - $width_orig) / 2;
+						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
 						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
 						imagegif($image_p, $dest);
 					}
