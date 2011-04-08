@@ -248,6 +248,16 @@ else{
 	$post = $posts->posts[0];
 	$post = $alkaline->makeHTMLSafe($post);
 	
+	$now = time();
+	$launch_action = '';
+	
+	if(!empty($post['post_published'])){
+		$published = strtotime($post['post_published']);
+		if($published <= $now){
+			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '">Launch post</a>';
+		}
+	}
+	
 	if(!empty($post_act) and ($post_act == 'add')){
 		if($user->returnPref('post_pub') === true){
 			$post['post_published'] = 'Now';
@@ -265,7 +275,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>posts<?php echo URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo $post['post_uri']; ?>">Launch post</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <?php echo $launch_action; ?></div>
 	
 	<?php
 	
