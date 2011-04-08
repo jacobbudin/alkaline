@@ -245,23 +245,31 @@ class Image extends Alkaline{
 				$size_label = $size['size_label'];
 				$size_dest = parent::correctWinPath(PATH . IMAGES . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
 				
+				if(in_array($images[$i]['image_ext'], array('pdf', 'svg'))){
+					$size_dest = $this->changeExt($size_dest, 'png');
+				}
+				
 				switch($size_type){
 					case 'fill':
-						$this->imageFill($images[$i]['image_file'], $size_dest, $size_height, $size_width, null, $images[$i]['image_ext']);
+						$thumbnail = new Thumbnail($images[$i]['image_file']);
+						$thumbnail->adaptiveResize($size_width, $size_height);
+						$thumbnail->save($size_dest);
 						break;
 					case 'scale':
-						$this->imageScale($images[$i]['image_file'], $size_dest, $size_height, $size_width, null, $images[$i]['image_ext']);
+						$thumbnail = new Thumbnail($images[$i]['image_file']);
+						$thumbnail->resize($size_width, $size_height);
+						$thumbnail->save($size_dest);
 						break;
 					default:
 						return false; break;
 				}
 				
 				if($this->returnConf('thumb_watermark') and ($size_watermark == 1)){
-					$watermark = parent::correctWinPath(PATH . WATERMARKS . $size_label .  '.png');
+					$watermark = parent::correctWinPath(PATH . WATERMARKS . $size_label . '.png');
 					if(!file_exists($watermark)){
 						$watermark = parent::correctWinPath(PATH . WATERMARKS . 'watermark.png');
 					}
-					$this->watermark($size_dest, $size_dest, $watermark, null, null, null, $images[$i]['image_ext']);
+					$thumbnail->watermark($watermark);
 				}
 			}
 		}
@@ -742,296 +750,6 @@ class Image extends Alkaline{
 	}
 	
 	/**
-	 * Resize image by fill
-	 *
-	 * @param string $src Source full path
-	 * @param string $dest Destination full path
-	 * @param int $height 
-	 * @param int $width 
-	 * @param int $quality 1-100
-	 * @param string $ext 
-	 * @return bool True if successful
-	 */
-	private function imageFill($src, $dest, $height, $width, $quality=null, $ext=null){
-		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
-		if(empty($ext)){ $ext = self::getExt($src); }
-		
-		$src = parent::correctWinPath($src);
-		$dest = parent::correctWinPath($dest);
-		
-		// ImageMagick version
-		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
-			$size = $this->getSize($src, $ext);
-			$width_orig = $size['width'];
-			$height_orig = $size['height'];
-			
-			$image = new Imagick($src);
-			
-			switch($ext){
-				case 'jpg':
-					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
-					$image->setImageCompressionQuality($quality);
-					$image->cropThumbnailImage($width, $height);
-					break;
-				case 'png':
-					$image->cropThumbnailImage($width, $height);
-					break;
-				case 'gif':
-					$image->cropThumbnailImage($width, $height);
-					break;
-				case 'pdf':
-					$res = $image->getImageResolution();
-					$x_ratio = $res['x'] / $image->getImageWidth();
-					$y_ratio = $res['y'] / $image->getImageHeight();
-					$image->removeImage();
-					$image->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
-					$image->readImage($src);
-					$image->setImageFormat('png');
-					$image->cropThumbnailImage($width, $height);
-					$dest = $this->changeExt($dest, 'png');
-					break;
-				case 'svg':
-					$res = $image->getImageResolution();
-					$x_ratio = $res['x'] / $image->getImageWidth();
-					$y_ratio = $res['y'] / $image->getImageHeight();
-					$image->removeImage();
-					$image->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
-					$image->readImage($src);
-					$image->setImageFormat('png');
-					$image->cropThumbnailImage($width, $height);
-					$dest = $this->changeExt($dest, 'png');
-					break;
-			}
-			
-			$image->writeImage($dest);
-			$image->clear();
-			$image->destroy();
-			return true;
-		}
-		// GD version
-		else{
-			list($width_orig, $height_orig) = getimagesize($src);
-
-			$ratio_orig = $width_orig / $height_orig;
-			$ratio = $width / $height;
-			
-			switch($ext){
-				case 'jpg':
-					if($ratio_orig > $ratio){
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefromjpeg($src);
-						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
-						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * ($ratio_orig / $ratio), $height, $width_orig, $height_orig);
-						imagejpeg($image_p, $dest, $quality);
-					}
-					else{
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefromjpeg($src);
-						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
-						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * ($ratio / $ratio_orig), $width_orig, $height_orig);
-						imagejpeg($image_p, $dest, $quality);
-					}
-
-					imagedestroy($image);
-					imagedestroy($image_p);
-					return true;
-					break;
-				case 'png':
-					$quality_tmp = floor((1 / $quality) * 95);
-				
-					if($ratio_orig > $ratio){
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefrompng($src);
-						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
-						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-						imagepng($image_p, $dest, $quality_tmp);
-					}
-					else{
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefrompng($src);
-						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
-						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-						imagepng($image_p, $dest, $quality_tmp);
-					}
-
-					imagedestroy($image);
-					imagedestroy($image_p);
-					return true;
-					break;
-				case 'gif':
-					if($ratio_orig > $ratio){
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefromgif($src);
-						$pixel = ($width * ($ratio_orig / $ratio)) - ($width * pow(($ratio / $ratio_orig), 2));
-						imagecopyresampled($image_p, $image, 0, 0, $pixel, 0, $width * $ratio_orig, $height, $width_orig, $height_orig);
-						imagegif($image_p, $dest);
-					}
-					else{
-						$image_p = imagecreatetruecolor($width, $height);
-						$image = imagecreatefromgif($src);
-						$pixel = ($height * ($ratio / $ratio_orig)) - ($height * pow(($ratio_orig / $ratio), 2));
-						imagecopyresampled($image_p, $image, 0, 0, 0, $pixel, $width, $height * (1 / $ratio_orig), $width_orig, $height_orig);
-						imagegif($image_p, $dest);
-					}
-
-					imagedestroy($image);
-					imagedestroy($image_p);
-					return true;
-					break;
-				default:
-					return false;
-					break;
-			}
-		}
-	}
-	
-	/**
-	 * Resize image by scale
-	 *
-	 * @param string $src Source full path
-	 * @param string $dest Destination full path
-	 * @param int $height 
-	 * @param int $width 
-	 * @param int $quality 1-100
-	 * @param string $ext 
-	 * @return bool True if successful
-	 */
-	private function imageScale($src, $dest, $height, $width, $quality=null, $ext=null){
-		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
-		if(empty($ext)){ $ext = self::getExt($src); }
-		
-		$src = parent::correctWinPath($src);
-		$dest = parent::correctWinPath($dest);
-		
-		// ImageMagick version
-		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
-			$image = new Imagick($src);
-			
-			$size = $this->getSize($src, $ext);
-			$width_orig = $size['width'];
-			$height_orig = $size['height'];
-			
-			if(($width_orig <= $width) and ($height_orig <= $height)){
-				switch($ext){
-					case 'jpg':
-						copy($src, $dest);
-						return true;
-					case 'png':
-						copy($src, $dest);
-						return true;
-					case 'gif':
-						copy($src, $dest);
-						return true;
-				}
-			}
-
-			$ratio_orig = $width_orig / $height_orig;
-			$ratio = $width / $height;
-
-			if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
-			else{ $width = $height * $ratio_orig; }
-			
-			switch($ext){
-				case 'jpg':
-					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
-					$image->setImageCompressionQuality($quality);
-					$image->thumbnailImage($width, $height);
-					break;
-				case 'png':
-					$image->thumbnailImage($width, $height);
-					break;
-				case 'gif':
-					$image->thumbnailImage($width, $height);
-					break;
-				case 'pdf':
-					$res = $image->getImageResolution();
-					$x_ratio = $res['x'] / $image->getImageWidth();
-					$y_ratio = $res['y'] / $image->getImageHeight();
-					$image->removeImage();
-					$image->setResolution($width * $x_ratio, $height * $y_ratio);
-					$image->readImage($src);
-					$image->setImageFormat('png');
-					$dest = $this->changeExt($dest, 'png');
-					break;
-				case 'svg':
-					$res = $image->getImageResolution();
-					$x_ratio = $res['x'] / $image->getImageWidth();
-					$y_ratio = $res['y'] / $image->getImageHeight();
-					$image->removeImage();
-					$image->setResolution($width * $x_ratio, $height * $y_ratio);
-					$image->readImage($src);
-					$image->setImageFormat('png');
-					$dest = $this->changeExt($dest, 'png');
-					break;
-			}
-			
-			$image->writeImage($dest);
-			$image->clear();
-			$image->destroy();
-			return true;
-		}
-		// GD version
-		else{
-			list($width_orig, $height_orig) = getimagesize($src);
-		
-			if(($width_orig <= $width) and ($height_orig <= $height)){
-				copy($src, $dest);
-				return true;
-			}
-
-			$ratio_orig = $width_orig / $height_orig;
-			$ratio = $width / $height;
-
-			if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
-			else{ $width = $height * $ratio_orig; }
-			
-			switch($ext){
-				case 'jpg':
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromjpeg($src);
-					
-					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-					imagejpeg($image_p, $dest, $quality);
-				
-					imagedestroy($image);
-					imagedestroy($image_p);
-					
-					return true;
-					break;
-				case 'png':
-					$quality_tmp = floor((1 / $quality) * 95);
-					
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefrompng($src);
-					
-					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-					imagepng($image_p, $dest, $quality_tmp);
-
-					imagedestroy($image);
-					imagedestroy($image_p);
-					
-					return true;
-					break;
-				case 'gif':
-					$image_p = imagecreatetruecolor($width, $height);
-					$image = imagecreatefromgif($src);
-					
-					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-					imagegif($image_p, $dest);
-
-					imagedestroy($image);
-					imagedestroy($image_p);
-					
-					return true;
-					break;
-				default:
-					return false;
-					break;
-			}
-		}
-	}
-	
-	/**
 	 * Generate Colorkey data
 	 *
 	 * @param array $images 
@@ -1047,8 +765,10 @@ class Image extends Alkaline{
 		}
 		for($i = 0; $i < $image_count; ++$i){		
 			$dest = preg_replace('/(.*[0-9]+)(\..+)/', '$1-tmp$2', $images[$i]['image_file']);
-		
-			self::imageScale($images[$i]['image_file'], $dest, 50, 50, 100, $images[$i]['image_ext']);
+			
+			$thumbnail = new Thumbnail($images[$i]['image_file']);
+			$thumbnail->resize(50, 50);
+			$thumbnail->save($dest);
 		
 			switch($images[$i]['image_ext']){
 				case 'jpg':
@@ -1752,6 +1472,7 @@ class Image extends Alkaline{
 			}
 		}
 		
+		
 		return $this->pages;
 	}
 	
@@ -1956,196 +1677,6 @@ class Image extends Alkaline{
 			$image['image_published_format'] = parent::formatTime($image['image_published'], $format);
 			$image['image_modified_format'] = parent::formatTime($image['image_modified'], $format);
 		}
-	}
-	
-	/**
-	 * Watermark image
-	 *
-	 * @param string $src Source full path
-	 * @param string $dest Destination full path
-	 * @param string $watermark Watermark full path
-	 * @param int $margin Margin (in pixels)
-	 * @param string $position Watermark position
-	 * @param int $quality 1-100
-	 * @param string $ext Extension
-	 * @return void
-	 */
-	private function watermark($src, $dest, $watermark, $margin=null, $position=null, $quality=null, $ext=null){
-		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
-		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
-		if(empty($quality)){ $quality = $this->returnConf('thumb_compress_tol'); }
-		if(empty($ext)){ $ext = self::getExt($src); }
-		
-		$src = parent::correctWinPath($src);
-		$dest = parent::correctWinPath($dest);
-		$watermark = parent::correctWinPath($watermark);
-		
-		// Check to see if watermark exists
-		if(!file_exists($watermark)){ $this->addNote('Watermark file could not be found', 'error'); return; }
-		
-		if(class_exists('Imagick', false) and $this->returnConf('thumb_imagick')){
-			$image = new Imagick($src);
-			$image_watermark = new Imagick($watermark);
-			
-			list($width, $height) = getimagesize($src);
-			list($width_watermark, $height_watermark) = getimagesize($watermark);
-			
-			switch($ext){
-				case 'jpg':
-					$image->setImageCompression(Imagick::COMPRESSION_JPEG); 
-					$image->setImageCompressionQuality($quality);
-					break;
-				case 'png':
-					break;
-				case 'gif':
-					break;
-			}
-			
-			if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
-			
-			list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
-			
-			$image->compositeImage($image_watermark, Imagick::COMPOSITE_DEFAULT, $pos_x, $pos_y);
-			$image->flattenImages();
-			
-			$image->writeImage($dest);
-			$image->clear();
-			$image->destroy();
-			return true;
-		}
-		else{
-			$watermark = imagecreatefrompng($watermark);
-
-			imagealphablending($watermark, false);
-		    imagesavealpha($watermark, true);
-
-			$width_watermark = imagesx($watermark);
-			$height_watermark = imagesy($watermark);
-			
-			switch($ext){
-				case 'jpg':
-					$image = imagecreatefromjpeg($src);
-					imagealphablending($image, true);
-				
-					$width = imagesx($image);
-					$height = imagesy($image);
-				
-					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
-					
-					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
-				
-					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-					imagedestroy($watermark);
-					imagejpeg($image, $dest, $quality);
-					imagedestroy($image);
-				
-					return true;
-					break;
-				case 'png':
-					$image = imagecreatefrompng($src);
-					imagealphablending($image, true);
-					
-					$quality_tmp = floor((1 / $quality) * 95);
-					
-					$width = imagesx($image);
-					$height = imagesy($image);
-				
-					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
-				
-					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
-				
-					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-					imagedestroy($watermark);
-					imagepng($image, $dest, $quality_tmp);
-					imagedestroy($image);
-				
-					return true;
-					break;
-				case 'gif':
-					$image = imagecreatefromgif($src);
-					
-					$width = imagesx($image);
-					$height = imagesy($image);
-				
-					if((($height_watermark + ($margin * 2)) > $height) or (($width_watermark + ($margin * 2)) > $width)){ return false; break; }
-				
-					list($pos_x, $pos_y) = $this->watermarkPosition($height, $width, $height_watermark, $width_watermark, $margin, $position);
-				
-					$image_temp = imagecreatetruecolor($width, $height);
-					imagecopy($image_temp, $image, 0, 0, 0, 0, $width, $height);
-					$image = $image_temp;
-					imagealphablending($image, true);
-				
-					imagecopy($image, $watermark, $pos_x, $pos_y, 0, 0, $width_watermark, $height_watermark);
-					imagedestroy($watermark);
-					imagegif($image, $dest, $quality);
-					imagedestroy($image);
-				
-					return true;
-					break;
-				default:
-					return false;
-					break;
-			}
-		}
-	}
-	
-	/**
-	 * Determine watermark position
-	 *
-	 * @param int $image_height Image height (in pixels)
-	 * @param int $image_width Image width (in pixels)
-	 * @param int $water_height Watermark height (in pixels)
-	 * @param int $water_width Watermark width (in pixels)
-	 * @param int $margin Margin (in pixels)
-	 * @param string $position 'nw', 'ne', 'sw', '00', 'n0', 's0', '0e', '0w'
-	 * @return void
-	 */
-	private function watermarkPosition($image_height, $image_width, $water_height, $water_width, $margin=null, $position=null){
-		if(empty($margin)){ $margin = $this->returnConf('thumb_watermark_margin'); }
-		if(empty($position)){ $position = $this->returnConf('thumb_watermark_pos'); }
-		switch($position){
-			case 'nw':
-				$pos_x = $margin;
-				$pos_y = $margin;
-				break;
-			case 'ne':
-				$pos_x = $image_width - $water_width - $margin;
-				$pos_y = $margin;
-				break;
-			case 'sw':
-				$pos_x = $margin;
-				$pos_y = $image_height - $water_height - $margin;
-				break;
-			case 'se':
-				$pos_x = $image_width - $water_width - $margin;
-				$pos_y = $image_height - $water_height - $margin;
-				break;
-			case '00':
-				$pos_x = ($image_width / 2) - ($water_width / 2);
-				$pos_y = ($image_height / 2) - ($water_height / 2);
-				break;
-			case 'n0':
-				$pos_x = ($image_width / 2) - ($water_width / 2);
-				$pos_y = $margin;
-				break;
-			case 's0':
-				$pos_x = ($image_width / 2) - ($water_width / 2);
-				$pos_y = $image_height - $water_height - $margin;
-				break;
-			case '0e':
-				$pos_x = $image_width - $water_width - $margin;
-				$pos_y = ($image_height / 2) - ($water_height / 2);
-				break;
-			case '0w':
-				$pos_x = $margin;
-				$pos_y = ($image_height / 2) - ($water_height / 2);
-				break;
-			default:
-				return false;
-				break;
-		}
-		return array($pos_x, $pos_y);
 	}
 }
 
