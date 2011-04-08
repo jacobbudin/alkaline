@@ -134,6 +134,32 @@ class Set extends Alkaline{
 	}
 	
 	/**
+	 * Rebuild sets
+	 *
+	 * @return void
+	 */
+	public function rebuild(){
+		for($i = 0; $i < $this->set_count; ++$i){
+			if($this->sets[$i]['set_type'] == 'auto'){
+				$images = new Find('images');
+				$images->sets(intval($this->sets[$i]['set_id']));
+			}
+			elseif($this->sets[$i]['set_type'] == 'static'){
+				$images = new Find('images');
+				$images->sets(intval($this->sets[$i]['set_id']));
+				$images->find();
+				
+				$set_images = @implode(', ', $images->ids);
+				$set_image_count = $images->count;
+
+				$fields = array('set_images' => $set_images,
+					'set_image_count' => $set_image_count);
+				$this->updateRow($fields, 'sets', $this->sets[$i]['set_id']);
+			}
+		}
+	}
+	
+	/**
 	 * Get word and numerical sequencing of sets
 	 *
 	 * @param int $start First number on page
@@ -199,9 +225,12 @@ class Set extends Alkaline{
 	/**
 	 * Get sets' images
 	 *
+	 * @param int $limit Images per set
+	 * @param string $column Table column
+	 * @param string $sort Sort order (ASC or DESC)
 	 * @return Image
 	 */
-	public function getImages(){
+	public function getImages($limit=0, $column=null, $sort='ASC'){
 		$ids_cumulative = array();
 		$set_image_ids = array();
 		
@@ -218,16 +247,29 @@ class Set extends Alkaline{
 		
 		if(count($ids_cumulative) == 0){ return false; }
 		
-		$ids_cumulative = array_unique($ids_cumulative);
+		$image_ids = new Find('images', $ids_cumulative);
+		$image_ids->sort($column, $sort);
+		$image_ids->find();
 		
-		$images = new Image($ids_cumulative);
+		$images = new Image($image_ids);
 		
 		$new_images = array();
+		$set_image_counts = array();
 		
 		for($i=0; $i < $images->image_count; $i++){
 			$image_sets = $set_image_ids[$images->images[$i]['image_id']];
 			foreach($this->set_ids as $set_id){
 				if(in_array($set_id, $image_sets)){
+					if(array_key_exists($set_id, $set_image_counts)){
+						$set_image_counts[$set_id]++;
+					}
+					else{
+						$set_image_counts[$set_id] = 1;
+					}
+					
+					if(($set_image_counts[$set_id] > $limit) and ($limit > 0)){
+						continue;
+					}
 					$new_image = $images->images[$i];
 					$new_image['set_id'] = $set_id;
 					$new_images[] = $new_image;

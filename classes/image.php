@@ -1187,12 +1187,21 @@ class Image extends Alkaline{
 	 */
 	public function delete(){
 		$this->deSizeImage(true);
+		$this->getSets();
+		
 		for($i = 0; $i < $this->image_count; ++$i){
 			@$this->exec('DELETE FROM images WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 			@$this->exec('DELETE FROM comments WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 			@$this->exec('DELETE FROM exifs WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 			@$this->exec('DELETE FROM links WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
 		}
+		
+		foreach($this->sets as $set){
+			$a_set = new Set($set['set_id']);
+			$a_set->rebuild();
+		}
+		
+		return true;
 	}
 	
 	/**

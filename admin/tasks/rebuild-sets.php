@@ -18,21 +18,14 @@ $user->perm(true);
 $id = $alkaline->findID(@$_POST['image_id']);
 
 if(empty($id)){
-	$sets = $alkaline->getTable('sets');
+	$sets = new Find('sets');
+	$sets->find();
 	
-	$set_ids = array();
-	
-	foreach($sets as $set){
-		if($set['set_type'] == 'auto'){
-			$set_ids[] = $set['set_id'];
-		}
-	}
-	
-	echo json_encode($set_ids);
+	echo json_encode($sets->ids);
 }
 else{
-	$images = new Find('images');
-	$images->sets(intval($id));
+	$set = new Set(intval($id));
+	$set->rebuild();
 }
 
 ?>
