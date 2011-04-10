@@ -50,7 +50,7 @@ if(!empty($_POST['image_id'])){
 		}
 		else{
 			$image_markup_ext = '';
-			$image_description = nl2br($image_description_raw);
+			$image_description = $alkaline->nl2br($image_description_raw);
 		}
 		
 		if(@$_POST['image_comment_disabled'] == 'disabled'){

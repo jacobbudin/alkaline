@@ -51,7 +51,7 @@ if(!empty($_POST['page_id'])){
 		}
 		else{
 			$page_markup_ext = '';
-			$page_text = nl2br($page_text_raw);
+			$page_text = $alkaline->nl2br($page_text_raw);
 		}
 		
 		$page_images = implode(', ', $alkaline->findIDRef($page_text));

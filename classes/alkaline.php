@@ -21,11 +21,11 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 918;
+	const build = 928;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
-	const version = '1.0';
+	const version = '1.0.2';
 	
 	public $db_type;
 	public $db_version;
@@ -1314,7 +1314,7 @@ class Alkaline{
 		
 		if(!isset($comment_text)){
 			$comm_markup_ext = '';
-			$comment_text = nl2br($comment_text_raw);
+			$comment_text = $this->nl2br($comment_text_raw);
 		}
 		
 		if($this->returnConf('comm_allow_html')){
@@ -2585,6 +2585,18 @@ class Alkaline{
 			}
 		}
 		return $string;
+	}
+	
+	/**
+	 * Apply nl2br() when you don't know if <p> tags are being used
+	 *
+	 * @param string $str
+	 * @return string
+	 */
+	public function nl2br($str){
+		$str = nl2br($str);
+		$str = str_replace('</p><br /><br />', '</p>', $str);
+		return $str;
 	}
 	
 	/**

@@ -40,7 +40,7 @@ if(!empty($_POST['image_ids'])){
 			}
 			else{
 				$image_markup_ext = '';
-				$image_description = nl2br($image_description_raw);
+				$image_description = $alkaline->nl2br($image_description_raw);
 			}
 			
 			$fields = array('image_title' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']),

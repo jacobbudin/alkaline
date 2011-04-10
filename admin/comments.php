@@ -72,7 +72,7 @@ if(!empty($_POST['comment_id'])){
 		}
 		else{
 			$comment_markup_ext = '';
-			$comment_text = nl2br($comment_text_raw);
+			$comment_text = $alkaline->nl2br($comment_text_raw);
 		}
 		
 		

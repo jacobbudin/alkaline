@@ -71,7 +71,7 @@ if(!empty($_POST['post_id'])){
 		}
 		else{
 			$post_markup_ext = '';
-			$post_text = nl2br($post_text_raw);
+			$post_text = $this->nl2br($post_text_raw);
 		}
 		
 		// Comment disabling
