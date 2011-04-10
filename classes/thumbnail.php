@@ -31,14 +31,15 @@ class Thumbnail extends Alkaline{
 		$file = parent::correctWinPath($file);
 		
 		$this->quality = $this->returnConf('thumb_compress_tol');
+		if($this->quality < 50){ $this->quality = 90; }
 		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
 			$this->library = 'imagick';
 			$this->thumbnail = new Imagick($file);
 		}
 		else{
 			$this->library = 'gd';
-			require_once('phpthumb/ThumbLib.inc.php');
-			$this->thumbnail = PhpThumbFactory::create($file, array('jpegQuality' => $this->quality, 'resizeUp' => true));
+			require_once(PATH . CLASSES . 'phpthumb/ThumbLib.inc.php');
+			$this->thumbnail = PhpThumbFactory::create($file, array('jpegQuality' => $this->quality));
 		}
 		
 		$this->ext = Image::getExt($file);
