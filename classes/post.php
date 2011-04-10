@@ -112,6 +112,20 @@ class Post extends Alkaline{
 	}
 	
 	/**
+	 * Deletes posts
+	 *
+	 * @return void
+	 */
+	public function delete(){
+		$ids = array();
+		for($i = 0; $i < $this->post_count; ++$i){
+			$ids[] = $this->posts[$i]['post_id'];
+		}
+		
+		$this->deleteRow('posts', $ids);
+	}
+	
+	/**
 	 * Update post table
 	 *
 	 * @param array $array Associative array of columns and fields
