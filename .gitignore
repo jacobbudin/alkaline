@@ -1,6 +1,7 @@
 *.png
 *.jpg
 *.gif
+*.psd
 .*
 test.php
 
