@@ -288,6 +288,14 @@ $test = new AlkalineCS();
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>
+				<tr>
+					<?php $result = $test->isExt('xmlrpc', false); echo $test->boolToIMG($result); ?>
+					<td>
+						<strong>PHP XML-RPC support</strong><br />
+						<span class="quiet">PHP XML-RPC allows Alkaline to interact with third-party blogging clients.</span>
+					</td>
+					<?php echo $test->boolToHTML($result); ?>
+				</tr>
 			</table>
 			
 			<?php echo $test->noteRAM(); ?>
@@ -305,7 +313,7 @@ $test = new AlkalineCS();
 					?>
 					<img src="http://www.alkalineapp.com/remote/cs/images/failure.png" alt="" /><br />
 					<strong>Uh-oh, you cannot install Alkaline here.</strong><br />
-					<span class="quiet small"><a href="http://www.alkalineapp.com/">Learn how to make your Web server compatible with Alkaline.</a></span>
+					<span class="quiet small"><a href="http://www.alkalineapp.com/compatibility/">Learn how to make your Web server compatible with Alkaline.</a></span>
 					<?php
 				}
 				?>
