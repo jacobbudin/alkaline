@@ -116,7 +116,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table style="width: 70%">
 		<tr>
-			<td class="right middle"><label for="web_title">Name:</label></td>
+			<td class="right middle"><label for="web_name">Name:</label></td>
 			<td><input type="text" id="web_name" name="web_name" value="<?php echo $alkaline->returnConf('web_name'); ?>" class="m" /></td>
 		</tr>
 		<tr>

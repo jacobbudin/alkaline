@@ -201,7 +201,7 @@ class XMLRPC extends Alkaline{
 			if(strtotime($post['post_published']) <= $now){ $is_draft = false; }
 			else{ $is_draft = true; }
 			
-			$return = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft);
+			$return = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft, 'link' => $post['post_uri']);
 		}
 		
 		return $return;
@@ -237,10 +237,47 @@ class XMLRPC extends Alkaline{
 			if(strtotime($post['post_published']) <= $now){ $is_draft = false; }
 			else{ $is_draft = true; }
 			
-			$return[] = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft);
+			$return[] = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft, 'link' => $post['post_uri']);
 		}
 		
 		return $return;
+	}
+	
+	public function getUsersBlogs($method, $args){
+		list($appkey, $username, $password) = $args;
+		
+		$this->auth($username, $password);
+		
+		$return = array();
+		
+		$blogName = $this->returnConf('web_title');
+		
+		if(empty($blogName)){ $blogName = $this->returnConf('web_name'); }
+		if(empty($blogName)){ $blogName = ''; }
+		
+		$return[] = array('url' => LOCATION . BASE, 'blogid' => '1', 'blogName' => $blogName);
+		
+		return $return;
+	}
+	
+	public function getUserInfo($method, $args){
+		list($appkey, $username, $password) = $args;
+		
+		$this->auth($username, $password);
+		
+		$return = array('userid' => $this->user->user['user_id'],
+			'email' => $this->user->user['user_email'],
+			'nickname' => $this->user->user['user_user']);
+		
+		return $return;
+	}
+	
+	public function getCategories($method, $args){
+		list($blogid, $username, $password,) = $args;
+		
+		$this->auth($username, $password);
+		
+		return array();
 	}
 }
 

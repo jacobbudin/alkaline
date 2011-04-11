@@ -74,7 +74,8 @@ class Alkaline{
 		if(session_id() == ''){ session_start(); }
 		
 		// Debug info
-		if(get_class($this) == 'Alkaline'){
+		$chief_classes = array('Alkaline', 'XMLRPC');
+		if(in_array(get_class($this), $chief_classes)){
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
 			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'config.json')), true);

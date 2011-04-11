@@ -22,7 +22,10 @@ xmlrpc_server_register_method($server, 'metaWeblog.getPost', array(&$xmlrpc, 'ge
 xmlrpc_server_register_method($server, 'metaWeblog.getRecentPosts', array(&$xmlrpc, 'getRecentPosts'));
 xmlrpc_server_register_method($server, 'metaWeblog.newMediaObject', array(&$xmlrpc, 'newMediaObject'));
 xmlrpc_server_register_method($server, 'metaWeblog.deletePost', array(&$xmlrpc, 'deletePost'));
+xmlrpc_server_register_method($server, 'metaWeblog.getCategories', array(&$xmlrpc, 'getCategories'));
 xmlrpc_server_register_method($server, 'blogger.deletePost', array(&$xmlrpc, 'deletePost'));
+xmlrpc_server_register_method($server, 'blogger.getUserInfo', array(&$xmlrpc, 'getUserInfo'));
+xmlrpc_server_register_method($server, 'blogger.getUsersBlogs', array(&$xmlrpc, 'getUsersBlogs'));
 
 if($response = xmlrpc_server_call_method($server, $request, null, array('encoding' => 'UTF-8'))){
 	header('Content-Type: text/xml');
