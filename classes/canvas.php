@@ -199,6 +199,35 @@ class Canvas extends Alkaline{
 	}
 	
 	/**
+	 * Set the HTML5 microdata breadcrumb variable
+	 *
+	 * @param array $links Associative array of links (title => URI)
+	 * @return bool True if successful
+	 */
+	public function setBreadcrumb($array){
+		$source = $this->returnConf('web_title');
+		
+		$j = 0;
+		$breadcrumb = '<div itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="breadcrumb">' . "\n\t";
+		$breadcrumb .= '<a href="' . LOCATION . BASE . '" itemprop="url"><span itemprop="title">' . $source . '</span></a>' . "\n\t\t";
+		
+		foreach($array as $key => $value){
+			$j++;
+			$breadcrumb .= '<div itemprop="child" itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="breadcrumb_child">' . "\n\t";
+			$breadcrumb .= '<a href="' . $value . '" itemprop="url"><span itemprop="title">' . $key . '</span></a>' . "\n\t\t";
+		}
+		
+		for($i=0; $i < $j; $i++){ 
+			$breadcrumb .= '</div>';
+		}
+		
+		$breadcrumb .= '</div>';
+		
+		// Set variable
+		return $this->assign('BREADCRUMB', $breadcrumb);
+	}
+	
+	/**
 	 * Set a image object to process blocks and nested blocks
 	 *
 	 * @param Image $object Image object
