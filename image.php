@@ -36,10 +36,12 @@ $images->getSets();
 $images->getRights();
 $images->getComments(true);
 $images->hook();
+$image = $images->images[0];
 
 $header = new Canvas;
 $header->load('header');
-$header->setTitle(@$images->images[0]['image_title']);
+$header->setTitle(@$image['image_title']);
+$header->assign('Canonical', $image['image_uri']);
 $header->display();
 
 $content = new Canvas;
@@ -48,8 +50,11 @@ $content->load('image');
 $content->loop($images);
 $content->display();
 
+$breadcrumb = array('Images' => '/');
+
 $footer = new Canvas;
 $footer->load('footer');
+$footer->setBreadcrumb($breadcrumb);
 $footer->display();
 
 ?>
