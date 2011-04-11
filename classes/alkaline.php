@@ -2597,6 +2597,8 @@ class Alkaline{
 	public function nl2br($str){
 		$str = nl2br($str);
 		$str = str_replace('</p><br /><br />', '</p>', $str);
+		$str = str_replace('</ul><br /><br />', '</ul>', $str);
+		$str = str_replace('</ol><br /><br />', '</ol>', $str);
 		return $str;
 	}
 	
