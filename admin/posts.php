@@ -109,7 +109,8 @@ define('TAB', 'posts');
 
 // CREATE POST
 if(!empty($post_act) and ($post_act == 'add')){
-	$post_id = $alkaline->addRow(null, 'posts');
+	$fields = array('user_id' => $user->user['user_id']);
+	$post_id = $alkaline->addRow($fields, 'posts');
 }
 
 // GET POSTS TO VIEW OR PAGE TO EDIT
