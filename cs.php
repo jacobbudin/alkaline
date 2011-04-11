@@ -302,7 +302,7 @@ $test = new AlkalineCS();
 			
 			<p class="center large">
 				<?php
-				if($test->compatible == true){
+				if(($test->compatible == true) and !empty($test->ic_version) and ($test->ic_version >= 4)){
 					?>
 					<img src="http://www.alkalineapp.com/remote/cs/images/success.png" alt="" /><br />
 					<strong>Good news, you can install Alkaline here!</strong><br />
