@@ -65,7 +65,7 @@ class XMLRPC extends Alkaline{
 		
 		$post_images = implode(', ', $this->findIDRef($post_text));
 		
-		$post_words = $this->countWords($_POST['post_text_raw'], 0);
+		$post_words = $this->countWords($post_text_raw);
 		
 		$fields = array('post_title' => $this->makeUnicode($post_title),
 			'post_title_url' => $post_title_url,
@@ -172,7 +172,7 @@ class XMLRPC extends Alkaline{
 		
 		$post_images = implode(', ', $this->findIDRef($post_text));
 		
-		$post_words = $this->countWords($_POST['post_text_raw'], 0);
+		$post_words = $this->countWords($post_text_raw);
 		
 		$fields = array('post_title' => $this->makeUnicode($post_title),
 			'post_text_raw' => $this->makeUnicode($post_text_raw),
