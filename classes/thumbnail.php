@@ -31,7 +31,7 @@ class Thumbnail extends Alkaline{
 		$file = parent::correctWinPath($file);
 		
 		$this->quality = $this->returnConf('thumb_compress_tol');
-		if($this->quality < 50){ $this->quality = 90; }
+		if(empty($this->quality)){ $this->quality = 100; }
 		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
 			$this->library = 'imagick';
 			$this->thumbnail = new Imagick($file);
