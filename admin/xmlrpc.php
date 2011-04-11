@@ -23,6 +23,9 @@ xmlrpc_server_register_method($server, 'metaWeblog.getRecentPosts', array(&$xmlr
 xmlrpc_server_register_method($server, 'metaWeblog.newMediaObject', array(&$xmlrpc, 'newMediaObject'));
 xmlrpc_server_register_method($server, 'metaWeblog.deletePost', array(&$xmlrpc, 'deletePost'));
 xmlrpc_server_register_method($server, 'metaWeblog.getCategories', array(&$xmlrpc, 'getCategories'));
+xmlrpc_server_register_method($server, 'metaWeblog.deletePost', array(&$xmlrpc, 'deletePost'));
+xmlrpc_server_register_method($server, 'metaWeblog.getUserInfo', array(&$xmlrpc, 'getUserInfo'));
+xmlrpc_server_register_method($server, 'metaWeblog.getUsersBlogs', array(&$xmlrpc, 'getUsersBlogs'));
 xmlrpc_server_register_method($server, 'blogger.deletePost', array(&$xmlrpc, 'deletePost'));
 xmlrpc_server_register_method($server, 'blogger.getUserInfo', array(&$xmlrpc, 'getUserInfo'));
 xmlrpc_server_register_method($server, 'blogger.getUsersBlogs', array(&$xmlrpc, 'getUsersBlogs'));
