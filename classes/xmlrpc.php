@@ -60,7 +60,7 @@ class XMLRPC extends Alkaline{
 		// Publish?
 		$post_publish = '';
 		if(($publish == true) or ($publish == 'true')){
-			$post_publish == date('Y-m-d H:i:s');
+			$post_publish = date('Y-m-d H:i:s');
 		}
 		
 		$post_images = implode(', ', $this->findIDRef($post_text));
@@ -167,7 +167,7 @@ class XMLRPC extends Alkaline{
 		// Publish?
 		$post_publish = '';
 		if(($publish == true) or ($publish == 'true')){
-			$post_publish == date('Y-m-d H:i:s');
+			$post_publish = date('Y-m-d H:i:s');
 		}
 		
 		$post_images = implode(', ', $this->findIDRef($post_text));
