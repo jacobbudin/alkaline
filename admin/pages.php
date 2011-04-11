@@ -56,7 +56,7 @@ if(!empty($_POST['page_id'])){
 		
 		$page_images = implode(', ', $alkaline->findIDRef($page_text));
 		
-		$page_words = $alkaline->countWords($_POST['page_text_raw'], 0);
+		$page_words = $alkaline->countWords($_POST['page_text_raw']);
 		
 		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,

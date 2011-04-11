@@ -84,7 +84,7 @@ if(!empty($_POST['post_id'])){
 		
 		$post_images = implode(', ', $alkaline->findIDRef($post_text));
 		
-		$post_words = $alkaline->countWords($_POST['post_text_raw'], 0);
+		$post_words = $alkaline->countWords($_POST['post_text_raw']);
 		
 		$fields = array('post_title' => $alkaline->makeUnicode($post_title),
 			'post_title_url' => $post_title_url,

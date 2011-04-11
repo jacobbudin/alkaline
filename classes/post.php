@@ -19,6 +19,7 @@ class Post extends Alkaline{
 	public $post_ids;
 	public $post_count = 0;
 	public $post_count_result = 0;
+	public $user;
 	protected $sql;
 	
 	/**
@@ -109,6 +110,16 @@ class Post extends Alkaline{
 			$this->posts[$i]['post_views']++;
 			$this->exec('UPDATE posts SET post_views = ' . $this->posts[$i]['post_views'] . ' WHERE post_id = ' . $this->posts[$i]['post_id'] . ';');
 		}
+	}
+	
+	/**
+	 * Attribute actions to user
+	 *
+	 * @param User $user User object
+	 * @return void
+	 */
+	public function attachUser($user){
+		$this->user = $user->user;
 	}
 	
 	/**
