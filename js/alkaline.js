@@ -413,6 +413,29 @@ function addNote(note, type){
 	html.slideDown('fast');
 }
 
+window.launchQuickpic = function(){
+	var start = new Date();
+	setTimeout(function() {
+		if(new Date() - start > 2000){
+			return;
+		}
+		window.location = 'http://www.cliqcliq.com/quickpic/install/';
+	}, 1000);
+	
+	var getParams = ['action=' + BASE + ADMIN + 'upload.php',
+		'continue=' + BASE + ADMIN + 'shoebox.php',
+		'contact=0',
+		'images=1+',
+		'flickr=0',
+		'context=<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>',
+		'passcontext=1',
+		'video=0',
+		'edit=1',
+		'v=1.2'];
+	
+	window.location = 'vquickpic://?' + getParams.join('&');
+};
+
 $(document).ready(function(){
 	// PERMISSIONS
 	if(!empty(PERMISSIONS)){
@@ -722,29 +745,6 @@ $(document).ready(function(){
 	// UPLOAD
 	
 	if(page == 'Upload'){
-		window.launchQuickpic = function(){
-			var start = new Date();
-			setTimeout(function() {
-				if(new Date() - start > 2000){
-					return;
-				}
-				window.location = 'http://www.cliqcliq.com/quickpic/install/';
-			}, 1000);
-			
-			var getParams = ['action=' + BASE + ADMIN + 'upload.php',
-				'continue=' + BASE + ADMIN + 'shoebox.php',
-				'contact=0',
-				'images=1+',
-				'flickr=0',
-				'context=<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>',
-				'passcontext=1',
-				'video=0',
-				'edit=1',
-				'v=1.2'];
-			
-			window.location = 'vquickpic://?' + getParams.join('&');
-		};
-		
 		var upload_count = 0;
 		var upload_count_text;
 		var no_of_files;
