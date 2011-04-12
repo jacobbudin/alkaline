@@ -19,6 +19,7 @@ class Thumbnail extends Alkaline{
 	protected $path;
 	public $quality;
 	public $ext;
+	public $file;
 	
 	/**
 	 * Initiates Thumbnail class
@@ -29,9 +30,11 @@ class Thumbnail extends Alkaline{
 		parent::__construct();
 		
 		$file = parent::correctWinPath($file);
+		$ext = Image::getExt($file);
 		
 		$this->quality = $this->returnConf('thumb_compress_tol');
 		if(empty($this->quality)){ $this->quality = 100; }
+		
 		if(class_exists('Imagick', false) and ($this->returnConf('thumb_imagick') or in_array($ext, array('pdf', 'svg')))){
 			$this->library = 'imagick';
 			$this->thumbnail = new Imagick($file);
@@ -42,7 +45,8 @@ class Thumbnail extends Alkaline{
 			$this->thumbnail = PhpThumbFactory::create($file, array('jpegQuality' => $this->quality));
 		}
 		
-		$this->ext = Image::getExt($file);
+		$this->file = $file;
+		$this->ext = $ext;
 	}
 	
 	public function __destruct(){
@@ -77,7 +81,7 @@ class Thumbnail extends Alkaline{
 					$y_ratio = $res['y'] / $this->thumbnail->getImageHeight();
 					$this->thumbnail->removeImage();
 					$this->thumbnail->setResolution($width * $x_ratio, $height * $y_ratio);
-					$this->thumbnail->readImage($src);
+					$this->thumbnail->readImage($this->file);
 					$this->ext = 'png';
 					$this->thumbnail->setImageFormat('png');
 					break;
@@ -87,7 +91,7 @@ class Thumbnail extends Alkaline{
 					$y_ratio = $res['y'] / $this->thumbnail->getImageHeight();
 					$this->thumbnail->removeImage();
 					$this->thumbnail->setResolution($width * $x_ratio, $height * $y_ratio);
-					$this->thumbnail->readImage($src);
+					$this->thumbnail->readImage($this->file);
 					$this->ext = 'png';
 					$this->thumbnail->setImageFormat('png');
 					break;
@@ -120,7 +124,7 @@ class Thumbnail extends Alkaline{
 					$y_ratio = $res['y'] / $this->thumbnail->getImageHeight();
 					$this->thumbnail->removeImage();
 					$this->thumbnail->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
-					$this->thumbnail->readImage($src);
+					$this->thumbnail->readImage($this->file);
 					$this->thumbnail->setImageFormat('png');
 					$this->ext = 'png';
 					$this->thumbnail->cropThumbnailImage($width, $height);
@@ -131,7 +135,7 @@ class Thumbnail extends Alkaline{
 					$y_ratio = $res['y'] / $this->thumbnail->getImageHeight();
 					$this->thumbnail->removeImage();
 					$this->thumbnail->setResolution($width_orig * $x_ratio, $height_orig * $y_ratio);
-					$this->thumbnail->readImage($src);
+					$this->thumbnail->readImage($this->file);
 					$this->thumbnail->setImageFormat('png');
 					$this->ext = 'png';
 					$this->thumbnail->cropThumbnailImage($width, $height);
