@@ -63,6 +63,28 @@ class Thumbnail extends Alkaline{
 			$this->thumbnail->resize($height, $width);
 		}
 		elseif($this->library == 'imagick'){
+			$size = Image::getSize($this->file, $this->ext);
+			
+			$width_orig = $size['width'];
+			$height_orig = $size['height'];
+			
+			if(($width_orig <= $width) and ($height_orig <= $height)){
+				switch($ext){
+					case 'jpg':
+						return true;
+					case 'png':
+						return true;
+					case 'gif':
+						return true;
+				}
+			}
+			
+			$ratio_orig = $width_orig / $height_orig;
+			$ratio = $width / $height;
+
+			if($ratio_orig > $ratio){ $height = $width / $ratio_orig; }
+			else{ $width = $height * $ratio_orig; }
+			
 			switch($this->ext){
 				case 'jpg':
 					$this->thumbnail->setImageCompression(Imagick::COMPRESSION_JPEG); 
@@ -106,6 +128,11 @@ class Thumbnail extends Alkaline{
 			$this->thumbnail->adaptiveResize($height, $width);
 		}
 		elseif($this->library == 'imagick'){
+			$size = Image::getSize($this->file, $this->ext);
+			
+			$width_orig = $size['width'];
+			$height_orig = $size['height'];
+			
 			switch($this->ext){
 				case 'jpg':
 					$this->thumbnail->setImageCompression(Imagick::COMPRESSION_JPEG); 
