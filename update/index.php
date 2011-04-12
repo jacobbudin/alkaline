@@ -13,14 +13,18 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 
-// Import default SQL
-$queries = file_get_contents(PATH . 'update/' . $alkaline->db_type . '.sql');
-$queries = explode("\n", $queries);
+$builds = array(918, 928);
 
-foreach($queries as $query){
-	$query = trim($query);
-	if(!empty($query)){
-		$alkaline->exec($query);
+foreach($builds as $build){
+	// Import default SQL
+	$queries = file_get_contents(PATH . 'update/' . $build . '/' . $alkaline->db_type . '.sql');
+	$queries = explode("\n", $queries);
+
+	foreach($queries as $query){
+		$query = trim($query);
+		if(!empty($query)){
+			$alkaline->exec($query);
+		}
 	}
 }
 

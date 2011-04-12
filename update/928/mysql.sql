@@ -1,0 +1,1 @@
+ALTER TABLE `posts` ADD `user_id` smallint(5) unsigned default NULL;

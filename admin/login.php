@@ -42,7 +42,7 @@ if(!empty($username) or !empty($password)){
 		session_write_close();
 		
 		if(file_exists(PATH . 'update/index.php')){
-			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
+			header('Location: ' . LOCATION . BASE . 'update/');
 		}
 		elseif(empty($_POST['destination'])){
 			header('Location: ' . LOCATION . BASE . ADMIN . 'dashboard' . URL_CAP);
