@@ -40,6 +40,7 @@ $images->getRights();
 $header = new Canvas;
 $header->load('header');
 $header->setTitle(@$set['set_title']);
+$header->assign('Canonical', $set['set_uri']);
 $header->display();
 
 $content = new Canvas;

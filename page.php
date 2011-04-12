@@ -17,15 +17,16 @@ $id = $alkaline->findID($_GET['id']);
 if(!$id){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
 $pages = new Page($id);
-$pages->formatTime('F j, Y');
+$pages->formatTime();
 $pages->updateViews();
 $page = $pages->pages[0];
 
 if(!$page){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
 
 $header = new Canvas;
-$header->load('header_slim');
+$header->load('header');
 $header->setTitle($page['page_title']);
+$header->assign('Canonical', $page['page_uri']);
 $header->display();
 
 $content = new Canvas;
@@ -35,7 +36,7 @@ $content->assignArray($page);
 $content->display();
 
 $footer = new Canvas;
-$footer->load('footer_slim');
+$footer->load('footer');
 $footer->display();
 
 ?>
