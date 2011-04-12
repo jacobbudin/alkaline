@@ -27,7 +27,7 @@ if(empty($image_ids)){ $alkaline->addError('No image was found.', 'Try searching
 $images = new Image($image_ids);
 $images->updateViews();
 $images->formatTime();
-$images->getSizes('medium');
+$images->getSizes(array('large', 'medium'));
 $images->getEXIF();
 $images->getColorkey(950, 15);
 $images->getTags();

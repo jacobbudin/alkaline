@@ -1216,14 +1216,26 @@ class Image extends Alkaline{
 		$sizes = $this->convertToArray($sizes);
 		
 		// Find size's prefix and suffix
-		if(!empty($size)){
+		if(!empty($sizes)){
 			$sizes = array_map('strtolower', $sizes);
-			$value_slots = array_fill(0, count($sizes)*2, '?');
-			$query = $this->prepare('SELECT size_id, size_label, size_type, size_prepend, size_append, size_height, size_width FROM sizes WHERE LOWER(size_title) = ' . implode(' OR size_title = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR size_label = ', $value_slots) . ' ORDER BY (size_width*size_width) DESC');
+			$sizes_count = count($sizes);
+			
+			$sizes_new = array();
+			
+			foreach($sizes as $size){
+				$sizes_new[] = $size;
+				$sizes_new[] = $size;
+			}
+			
+			$sizes = $sizes_new;
+			
+			$value_slots = array_fill(0, $sizes_count, '?');
+			
+			$query = $this->prepare('SELECT * FROM sizes WHERE LOWER(size_title) = ' . implode(' OR LOWER(size_title) = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR LOWER(size_label) = ', $value_slots) . ' ORDER BY (size_width*size_height) DESC');
 			$query->execute($sizes);
 		}
 		else{
-			$query = $this->prepare('SELECT size_id, size_label, size_type, size_prepend, size_append, size_title, size_height, size_width FROM sizes ORDER BY (size_width*size_width) DESC');
+			$query = $this->prepare('SELECT * FROM sizes ORDER BY (size_width*size_height) DESC');
 			$query->execute();
 		}
 		
