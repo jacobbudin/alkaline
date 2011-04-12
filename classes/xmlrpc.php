@@ -68,7 +68,7 @@ class XMLRPC extends Alkaline{
 		$post_words = $this->countWords($post_text_raw);
 		
 		$fields = array('post_title' => $this->makeUnicode($post_title),
-			'user_id' => $this->user->user['user_id'];
+			'user_id' => $this->user->user['user_id'],
 			'post_title_url' => $post_title_url,
 			'post_text_raw' => $this->makeUnicode($post_text_raw),
 			'post_markup' => $post_markup_ext,
