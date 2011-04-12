@@ -180,7 +180,7 @@ class Thumbnail extends Alkaline{
 			$image = new Imagick($this->path);
 			$image_watermark = new Imagick($watermark);
 			
-			list($width, $height) = getimagesize($src);
+			list($width, $height) = getimagesize($this->path);
 			list($width_watermark, $height_watermark) = getimagesize($watermark);
 			
 			switch($this->ext){
@@ -338,6 +338,10 @@ class Thumbnail extends Alkaline{
 				return false;
 				break;
 		}
+		
+		$pos_x = intval($pos_x);
+		$pos_y = intval($pos_y);
+		
 		return array($pos_x, $pos_y);
 	}
 }
