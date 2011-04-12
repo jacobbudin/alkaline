@@ -355,6 +355,40 @@ class Post extends Alkaline{
 		return $this->comments;
 	}
 	
+	/**
+	 * Get users data and append to post array
+	 *
+	 * @return void
+	 */
+	public function getUsers(){
+		$ids = array();
+		
+		for($i = 0; $i < $this->post_count; ++$i){
+			$ids[] = $this->posts[$i]['user_id'];
+		}
+		
+		$ids = array_unique($ids);
+		
+		$users = $this->getTable('users', $ids);
+		
+		$user_ids = array();
+		
+		foreach($users as $user){
+			$user_ids[] = $user['user_id'];
+		}
+		
+		$no_save = array('user_key', 'user_pass', 'user_pass_salt');
+		
+		for($i = 0; $i < $this->post_count; ++$i){
+			$key = array_search($this->posts[$i]['user_id'], $user_ids);
+			foreach($users[$key] as $field => $value){
+				if(in_array($field, $no_save)){ continue; }
+				$this->posts[$i][$field] = $users[$key][$field];
+			}
+		}
+		
+		return $this->users;
+	}
 }
 
 ?>

@@ -1451,6 +1451,41 @@ class Image extends Alkaline{
 	}
 	
 	/**
+	 * Get users data and append to image array
+	 *
+	 * @return void
+	 */
+	public function getUsers(){
+		$ids = array();
+		
+		for($i = 0; $i < $this->image_count; ++$i){
+			$ids[] = $this->images[$i]['user_id'];
+		}
+		
+		$ids = array_unique($ids);
+		
+		$users = $this->getTable('users', $ids);
+		
+		$user_ids = array();
+		
+		foreach($users as $user){
+			$user_ids[] = $user['user_id'];
+		}
+		
+		$no_save = array('user_key', 'user_pass', 'user_pass_salt');
+		
+		for($i = 0; $i < $this->image_count; ++$i){
+			$key = array_search($this->images[$i]['user_id'], $user_ids);
+			foreach($users[$key] as $field => $value){
+				if(in_array($field, $no_save)){ continue; }
+				$this->images[$i][$field] = $users[$key][$field];
+			}
+		}
+		
+		return $this->users;
+	}
+	
+	/**
 	 * Get pages data and append to image array
 	 *
 	 * @return array Associative array of pages
