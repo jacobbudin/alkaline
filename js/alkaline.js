@@ -413,7 +413,7 @@ function addNote(note, type){
 	html.slideDown('fast');
 }
 
-window.launchQuickpic = function(){
+window.launchQuickpic = function(context){
 	var start = new Date();
 	setTimeout(function() {
 		if(new Date() - start > 2000){
@@ -427,7 +427,7 @@ window.launchQuickpic = function(){
 		'contact=0',
 		'images=1+',
 		'flickr=0',
-		'context=<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>',
+		'context=' + context,
 		'passcontext=1',
 		'video=0',
 		'edit=1',

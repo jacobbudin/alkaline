@@ -51,7 +51,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 	?>
 	<script type="text/javascript">
-		launchQuickpic();
+		launchQuickpic('<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>');
 	</script>
 	<?php
 }
