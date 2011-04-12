@@ -242,6 +242,7 @@ textarea.comment_text{
  * Required for normal operation
  */
 
+.breadcrumb{ display: none; }
 .preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
 
 ul#slideshow{
