@@ -12,6 +12,8 @@ $request = file_get_contents('php://input');
 require_once('./../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
+if(!function_exists('xmlrpc_server_create')){ $alkaline->addError('Module not found.', 'You do not have the XML-RPC PHP module installed.', null, null, 500); }
+
 $xmlrpc = new XMLRPC();
 
 $server = xmlrpc_server_create();
