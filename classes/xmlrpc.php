@@ -205,6 +205,8 @@ class XMLRPC extends Alkaline{
 			$return = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft, 'link' => $post['post_uri']);
 		}
 		
+		xmlrpc_set_type(&$return['dateCreated'], 'datetime');
+		
 		return $return;
 	}
 	
@@ -239,6 +241,10 @@ class XMLRPC extends Alkaline{
 			else{ $is_draft = true; }
 			
 			$return[] = array('postid' => $post['post_id'], 'title' => $post['post_title'], 'description' => $post['post_text_raw'], 'dateCreated' => date('Ymd\TH:i:s', strtotime($post['post_created'])), 'isdraft' => $is_draft, 'link' => $post['post_uri']);
+		}
+		
+		foreach($return as &$r){
+			xmlrpc_set_type($r['dateCreated'], 'datetime');
 		}
 		
 		return $return;
