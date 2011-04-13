@@ -245,8 +245,6 @@ class Set extends Alkaline{
 			}
 		}
 		
-		if(count($ids_cumulative) == 0){ return false; }
-		
 		$image_ids = new Find('images', $ids_cumulative);
 		$image_ids->sort($column, $sort);
 		$image_ids->find();
