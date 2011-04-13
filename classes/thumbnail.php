@@ -60,7 +60,7 @@ class Thumbnail extends Alkaline{
 	
 	public function resize($width, $height){
 		if($this->library == 'gd'){
-			$this->thumbnail->resize($height, $width);
+			$this->thumbnail->resize($width, $height);
 		}
 		elseif($this->library == 'imagick'){
 			$size = Image::getSize($this->file, $this->ext);
@@ -125,7 +125,7 @@ class Thumbnail extends Alkaline{
 	
 	public function adaptiveResize($width, $height){
 		if($this->library == 'gd'){
-			$this->thumbnail->adaptiveResize($height, $width);
+			$this->thumbnail->adaptiveResize($width, $height);
 		}
 		elseif($this->library == 'imagick'){
 			$size = Image::getSize($this->file, $this->ext);
