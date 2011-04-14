@@ -228,9 +228,10 @@ class Set extends Alkaline{
 	 * @param int $limit Images per set
 	 * @param string $column Table column
 	 * @param string $sort Sort order (ASC or DESC)
+	 * @param bool|null $published Published (or not, or ignore)
 	 * @return Image
 	 */
-	public function getImages($limit=0, $column=null, $sort='ASC'){
+	public function getImages($limit=0, $column=null, $sort='ASC', $published=true){
 		$ids_cumulative = array();
 		$set_image_ids = array();
 		
@@ -246,6 +247,9 @@ class Set extends Alkaline{
 		}
 		
 		$image_ids = new Find('images', $ids_cumulative);
+		if(!is_null($published)){
+			$image_ids->published($published);
+		}
 		$image_ids->sort($column, $sort);
 		$image_ids->find();
 		
