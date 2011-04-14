@@ -572,6 +572,14 @@ $(document).ready(function(){
 	
 	updateAllTags();
 	
+	// PRIMARY - BUTTON ICONS
+	
+	$("button").each(function(){
+		button = $(this).text();
+		button = button.replace(/(\w+).*/, "$1").toLowerCase();
+		$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="12" /> ');
+	});
+	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();
 	
