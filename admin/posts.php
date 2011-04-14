@@ -129,7 +129,7 @@ if(empty($post_id)){
 	?>
 
 	<div class="span-24 last">
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>">Add post</a></div>
+		<div class="actions"><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Add post</button></a></div>
 	
 		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
@@ -255,7 +255,7 @@ else{
 	if(!empty($post['post_published'])){
 		$published = strtotime($post['post_published']);
 		if($published <= $now){
-			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '">Launch post</a>';
+			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '"><button>Launch post</button></a>';
 		}
 	}
 	
@@ -276,7 +276,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <?php echo $launch_action; ?></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a> <?php echo $launch_action; ?></div>
 	
 	<?php
 	

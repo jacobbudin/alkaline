@@ -71,7 +71,7 @@ if(empty($guest_id)){
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'guests' . URL_ACT . 'add' . URL_RW; ?>">Add guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'guests' . URL_ACT . 'add' . URL_RW; ?>"><button>Add guest</button></a></div>
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/guests.png" alt="" /> Guests (<?php echo $guest_count; ?>)</h1>
 	
@@ -123,7 +123,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'guests' . URL_AID . $guest['guest_id'] . URL_RW; ?>">Simulate Guest</a> <a href="<?php echo BASE . 'access' . URL_ID .  $guest['guest_key'] . URL_RW; ?>">Go to guest</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'guests' . URL_AID . $guest['guest_id'] . URL_RW; ?>"><button>Simulate guest</button></a> <a href="<?php echo BASE . 'access' . URL_ID .  $guest['guest_key'] . URL_RW; ?>"><button>Go to guest</button></a></div>
 	
 	<?php
 	

@@ -91,11 +91,6 @@ if(!empty($_POST['comment_id'])){
 	unset($comment_id);
 }
 
-// Configuration: comm_enabled
-if(!$alkaline->returnConf('comm_enabled')){
-	$alkaline->addNote('New comments have been disabled. You can enabled comments in your <a href="' . BASE . ADMIN . 'configuration' . URL_CAP . '">configuration</a>.', 'notice');
-}
-
 define('TAB', 'comments');
 
 // GET COMMENTS TO VIEW OR PILE TO EDIT
@@ -154,6 +149,15 @@ if(empty($comment_id)){
 			</table>
 		</div>
 	</form>
+	
+	<?php
+	// Configuration: comm_enabled
+	if(!$alkaline->returnConf('comm_enabled')){
+		?>
+		<p class="notice">New comments have been disabled. You can enabled comments in your <a href="/~jacobbudin/Alkaline/admin/configuration.php">configuration</a>.</p><br />
+		<?php
+	}
+	?>
 	
 	<div class="span-24 last">	
 		<?php
@@ -218,13 +222,13 @@ else{
 	
 	<?php if($comment['image_id'] != 0){ ?>
 		<div class="actions">
-			<a href="<?php echo BASE . ADMIN . 'images' . URL_ID . $comment['image_id'] . URL_RW; ?>">Go to image</a>
-			<a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>">Launch image</a>
+			<button><a href="<?php echo BASE . ADMIN . 'images' . URL_ID . $comment['image_id'] . URL_RW; ?>">Go to image</a></button>
+			<button><a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>">Launch image</a></button>
 		</div>
 	<?php } if($comment['post_id'] != 0){ ?>
 		<div class="actions">
-			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ID . $comment['post_id'] . URL_RW; ?>">Go to post</a>
-			<a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>">Launch post</a>
+			<button><a href="<?php echo BASE . ADMIN . 'posts' . URL_ID . $comment['post_id'] . URL_RW; ?>">Go to post</a></button>
+			<button><a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>">Launch post</a></button>
 		</div>
 	<?php } ?>
 	

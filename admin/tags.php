@@ -67,7 +67,7 @@ if(empty($tag_id)){
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/tags.png" alt="" /> Tags (<?php echo $tag_count; ?>)</h1>
 	
-	<p>Tags help you organize your image library.</p>
+	<p>Tags help you organize your image library. Add tags to images in <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">your library</a>.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -107,8 +107,8 @@ else{
 	?>
 	
 	<div class="actions">
-		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>">View images (<?php echo $image_ids->count; ?>)</a>
-		<a href="<?php echo BASE . 'tag' . URL_ID . $tag['tag_id'] . URL_RW; ?>">Launch tag</a>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['tag_id'] . URL_RW; ?>"><button>View images (<?php echo $image_ids->count; ?>)</button></a>
+		<a href="<?php echo BASE . 'tag' . URL_ID . $tag['tag_id'] . URL_RW; ?>"><button>Launch tag</button></a>
 	</div>
 		
 	<?php

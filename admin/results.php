@@ -36,7 +36,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div class="actions"><a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW; ?>">Bulk edit</a> <a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build set</a> <a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>">New search</a></div>
+<div class="actions">
+	<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW; ?>"><button>Bulk edit</button></a>
+	<a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>"><button>Build set</button></a>
+	<a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"><button>New search</button></a>
+</div>
 
 <h1>Search Results (<?php echo number_format($image_ids->count); ?>)</h1>
 

@@ -80,7 +80,7 @@ if(empty($right_id)){
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>">Add rights set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>"><button>Add rights set</button></a></div>
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/rights.png" alt="" /> Right Sets (<?php echo $right_count; ?>)</h1>
 	
@@ -136,7 +136,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>">View images (<?php echo $image_ids->count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW; ?>"><button>View images (<?php echo $image_ids->count; ?>)</button></a></div>
 	
 	<?php
 	

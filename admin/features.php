@@ -189,10 +189,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	if($user->perm(false, 'editor')){
 		?>
 		<div class="actions">
-			<a href="#select_all" id="select_all">Select all</a>
-			<a href="#deselect_all" id="deselect_all">Deselect all</a>
+			<a href="#select_all" id="select_all"><button>Select all</button></a>
+			<a href="#deselect_all" id="deselect_all"><button>Deselect all</button></a>
 			<?php if($is_memory === true){ ?>
-				<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>">Clear all</a>
+				<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'clear' . URL_RW; ?>"><button>Clear all</button></a>
 			<?php } ?>
 		</div>
 	

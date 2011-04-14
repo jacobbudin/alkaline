@@ -60,7 +60,7 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 
 <div class="span-24 last">
 	<div class="span-18 colborder">
-			<div class="actions"><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>" class="button">Go to Shoebox</a></div>
+			<div class="actions">Done uploading? <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
 		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
 			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
@@ -86,7 +86,7 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 		
 			<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
-			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
+			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">shoebox</a> to process your images.</p>
 		<?php } ?>
 	</div>
 </div>

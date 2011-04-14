@@ -164,7 +164,6 @@ table.census a{
 }
 
 #header_holder{
-	padding: 2em 0 0 0;
 	background: #ccc url(../images/header_bg.png) bottom left repeat-x;
 }
 
@@ -195,21 +194,41 @@ table.census a{
 	text-decoration: none;
 }
 
-#search_panel{
-	background: transparent url(../images/hr_vertical.png) repeat-y 210px 0;
-	height: 40px;
+
+#search_panel{ font-size: .9em; margin-top: .8em; }
+
+#search_panel form{
+	margin-bottom: .5em;
 }
 
-#search_panel input{
-	width: 15em;
-	margin: 0 0 .1em 0;
+#userbar{
+	margin-bottom: 2em;
 }
 
-#search_panel{ font-size: .9em; }
+#userbar div{
+	display: inline;
+	border-radius: 0 0 4px 4px;
+	-moz-border-radius: 0 0 4px 4px;
+	background-color: #111;
+	line-height: 2.2em;
+	padding: 1em .6em .6em .6em;
+	margin-left: 1em;
+	font-size: .9em;
+	color: #fff;
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+	filter:alpha(opacity=60);
+}
 
-#user_panel{
-	background: transparent url(../images/hr_vertical.png) repeat-y 210px 0;
-	height: 40px;
+#userbar a{
+	color: #fff;
+}
+
+#userbar img{
+	position: relative;
+	top: -2px;
+	padding: 0 3px;
+	vertical-align: middle;
 }
 
 #footer{
@@ -290,25 +309,28 @@ table.census a{
 #navigation ul li a{
 	margin: 0;
 	padding: .5em 1em .6em 1em;
-	background-color: #ddd;
+	background-color: #444;
 	border-radius:  4px 4px 0 0;
 	-moz-border-radius: 4px 4px 0 0;
-	color: #777;
+	text-shadow: #404040 -1px -1px 1px;
+	color: #888;
 	text-decoration: none;
 }
 
 #navigation ul li a.selected{
 	position: relative; z-index: 10;
 	box-shadow: #bbb 0 0 3px;
-	-webkit-box-shadow: #bbb 0 0 3px;
-	-moz-box-shadow: #bbb 0 0 3px;
+	-webkit-box-shadow: #222 0 0 3px;
+	-moz-box-shadow: #222 0 0 3px;
+	text-shadow: none;
 	background-color: #fff;
 	color: #222;
 }
 
 #navigation ul li a:hover, #navigation ul li a:active{
-	background-color: #aaa;
-	color: #555;
+	background-color: #555;
+	text-shadow: none;
+	color: #bbb;
 }
 
 #navigation ul li a.selected:hover, #navigation ul li a.selected:active{
@@ -454,35 +476,12 @@ img.ui-datepicker-trigger{
 	min-width: 310px;
 }
 
-.actions form{
-	padding: 0;
-	margin: 0;
-	vertical-align: middle;
-}
-
-.actions input{
-	margin: .3em;
-}
-
-.actions select{
-	margin: .3em;
-}
-
-.actions a, a.button{
+.actions a{
 	margin-left: .5em;
-	padding: .5em .8em;
-	background: left center url(../images/button_bg.png) repeat-x #66b8de;
-	color: #fff;
-	text-shadow: #4d7285 0 -1px 1px;
-	font-weight: 600;
-	text-decoration: none;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
 }
 
-.actions a:hover, .actions a:active, a.button:hover, a.button:active{
-	background: #186897;
-	color: #fff;
+button img{
+	position: relative; vertical-align:-20%; margin-right: 3px;
 }
 
 ul.tasks li{

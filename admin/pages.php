@@ -91,7 +91,7 @@ if(empty($page_id)){
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>">Add page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>"><button>Add page</button></a></div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages (<?php echo $page_count; ?>)</h1>
 	
@@ -141,7 +141,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>pages<?php echo URL_AID .  $page['page_id'] . URL_RW; ?>" class="button">View images</a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . @$page['page_title_url'] . URL_RW; ?>">Launch page</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'pages' . URL_AID .  $page['page_id'] . URL_RW; ?>"><button>View images</button></a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . $page['page_id'] . '-' . @$page['page_title_url'] . URL_RW; ?>"><button>Launch page</button></a></div>
 	
 	<?php
 	

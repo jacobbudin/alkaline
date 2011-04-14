@@ -28,7 +28,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div id="overview" class="span-24 last">
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">Go to compatibility suite</a></div>
+		<div class="actions"><a href="<?php echo BASE . 'cs.php'; ?>"><button>Go to compatibility suite</button></a></div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/overview.png" alt="" /> Overview</h1>
 
@@ -80,6 +80,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	<h2>Environment</h2>
 	<table>
+		<tr>
+			<td class="right">Server OS:</td>
+			<td><?php echo preg_replace('#\/([0-9.]*)#si', ' <span class="small">(\\1)</span> ', $_SERVER['SERVER_SOFTWARE']); ?></td>
+		</tr>
 		<tr>
 			<td class="right">PHP version:</td>
 			<td><?php echo phpversion(); ?></td>

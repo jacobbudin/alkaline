@@ -96,7 +96,7 @@ if(empty($user_db_id)){
 	
 	if(Alkaline::edition == 'multiuser'){
 		?>
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>">Add user</a></div>
+		<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>"><button>Add user</button></a></div>
 		<?php
 	}
 	
@@ -160,7 +160,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View images (<?php echo $user_image_count; ?>)</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>"><button>View images (<?php echo $user_image_count; ?>)</button></a></div>
 	
 	<?php
 	

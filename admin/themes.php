@@ -149,7 +149,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">Change theme</a></div>
+<div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>"><button>Change theme</button></a></div>
 
 <h1><img src="<?php echo BASE . ADMIN; ?>images/icons/themes.png" alt="" /> Themes (<?php echo $theme_count; ?>)</h1>
 

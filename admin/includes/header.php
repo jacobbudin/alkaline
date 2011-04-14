@@ -29,6 +29,31 @@
 <body id="alkaline">
 	<div id="header_holder">
 		<div class="container">
+			<div id="userbar" class="span-24 right">
+				<?php
+				if(!empty($user) and $user->perm()){
+					?>
+					<div>
+						<strong>
+							<img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" />
+							<?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : 'Launch'); ?>
+						</strong> &#0160;
+						<a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>">Launch</a>
+					</div>
+					
+					<div>
+						<strong>
+							<img src="<?php echo BASE . ADMIN; ?>images/icons/user.png" alt="" />
+							<?php echo $user->user['user_user']; ?>
+						</strong> &#0160;
+						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Images</a> &#0160;
+						<a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>">Preferences</a> &#0160;
+						<a href="<?php echo BASE . ADMIN . 'logout' . URL_CAP; ?>">Logout</a>
+					</div>
+					<?php
+				}
+				?>
+			</div>
 			<div id="header" class="span-24 last">
 				<div class="span-6 append-1">
 					<a href="<?php echo BASE . ADMIN; ?>"><img src="<?php echo BASE . ADMIN; ?>images/shutter.png" alt="Alkaline" /></a>
@@ -37,22 +62,17 @@
 					<?php
 					if(!empty($user) and $user->perm()){
 						?>
-						<div id="search_panel" class="span-5 append-1">
+						<div id="search_panel" class="span-17 append-1">
 							<form action="<?php echo BASE . ADMIN . 'search' . URL_CAP; ?>" method="post">
-								<input type="search" name="q" results="10" /><br /><a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>#advanced" class="advanced_link">Advanced Search</a>
+								<select>
+									<option>Images</option>
+									<option>Posts</option>
+									<option>Comments</option>
+								</select>
+								<input type="search" name="q" results="10" />
+								<input type="submit" value="Search" />
 							</form>
-						</div>
-						<div id="user_panel" class="span-5 append-1">
-							<strong><img src="<?php echo BASE . ADMIN; ?>images/icons/user.png" alt="" /> <?php echo $user->user['user_user']; ?></strong><br />
-							<span class="small">
-								<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Uploads</a> &#0183;
-								<a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>">Preferences</a> &#0183;
-								<a href="<?php echo BASE . ADMIN . 'logout' . URL_CAP; ?>">Logout</a>
-							</span>
-						</div>
-						<div id="site_panel" class="span-5 last">
-							<strong><img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" /> <?php echo ((BASE == '/') ? $alkaline->minimizeURL(DOMAIN) : $alkaline->minimizeURL(DOMAIN . BASE) ); ?></strong><br />
-							<span class="small"><a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>"><?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : 'Launch'); ?></a></span>
+							<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>#advanced" class="advanced_link">Advanced Search</a>
 						</div>
 						<?php
 					}

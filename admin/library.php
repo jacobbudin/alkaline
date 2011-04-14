@@ -46,7 +46,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>" class="button">Upload image</a> <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>" class="button">Process images (3)</a></div>
+	<div class="actions">
+		<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>">
+			<button>Upload image</button>
+		</a>
+		<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">
+			<button>Process images (3)</button>
+		</a>
+	</div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/images.png" alt="" /> Images (<?php echo number_format($image_ids->count); ?>)</h1>
 

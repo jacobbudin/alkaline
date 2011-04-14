@@ -100,7 +100,7 @@ if(empty($size_id)){
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build thumbnail</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_ACT; ?>build<?php echo URL_RW; ?>"><button>Build thumbnail</button></a></div>
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/thumbnails.png" alt="" /> Thumbnails (<?php echo $size_count; ?>)</h1>
 	

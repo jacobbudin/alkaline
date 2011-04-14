@@ -91,7 +91,7 @@ if(!$image = @$images->images[0]){
 
 $comment_count = count($comments);
 if($comment_count > 0){
-	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '">View ' . $alkaline->returnCount($comment_count, 'comments') . ' (' . $comment_count . ')</a>';
+	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '"><button>View ' . $alkaline->returnCount($comment_count, 'comments') . ' (' . $comment_count . ')</button></a>';
 }
 else{
 	$comment_action = '';
@@ -100,7 +100,7 @@ else{
 $now = time();
 $published = strtotime($image['image_published']);
 if($published <= $now){
-	$launch_action = '<a href="' . BASE . 'image' . URL_ID . $image['image_id'] . URL_RW . '">Launch image</a>';
+	$launch_action = '<a href="' . BASE . 'image' . URL_ID . $image['image_id'] . URL_RW . '"><button>Launch image</button></a>';
 }
 else{
 	$launch_action = '';
@@ -127,7 +127,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<input type="text" id="image_title" name="image_title" placeholder="Title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
 				<textarea id="image_description_raw" name="image_description_raw" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
 				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
-				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" />
+				and
+				<select>
+					<option>return to previous screen</option>
+					<option>go to next image</option>
+				</select>
+				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 			</p>
 		</div>
 		<div class="span-8 last">

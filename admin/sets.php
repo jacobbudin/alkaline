@@ -94,7 +94,7 @@ if(empty($set_id)){
 	
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>">Build static set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build static set</button></a></div>
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets (<?php echo $set_count; ?>)</h1>
 	
@@ -152,7 +152,7 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>">View images (<?php echo $image_ids->count; ?>)</a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>">Launch set</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW; ?>"><button>View images (<?php echo $image_ids->count; ?>)</button></a> <a href="<?php echo BASE . 'set' . URL_ID . $set['set_id'] . URL_RW; ?>"><button>Launch set</button></a></div>
 	
 	<?php
 	
