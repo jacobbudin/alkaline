@@ -151,7 +151,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">Change theme</a></div>
 
-<h1>Themes (<?php echo $theme_count; ?>)</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/themes.png" alt="" /> Themes (<?php echo $theme_count; ?>)</h1>
 
 <p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 

@@ -131,7 +131,7 @@ if(empty($post_id)){
 	<div class="span-24 last">
 		<div class="actions"><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>">Add post</a></div>
 	
-		<h1>Posts (<?php echo number_format($posts->post_count); ?>)</h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
 		<form action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
 			<p style="margin-bottom: 0;">
@@ -281,92 +281,83 @@ else{
 	<?php
 	
 	if(empty($post['post_title'])){
-		echo '<h1>New Post</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/posts.png" alt="" /> New Post</h1>';
 	}
 	else{
-		echo '<h1>Post: ' . $post['post_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/posts.png" alt="" /> Post: ' . $post['post_title'] . '</h1>';
 	}
 	
 	?>
 
-	<form id="post" action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right middle"><label for="post_title">Title:</label></td>
-				<td><input type="text" id="post_title" name="post_title" value="<?php echo @$post['post_title']; ?>" class="title notempty" /></td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="post_title_url">Custom URL:</label></td>
-				<td class="quiet">
-					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
-				</td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="post_text_raw">Text:</label></td>
-				<td><textarea id="post_text_raw" name="post_text_raw" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right middle"><label for="post_published">Publish date:</label></td>
-				<td class="quiet">
-					<input type="text" id="post_published" name="post_published" value="<?php echo @$post['post_published_format']; ?>" class="m" />
-				</td>
-			</tr>
-			<tr>
-				<td class="right"><label>Images:</label></td>
-				<td>
-					<p>
-						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add images at cursor position)</span>
-					</p>
-					<div class="reveal image_click">
-						<?php
-						
-						$image_ids = new Find('images');
-						$image_ids->sort('image_uploaded', 'DESC');
-						$image_ids->post(1, 100);
-						$image_ids->find();
-						
-						$images = new Image($image_ids);
-						$images->getSizes('square');
-						
-						if($alkaline->returnConf('post_size_label')){
-							$label = 'image_src_' . $alkaline->returnConf('post_size_label');
-						}
-						else{
-							$label = 'image_src_admin';
-						}
-						
-						if($alkaline->returnConf('post_div_wrap')){
-							echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
-						}
-						
-						foreach($images->images as $image){
-							$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
-							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
-							echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
-						}
-					
-						?>
-					</div>
-				</td>
-			</tr>
-			<?php if($alkaline->returnConf('comm_enabled')){ ?>
-			<tr>
-				<td class="right center"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
-				<td>
-					<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
-				</td>
-			</tr>
-			<?php } ?>
-			<tr>
-				<td class="right center"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
-				<td><label for="post_delete">Delete this post.</label> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+	<form id="post" action="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>" method="post">
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<input type="text" id="post_title" name="post_title" placeholder="Title" value="<?php echo @$post['post_title']; ?>" class="title notempty" />
+				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
+			</div>
+			<div class="span-8 last">
+				<p>
+					<label for="post_title_url">Custom URL:</label><br />
+					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /><br />
+						<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
+				</p>
+			
+				<p>
+					<label for="post_published">Publish date:</label><br />
+					<input type="text" id="post_published" name="post_published" placeholder="Draft" value="<?php echo @$post['post_published_format']; ?>" />
+				</p>
+			
+				<hr />
+				<table>
+					<?php if($alkaline->returnConf('comm_enabled')){ ?>
+					<tr>
+						<td><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
+						<td>
+							<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
+					<tr>
+						<td><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
+						<td><label for="post_delete">Delete this post.</label><br />This action cannot be undone.</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add  at cursor position)</span>
+		</p>
+		<div class="reveal image_click">
+			<?php
+	
+			$image_ids = new Find('images');
+			$image_ids->sort('image_uploaded', 'DESC');
+			$image_ids->post(1, 100);
+			$image_ids->find();
+	
+			$images = new Image($image_ids);
+			$images->getSizes('square');
+	
+			if($alkaline->returnConf('post_size_label')){
+				$label = 'image_src_' . $alkaline->returnConf('post_size_label');
+			}
+			else{
+				$label = 'image_src_admin';
+			}
+	
+			if($alkaline->returnConf('post_div_wrap')){
+				echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
+			}
+	
+			foreach($images->images as $image){
+				$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
+				echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+				echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
+			}
+
+			?>
+		</div>
+		<p><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
 	</form>
 
 	<?php

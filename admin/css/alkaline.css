@@ -30,6 +30,7 @@ hr{
 textarea{
 	width: 100%;
 	height: 15em;
+	margin-bottom: 1.5em;
 }
 
 .error, .notice, .success {border:1px solid #ddd; border-radius: 3px; -moz-border-radius: 3px;}
@@ -77,11 +78,7 @@ h2{
 	font-size: 1.3em;
 }
 
-h2 a:hover, h2 a:active{
-	color: #555;
-}
-
-h2 img{
+h1 img{
 	padding-right: .25em;
 	position: relative;
 	bottom: .1em;
@@ -477,10 +474,8 @@ img.ui-datepicker-trigger{
 	background: left center url(../images/button_bg.png) repeat-x #66b8de;
 	color: #fff;
 	text-shadow: #4d7285 0 -1px 1px;
-	font-size: .9em;
 	font-weight: 600;
 	text-decoration: none;
-	text-transform: uppercase;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 }

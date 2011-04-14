@@ -82,7 +82,7 @@ if(empty($right_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>">Add rights set</a></div>
 
-	<h1>Right Sets (<?php echo $right_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/rights.png" alt="" /> Right Sets (<?php echo $right_count; ?>)</h1>
 	
 	<p>Right sets clarify which copyrights you retain on your images to discourage illicit use.</p>
 	
@@ -141,37 +141,43 @@ else{
 	<?php
 	
 	if(empty($right['right_title'])){
-		echo '<h1>New Right Set</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/rights.png" alt="" /> New Right Set</h1>';
 	}
 	else{
-		echo '<h1>Right Set: ' . $right['right_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/rights.png" alt="" /> Right Set: ' . $right['right_title'] . '</h1>';
 	}
 	
 	?>
 	
-	<form id="rights" action="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right middle"><label for="right_title">Title:</label></td>
-				<td><input type="text" id="right_title" name="right_title" value="<?php echo $right['right_title']; ?>" class="title notempty" /></td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="right_description">Description:</label></td>
-				<td><textarea id="right_description" name="right_description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $right['right_description']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right pad"><input type="checkbox" id="right_merge" name="right_merge" value="merge" /></td>
-				<td><strong><label for="right_merge">Transfer images to <?php echo $alkaline->showRights('right_merge_id'); ?> rights set.</label></strong> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td class="right"><input type="checkbox" id="right_delete" name="right_delete" value="delete" /></td>
-				<td><strong><label for="right_delete">Delete this rights set.</label></strong> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" name="right_id" value="<?php echo $right['right_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+	<form id="rights" action="<?php echo BASE . ADMIN . 'rights' . URL_CAP; ?>" method="post">
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<input type="text" id="right_title" name="right_title" placeholder="Title" value="<?php echo $right['right_title']; ?>" class="title notempty" />
+				<textarea id="right_description" name="right_description" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $right['right_description']; ?></textarea>
+			</div>
+			<div class="span-8 last">
+				<table>
+					<tr>
+						<td><input type="checkbox" id="right_merge" name="right_merge" value="merge" /></td>
+						<td>
+							<label for="right_merge">Transfer images to <?php echo $alkaline->showRights('right_merge_id'); ?> rights set.</label><br />
+							This action cannot be undone.
+						</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="right_delete" name="right_delete" value="delete" /></td>
+						<td>
+							<label for="right_delete">Delete this rights set.</label><br />
+							This action cannot be undone.
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<p>
+			<input type="hidden" name="right_id" value="<?php echo $right['right_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+		</p>
 	</form>
 
 	<?php

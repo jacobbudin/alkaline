@@ -110,7 +110,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <form action="" id="configuration" method="post">
-	<h1>Configuration</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/configuration.png" alt="" /> Configuration</h1>
 	
 	<h3>General</h3>
 	

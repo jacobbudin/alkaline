@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/screen.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/print.css" type="text/css" media="print" />	
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/formalize.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/alkaline.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/smoothness/jquery-ui-1.8.11.custom.css" type="text/css" media="screen, projection" />
 	<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo BASE . JS; ?>jquery/excanvas.min.js"></script><![endif]-->
@@ -22,6 +23,7 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.ajaxq-0.0.1.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.caret-range-1.0.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery.formalize.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js?965" type="text/javascript"></script>
 </head>
 <body id="alkaline">
@@ -96,8 +98,8 @@
 				}
 				elseif(@TAB == 'library'){
 					?>
-					<li id="sub_upload"><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/upload.png" alt="" /> Upload</a></li>
-					<li id="sub_shoebox"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/shoebox.png" alt="" /> Shoebox</a></li>
+					<!-- <li id="sub_upload"><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/upload.png" alt="" /> Upload</a></li>
+					<li id="sub_shoebox"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/shoebox.png" alt="" /> Shoebox</a></li> -->
 					<?php
 				}
 				elseif(@TAB == 'posts'){

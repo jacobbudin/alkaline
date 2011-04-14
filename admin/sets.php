@@ -96,7 +96,7 @@ if(empty($set_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>">Build static set</a></div>
 
-	<h1>Sets (<?php echo $set_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets (<?php echo $set_count; ?>)</h1>
 	
 	<p>Sets are collections of images. You can build an automatic set that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
@@ -157,69 +157,80 @@ else{
 	<?php
 	
 	if(empty($set['set_title'])){
-		echo '<h1>New Set</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/sets.png" alt="" /> New Set</h1>';
 	}
 	else{
-		echo '<h1>Set: ' . $set['set_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/sets.png" alt="" /> Set: ' . $set['set_title'] . '</h1>';
 	}
 	
 	?>
 	
-	<form id="set" action="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right middle"><label for="set_title">Title:</label></td>
-				<td><input type="text" id="set_title" name="set_title" value="<?php echo $set['set_title']; ?>" class="title notempty" /></td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="set_title_url">Custom URL:</label></td>
-				<td class="quiet">
-					<input type="text" id="set_title_url" name="set_title_url" value="<?php echo $set['set_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'set' . URL_ID . $set['set_id']; ?>-<span id="set_title_url_link"></span></span>
-				</td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="set_description">Description:</label></td>
-				<td><textarea id="set_description" name="set_description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $set['set_description']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right"><label for="set_type">Type:</label></td>
-				<td>
-					<input type="radio" name="set_type" id="set_type_auto" value="auto" <?php if($set['set_type'] != 'static'){ echo 'checked="checked"'; } if(empty($set['set_call'])){ echo 'disabled="disabled"'; } ?> /> <label for="set_type_auto">Automatic</label> &#8212; Automatically include new images that meet the set&#8217;s criteria<br />
-					<input type="radio" name="set_type" id="set_type_static" value="static" <?php if($set['set_type'] == 'static'){ echo 'checked="checked"'; }  ?> /> <label for="set_type_static">Static</label> &#8212; Only include the images originally selected
-				</td>
-			</tr>
-			<tr>
-				<td class="right"><label>Images:</label></td>
-				<td>
-					<p>
-						<span class="switch">&#9656;</span> <a href="#" class="show">Show set</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
-					</p>
+	<form id="set" action="<?php echo BASE . ADMIN . 'sets' . URL_CAP; ?>" method="post">
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<input type="text" id="set_title" name="set_title" placeholder="Title" value="<?php echo $set['set_title']; ?>" class="title notempty" />
+				<textarea id="set_description" name="set_description" placeholder="Description" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $set['set_description']; ?></textarea>
+			</div>
+			<div class="span-8 last">
+				<p>
+					<label for="set_title_url">Custom URL:</label><br />
+					<input type="text" id="set_title_url" name="set_title_url" value="<?php echo $set['set_title_url']; ?>" style="width: 300px;" /><br />
+					<span class="quiet"><?php echo 'set' . URL_ID . $set['set_id']; ?>-<span id="set_title_url_link"></span></span>
+				</p>
+			
+				<label for="set_type">Type:</label><br />
+				<table>
+					<tr>
+						<td><input type="radio" name="set_type" id="set_type_auto" value="auto" <?php if($set['set_type'] != 'static'){ echo 'checked="checked"'; } if(empty($set['set_call'])){ echo 'disabled="disabled"'; } ?> /></td>
+						<td>
+							<label for="set_type_auto">Automatic</label> <span class="quiet">(search)</span><br />
+							Automatically include new images that meet the set&#8217;s criteria
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" name="set_type" id="set_type_static" value="static" <?php if($set['set_type'] == 'static'){ echo 'checked="checked"'; }  ?> />
+						</td>
+						<td>
+							<label for="set_type_static">Static</label> <span class="quiet">(handpicked)</span><br />
+							Only include images selected at creation and those manually added since then</td>
+					</tr>
+				</table>
+				
+				<hr />
+				<table>
+					<tr>
+						<td><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
+						<td>
+							<label for="set_delete">Delete this set.</label><br />
+							This action cannot be undone.
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Show set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
+		</p>
 
-					<div class="reveal" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
-						<?php
-					
-						$images = new Image($set['set_images']);
-						$images->getSizes('square');
-					
-						foreach($images->images as $image){
-							echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';
-						}
-					
-						?><br /><br />
-					</div>
-					<input type="hidden" id="set_images" name="set_images" value="<?php echo $set['set_images']; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="right"><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
-				<td><strong><label for="set_delete">Delete this set.</label></strong> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" name="set_id" value="<?php echo $set['set_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+		<div class="reveal" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
+			<?php
+		
+			$images = new Image($set['set_images']);
+			$images->getSizes('square');
+		
+			foreach($images->images as $image){
+				echo '<img src="' . $image['image_src_square'] .'" alt="" class="frame" id="image-' . $image['image_id'] . '" />';
+			}
+		
+			?><br /><br />
+		</div>
+		<input type="hidden" id="set_images" name="set_images" value="<?php echo $set['set_images']; ?>" />
+		
+		<p>
+			<input type="hidden" name="set_id" value="<?php echo $set['set_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+		</p>
 	</form>
 
 	<?php

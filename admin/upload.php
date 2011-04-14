@@ -59,13 +59,23 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 ?>
 
 <div class="span-24 last">
-	<div class="span-5 colborderr">
-		<h2 id="h2_shoebox"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox</a></h2>
-		
+	<div class="span-18 colborder">
+			<div class="actions"><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>" class="button">Go to Shoebox</a></div>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
+		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
+			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
+				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+				<div style="height: 380px; margin-bottom: 1.5em;">
+					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
+				</div>
+			<?php } else{ ?>
+				<input type="file" multiple="multiple" id="upload" />
+			<?php } ?>
+		</form>
+	</div>
+	<div class="span-5 last">
 		<div id="progress">
 		</div>
-		
-		<hr />
 		
 		<h3>Status</h3>
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
@@ -78,19 +88,6 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 		
 			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
 		<?php } ?>
-	</div>
-	<div class="span-18 colborderl last">
-		<h1>Upload</h1>
-		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
-				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-				<div style="height: 380px; margin-bottom: 1.5em;">
-					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
-				</div>
-			<?php } else{ ?>
-				<input type="file" multiple="multiple" id="upload" />
-			<?php } ?>
-		</form>
 	</div>
 </div>
 

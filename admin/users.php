@@ -102,7 +102,7 @@ if(empty($user_db_id)){
 	
 	?>
 
-	<h1>Users (<?php echo $user_db_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/users.png" alt="" /> Users (<?php echo $user_db_count; ?>)</h1>
 	
 	<p>Users can add images to your Alkaline library and modify the your Alkaline installation.</p>
 	
@@ -165,10 +165,10 @@ else{
 	<?php
 	
 	if(empty($user_db['user_name'])){
-		echo '<h1>New User</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/users.png" alt="" /> New User</h1>';
 	}
 	else{
-		echo '<h1>User: ' . $user_db['user_name'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/users.png" alt="" /> User: ' . $user_db['user_name'] . '</h1>';
 	}
 	
 	?>

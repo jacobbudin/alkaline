@@ -247,7 +247,7 @@ if(empty($extension_id)){
 
 	?>
 
-	<h1>Extensions (<?php echo @$extensions_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extensions (<?php echo @$extensions_count; ?>)</h1>
 	
 	<p>Extensions add new functionality to your Alkaline installation. You can browse and download additional extensions at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 	
@@ -321,7 +321,7 @@ else{
 	
 		?>
 	
-		<h1>Extension: <?php echo $extension['extension_title']; ?></h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extension: <?php echo $extension['extension_title']; ?></h1>
 	
 		<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 			<div>
@@ -354,7 +354,7 @@ else{
 		
 		?>
 		
-		<h1><?php echo $extension['extension_title']; ?></h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> <?php echo $extension['extension_title']; ?></h1>
 		
 		<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 			<table>

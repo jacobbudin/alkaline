@@ -90,7 +90,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Shoebox (<?php echo $image_count; ?>)</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox (<?php echo $image_count; ?>)</h1>
 
 <form action="" method="post">
 	<div id="privacy_html" class="none">

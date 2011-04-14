@@ -46,19 +46,21 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="span-24 last">
-	<div class="span-18 colborder">
-		<h1>Images (<?php echo number_format($image_ids->count); ?>)</h1>
-		
-		<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
-			<p style="margin-bottom: 0;">
-				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
-			</p>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>" class="button">Upload image</a> <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>" class="button">Process images (3)</a></div>
+	
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/images.png" alt="" /> Images (<?php echo number_format($image_ids->count); ?>)</h1>
 
-			<p>
-				<span class="switch">&#9656;</span> <a href="#" class="show advanced" style="line-height: 2.5em;">Show options</a>
-			</p>
-			
-			<div class="reveal">
+	<form action="<?php echo BASE . ADMIN; ?>search<?php echo URL_CAP; ?>" method="post">
+		<p style="margin-bottom: 0;">
+			<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
+		</p>
+		
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show advanced" style="line-height: 2.5em;">Show options</a>
+		</p>
+	
+		<div class="reveal span-24 last">
+			<div class="span-15 append-1">
 				<table>
 					<tr>
 						<td class="right pad"><label for="tags">Tags:</label></td>
@@ -190,65 +192,61 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					</tr>
 				</table>
 			</div>
-		</form>
-		
+			<div class="span-8 last">
+				<h3>Presets</h3>
+				
+				<ul>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed images</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated images</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed images</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic images</a></li>
+				</ul>
+				<ul>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished images</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled images</a></li>
+					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged images</a></li>
+				</ul>
+			</div>
+		</div>
+	</form>
+
+	<p>
+		<?php
+
+		foreach($images->images as $image){
+			?>
+			<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
+				<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
+			</a>
+			<?php
+		}
+		?>
+	</p>
+	<?php
+	if($image_ids->page_count > 1){
+		?>
 		<p>
 			<?php
-
-			foreach($images->images as $image){
-				?>
-				<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
-					<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
-				</a>
-				<?php
+			if(!empty($image_ids->page_previous)){
+				for($i = 1; $i <= $image_ids->page_previous; ++$i){
+					$page_uri = 'page_' . $i . '_uri';
+					echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
+				}
+			}
+			?>
+			<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
+			<?php
+			if(!empty($image_ids->page_next)){
+				for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
+					$page_uri = 'page_' . $i . '_uri';
+					echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
+				}
 			}
 			?>
 		</p>
 		<?php
-		if($image_ids->page_count > 1){
-			?>
-			<p>
-				<?php
-				if(!empty($image_ids->page_previous)){
-					for($i = 1; $i <= $image_ids->page_previous; ++$i){
-						$page_uri = 'page_' . $i . '_uri';
-						echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
-					}
-				}
-				?>
-				<span class="page_no">Page <?php echo $image_ids->page; ?> of <?php echo $image_ids->page_count; ?></span>
-				<?php
-				if(!empty($image_ids->page_next)){
-					for($i = $image_ids->page_next; $i <= $image_ids->page_count; ++$i){
-						$page_uri = 'page_' . $i . '_uri';
-						echo '<a href="' . $image_ids->$page_uri  .'" class="page_no">' . number_format($i) . '</a>';
-					}
-				}
-				?>
-			</p>
-			<?php
-		}
-		?>
-	</div>
-	<div class="span-5 last">
-		<h2><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</a></h2>
-		<h2><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox <?php echo $shoebox_count; ?></a></h2>
-		<hr />
-
-		<h3>Find</h3>
-		
-		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed images</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated images</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed images</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic images</a></li>
-		</ul>
-		<ul>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished images</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled images</a></li>
-			<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged images</a></li>
-		</ul>
-	</div>
+	}
+	?>
 </div>
 
 <?php

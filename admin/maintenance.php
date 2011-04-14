@@ -21,7 +21,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Maintenance</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/maintenance.png" alt="" /> Maintenance</h1>
 
 <div id="progress">
 </div>

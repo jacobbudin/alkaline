@@ -102,7 +102,7 @@ if(empty($size_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build thumbnail</a></div>
 
-	<h1>Thumbnails (<?php echo $size_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/thumbnails.png" alt="" /> Thumbnails (<?php echo $size_count; ?>)</h1>
 	
 	<p>Thumbnails are resized versions of each image in your library.</p>
 	
@@ -150,10 +150,15 @@ else{
 		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-
-	?>
 	
-	<h1>Thumbnail</h1>
+	if(empty($size['size_title'])){
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/thumbnails.png" alt="" /> New Thumbnail</h1>';
+	}
+	else{
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/thumbnails.png" alt="" /> Thumbnail: ' . $size['size_title'] . '</h1>';
+	}
+	
+	?>
 	
 	<p>All fields are required except append to and prepend to filename&#8212;use one or both.</p>
 	

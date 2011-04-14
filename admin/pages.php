@@ -93,7 +93,7 @@ if(empty($page_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>">Add page</a></div>
 	
-	<h1>Pages (<?php echo $page_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages (<?php echo $page_count; ?>)</h1>
 	
 	<p>Pages are freeform areas for text-based content.</p>
 	
@@ -146,82 +146,79 @@ else{
 	<?php
 	
 	if(empty($page['page_title'])){
-		echo '<h1>New Page</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/pages.png" alt="" /> New Page</h1>';
 	}
 	else{
-		echo '<h1>Page: ' . $page['page_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/pages.png" alt="" /> Page: ' . $page['page_title'] . '</h1>';
 	}
 	
 	?>
 
 	<form id="page" action="<?php echo BASE . ADMIN . 'pages' . URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right middle"><label for="page_title">Title:</label></td>
-				<td><input type="text" id="page_title" name="page_title" value="<?php echo @$page['page_title']; ?>" class="title notempty" /></td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="page_title_url">Custom URL:</label></td>
-				<td class="quiet">
-					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
-				</td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="page_text_raw">Text:</label></td>
-				<td><textarea id="page_text_raw" name="page_text_raw" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right"><label>Images:</label></td>
-				<td>
-					<p>
-						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add images at cursor position)</span>
-					</p>
-					<div class="reveal image_click">
-						<?php
-						
-						$image_ids = new Find('images');
-						$image_ids->sort('image_uploaded', 'DESC');
-						$image_ids->page(1, 100);
-						$image_ids->find();
-						
-						$images = new Image($image_ids);
-						$images->getSizes('square');
-						
-						if($alkaline->returnConf('page_size_label')){
-							$label = 'image_src_' . $alkaline->returnConf('page_size_label');
-						}
-						else{
-							$label = 'image_src_admin';
-						}
-						
-						if($alkaline->returnConf('page_div_wrap')){
-							echo '<div class="none wrap_class">' . $alkaline->returnConf('page_div_wrap_class') . '</div>';
-						}
-						
-						foreach($images->images as $image){
-							$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
-							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
-							echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
-						}
-					
-						?>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="right pad"><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
-				<td><label for="page_markup">Markup this page using <select name="page_markup_ext" title="<?php echo @$page['page_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
-			</tr>
-			<tr>
-				<td class="right center"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
-				<td><label for="page_delete">Delete this page.</label> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" name="page_id" value="<?php echo $page['page_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<input type="text" id="page_title" name="page_title" placeholder="Title" value="<?php echo @$page['page_title']; ?>" class="title notempty" />
+				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
+			</div>
+			<div class="span-8 last">
+				<p>
+					<label for="page_title_url">Custom URL:</label><br />
+					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
+					<span class="quiet"><?php echo 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
+				</p>
+				
+				<hr />
+				
+				<table>
+					<tr>
+						<td><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
+						<td><label for="page_markup">Markup this page using <select name="page_markup_ext" title="<?php echo @$page['page_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
+						<td>
+							<label for="page_delete">Delete this page.</label><br />
+							This action cannot be undone.
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
+		</p>
+		<div class="reveal image_click">
+			<?php
+			
+			$image_ids = new Find('images');
+			$image_ids->sort('image_uploaded', 'DESC');
+			$image_ids->page(1, 100);
+			$image_ids->find();
+			
+			$images = new Image($image_ids);
+			$images->getSizes('square');
+			
+			if($alkaline->returnConf('page_size_label')){
+				$label = 'image_src_' . $alkaline->returnConf('page_size_label');
+			}
+			else{
+				$label = 'image_src_admin';
+			}
+			
+			if($alkaline->returnConf('page_div_wrap')){
+				echo '<div class="none wrap_class">' . $alkaline->returnConf('page_div_wrap_class') . '</div>';
+			}
+			
+			foreach($images->images as $image){
+				$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
+				echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+				echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
+			}
+		
+			?>
+		</div>
+		
+		<p><input type="hidden" name="page_id" value="<?php echo $page['page_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
 	</form>
 
 	<?php

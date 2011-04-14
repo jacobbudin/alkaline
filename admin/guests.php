@@ -73,7 +73,7 @@ if(empty($guest_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'guests' . URL_ACT . 'add' . URL_RW; ?>">Add guest</a></div>
 
-	<h1>Guests (<?php echo $guest_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/guests.png" alt="" /> Guests (<?php echo $guest_count; ?>)</h1>
 	
 	<p>Guests can use an access key to view some or all protected images in your Alkaline library.</p>
 	
@@ -128,10 +128,10 @@ else{
 	<?php
 	
 	if(empty($guest['guest_title'])){
-		echo '<h1>New Guest</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/guests.png" alt="" /> New Guest</h1>';
 	}
 	else{
-		echo '<h1>Guest: ' . $guest['guest_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/guests.png" alt="" /> Guest: ' . $guest['guest_title'] . '</h1>';
 	}
 	
 	?>

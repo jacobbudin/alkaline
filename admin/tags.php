@@ -65,7 +65,7 @@ if(empty($tag_id)){
 
 	?>
 
-	<h1>Tags (<?php echo $tag_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/tags.png" alt="" /> Tags (<?php echo $tag_count; ?>)</h1>
 	
 	<p>Tags help you organize your image library.</p>
 	
@@ -114,10 +114,10 @@ else{
 	<?php
 	
 	if(empty($tag['tag_name'])){
-		echo '<h1>New Tag</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/tags.png" alt="" /> New Tag</h1>';
 	}
 	else{
-		echo '<h1>Tag: ' . $tag['tag_name'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/tags.png" alt="" /> Tag: ' . $tag['tag_name'] . '</h1>';
 	}
 	
 	?>

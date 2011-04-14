@@ -120,7 +120,7 @@ if(empty($comment_id)){
 
 	?>
 	
-	<h1>Comments (<?php echo $comments->comment_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comments (<?php echo $comments->comment_count; ?>)</h1>
 	
 	<form action="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'search' . URL_RW; ?>" method="post">
 		<p style="margin-bottom: 0;">
@@ -228,9 +228,9 @@ else{
 		</div>
 	<?php } ?>
 	
-	<h1>Comment</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comment</h1>
 
-	<form action="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>" method="post">
+	<form action="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>" method="post">
 		<table>
 			<tr>
 				<td class="right"><label for="comment_text">Author:</label></td>

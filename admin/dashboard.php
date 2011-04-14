@@ -47,7 +47,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<?php
 		if($user->returnConf('stat_enabled') !== false){
 			?>
-			<h1>Vitals</h1>
+			<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/dashboard.png" alt="" /> Vitals</h1>
 		
 			<div id="statistics_holder" class="statistics_holder"></div>
 			<div id="statistics_views" title="<?php echo $views; ?>"></div>
@@ -62,8 +62,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		// Preference: recent_images
 		if($user->returnPref('recent_images') === true){
 			?>
-			<div class="actions"><a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">Go to library</a></div>
-			<h1>Recent</h1>
+			<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/timeline.png" alt="" /> Timeline</h1>
 			<p>
 				<?php
 			
@@ -93,11 +92,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		?>
 	</div>
 	<div class="span-5 last">
-		<h2 id="h2_statistics"><a href="<?php echo BASE . ADMIN . 'statistics' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/stats.png" alt="" /> Statistics</a></h2>
-		<h2 id="h2_preferences"><a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/preferences.png" alt="" /> Preferences</a></h2>
-		
-		<hr />
-		
 		<h3>Hello</h3>
 		
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>

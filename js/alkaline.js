@@ -568,7 +568,7 @@ $(document).ready(function(){
 	
 	// PRIMARY
 	page = $("h1").first().text();
-	page = page.replace(/^(\w+).*/, "$1");
+	page = page.replace(/.*?(\w+).*/, "$1");
 	
 	updateAllTags();
 	
