@@ -407,10 +407,14 @@ function setSort(set){
 
 function addNote(note, type){
 	if(empty(type)){ type = 'notice'; }
-	$('.js_gen_error').css('position', 'absolute').css('z-index', '100').fadeOut();
+	clearNotes();
 	html = $('<p class="' + type + ' js_gen_error none">' + note + '</p>');
 	$('#content').prepend(html);
 	html.slideDown('fast');
+}
+
+function clearNotes(){
+	$('.js_gen_error').css('position', 'absolute').css('z-index', '100').fadeOut();
 }
 
 window.launchQuickpic = function(context){
@@ -838,6 +842,26 @@ $(document).ready(function(){
 		});
 	}
 	
+	// POSTS
+	
+	if(page == 'Post'){
+		$('#compare').click(function(event){
+			text_raw = $('#post_text_raw').val();
+			version_id = $('#version_id').val();
+			$('#comparison').hide();
+			$.post(BASE + ADMIN + 'tasks/show-differences.php',  { text_raw: text_raw, version_id: version_id }, function(data) {
+				if(empty(data)){
+					addNote('No changes calculated. Try changing the version you&#8217;re comparing to.', 'notice');
+				}
+				else{
+					clearNotes();
+					$('#comparison').html(data).slideDown();
+				}
+			}, 'html');
+			event.preventDefault();
+		});
+	}
+	
 	// CUSTOM LINK
 	
 	function titleUrlUpdate(selector){
@@ -1115,7 +1139,7 @@ $(document).ready(function(){
 	}
 	
 	// DASHBOARD
-	if(page == 'Vitals'){
+	if(page == 'Dashboard'){
 		var statistics_views = $("#statistics_views").attr("title");
 		statistics_views = $.evalJSON(statistics_views);
 	
