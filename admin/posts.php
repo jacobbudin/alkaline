@@ -93,6 +93,7 @@ if(!empty($_POST['post_id'])){
 			'post_images' => $post_images,
 			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_published' => @$_POST['post_published'],
+			'post_category' => $alkaline->makeUnicode(@$_POST['post_category']),
 			'post_comment_disabled' => $post_comment_disabled,
 			'post_words' => $post_words);
 		
@@ -292,7 +293,7 @@ else{
 	<form id="post" action="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>" method="post">
 		<div class="span-24 last">
 			<div class="span-15 append-1">
-				<input type="text" id="post_title" name="post_title" placeholder="Title" value="<?php echo @$post['post_title']; ?>" class="title notempty" />
+				<input type="text" id="post_title" name="post_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$post['post_title']; ?>" class="title notempty" />
 				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
 			</div>
 			<div class="span-8 last">
@@ -305,6 +306,11 @@ else{
 				<p>
 					<label for="post_published">Publish date:</label><br />
 					<input type="text" id="post_published" name="post_published" placeholder="Draft" value="<?php echo @$post['post_published_format']; ?>" />
+				</p>
+				
+				<p>
+					<label for="post_category">Category:</label><br />
+					<input type="text" id="post_category" name="post_category" class="post_category" value="<?php echo @$post['post_category']; ?>" />
 				</p>
 			
 				<hr />
@@ -357,7 +363,17 @@ else{
 
 			?>
 		</div>
-		<p><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
+		<p>
+			<input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" />
+			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
+			<input type="submit" value="Save changes" />
+			and
+			<select>
+				<option>return to previous screen</option>
+				<option>go to next post</option>
+				<option>go to previous post</option>
+			</select>
+			or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
 	</form>
 
 	<?php

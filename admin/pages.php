@@ -64,6 +64,7 @@ if(!empty($_POST['page_id'])){
 			'page_markup' => $page_markup_ext,
 			'page_images' => $page_images,
 			'page_text' => $alkaline->makeUnicode($page_text),
+			'page_category' => $alkaline->makeUnicode(@$_POST['page_category']),
 			'page_words' => $page_words);
 		
 		$alkaline->updateRow($fields, 'pages', $page_id);
@@ -157,7 +158,7 @@ else{
 	<form id="page" action="<?php echo BASE . ADMIN . 'pages' . URL_CAP; ?>" method="post">
 		<div class="span-24 last">
 			<div class="span-15 append-1">
-				<input type="text" id="page_title" name="page_title" placeholder="Title" value="<?php echo @$page['page_title']; ?>" class="title notempty" />
+				<input type="text" id="page_title" name="page_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$page['page_title']; ?>" class="title notempty" />
 				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
 			</div>
 			<div class="span-8 last">
@@ -165,6 +166,11 @@ else{
 					<label for="page_title_url">Custom URL:</label><br />
 					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
 					<span class="quiet"><?php echo 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
+				</p>
+				
+				<p>
+					<label for="page_category">Category:</label><br />
+					<input type="text" id="page_category" name="page_category" class="page_category" value="<?php echo @$page['page_category']; ?>" />
 				</p>
 				
 				<hr />

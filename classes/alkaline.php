@@ -1561,7 +1561,7 @@ class Alkaline{
 	public function hintTag($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT DISTINCT(tags.tag_name) FROM tags WHERE LOWER(tags.tag_name LIKE :hint_lower) ORDER BY tags.tag_name ASC';
+		$sql = 'SELECT DISTINCT(tags.tag_name) FROM tags WHERE LOWER(tags.tag_name) LIKE :hint_lower ORDER BY tags.tag_name ASC';
 		
 		$query = $this->prepare($sql);
 		$query->execute(array(':hint_lower' => $hint_lower . '%'));
@@ -1574,6 +1574,54 @@ class Alkaline{
 		}
 		
 		return $tags_list;
+	}
+	
+	/**
+	 * List page category by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
+	public function hintPostCategory($hint){
+		$hint_lower = strtolower($hint);
+		
+		$sql = 'SELECT DISTINCT(posts.post_category) FROM posts WHERE LOWER(posts.post_category) LIKE :hint_lower ORDER BY posts.post_category ASC';
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
+		$posts = $query->fetchAll();
+		
+		$categories_list = array();
+		
+		foreach($posts as $post){
+			$categories_list[] = $post['post_category'];
+		}
+		
+		return $categories_list;
+	}
+	
+	/**
+	 * List category by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
+	public function hintPageCategory($hint){
+		$hint_lower = strtolower($hint);
+		
+		$sql = 'SELECT DISTINCT(pages.page_category) FROM pages WHERE LOWER(pages.page_category) LIKE :hint_lower ORDER BY pages.page_category ASC';
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
+		$pages = $query->fetchAll();
+		
+		$categories_list = array();
+		
+		foreach($pages as $page){
+			$categories_list[] = $page['page_category'];
+		}
+		
+		return $categories_list;
 	}
 	
 	

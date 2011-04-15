@@ -132,6 +132,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<select>
 					<option>return to previous screen</option>
 					<option>go to next image</option>
+					<option>go to previous image</option>
 				</select>
 				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 			</p>

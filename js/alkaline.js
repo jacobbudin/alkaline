@@ -688,7 +688,7 @@ $(document).ready(function(){
 	// PRIMARY - GEO HINTING
 	$(".image_geo").live('focus', function(){
 		$(this).autocomplete({
-			source: BASE + ADMIN + 'tasks/geo-hint.php',
+			source: BASE + ADMIN + 'tasks/hint-geo.php',
 			delay: 200,
 			minLength: 3
 		});
@@ -697,7 +697,25 @@ $(document).ready(function(){
 	// PRIMARY - TAG HINTING
 	$(".image_tag").live('focus', function(){
 		$(this).autocomplete({
-			source: BASE + ADMIN + 'tasks/tag-hint.php',
+			source: BASE + ADMIN + 'tasks/hint-tag.php',
+			delay: 200,
+			minLength: 2
+		});
+	});
+	
+	// PRIMARY - POST CATEGORY HINTING
+	$(".post_category").live('focus', function(){
+		$(this).autocomplete({
+			source: BASE + ADMIN + 'tasks/hint-post-cat.php',
+			delay: 200,
+			minLength: 2
+		});
+	});
+	
+	// PRIMARY - PAGE CATEGORY HINTING
+	$(".page_category").live('focus', function(){
+		$(this).autocomplete({
+			source: BASE + ADMIN + 'tasks/hint-page-cat.php',
 			delay: 200,
 			minLength: 2
 		});
