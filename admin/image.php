@@ -119,6 +119,23 @@ else{
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
+
+<div class="actions">
+	<a href="<?php echo BASE . ADMIN . 'tasks/download-image.php?id=' . $image['image_id']; ?>"><button>Download original</button></a>
+	<?php echo $comment_action; ?>
+	<?php echo $launch_action; ?>
+</div>
+
+<?php
+
+if(empty($image['image_title'])){
+	echo '<h1><img src="' . BASE . ADMIN . 'images/icons/images.png" alt="" /> Image</h1>';
+}
+else{
+	echo '<h1><img src="' . BASE . ADMIN . 'images/icons/images.png" alt="" /> Image: ' . $image['image_title'] . '</h1>';
+}
+
+?>
 <div class="span-24 last">
 	<form action="" method="post">
 		<div class="span-15 append-1">
@@ -138,10 +155,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</p>
 		</div>
 		<div class="span-8 last">
-			<p class="actions">
-				<?php echo $comment_action; ?>
-				<?php echo $launch_action; ?>
-			</p>
 			<div class="image_tag_container">
 				<label for="image_tag">Tags:</label><br />
 				<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />
