@@ -995,8 +995,8 @@ class Find extends Alkaline{
 			}
 		}
 		elseif(($this->table == 'posts') and empty($fields)){
-			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title);');
-			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower));
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title) OR (LOWER(post_category) LIKE :post_category);');
+			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower, ':post_category' => $search_lower));
 			$posts = $query->fetchAll();
 
 			foreach($posts as $post){
