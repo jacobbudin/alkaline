@@ -42,56 +42,26 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
+<div class="actions">
+	<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"><button>Upload file</button></a>
+	<a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Write post</button></a>
+</div>
+
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/dashboard.png" alt="" /> Dashboard</h1>
+
 <div class="span-24 last">
-	<div class="span-18 colborder">
+	<div class="span-17 append-1">
 		<?php
 		if($user->returnConf('stat_enabled') !== false){
 			?>
-			<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/dashboard.png" alt="" /> Vitals</h1>
-		
 			<div id="statistics_holder" class="statistics_holder"></div>
 			<div id="statistics_views" title="<?php echo $views; ?>"></div>
 			<div id="statistics_visitors" title="<?php echo $visitors; ?>"></div>
 			<?php
 		}
-		
-		if(($user->returnConf('stat_enabled') !== false) and ($user->returnPref('recent_images') === true)){
-			echo '<hr />';
-		}
-		
-		// Preference: recent_images
-		if($user->returnPref('recent_images') === true){
-			?>
-			<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/timeline.png" alt="" /> Timeline</h1>
-			<p>
-				<?php
-			
-				// Preference: recent_images_limit
-				if(!$max = $user->returnPref('recent_images_limit')){
-					$max = 10;
-				}
-			
-				$image_ids = new Find('images');
-				$image_ids->page(1,$max);
-				$image_ids->sort('images.image_uploaded', 'DESC');
-				$image_ids->find();
-				$images = new Image($image_ids);
-				$images->getSizes('square');
-
-				foreach($images->images as $image){
-					?>
-					<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
-						<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
-					</a>
-					<?php
-				}
-				?>
-			</p>
-			<?php
-		}
 		?>
 	</div>
-	<div class="span-5 last">
+	<div class="span-6 last">
 		<h3>Hello</h3>
 		
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
@@ -135,6 +105,44 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<h3>Alkaline</h3>
 		<p>You are running Alkaline <?php echo Alkaline::version; ?>.</p>
 	</div>
+</div>
+
+<hr />
+
+<div class="span-24 last">
+	<?php
+	
+	// Preference: recent_images
+	if($user->returnPref('recent_images') === true){
+		?>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/timeline.png" alt="" /> Timeline</h1>
+		<p>
+			<?php
+		
+			// Preference: recent_images_limit
+			if(!$max = $user->returnPref('recent_images_limit')){
+				$max = 10;
+			}
+		
+			$image_ids = new Find('images');
+			$image_ids->page(1,$max);
+			$image_ids->sort('images.image_uploaded', 'DESC');
+			$image_ids->find();
+			$images = new Image($image_ids);
+			$images->getSizes('square');
+
+			foreach($images->images as $image){
+				?>
+				<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
+					<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
+				</a>
+				<?php
+			}
+			?>
+		</p>
+		<?php
+	}
+	?>
 </div>
 
 <?php

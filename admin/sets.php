@@ -116,11 +116,11 @@ if(empty($set_id)){
 	
 		foreach($sets as $set){
 			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu">' . $set['set_title_url'] . '</td>';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu quiet">' . $set['set_title_url'] . '</td>';
 				echo '<td class="center">' . $set['set_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW . '">' . $set['set_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($set['set_created']) . '</td>';
-				echo '<td>' . $alkaline->formatRelTime($set['set_modified']) . '</td>';
+				echo '<td>' . ucfirst($alkaline->formatRelTime($set['set_modified'])) . '</td>';
 			echo '</tr>';
 		}
 	
