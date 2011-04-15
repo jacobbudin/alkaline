@@ -20,6 +20,7 @@ class Post extends Alkaline{
 	public $post_count = 0;
 	public $post_count_result = 0;
 	public $user;
+	public $versions;
 	protected $sql;
 	
 	/**
@@ -134,6 +135,15 @@ class Post extends Alkaline{
 		}
 		
 		$this->deleteRow('posts', $ids);
+		
+		// Delete row
+		$query = 'DELETE FROM versions WHERE post_id = ' . implode(' OR post_id = ', $ids) . ';';
+		
+		if(!$this->exec($query)){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -141,9 +151,10 @@ class Post extends Alkaline{
 	 *
 	 * @param array $array Associative array of columns and fields
 	 * @param bool $overwrite 
+	 * @param bool $version If post_text_raw changed, create a new version
 	 * @return void
 	 */
-	public function updateFields($array, $overwrite=true){
+	public function updateFields($array, $overwrite=true, $version=true){
 		// Error checking
 		if(!is_array($array)){
 			return false;
@@ -224,6 +235,15 @@ class Post extends Alkaline{
 			
 			// Set post_modified field to now
 			$fields['post_modified'] = date('Y-m-d H:i:s');
+			
+			// Create version
+			if(!empty($fields['post_text_raw']) and ($fields['post_text_raw'] != $this->posts[$i]['post_text_raw']) and ($version == true)){
+				$version_fields = array('post_id' => $this->posts[$i]['post_id'],
+					'user_id' => $this->user['user_id'],
+					'version_text_raw' => $fields['post_text_raw'],
+					'version_created' => date('Y-m-d H:i:s'));
+				$this->addRow($version_fields, 'versions');
+			}
 			
 			$columns = array_keys($fields);
 			$values = array_values($fields);
@@ -356,9 +376,9 @@ class Post extends Alkaline{
 	}
 	
 	/**
-	 * Get users data and append to post array
+	 * Get users data and save to object
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function getUsers(){
 		$ids = array();
@@ -388,6 +408,19 @@ class Post extends Alkaline{
 		}
 		
 		return $this->users;
+	}
+	
+	/**
+	 * Get version data and save to object
+	 *
+	 * @return void
+	 */
+	public function getVersions(){
+		$query = $this->prepare('SELECT versions.* FROM versions, posts' . $this->sql . ' AND versions.post_id = posts.post_id;');
+		$query->execute();
+		$this->versions = $query->fetchAll();
+		
+		return $this->versions;
 	}
 }
 

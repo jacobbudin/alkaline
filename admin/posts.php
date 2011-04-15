@@ -97,6 +97,7 @@ if(!empty($_POST['post_id'])){
 			'post_comment_disabled' => $post_comment_disabled,
 			'post_words' => $post_words);
 		
+		$posts->attachUser($user);
 		$posts->updateFields($fields);
 	}
 	
@@ -130,7 +131,10 @@ if(empty($post_id)){
 	?>
 
 	<div class="span-24 last">
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Add post</button></a></div>
+		<div class="actions">
+			<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"><button>Upload post</button></a>
+			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Write post</button></a>
+		</div>
 	
 		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
@@ -201,11 +205,11 @@ if(empty($post_id)){
 
 			foreach($posts->posts as $post){
 				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu">' . $post['post_title_url'] . '</td>';
+					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong class="large">' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
-					echo '<td>' . $alkaline->formatRelTime($post['post_modified']) . '</td>';
+					echo '<td>' . ucfirst($alkaline->formatRelTime($post['post_modified'])) . '</td>';
 				echo '</tr>';
 			}
 
@@ -245,6 +249,7 @@ if(empty($post_id)){
 }
 else{
 	$posts = new Post($post_id);
+	$posts->getVersions();
 	$posts->formatTime();
 	
 	$post = $posts->posts[0];
@@ -277,7 +282,10 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a> <?php echo $launch_action; ?></div>
+	<div class="actions">
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
+		<?php echo $launch_action; ?>
+	</div>
 	
 	<?php
 	
@@ -330,8 +338,28 @@ else{
 				</table>
 			</div>
 		</div>
+		<p class="slim">
+			<span class="switch">&#9656;</span> <a href="#" class="show">Compare to previous version</a>
+		</p>
+		<div class="reveal">
+			<p>
+				<label for="version_id">Show differences from:</label>
+				<select id="version_id">
+				<?php
+				foreach($posts->versions as $version){
+					echo '<option value="' . $version['version_id'] . '">' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ')</option>';
+				}
+				?>
+				</select>
+				<button id="compare">Compare</button>
+			</p>
+			<p id="comparison">
+				
+			</p>
+		</div>
+		
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add  at cursor position)</span>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
 		</p>
 		<div class="reveal image_click">
 			<?php
@@ -342,7 +370,7 @@ else{
 			$image_ids->find();
 	
 			$images = new Image($image_ids);
-			$images->getSizes('square');
+			$images->getSizes();
 	
 			if($alkaline->returnConf('post_size_label')){
 				$label = 'image_src_' . $alkaline->returnConf('post_size_label');
@@ -367,12 +395,6 @@ else{
 			<input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" />
 			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
 			<input type="submit" value="Save changes" />
-			and
-			<select>
-				<option>return to previous screen</option>
-				<option>go to next post</option>
-				<option>go to previous post</option>
-			</select>
 			or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
 	</form>
 

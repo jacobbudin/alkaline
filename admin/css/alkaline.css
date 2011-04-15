@@ -481,6 +481,40 @@ img.ui-datepicker-trigger{
 	margin-left: .5em;
 }
 
+.comparison_split{
+	background-color: #222;
+	font-family: "Anonymous Pro", "Courier New", Courier, monospace;
+	color: #fff;
+	border-radius:  4px;
+	-moz-border-radius: 4px;
+	padding: 40px 0;
+	margin-bottom: 1.5em;
+}
+
+.comparison_left del{
+	color: #ff0208;
+	background-color: #380000;
+	text-decoration: none;
+}
+
+.comparison_right del{
+	color: #777;
+	background-color: #222;
+	text-decoration: none;
+}
+
+.comparison_left ins{
+	color: #222;
+	background-color: #222;
+	text-decoration: none;
+}
+
+.comparison_right ins{
+	color: #00da3a;
+	background-color: #004612;
+	text-decoration: none;
+}
+
 button img{
 	position: relative; vertical-align:-20%; margin-right: 3px;
 }

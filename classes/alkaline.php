@@ -21,11 +21,11 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 928;
+	const build = 1000;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
-	const version = '1.0.2';
+	const version = '1.1';
 	
 	public $db_type;
 	public $db_version;
@@ -93,7 +93,7 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'versions' => 'version_id');
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -3185,6 +3185,25 @@ class Alkaline{
 		$this->addError(E_USER_ERROR, 'Alkaline Multiuser is required for multiuser functionality');
 		
 		return true;
+	}
+	
+	/**
+	 * Compare two strings
+	 *
+	 * @param string $string1 
+	 * @param string $string2 
+	 * @return string
+	 */
+	public function compare($string1, $string2){
+		require_once(PATH . CLASSES . 'text_diff/Diff.php');
+		require_once(PATH . CLASSES . 'text_diff/Diff/Renderer/inline.php');
+		
+		$lines1 = explode("\n", $string1);
+		$lines2 = explode("\n", $string2);
+		
+		$diff     = new Text_Diff('auto', array($lines1, $lines2));
+		$renderer = new Text_Diff_Renderer_inline();
+		return nl2br($renderer->render($diff));
 	}
 }
 
