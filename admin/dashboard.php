@@ -15,7 +15,6 @@ $user = new User;
 
 $user->perm(true);
 
-
 // Vitals
 $stats = new Stat(strtotime('-30 days'));
 $stats->getDaily();

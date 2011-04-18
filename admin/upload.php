@@ -69,7 +69,7 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
 				</div>
 			<?php } else{ ?>
-				<input type="file" multiple="multiple" id="upload" />
+				<p><input type="file" multiple="multiple" id="upload" /></p>
 			<?php } ?>
 		</form>
 	</div>

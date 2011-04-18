@@ -36,7 +36,7 @@
 					<div>
 						<strong>
 							<img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" />
-							<?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : 'Launch'); ?>
+							<?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : ''); ?>
 						</strong> &#0160;
 						<a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>">Launch</a>
 					</div>
@@ -85,12 +85,43 @@
 
 					if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'comments') or (@TAB == 'features') or (@TAB == 'settings')){
 						?>
-						<li id="tab_dashboard"><a href="<?php echo BASE . ADMIN; ?>dashboard<?php echo URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard</a></li>
-						<li id="tab_library"><a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Library</a></li>
-						<li id="tab_posts"><a href="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a></li>
-						<li id="tab_comments"><a href="<?php echo BASE . ADMIN; ?>comments<?php echo URL_CAP; ?>"<?php if(@TAB == 'comments'){ echo ' class="selected"'; } ?>>Comments</a></li>
-						<li id="tab_features"><a href="<?php echo BASE . ADMIN; ?>features<?php echo URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Editor</a></li>
-						<li id="tab_settings"><a href="<?php echo BASE . ADMIN; ?>settings<?php echo URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings</a></li>
+						<li id="tab_dashboard">
+							<a href="<?php echo BASE . ADMIN . 'dashboard' . URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard &#9662;</a>
+							<ul>
+								<li id="sub_statistics"><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/stats.png" alt="" /> Statistics</a></li>
+								<li id="sub_preferences"><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/preferences.png" alt="" /> Preferences</a></li>
+							</ul>
+						</li>
+						<li id="tab_library">
+							<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Images</a>
+						</li>
+						<li id="tab_posts">
+							<a href="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a>
+						</li>
+						<li id="tab_comments">
+							<a href="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>"<?php if(@TAB == 'comments'){ echo ' class="selected"'; } ?>>Comments</a>
+						</li>
+						<li id="tab_features">
+							<a href="<?php echo BASE . ADMIN . 'features' . URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Editor <span>&#9662;</span></a>
+							<ul>
+								<li id="sub_tags"><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/tags.png" alt="" /> Tags</a></li>
+								<li id="sub_sets"><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/sets.png" alt="" /> Sets</a></li>
+								<li id="sub_pages"><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/pages.png" alt="" /> Pages</a></li>
+								<li id="sub_rights"><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/rights.png" alt="" /> Rights</a></li>
+							</ul>
+						</li>
+						<li id="tab_settings">
+							<a href="<?php echo BASE . ADMIN . 'settings' . URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings <span>&#9662;</span></a>
+							<ul>
+								<li id="sub_users"><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/users.png" alt="" /> Users</a></li>
+								<li id="sub_guests"><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/guests.png" alt="" /> Guests</a></li>
+								<li id="sub_thumbnails"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/thumbnails.png" alt="" /> Thumbnails</a></li>
+								<li id="sub_themes"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/themes.png" alt="" /> Themes</a></li>
+								<li id="sub_extensions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/extensions.png" alt="" /> Extensions</a></li>
+								<li id="sub_configuration"><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/configuration.png" alt="" /> Configuration</a></li>
+								<li id="sub_maintenance"><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/maintenance.png" alt="" /> Maintenance</a></li>
+							</ul>
+						</li>
 						<li id="tab_help"><a href="http://www.alkalineapp.com/guide/" target="_blank">Help</a></li>
 						<?php
 					}
@@ -106,57 +137,6 @@
 		</div>
 	</div>
 	<div class="container">
-		<div id="sub_navigation" class="span-24 last">
-			<ul>
-				<?php
-
-				if(@TAB == 'dashboard'){
-					?>
-					<li id="sub_statistics"><a href="<?php echo BASE . ADMIN; ?>statistics<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/stats.png" alt="" /> Statistics</a></li>
-					<li id="sub_preferences"><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/preferences.png" alt="" /> Preferences</a></li>
-					<?php
-				}
-				elseif(@TAB == 'library'){
-					?>
-					<!-- <li id="sub_upload"><a href="<?php echo BASE . ADMIN; ?>upload<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/upload.png" alt="" /> Upload</a></li>
-					<li id="sub_shoebox"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/shoebox.png" alt="" /> Shoebox</a></li> -->
-					<?php
-				}
-				elseif(@TAB == 'posts'){
-					?>
-					
-					<?php
-				}
-				elseif(@TAB == 'comments'){
-					?>
-					
-					<?php
-				}
-				elseif(@TAB == 'features'){
-					?>
-					<li id="sub_tags"><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/tags.png" alt="" /> Tags</a></li>
-					<li id="sub_sets"><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/sets.png" alt="" /> Sets</a></li>
-					<li id="sub_pages"><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/pages.png" alt="" /> Pages</a></li>
-					<li id="sub_rights"><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/rights.png" alt="" /> Rights</a></li>
-					<?php
-					
-				}
-				elseif(@TAB == 'settings'){
-					?>
-					<li id="sub_users"><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/users.png" alt="" /> Users</a></li>
-					<li id="sub_guests"><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/guests.png" alt="" /> Guests</a></li>
-					<li id="sub_thumbnails"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/thumbnails.png" alt="" /> Thumbnails</a></li>
-					<li id="sub_themes"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/themes.png" alt="" /> Themes</a></li>
-					<li id="sub_extensions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/extensions.png" alt="" /> Extensions</a></li>
-					<li id="sub_configuration"><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/configuration.png" alt="" /> Configuration</a></li>
-					<li id="sub_maintenance"><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/maintenance.png" alt="" /> Maintenance</a></li>
-					<?php
-				}
-				
-				
-				?>
-			</ul>
-		</div>
 		<div id="content" class="span-24 last">
 			<?php if(!empty($alkaline)){ echo $alkaline->returnNotes(); } ?>
 			

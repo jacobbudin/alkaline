@@ -441,6 +441,19 @@ window.launchQuickpic = function(context){
 };
 
 $(document).ready(function(){
+	$('#navigation ul ul').hide();
+	$('#navigation ul li').hover(function() {
+		if($(this).find('a').hasClass('selected')){
+			bgcolor = "#fff";
+		}
+		else{
+			bgcolor = "";
+		}
+		$(this).find('ul').css('background-color', bgcolor).show();
+	}, function() {
+		$(this).find('ul').hide();
+	});
+	
 	// PERMISSIONS
 	if(!empty(PERMISSIONS)){
 		perms = PERMISSIONS.split(', ');
@@ -452,7 +465,7 @@ $(document).ready(function(){
 				$(this).hide();
 			}
 		});
-		$('#sub_navigation').find('li').each(function(){
+		$('#navigation ul ul').find('li').each(function(){
 			id = $(this).attr('id');
 			if(id == 'sub_preferences'){ return; }
 			is_perm = perms.some(function(item){ return 'sub_' + item == id; });

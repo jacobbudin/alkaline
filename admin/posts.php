@@ -338,6 +338,8 @@ else{
 				</table>
 			</div>
 		</div>
+		
+		<?php if(count($posts->versions) > 0){ ?>
 		<p class="slim">
 			<span class="switch">&#9656;</span> <a href="#" class="show">Compare to previous version</a>
 		</p>
@@ -357,6 +359,7 @@ else{
 				
 			</p>
 		</div>
+		<?php } ?>
 		
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
