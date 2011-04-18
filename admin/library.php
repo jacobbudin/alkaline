@@ -63,7 +63,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</p>
 		
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show advanced" style="line-height: 2.5em;">Show options</a>
+			<span class="switch">&#9656;</span> <a href="#" class="show advanced" style="line-height: 2.5em;">Show options and presets</a>
 		</p>
 	
 		<div class="reveal span-24 last">
@@ -203,15 +203,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<h3>Presets</h3>
 				
 				<ul>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>displayed<?php echo URL_RW; ?>">Displayed images</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>updated<?php echo URL_RW; ?>">Recently updated images</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>views<?php echo URL_RW; ?>">Most viewed images</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>nonpublic<?php echo URL_RW; ?>">Nonpublic images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'displayed' . URL_RW; ?>">Displayed images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'updated' . URL_RW; ?>">Recently updated images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'views' . URL_RW; ?>">Most viewed images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'nonpublic' . URL_RW; ?>">Nonpublic images</a></li>
 				</ul>
 				<ul>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>unpublished<?php echo URL_RW; ?>">Unpublished images</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untitled<?php echo URL_RW; ?>">Untitled images</a></li>
-					<li><a href="<?php echo BASE . ADMIN; ?>search<?php echo URL_ACT; ?>untagged<?php echo URL_RW; ?>">Untagged images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'unpublished' . URL_RW; ?>">Unpublished images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'untitled' . URL_RW; ?>">Untitled images</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'untagged' . URL_RW; ?>">Untagged images</a></li>
 				</ul>
 			</div>
 		</div>
@@ -223,7 +223,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		foreach($images->images as $image){
 			?>
 			<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
-				<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
+				<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame tip" />
 			</a>
 			<?php
 		}

@@ -144,58 +144,74 @@ if(empty($post_id)){
 			</p>
 
 			<p>
-				<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
+				<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options and presets</a>
 			</p>
 		
-			<div class="reveal">
-				<table>
-					<tr>
-						<td class="right middle"><label for="published">Publication status:</label></td>
-						<td class="quiet">
-							<select id="published" name="published">
-								<option value="">All</option>
-								<option value="published">Published</option>
-								<option value="unpublished">Unpublished</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date created:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date" name="created_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="created_end" style="width: 10em;" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date modified:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date" name="modified_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="modified_end" style="width: 10em;" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Sort results by:</label></td>
-						<td>
-							<select name="sort">
-								<option value="created" selected="selected">Date created</option>
-								<option value="modified">Date modified</option>
-								<option value="published">Date published</option>
-								<option value="title">Title</option>
-								<option value="views">Views</option>
-							</select>
-							<select name="sort_direction">
-								<option value="DESC">Descending</option>
-								<option value="ASC">Ascending</option>
-							</select>
-						</td>
-					</tr>
-				</table>
+			<div class="reveal span-24 last">
+				<div class="span-15 append-1">
+					<table>
+						<tr>
+							<td class="right middle"><label for="published">Publication status:</label></td>
+							<td class="quiet">
+								<select id="published" name="published">
+									<option value="">All</option>
+									<option value="published">Published</option>
+									<option value="unpublished">Unpublished</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Date created:</label></td>
+							<td class="quiet">
+								between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+								and <input type="text" class="date" name="created_end" style="width: 10em;" />
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Date modified:</label></td>
+							<td class="quiet">
+								between <input type="text" class="date" name="modified_begin" style="width: 10em;" />
+								and <input type="text" class="date" name="modified_end" style="width: 10em;" />
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Sort results by:</label></td>
+							<td>
+								<select name="sort">
+									<option value="created" selected="selected">Date created</option>
+									<option value="modified">Date modified</option>
+									<option value="published">Date published</option>
+									<option value="title">Title</option>
+									<option value="views">Views</option>
+								</select>
+								<select name="sort_direction">
+									<option value="DESC">Descending</option>
+									<option value="ASC">Ascending</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="span-8 last">
+					<h3>Presets</h3>
+					
+					<ul>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'displayed' . URL_RW; ?>">Displayed posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'updated' . URL_RW; ?>">Recently updated posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'views' . URL_RW; ?>">Most viewed posts</a></li>
+					</ul>
+					
+					<ul>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'unpublished' . URL_RW; ?>">Unpublished posts</a></li>
+					</ul>
+				</div>
 			</div>
 		</form>
 	
 		<table>
 			<tr>
 				<th>Title</th>
+				<th></th>
 				<th class="center">Views</th>
 				<th class="center">Words</th>
 				<th>Created</th>
@@ -204,8 +220,10 @@ if(empty($post_id)){
 			<?php
 
 			foreach($posts->posts as $post){
-				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong class="large">' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
+				echo '<tr class="ro">';
+					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord($post['post_text'], 150) . '" class="tip"><strong class="large">' . $post['post_title'] . '</strong></a><br />
+						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
+					echo '<td class="center"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';

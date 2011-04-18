@@ -98,7 +98,6 @@ if(empty($comment_id)){
 	$comment_ids = new Find('comments');
 	$comment_ids->page(null, 50);
 	if(isset($comment_act) and ($comment_act == 'results')){ $comment_ids->memory(); }
-	if(isset($comment_act) and ($comment_act == 'new')){ $comment_ids->status('unpublished'); }
 	$comment_ids->find();
 	
 	$comments = new Comment($comment_ids);
@@ -123,30 +122,41 @@ if(empty($comment_id)){
 		</p>
 
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
+			<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options and presets</a>
 		</p>
 		
-		<div class="reveal">
-			<table>
-				<tr>
-					<td class="right middle"><label for="status">Publication status:</label></td>
-					<td class="quiet">
-						<select id="status" name="status">
-							<option value="">All</option>
-							<option value="published">Published</option>
-							<option value="unpublished">Unpublished</option>
-							<option value="spam">Spam</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="right middle"><label>Date created:</label></td>
-					<td class="quiet">
-						between <input type="text" class="date" name="created_begin" style="width: 10em;" />
-						and <input type="text" class="date" name="created_end" style="width: 10em;" />
-					</td>
-				</tr>
-			</table>
+		<div class="reveal span-24 last">
+			<div class="span-15 append-1">
+				<table>
+					<tr>
+						<td class="right middle"><label for="status">Status:</label></td>
+						<td class="quiet">
+							<select id="status" name="status">
+								<option value="">All</option>
+								<option value="1">Live</option>
+								<option value="0">Pending</option>
+								<option value="-1">Spam</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="right middle"><label>Date created:</label></td>
+						<td class="quiet">
+							between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+							and <input type="text" class="date" name="created_end" style="width: 10em;" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="span-8 last">
+				<h3>Presets</h3>
+				
+				<ul>
+					<li><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'live' . URL_RW; ?>">Live comments</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'pending' . URL_RW; ?>">Pending comments</a></li>
+					<li><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'spam' . URL_RW; ?>">Spam comments</a></li>
+				</ul>
+			</div>
 		</div>
 	</form>
 	
@@ -158,29 +168,45 @@ if(empty($comment_id)){
 		<?php
 	}
 	?>
-	
-	<div class="span-24 last">	
-		<?php
-		$i = 1;
-		foreach($comments->comments as $comment){
-			if($i == 3){ $last = 'last'; $i = 0; }
-			else{ $last = ''; $i++; }
 			
-			echo '<div class="span-8 append-bottom ' . $last . '">';
-			echo '<a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="comment_mini">';
+	<table>
+		<tr>
+			<th style="width:25px"></th>
+			<th>Comment</th>
+			<th></th>
+			<th>Created</th>
+		</tr>
+		<?php
+	
+		foreach($comments->comments as $comment){
+			echo '<tr class="ro">';
+			echo '<td>';
 			$key = array_search($comment['image_id'], $image_ids);
 			if(is_int($key)){
 				echo '<img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame_mini" />';
 			}
+			echo '</td>';
+			echo '<td class="status' . $comment['comment_status'] . '"><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord($comment['comment_text'], 150) . '">';
+			echo $alkaline->fitStringByWord($comment['comment_text'], 50);
+			echo '</a></strong><br />';
 			if(!empty($comment['comment_author_name'])){
-				echo '<strong>' . $comment['comment_author_name'] . '</strong>: ';
+				echo '<span class="quiet"><a href="">' . $comment['comment_author_name'] . '</a>';
 			}
-			echo '&#8220;' . $comment['comment_text'] . '&#8221;';
-			echo '</a><div class="comment_status status_' . $comment['comment_status'] . '">' . $comment['comment_created_format'] . '</div></div>';
+			else{
+				'<em>Anonymous</em>';
+			}
+		
+			if(!empty($comment['comment_author_ip'])){
+				echo ' (<a href="">' . $comment['comment_author_ip'] . '</a>)</span>';
+			}
+			echo '</td>';
+			echo '<td class="center"><button></button></td>';
+			echo '<td>' . $comment['comment_created_format'] . '</td></tr>';
+		
 		}
 	
 		?>
-	</div>
+	</table>
 	
 	<?php
 	
@@ -218,76 +244,92 @@ else{
 	define('TITLE', 'Alkaline Comment');
 	require_once(PATH . ADMIN . 'includes/header.php');
 	
+	$email_action = '';
+	
+	if(!empty($comment['comment_author_email'])){
+		$email_action = '<a href="mailto:' . $comment['comment_author_email'] . '"><button>Email author</button></a>';
+	}
+	
 	?>
 	
 	<?php if($comment['image_id'] != 0){ ?>
 		<div class="actions">
-			<button><a href="<?php echo BASE . ADMIN . 'images' . URL_ID . $comment['image_id'] . URL_RW; ?>">Go to image</a></button>
-			<button><a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>">Launch image</a></button>
+			<?php echo $email_action; ?>
+			<a href="<?php echo BASE . ADMIN . 'images' . URL_ID . $comment['image_id'] . URL_RW; ?>"><button>Go to image</button></a>
+			<a href="<?php echo BASE . 'image' . URL_ID . $comment['image_id'] . URL_RW; ?>"><button>Launch image</button></a>
 		</div>
 	<?php } if($comment['post_id'] != 0){ ?>
 		<div class="actions">
-			<button><a href="<?php echo BASE . ADMIN . 'posts' . URL_ID . $comment['post_id'] . URL_RW; ?>">Go to post</a></button>
-			<button><a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>">Launch post</a></button>
+			<?php echo $email_action; ?>
+			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ID . $comment['post_id'] . URL_RW; ?>"><button>Go to post</button></a>
+			<a href="<?php echo BASE . 'post' . URL_ID . $comment['post_id'] . URL_RW; ?>"><button>Launch post</button></a>
 		</div>
 	<?php } ?>
 	
-	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comment</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comment</h1><br />
 
 	<form action="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right"><label for="comment_text">Author:</label></td>
-				<td>
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<textarea id="comment_text_raw" name="comment_text_raw" placeholder="Text" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$comment['comment_text_raw']; ?></textarea>
+			</div>
+			<div class="span-8 last">
+				<p>
+					<label for="comment_text">Author:</label><br />
 					<?php
-					
+
 					if(!empty($comment['comment_author_name'])){
-						echo $comment['comment_author_name'];
+						echo '<a href="">' . $comment['comment_author_name'] . '</a>';
 					}
 					else{
-						echo '<em>(Unsigned)</em>';
+						echo '<em>Anonymous</em>';
 					}
-					
+
 					?>
-				</td>
-			</tr>
-			<?php
-			if(!empty($comment['comment_author_email'])){
-				echo '<tr><td class="right"><label>Email:</label></td><td><a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a></td></tr>';
-			}
-			?>
-			<?php		
-			if(!empty($comment['comment_author_uri'])){
-				echo '<tr><td class="right"><label>Web site:</label></td><td><a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a></td></tr>';
-			}
-			
-			?>
-			<tr>
-				<td class="right pad"><label for="post_text_raw">Text:</label></td>
-				<td><textarea id="comment_text_raw" name="comment_text_raw" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$comment['comment_text_raw']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right"><label for="comment_ip_address">IP address:</label></td>
-				<td><?php echo $comment['comment_author_ip']; ?></td>
-			</tr>
-			<tr>
-				<td class="right"><input type="checkbox" id="comment_spam" name="comment_spam" value="spam" <?php if($comment['comment_status'] == -1){ echo 'checked="checked"'; } ?>/></td>
-				<td><strong><label for="comment_spam">Mark this comment as spam.</label></strong></td>
-			</tr>
-			<tr>
-				<td class="right"><input type="checkbox" id="comment_delete" name="comment_delete" value="delete" /></td>
-				<td><strong><label for="comment_delete">Delete this comment.</label></strong> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>
-					<input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" />
-					<input type="hidden" name="image_id" value="<?php echo $comment['image_id']; ?>" />
-					<input type="hidden" name="post_id" value="<?php echo $comment['post_id']; ?>" />
-					<input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $comment['comment_markup']; ?>" />
-					<input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+				</p>
+				<?php
+				if(!empty($comment['comment_author_email'])){
+					echo '<p>
+						<label>Email:</label><br />
+						<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a>
+						</p>';
+				}
+				?>
+				<?php		
+				if(!empty($comment['comment_author_uri'])){
+					echo '<tr><td class="right"><label>Web site:</label></td><td><a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a></td></tr>';
+				}
+
+				?>
+				<p>
+					<label for="comment_ip_address">IP address:</label><br />
+					<?php echo '<a href="">' . $comment['comment_author_ip'] . '</a>'; ?>
+				</p>
+				
+				<hr />
+				
+				<table>
+					<tr>
+						<td><input type="checkbox" id="comment_spam" name="comment_spam" value="spam" <?php if($comment['comment_status'] == -1){ echo 'checked="checked"'; } ?>/></td>
+						<td><strong><label for="comment_spam">Mark this comment as spam.</label></strong></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="comment_delete" name="comment_delete" value="delete" /></td>
+						<td>
+							<strong><label for="comment_delete">Delete this comment.</label></strong><br />
+							This action cannot be undone.
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<p>
+			<input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>" />
+			<input type="hidden" name="image_id" value="<?php echo $comment['image_id']; ?>" />
+			<input type="hidden" name="post_id" value="<?php echo $comment['post_id']; ?>" />
+			<input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $comment['comment_markup']; ?>" />
+			<input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+		</p>
 	</form>
 
 	<?php
