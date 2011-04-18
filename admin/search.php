@@ -17,11 +17,24 @@ $user->perm(true);
 
 Find::clearMemory();
 
-$image_ids = new Find('images');
-$image_ids->find();
-$image_ids->saveMemory();
+if(!empty($_REQUEST['search_type'])){
+	$table = $_REQUEST['search_type'];
+}
+else{
+	$table = 'images';
+}
 
-header('Location: ' . LOCATION . BASE . ADMIN . 'results' . URL_CAP);
-exit();
+$ids = new Find($table);
+$ids->find();
+$ids->saveMemory();
+
+if($table == 'images'){
+	header('Location: ' . LOCATION . BASE . ADMIN . 'results' . URL_CAP);
+	exit();
+}
+else{
+	header('Location: ' . LOCATION . BASE . ADMIN . $table . URL_ACT . 'results' . URL_RW);
+	exit();
+}
 
 ?>

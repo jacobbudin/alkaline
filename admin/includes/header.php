@@ -64,10 +64,10 @@
 						?>
 						<div id="search_panel" class="span-17 append-1">
 							<form action="<?php echo BASE . ADMIN . 'search' . URL_CAP; ?>" method="post">
-								<select>
-									<option>Images</option>
-									<option>Posts</option>
-									<option>Comments</option>
+								<select name="search_type" id="search_type">
+									<option value="images">Images</option>
+									<option value="posts">Posts</option>
+									<option value="comments">Comments</option>
 								</select>
 								<input type="search" name="q" results="10" />
 								<input type="submit" value="Search" />
