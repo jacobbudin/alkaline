@@ -153,6 +153,7 @@ else{
 	$sets = new Set($set_id);
 	$set = $sets->sets[0];
 	$set = $alkaline->makeHTMLSafe($set);
+	$set_request = $set['set_request'];
 	
 	// Update set
 	$image_ids = new Find('images');
@@ -198,7 +199,7 @@ else{
 				<label for="set_type">Type:</label><br />
 				<table>
 					<tr>
-						<td><input type="radio" name="set_type" id="set_type_auto" value="auto" <?php if($set['set_type'] != 'static'){ echo 'checked="checked"'; } if(empty($set['set_call'])){ echo 'disabled="disabled"'; } ?> /></td>
+						<td><input type="radio" name="set_type" id="set_type_auto" value="auto" <?php if($set['set_type'] != 'static'){ echo 'checked="checked"'; } ?> /></td>
 						<td>
 							<label for="set_type_auto">Automatic</label> <span class="quiet">(search)</span><br />
 							Automatically include new images that meet the set&#8217;s criteria
@@ -214,11 +215,8 @@ else{
 					</tr>
 				</table>
 				
-				<p class="quiet">
-					Note: If you switch to static, and then return to automatic, you will lose any manual additions or removals performed.
-				</p>
-				
 				<hr />
+				
 				<table>
 					<tr>
 						<td><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
@@ -231,10 +229,8 @@ else{
 			</div>
 		</div>
 		
-		
-		<?php if($set['set_type'] == 'auto'){ $set_request = $set['set_request']; ?>
 		<p class="slim">
-			<span class="switch">&#9656;</span> <a href="#" class="show">Modify set&#8217;s criteria</a></span>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Modify set&#8217;s criteria</a> <span class="quiet">(affects only automatic sets)</span>
 		</p>
 		
 		<div class="reveal">
@@ -375,7 +371,6 @@ else{
 				</tr>
 			</table>
 		</div>
-		<?php } ?>
 		
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show">Show set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
