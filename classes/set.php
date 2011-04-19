@@ -72,6 +72,7 @@ class Set extends Alkaline{
 				}
 
 				$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
+ 				$this->sets[$i]['set_request']= unserialize($this->sets[$i]['set_request']);
 			}
 		}
 	}
