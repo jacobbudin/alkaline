@@ -277,7 +277,7 @@ class Find extends Alkaline{
 			}
 			
 			// Status
-			if(!empty($_REQUEST['status'])){
+			if(isset($_REQUEST['status'])){
 				$this->_status($_REQUEST['status']);
 			}
 			
@@ -1135,6 +1135,7 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($privacy)){ return false; }
 		if(intval($privacy)){ $privacy = intval($privacy); }
+		if($this->table != 'images'){ return false; }
 	
 		// Guest, admin checking
 		$user = new User;
@@ -1408,7 +1409,7 @@ class Find extends Alkaline{
 		
 		// Convert strings
 		if(is_string($status)){
-			$levels = array('spam' => -1, 'unpublished' => 0, 'published' => 1);
+			$levels = array('spam' => -1, '-1' => -1, 'unpublished' => 0, '0' => 0, 'published' => 1, '1' => 1);
 			if(array_key_exists($status, $levels)){
 				$status = $levels[$status];
 			}
@@ -1424,7 +1425,7 @@ class Find extends Alkaline{
 			
 		}
 		elseif(is_array($status)){
-			parent::convertToIntegerArray($privacy);
+			parent::convertToIntegerArray($status);
 			
 			// Set fields to search
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'status IN (' . implode(', ', $status) . ')';
@@ -1507,6 +1508,15 @@ class Find extends Alkaline{
 				break;
 			case 'unpublished':
 				$this->_published(false);
+				break;
+			case 'live':
+				$this->_status(1);
+				break;
+			case 'spam':
+				$this->_status(-1);
+				break;
+			case 'pending':
+				$this->_status(0);
 				break;
 			case 'displayed':
 				$this->_published(true);
