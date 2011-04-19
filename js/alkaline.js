@@ -586,9 +586,12 @@ $(document).ready(function(){
 	});
 	
 	// TIPTIP
-	$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
-	$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
-	$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
+	
+	if(typeof tipTip == 'function'){
+		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
+		$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
+		$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
+	}
 	
 	// PRIMARY - ROLLOVER TABLE ROWS
 	$('table tr.ro').hover(function() {
@@ -897,10 +900,35 @@ $(document).ready(function(){
 		}
 	}
 	
+	function titleUrlPlaceholderUpdate(selector){
+		id = selector.attr('id');
+		id_link = id + '_url';
+		val = selector.val();
+		newval = val.replace(/\s+/gmi, '-');
+		newval = newval.replace(/[^a-z0-9\-\_]/gmi, '-');
+		newval = newval.replace(/^-/gmi, '');
+		newval = newval.replace(/-$/gmi, '');
+		newval = newval.replace(/\-+/gmi, '-');
+		newval = newval.toLowerCase();
+		if(!empty(newval)){
+			$('#' + id_link).attr('placeholder', newval);
+		}
+		else{
+			$('#' + id_link).attr('placeholder', '');
+		}
+	}
+	
 	$('input[id$="_title_url"]').each(function(){
 		titleUrlUpdate($(this));
 		$(this).keyup(function(event){
 			titleUrlUpdate($(this));
+		});
+	});
+	
+	$('input[id$="_title"]').each(function(){
+		titleUrlPlaceholderUpdate($(this));
+		$(this).keyup(function(event){
+			titleUrlPlaceholderUpdate($(this));
 		});
 	});
 	
