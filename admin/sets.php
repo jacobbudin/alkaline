@@ -30,6 +30,14 @@ if(!empty($_POST['set_id'])){
 		$alkaline->deleteRow('sets', $set_id);
 	}
 	else{
+		// Rebuild pile with new data
+		$image_ids = new Find('images');
+		$image_ids->find();
+		$image_ids->saveMemory();
+		
+		$set_images = @implode(', ', $image_ids->ids);
+		$set_image_count = $image_ids->count;
+		
 		$set_title = trim($_POST['set_title']);
 		
 		if(!empty($_POST['set_title_url'])){
@@ -39,10 +47,14 @@ if(!empty($_POST['set_id'])){
 			$set_title_url = $alkaline->makeURL($set_title);
 		}
 		
-		$fields = array('set_title' => $alkaline->makeUnicode($set_title),
+		$fields = array('set_call' => serialize($_SESSION['alkaline']['search']['images']['call']),
+			'set_request' => serialize($_SESSION['alkaline']['search']['images']['request']),
+			'set_title' => $alkaline->makeUnicode($set_title),
 			'set_title_url' => $set_title_url,
 			'set_type' => $_POST['set_type'],
-			'set_description' => $alkaline->makeUnicode($_POST['set_description']));
+			'set_description' => $alkaline->makeUnicode($_POST['set_description']),
+			'set_images' => $set_images,
+			'set_image_count' => $set_image_count);
 		
 		if(isset($_POST['set_images'])){
 			$fields['set_images'] = $_POST['set_images'];
@@ -94,11 +106,13 @@ if(empty($set_id)){
 	
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build static set</button></a></div>
+	<div class="actions">
+		<a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build set</button></a>
+	</div>
 
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets (<?php echo $set_count; ?>)</h1>
 	
-	<p>Sets are collections of images. You can build an automatic set that updates itself by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
+	<p>Sets are collections of images. You can also build a set by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
 	<p>
 		<input type="search" name="filter" placeholder="Filter" class="s" results="0" />
@@ -107,6 +121,7 @@ if(empty($set_id)){
 	<table class="filter">
 		<tr>
 			<th>Title</th>
+			<th class="center">Type</th>
 			<th class="center">Views</th>
 			<th class="center">Images</th>
 			<th>Created</th>
@@ -117,6 +132,7 @@ if(empty($set_id)){
 		foreach($sets as $set){
 			echo '<tr class="ro">';
 				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu quiet">' . $set['set_title_url'] . '</td>';
+				echo '<td class="center">' . ucwords($set['set_type']) . '</td>';
 				echo '<td class="center">' . $set['set_views'] . '</td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'sets' . URL_AID . $set['set_id'] . URL_RW . '">' . $set['set_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($set['set_created']) . '</td>';
@@ -134,7 +150,8 @@ if(empty($set_id)){
 }
 else{
 	// Get set
-	$set = $alkaline->getRow('sets', $set_id);
+	$sets = new Set($set_id);
+	$set = $sets->sets[0];
 	$set = $alkaline->makeHTMLSafe($set);
 	
 	// Update set
@@ -197,6 +214,10 @@ else{
 					</tr>
 				</table>
 				
+				<p class="quiet">
+					Note: If you switch to static, and then return to automatic, you will lose any manual additions or removals performed.
+				</p>
+				
 				<hr />
 				<table>
 					<tr>
@@ -209,6 +230,152 @@ else{
 				</table>
 			</div>
 		</div>
+		
+		
+		<?php if($set['set_type'] == 'auto'){ $set_request = $set['set_request']; ?>
+		<p class="slim">
+			<span class="switch">&#9656;</span> <a href="#" class="show">Modify set&#8217;s criteria</a></span>
+		</p>
+		
+		<div class="reveal">
+			<table>
+				<tr>
+					<td class="right pad"><label for="search">Search:</label></td>
+					<td class="quiet">
+						<input type="text" id="search" name="q" class="l" value="<?php echo $set_request['q']; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right pad"><label for="tags">Tags:</label></td>
+					<td class="quiet">
+						<input type="text" id="tags" name="tags" class="l" value="<?php echo $set_request['tags']; ?>" /><br />
+						<em>Tip: Use the uppercase boolean operators AND, OR, and NOT.</em>
+					</td>
+				</tr>
+				<tr>
+					<td class="right pad"><label for="tags">EXIF metadata:</label></td>
+					<td>
+						<?php echo $alkaline->showEXIFNames('exif_name', $set_request['exif_name']); ?>
+						<input type="text" id="exif_value" name="exif_value" class="s" value="<?php echo $set_request['exif_value']; ?>" /><br />
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label for="rights">Rights set:</label></td>
+					<td class="quiet">
+						<?php echo $alkaline->showRights('rights', $set_request['rights']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Date taken:</label></td>
+					<td class="quiet">
+						between <input type="text" class="date s" name="taken_begin" value="<?php echo $set_request['taken_begin']; ?>" />
+						and <input type="text" class="date s" name="taken_end" value="<?php echo $set_request['taken_end']; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Date uploaded:</label></td>
+					<td class="quiet">
+						between <input type="text" class="date s" name="uploaded_begin" value="<?php echo $set_request['uploaded_begin']; ?>" />
+						and <input type="text" class="date s" name="uploaded_end" value="<?php echo $set_request['uploaded_end']; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Location:</label></td>
+					<td class="quiet">
+						within
+						<select name="location_proximity">
+							<option value="10" <?php echo $alkaline->readForm($set_request, 'location_proximity', '10'); ?>>10</option>
+							<option value="25" <?php echo $alkaline->readForm($set_request, 'location_proximity', '25'); ?>>25</option>
+							<option value="50" <?php echo $alkaline->readForm($set_request, 'location_proximity', '50'); ?>>50</option>
+							<option value="100" <?php echo $alkaline->readForm($set_request, 'location_proximity', '100'); ?>>100</option>
+							<option value="250" <?php echo $alkaline->readForm($set_request, 'location_proximity', '250'); ?>>250</option>
+							<option value="500" <?php echo $alkaline->readForm($set_request, 'location_proximity', '500'); ?>>500</option>
+							<option value="1000" <?php echo $alkaline->readForm($set_request, 'location_proximity', '1000'); ?>>1,000</option>
+							<option value="2500" <?php echo $alkaline->readForm($set_request, 'location_proximity', '2500'); ?>>2,500</option>
+						</select>
+						miles of 
+						<input type="text" name="location" class="image_geo m" value="<?php echo $set_request['location']; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label for="color">Dominant color:</label></td>
+					<td>
+						<select id="color" name="color">
+							<option></option>
+							<option value="blue" <?php echo $alkaline->readForm($set_request, 'color', 'blue'); ?>>Blue</option>
+							<option value="red" <?php echo $alkaline->readForm($set_request, 'color', 'red'); ?>>Red</option>
+							<option value="yellow" <?php echo $alkaline->readForm($set_request, 'color', 'yellow'); ?>>Yellow</option>
+							<option value="green" <?php echo $alkaline->readForm($set_request, 'color', 'green'); ?>>Green</option>
+							<option value="purple" <?php echo $alkaline->readForm($set_request, 'color', 'purple'); ?>>Purple</option>
+							<option value="orange" <?php echo $alkaline->readForm($set_request, 'color', 'orange'); ?>>Orange</option>
+							<option value="brown" <?php echo $alkaline->readForm($set_request, 'color', 'brown'); ?>>Brown</option>
+							<option value="pink" <?php echo $alkaline->readForm($set_request, 'color', 'pink'); ?>>Pink</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Views:</label></td>
+					<td>
+						<select name="views_operator">
+							<option value="greater" <?php echo $alkaline->readForm($set_request, 'views_operator', 'greater'); ?>>&#8805;</option>
+							<option value="less" <?php echo $alkaline->readForm($set_request, 'views_operator', 'less'); ?>>&#8804;</option>
+							<option value="equal" <?php echo $alkaline->readForm($set_request, 'views_operator', 'equal'); ?>>&#0061;</option>
+						</select>
+						<input type="text" name="views" class="xs" value="<?php echo $set_request['views']; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label for="orientation">Orientation:</label></td>
+					<td class="quiet">
+						<select id="orientation" name="orientation">
+							<option value="" <?php echo $alkaline->readForm($set_request, 'orientation', ''); ?>>All</option>
+							<option value="portrait" <?php echo $alkaline->readForm($set_request, 'orientation', 'portrait'); ?>>Portrait</option>
+							<option value="landscape" <?php echo $alkaline->readForm($set_request, 'orientation', 'landscape'); ?>>Landscape</option>
+							<option value="square" <?php echo $alkaline->readForm($set_request, 'orientation', 'square'); ?>>Square</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label for="privacy">Privacy level:</label></td>
+					<td class="quiet">
+						<select id="privacy" name="privacy">
+							<option value="" <?php echo $alkaline->readForm($set_request, 'privacy', ''); ?>>All</option>
+							<option value="public" <?php echo $alkaline->readForm($set_request, 'privacy', 'public'); ?>>Public</option>
+							<option value="protected" <?php echo $alkaline->readForm($set_request, 'privacy', 'protected'); ?>>Protected</option>
+							<option value="private" <?php echo $alkaline->readForm($set_request, 'privacy', 'private'); ?>>Private</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label for="published">Publication status:</label></td>
+					<td class="quiet">
+						<select id="published" name="published">
+							<option value="" <?php echo $alkaline->readForm($set_request, 'published', ''); ?>>All</option>
+							<option value="published" <?php echo $alkaline->readForm($set_request, 'published', 'published'); ?>>Published</option>
+							<option value="unpublished" <?php echo $alkaline->readForm($set_request, 'published', 'unpublished'); ?>>Unpublished</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="right middle"><label>Sort results by:</label></td>
+					<td>
+						<select name="sort">
+							<option value="taken" <?php echo $alkaline->readForm($set_request, 'sort', 'taken'); ?>>Date taken</option>
+							<option value="updated" <?php echo $alkaline->readForm($set_request, 'sort', 'updated'); ?>>Date last updated</option>
+							<option value="published" <?php echo $alkaline->readForm($set_request, 'sort', 'published'); ?>>Date published</option>
+							<option value="uploaded" selected="selected" <?php echo $alkaline->readForm($set_request, 'sort', 'uploaded'); ?>>Date uploaded</option>
+							<option value="title" <?php echo $alkaline->readForm($set_request, 'sort', 'title'); ?>>Title</option>
+							<option value="views" <?php echo $alkaline->readForm($set_request, 'sort', 'views'); ?>>Views</option>
+						</select>
+						<select name="sort_direction">
+							<option value="DESC" <?php echo $alkaline->readForm($set_request, 'sort_direction', 'DESC'); ?>>Descending</option>
+							<option value="ASC" <?php echo $alkaline->readForm($set_request, 'sort_direction', 'ASC'); ?>>Ascending</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<?php } ?>
 		
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show">Show set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
