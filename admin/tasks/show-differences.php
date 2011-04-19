@@ -20,13 +20,18 @@ $user->perm(true);
 $version_id = intval($_POST['version_id']);
 $version = $alkaline->getRow('versions', $version_id);
 
-$comparison = $alkaline->compare($version['version_text_raw'], $_POST['text_raw']);
+$comparison = $alkaline->compare($version['version_title'] . "\n\n" . $version['version_text_raw'], $_POST['title'] . "\n\n" . $_POST['text_raw']);
+
+// Bold title
+$comparison = preg_replace('#(.*?)\n#si', '<strong>\\1</strong>', $comparison, 1);
 
 function charsToBlanks($str){
+	$paras = substr_count($str, "\n");
 	$len = strlen($str);
-	$str = array_fill(0, ceil($len / 2), '&#0160;');
-	$str = ' &#0160; ' . implode(' ', $str);
+	$str = ' &#0160; ' . str_repeat(' &#0160;', ceil($len / 2));
+	$str .= str_repeat('<br />', $paras);
 	if((1&$len)){ $str .= ' '; }
+	
 	return $str;
 }
 
