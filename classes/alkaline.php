@@ -481,7 +481,7 @@ class Alkaline{
 				
 				if(!empty($ext)){
 					// Find files with proper extensions
-					if(preg_match('#([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})#si', $filename)){
+					if(preg_match('#([a-zA-Z0-9\-\_\.]+\.(' . $ext . '){1,1})#si', $filename)){
 						$files[] = $dir . $filename;
 					}
 				}
@@ -657,7 +657,7 @@ class Alkaline{
 	 * @return string Changed filename
 	 */
 	public function changeExt($file, $ext){
-		$file = preg_replace('#\.([a-z0-9]*)$#si', '.' . $ext, $file);
+		$file = preg_replace('#\.([a-z0-9]*?)$#si', '.' . $ext, $file);
 		return $file;
 	}
 	
