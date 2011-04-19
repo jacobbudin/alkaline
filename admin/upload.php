@@ -43,7 +43,7 @@ if(!empty($_FILES)){
 	exit();
 }
 
-define('TAB', 'library');
+define('TAB', 'upload');
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
 

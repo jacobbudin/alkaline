@@ -122,7 +122,7 @@ if(empty($user_db_id)){
 	
 		foreach($user_dbs as $user_db){
 			echo '<tr class="ro">';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user_db['user_name'] . '</td>';
 				echo '<td><a href="mailto:' . $user_db['user_email'] . '">' . $user_db['user_email'] . '</a></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_image_count']) . '</a></td>';

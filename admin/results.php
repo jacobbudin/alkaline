@@ -39,10 +39,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <div class="actions">
 	<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW; ?>"><button>Bulk edit</button></a>
 	<a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build set</button></a>
-	<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>"><button>New search</button></a>
+	<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP . '#advanced'; ?>"><button>New search</button></a>
 </div>
 
-<h1>Search Results (<?php echo number_format($image_ids->count); ?>)</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/search.png" alt="" /> Search Results (<?php echo number_format($image_ids->count); ?>)</h1><br />
 
 <?php
 

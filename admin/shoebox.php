@@ -102,7 +102,7 @@ else{
 	$alkaline->addNote('You have also successfully imported ' . $alkaline->returnFullCount($p_count, 'post') . '.', 'success');
 }
 
-define('TAB', 'library');
+define('TAB', 'shoebox');
 define('TITLE', 'Alkaline Shoebox');
 require_once(PATH . ADMIN . 'includes/header.php');
 

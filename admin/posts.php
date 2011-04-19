@@ -132,8 +132,13 @@ if(empty($post_id)){
 
 	<div class="span-24 last">
 		<div class="actions">
-			<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"><button>Upload post</button></a>
 			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Write post</button></a>
+			<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"><button>Upload post</button></a>
+			<?php if($badges['posts'] > 0){ ?>
+			<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">
+				<button>Process posts (<?php echo $badges['posts']; ?>)</button>
+			</a>
+			<?php } ?>
 		</div>
 	
 		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>

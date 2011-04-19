@@ -380,6 +380,18 @@ a button{
 	text-decoration: none;
 }
 
+#navigation ul li.red a{
+	text-shadow: #730106 -1px -1px 1px;
+	background-color: #930106;
+	color: #fff;
+}
+
+#navigation ul li.green a{
+	text-shadow: #004903 -1px -1px 1px;
+	background-color: #006704;
+	color: #fff;
+}
+
 #navigation ul li a.selected{
 	position: relative; z-index: 10;
 	box-shadow: #bbb 0 0 3px;
@@ -392,8 +404,17 @@ a button{
 
 #navigation ul li a:hover, #navigation ul li a:active{
 	background-color: #555;
-	text-shadow: none;
 	color: #bbb;
+}
+
+#navigation ul li.green a:hover, #navigation ul li.green a:active{
+	background-color: #008405;
+	color: #fff;
+}
+
+#navigation ul li.red a:hover, #navigation ul li.red a:active{
+	background-color: #a80109;
+	color: #fff;
 }
 
 #navigation ul li a.selected:hover, #navigation ul li a.selected:active{

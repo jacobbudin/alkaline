@@ -50,9 +50,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>">
 			<button>Upload image</button>
 		</a>
+		<?php if($badges['images'] > 0){ ?>
 		<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">
-			<button>Process images (3)</button>
+			<button>Process images (<?php echo $badges['images']; ?>)</button>
 		</a>
+		<?php } ?>
 	</div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/images.png" alt="" /> Images (<?php echo number_format($image_ids->count); ?>)</h1>

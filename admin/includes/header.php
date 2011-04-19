@@ -88,7 +88,7 @@
 				<ul>
 					<?php
 
-					if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'comments') or (@TAB == 'features') or (@TAB == 'settings')){
+					if(@!defined('TAB') or (@TAB == 'dashboard') or (@TAB == 'upload') or (@TAB == 'shoebox') or (@TAB == 'library') or (@TAB == 'posts') or (@TAB == 'comments') or (@TAB == 'features') or (@TAB == 'settings')){
 						?>
 						<li id="tab_dashboard">
 							<a href="<?php echo BASE . ADMIN . 'dashboard' . URL_CAP; ?>"<?php if(@TAB == 'dashboard'){ echo ' class="selected"'; } ?>>Dashboard &#9662;</a>
@@ -97,18 +97,34 @@
 								<li id="sub_preferences"><a href="<?php echo BASE . ADMIN; ?>preferences<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/preferences.png" alt="" /> Preferences</a></li>
 							</ul>
 						</li>
+						<?php if(($badges['images'] > 0) or ($badges['posts'] > 0)){ ?>
+						<li id="tab_shoebox" class="red">
+							<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"<?php if(@TAB == 'shoebox'){ echo ' class="selected"'; } ?>>Shoebox</a>
+						</li>
+						<?php } else{ ?>
+						<li id="tab_upload" class="green">
+							<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"<?php if(@TAB == 'upload'){ echo ' class="selected"'; } ?>>Upload</a>
+						</li>
+						<?php } ?>
 						<li id="tab_library">
 							<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Images</a>
 							<ol>
 								<?php
-								if($badges['library'] > 0){
-									echo '<li><a href="' . BASE . ADMIN . 'shoebox' . URL_CAP . '">' . $badges['library'] . '</a></li>';
+								if($badges['images'] > 0){
+									echo '<li><a href="' . BASE . ADMIN . 'shoebox' . URL_CAP . '">' . $badges['images'] . '</a></li>';
 								}
 								?>
 							</ol>
 						</li>
 						<li id="tab_posts">
 							<a href="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a>
+							<ol>
+								<?php
+								if($badges['posts'] > 0){
+									echo '<li><a href="' . BASE . ADMIN . 'shoebox' . URL_CAP . '">' . $badges['posts'] . '</a></li>';
+								}
+								?>
+							</ol>
 						</li>
 						<li id="tab_comments">
 							<a href="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>"<?php if(@TAB == 'comments'){ echo ' class="selected"'; } ?>>Comments</a>

@@ -266,7 +266,7 @@ if(empty($extension_id)){
 	
 		foreach($extensions as $extension){
 			echo '<tr class="ro">';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
+			echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
 			if(!empty($extension['extension_creator_name'])){
 				echo ' \ ';
 				if(!empty($extension['extension_creator_uri'])){
@@ -276,7 +276,7 @@ if(empty($extension_id)){
 					echo $extension['extension_creator_name'];
 				}
 			}
-			echo '<br />' . $extension['extension_description'] . '</td>';
+			echo '<br /><span class="quiet">' . $extension['extension_description'] . '</span></td>';
 			echo '<td class="center">';
 			if($extension['extension_status'] == 1){
 				echo 'Enabled';

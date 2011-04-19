@@ -28,53 +28,60 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div id="tasks">
 	<p>Maintenance tasks correct the behavior or improve of the performance of your Alkaline installation. You do not need to perform them if you are not experiencing any problems.<p>
-	
-	<h3>Files</h3>
 		
-	<ul class="tasks">
-		<li>
-			<strong><a href="#rebuild-thumbnails">Rebuild all image thumbnails</a></strong><br />
-			Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files
-		</li>
-		<li>
-			<strong><a href="#delete-unused-thumbnails">Delete unclaimed image thumbnails</a></strong><br />
-			Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available space
-		</li>
-		<li>
-			<strong><a href="#delete-shoebox">Delete all files in Shoebox</a></strong><br />
-			Delete all files from your Shoebox folder, increasing available space
-		</li>
-	</ul>
+	<p class="notice">Backup your Web site (and its database) before performing maintenance. Most of these actions cannot be undone.</p><br />
 	
-	<h3>Database</h3>
+	<div class="span-24 last">
+		<div class="span-10 append-2">
+			<h3>Files</h3>
+		
+			<ul class="tasks">
+				<li>
+					<strong><a href="#rebuild-thumbnails">Rebuild all image thumbnails</a></strong><br />
+					Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files
+				</li>
+				<li>
+					<strong><a href="#delete-unused-thumbnails">Delete unclaimed image thumbnails</a></strong><br />
+					Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available space
+				</li>
+				<li>
+					<strong><a href="#delete-shoebox">Delete all files in shoebox</a></strong><br />
+					Delete all files from your shoebox folder, increasing available space
+				</li>
+			</ul>
+		</div>
+		<div class="span-10 last">	
+			<h3>Database</h3>
 	
-	<ul>
-		<li>
-			<strong><a href="#update-counts">Update counts</a></strong><br />
-			Recount various count fields that may have become inaccurate&#8212;particularly if you manually edit the database tables
-		</li>
-		<li>
-			<strong><a href="#rebuild-sets">Rebuild set catalog</a></strong><br />
-			Reassess each set&#8217;s contents using its original user-selected criteria, ensuring each set is up-to-date
-		</li>
-		<li>
-			<strong><a href="#rebuild-geo">Rebuild geographic library</a></strong><br />
-			Regenerates the built-in database of cities and nations, necessary for fixing corrupt or missing locations
-		</li>
-		<li>
-			<strong><a href="#delete-orphaned-tags">Delete orphaned tags</a></strong><br />
-			Removes tags that are no longer linked to any images, increasing available space
-		</li>
-		<li>
-			<strong><a href="#reset-image-markup">Reset image markup</a></strong>
-		</li>
-		<li>
-			<strong><a href="#reset-post-markup">Reset post markup</a></strong>
-		</li>
-		<li>
-			<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>
-		</li>
-	</ul>
+			<ul>
+				<li>
+					<strong><a href="#update-counts">Update counts</a></strong><br />
+					Recount various count fields that may have become inaccurate&#8212;particularly if you manually edit the database tables
+				</li>
+				<li>
+					<strong><a href="#rebuild-sets">Rebuild set catalog</a></strong><br />
+					Reassess each set&#8217;s contents using its original user-selected criteria, ensuring each set is up-to-date
+				</li>
+				<li>
+					<strong><a href="#rebuild-geo">Rebuild geographic library</a></strong><br />
+					Regenerates the built-in database of cities and nations, necessary for fixing corrupt or missing locations
+				</li>
+				<li>
+					<strong><a href="#delete-orphaned-tags">Delete orphaned tags</a></strong><br />
+					Removes tags that are no longer linked to any images, increasing available space
+				</li>
+				<li>
+					<strong><a href="#reset-image-markup">Reset image markup</a></strong>
+				</li>
+				<li>
+					<strong><a href="#reset-post-markup">Reset post markup</a></strong>
+				</li>
+				<li>
+					<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 <p>Please let the task complete before closing your browser window; you will automatically be redirected to your dashboard when the task is complete.</p>
