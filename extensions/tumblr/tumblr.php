@@ -65,7 +65,7 @@ class Tumblr extends Orbit{
 			<table>
 				<tr>
 					<td class="right"><label>Name:</label></td>
-					<td><a href="http://<?php echo $this->tumblr_name; ?>.tumblr.com/"><?php echo $this->tumblr_name; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>" class="button">Unlink from Tumblr</a></td>
+					<td><a href="http://<?php echo $this->tumblr_name; ?>.tumblr.com/"><?php echo $this->tumblr_name; ?></a> &#0160; <button><a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>">Unlink from Tumblr</button></a></td>
 				</tr>
 				<tr>
 					<td class="right middle"><label for="tumblr_transmit">Transmit:</label></td>
@@ -100,7 +100,7 @@ class Tumblr extends Orbit{
 				<tr>
 					<td class="right"><label>Title:</label></td>
 					<td>
-						<a href="<?php echo $this->locationFull(array('link' => 'tumblr')); ?>" class="button">Link to Tumblr</a><br /><br />
+						<a href="<?php echo $this->locationFull(array('link' => 'tumblr')); ?>"><button>Link to Tumblr</button></a><br /><br />
 						<span class="quiet">Note: Alkaline will be linked to whichever Tumblr account you are currently logged into.</span>
 					</td>
 				</tr>
