@@ -1,3 +1,5 @@
+<?php if(!empty($user) and $user->perm()){ $badges = $alkaline->getBadges(); } ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -24,6 +26,7 @@
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.ajaxq-0.0.1.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.caret-range-1.0.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.formalize.min.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery.tiptip.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>alkaline.js?965" type="text/javascript"></script>
 </head>
 <body id="alkaline">
@@ -46,7 +49,9 @@
 							<img src="<?php echo BASE . ADMIN; ?>images/icons/user.png" alt="" />
 							<?php echo $user->user['user_user']; ?>
 						</strong> &#0160;
-						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Images</a> &#0160;
+						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Images</a>,
+						<a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'me' . URL_RW; ?>">Posts</a>,
+						<a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'me' . URL_RW; ?>">Comments</a> &#0160;
 						<a href="<?php echo BASE . ADMIN . 'preferences' . URL_CAP; ?>">Preferences</a> &#0160;
 						<a href="<?php echo BASE . ADMIN . 'logout' . URL_CAP; ?>">Logout</a>
 					</div>
@@ -72,7 +77,7 @@
 								<input type="search" name="q" results="10" />
 								<input type="submit" value="Search" />
 							</form>
-							<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>#advanced" class="advanced_link">Advanced Search</a>
+							<!-- <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>#advanced" class="advanced_link">Advanced Search</a> -->
 						</div>
 						<?php
 					}
@@ -94,32 +99,46 @@
 						</li>
 						<li id="tab_library">
 							<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>"<?php if(@TAB == 'library'){ echo ' class="selected"'; } ?>>Images</a>
+							<ol>
+								<?php
+								if($badges['library'] > 0){
+									echo '<li><a href="' . BASE . ADMIN . 'shoebox' . URL_CAP . '">' . $badges['library'] . '</a></li>';
+								}
+								?>
+							</ol>
 						</li>
 						<li id="tab_posts">
 							<a href="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>"<?php if(@TAB == 'posts'){ echo ' class="selected"'; } ?>>Posts</a>
 						</li>
 						<li id="tab_comments">
 							<a href="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>"<?php if(@TAB == 'comments'){ echo ' class="selected"'; } ?>>Comments</a>
+							<ol>
+								<?php
+								if($badges['comments'] > 0){
+									echo '<li><a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'new' .  URL_RW . '">' . $badges['comments'] . '</a></li>';
+								}
+								?>
+							</ol>
 						</li>
 						<li id="tab_features">
 							<a href="<?php echo BASE . ADMIN . 'features' . URL_CAP; ?>"<?php if(@TAB == 'features'){ echo ' class="selected"'; } ?>>Editor <span>&#9662;</span></a>
 							<ul>
-								<li id="sub_tags"><a href="<?php echo BASE . ADMIN; ?>tags<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/tags.png" alt="" /> Tags</a></li>
-								<li id="sub_sets"><a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/sets.png" alt="" /> Sets</a></li>
-								<li id="sub_pages"><a href="<?php echo BASE . ADMIN; ?>pages<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/pages.png" alt="" /> Pages</a></li>
-								<li id="sub_rights"><a href="<?php echo BASE . ADMIN; ?>rights<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/rights.png" alt="" /> Rights</a></li>
+								<li id="sub_tags"><a href="<?php echo BASE . ADMIN . 'tags' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/tags.png" alt="" /> Tags</a></li>
+								<li id="sub_sets"><a href="<?php echo BASE . ADMIN. 'sets' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/sets.png" alt="" /> Sets</a></li>
+								<li id="sub_pages"><a href="<?php echo BASE . ADMIN . 'pages' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/pages.png" alt="" /> Pages</a></li>
+								<li id="sub_rights"><a href="<?php echo BASE . ADMIN . 'rights' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/rights.png" alt="" /> Rights</a></li>
 							</ul>
 						</li>
 						<li id="tab_settings">
 							<a href="<?php echo BASE . ADMIN . 'settings' . URL_CAP; ?>"<?php if(@TAB == 'settings'){ echo ' class="selected"'; } ?>>Settings <span>&#9662;</span></a>
 							<ul>
-								<li id="sub_users"><a href="<?php echo BASE . ADMIN; ?>users<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/users.png" alt="" /> Users</a></li>
-								<li id="sub_guests"><a href="<?php echo BASE . ADMIN; ?>guests<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/guests.png" alt="" /> Guests</a></li>
-								<li id="sub_thumbnails"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/thumbnails.png" alt="" /> Thumbnails</a></li>
-								<li id="sub_themes"><a href="<?php echo BASE . ADMIN; ?>themes<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/themes.png" alt="" /> Themes</a></li>
-								<li id="sub_extensions"><a href="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/extensions.png" alt="" /> Extensions</a></li>
-								<li id="sub_configuration"><a href="<?php echo BASE . ADMIN; ?>configuration<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/configuration.png" alt="" /> Configuration</a></li>
-								<li id="sub_maintenance"><a href="<?php echo BASE . ADMIN; ?>maintenance<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/maintenance.png" alt="" /> Maintenance</a></li>
+								<li id="sub_users"><a href="<?php echo BASE . ADMIN . 'users' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/users.png" alt="" /> Users</a></li>
+								<li id="sub_guests"><a href="<?php echo BASE . ADMIN . 'guests' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/guests.png" alt="" /> Guests</a></li>
+								<li id="sub_thumbnails"><a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/thumbnails.png" alt="" /> Thumbnails</a></li>
+								<li id="sub_themes"><a href="<?php echo BASE . ADMIN . 'themes' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/themes.png" alt="" /> Themes</a></li>
+								<li id="sub_extensions"><a href="<?php echo BASE . ADMIN . 'extensions' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/extensions.png" alt="" /> Extensions</a></li>
+								<li id="sub_configuration"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/configuration.png" alt="" /> Configuration</a></li>
+								<li id="sub_maintenance"><a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/minis/maintenance.png" alt="" /> Maintenance</a></li>
 							</ul>
 						</li>
 						<li id="tab_help"><a href="http://www.alkalineapp.com/guide/" target="_blank">Help</a></li>

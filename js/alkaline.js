@@ -441,6 +441,7 @@ window.launchQuickpic = function(context){
 };
 
 $(document).ready(function(){
+	// NAVIGATION
 	$('#navigation ul ul').hide();
 	$('#navigation ul li').hover(function() {
 		if($(this).find('a').hasClass('selected')){
@@ -537,21 +538,6 @@ $(document).ready(function(){
 		});
 	}
 	
-	$('#load_map').click(function() {
-		map = $('#map').html();
-		if(map == ''){
-			thisisit = $('#load_map').attr('title');
-			$('#map').hide();
-			$('#map').html('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=' + thisisit + '&amp;ie=UTF8&amp;&amp;output=embed"></iframe>');
-			$('#map iframe').css('border', '#fff 5px solid');
-			$('#map').slideDown();
-		}
-		else{
-			$('#map').slideToggle();
-		}
-		event.preventDefault();
-	});
-	
 	$(window).resize(function () { reset(); });
 	
 	// PRIMARY - COLORKEY
@@ -594,8 +580,25 @@ $(document).ready(function(){
 	$("button").each(function(){
 		button = $(this).text();
 		button = button.replace(/(\w+).*/, "$1").toLowerCase();
-		$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="12" /> ');
+		width = '12';
+		if(empty(button)){ button = 'act'; width = '22'; }
+		$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="' + width + '" /> ');
 	});
+	
+	// TIPTIP
+	$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
+	$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
+	$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
+	
+	// PRIMARY - ROLLOVER TABLE ROWS
+	$('table tr.ro').hover(function() {
+		$(this).css('background-color', '#eee');
+	}, function() {
+		$(this).css('background-color', '');
+	});
+	
+	// PRIMARY - SEARCH IN HEADER
+	
 	
 	// PRIMARY - SHOW/HIDE PANELS
 	$(".reveal").hide();

@@ -60,36 +60,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		}
 		?>
 	</div>
-	<div class="span-6 last">
+	<div class="span-6 prepend-top last">
 		<h3>Hello</h3>
 		
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
-		
-		<?php
-		
-		$badges = $alkaline->getBadges();
-
-		if(($badges['library'] > 0) or ($badges['comments'] > 0)){
-			?>
-
-			<h3>New</h3>
-			<table class="census">
-				<?php if($badges['library'] > 0){ ?>
-					<tr>
-						<td class="right"><?php echo $badges['library']; ?></td>
-						<td><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">new <?php echo $alkaline->returnCount($badges['library'], 'image'); ?></a></td>
-					</tr>
-				<?php } ?>
-				<?php if($badges['comments'] > 0){ ?>
-					<tr>
-						<td class="right">1</td>
-						<td><a href="<?php echo BASE . ADMIN . 'comments' . URL_ACT . 'new' .  URL_RW; ?>">new <?php echo $alkaline->returnCount($badges['comments'], 'comment'); ?></a></td>
-					</tr>
-				<?php } ?>
-			</table>
-			<?php
-		}
-		?>
 		
 		<h3>Census</h3>
 		<table class="census">
