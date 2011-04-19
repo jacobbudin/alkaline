@@ -31,6 +31,9 @@ if(!empty($_POST['page_id'])){
 		$alkaline->deleteRow('pages', $page_id);
 	}
 	else{
+		$page = new Page($page_id);
+		$page->attachUser($user);
+		
 		$page_title = trim($_POST['page_title']);
 		
 		if(!empty($_POST['page_title_url'])){
@@ -67,7 +70,7 @@ if(!empty($_POST['page_id'])){
 			'page_category' => $alkaline->makeUnicode(@$_POST['page_category']),
 			'page_words' => $page_words);
 		
-		$alkaline->updateRow($fields, 'pages', $page_id);
+		$page->updateFields($fields);
 	}
 	unset($page_id);
 }
@@ -113,7 +116,7 @@ if(empty($page_id)){
 		<?php
 
 		foreach($pages as $page){
-			echo '<tr>';
+			echo '<tr class="ro">';
 				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '">' . $page['page_title'] . '</a></strong><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu quiet">' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
@@ -129,7 +132,9 @@ if(empty($page_id)){
 	require_once(PATH . ADMIN . 'includes/footer.php');
 }
 else{
-	$page = $alkaline->getRow('pages', $page_id);
+	$pages = new Page($page_id);
+	$pages->getVersions();
+	$page = $pages->pages[0];
 	$page = $alkaline->makeHTMLSafe($page);
 	
 	if(!empty($page['page_title'])){	
@@ -158,7 +163,7 @@ else{
 	<form id="page" action="<?php echo BASE . ADMIN . 'pages' . URL_CAP; ?>" method="post">
 		<div class="span-24 last">
 			<div class="span-15 append-1">
-				<input type="text" id="page_title" name="page_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$page['page_title']; ?>" class="title notempty" />
+				<input type="text" id="page_title" name="page_title" placeholder="Title" <?php if(empty($post['page_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$page['page_title']; ?>" class="title notempty" />
 				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
 			</div>
 			<div class="span-8 last">
@@ -190,6 +195,29 @@ else{
 				</table>
 			</div>
 		</div>
+		
+		<?php if(count($pages->versions) > 0){ ?>
+		<p class="slim">
+			<span class="switch">&#9656;</span> <a href="#" class="show">Compare to previous version</a>
+		</p>
+		<div class="reveal">
+			<p>
+				<label for="version_id">Show differences from:</label>
+				<select id="version_id">
+				<?php
+				foreach($pages->versions as $version){
+					echo '<option value="' . $version['version_id'] . '">' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ')</option>';
+				}
+				?>
+				</select>
+				<button id="compare">Compare</button>
+			</p>
+			<p id="comparison">
+				
+			</p>
+		</div>
+		<?php } ?>
+		
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
 		</p>
@@ -202,7 +230,7 @@ else{
 			$image_ids->find();
 			
 			$images = new Image($image_ids);
-			$images->getSizes('square');
+			$images->getSizes();
 			
 			if($alkaline->returnConf('page_size_label')){
 				$label = 'image_src_' . $alkaline->returnConf('page_size_label');

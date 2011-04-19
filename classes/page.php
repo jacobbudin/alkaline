@@ -98,14 +98,53 @@ class Page extends Alkaline{
 	 * Update page fields
 	 *
 	 * @param string $fields Associative array of columns and fields
+	 * @param bool $overwrite 
+	 * @param bool $version If post_text_raw changed, create a new version
 	 * @return PDOStatement
 	 */
-	public function updateFields($fields){
-		$ids = array();
-		foreach($this->pages as $page){
-			$ids[] = $page['page_id'];
+	public function updateFields($fields, $overwrite=true, $version=true){
+		// Error checking
+		if(!is_array($fields)){
+			return false;
 		}
-		return parent::updateRow($fields, 'pages', $ids);
+		
+		$fields_original = $fields;
+		
+		for($i=0; $i < $this->page_count; $i++){
+			$fields = $fields_original;
+			
+			$page_title = $fields['page_title'];
+			$page_text_raw = $fields['page_text_raw'];
+			
+			// Verify each key has changed; if not, unset the key
+			foreach($fields as $key => $value){
+				if($fields[$key] == $this->pages[$i][$key]){
+					unset($fields[$key]);
+				}
+				if(!empty($this->pages[$i][$key]) and ($overwrite === false)){
+					unset($fields[$key]);
+				}
+			}
+			
+			// If no keys have changed, break
+			if(count($fields) == 0){
+				continue;
+			}
+			
+			// Create version
+			if(!empty($fields['page_text_raw']) and (($fields['page_text_raw'] != $this->pages[$i]['page_text_raw']) or ($fields['page_title'] != $this->pages[$i]['page_title'])) and ($version == true)){
+				$version_fields = array('page_id' => $this->pages[$i]['page_id'],
+					'user_id' => $this->user['user_id'],
+					'version_title' => $page_title,
+					'version_text_raw' => $page_text_raw,
+					'version_created' => date('Y-m-d H:i:s'));
+				$this->addRow($version_fields, 'versions');
+			}
+			
+			$this->updateRow($fields, 'pages', $this->pages[$i]['page_id']);
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -194,6 +233,29 @@ class Page extends Alkaline{
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Attribute actions to user
+	 *
+	 * @param User $user User object
+	 * @return void
+	 */
+	public function attachUser($user){
+		$this->user = $user->user;
+	}
+	
+	/**
+	 * Get version data and save to object
+	 *
+	 * @return array Array of version data
+	 */
+	public function getVersions(){
+		$query = $this->prepare('SELECT versions.* FROM versions, pages' . $this->sql . ' AND versions.page_id = pages.page_id;');
+		$query->execute();
+		$this->versions = $query->fetchAll();
+		
+		return $this->versions;
 	}
 }
 

@@ -855,14 +855,15 @@ $(document).ready(function(){
 		});
 	}
 	
-	// POSTS
+	// VERSIONS
 	
-	if(page == 'Post'){
+	if((page == 'Post') || (page == 'Page')){
 		$('#compare').click(function(event){
-			text_raw = $('#post_text_raw').val();
+			title = $('input[id$="title"]').val();
+			text_raw = $('textarea[id$="text_raw"]').val();
 			version_id = $('#version_id').val();
 			$('#comparison').hide();
-			$.post(BASE + ADMIN + 'tasks/show-differences.php',  { text_raw: text_raw, version_id: version_id }, function(data) {
+			$.post(BASE + ADMIN + 'tasks/show-differences.php',  { title: title, text_raw: text_raw, version_id: version_id }, function(data) {
 				if(empty(data)){
 					addNote('No changes calculated. Try changing the version you&#8217;re comparing to.', 'notice');
 				}
