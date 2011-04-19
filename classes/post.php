@@ -470,9 +470,17 @@ class Post extends Alkaline{
 
 			$post_words = $this->countWords($post_text_raw, 0);
 			
+			$now = date('Y-m-d H:i:s');
+			
 			$post_published = '';
 			if($this->user->returnPref('post_pub') === true){
-				$post_published = 'Now';
+				$post_published = $now;
+			}
+			
+			$post_created = '';
+			// Post created time
+			if($filemtime = filemtime($file)){
+				$post_created = date('Y-m-d H:i:s', $filemtime);
 			}
 
 			$fields = array('user_id' => @$this->user->user['user_id'],
@@ -482,6 +490,7 @@ class Post extends Alkaline{
 				'post_markup' => $post_markup_ext,
 				'post_images' => $post_images,
 				'post_text' => $post_text,
+				'post_created' => $post_created,
 				'post_published' => $post_published,
 				'post_words' => $post_words);
 			
@@ -493,11 +502,14 @@ class Post extends Alkaline{
 					'user_id' => $this->user->user['user_id'],
 					'version_title' => $post_title,
 					'version_text_raw' => $post_text_raw,
-					'version_created' => date('Y-m-d H:i:s'));
+					'version_created' => $now);
 				$this->addRow($version_fields, 'versions');
 			}
 			
 			$post_ids[] = $post_id;
+			
+			// Delete file
+			@unlink($file);
 		}
 		
 		// Store initial post_ids array
