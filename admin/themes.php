@@ -169,7 +169,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<?php
 
 	foreach($themes as $theme){
-		echo '<tr>';
+		echo '<tr class="ro">';
 		echo '<td><strong>' . $theme['theme_title'] . '</strong>';
 		
 		if(!empty($theme['theme_creator_name'])){

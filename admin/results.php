@@ -38,8 +38,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="actions">
 	<a href="<?php echo BASE . ADMIN . 'features' . URL_ACT . 'bulk' . URL_RW; ?>"><button>Bulk edit</button></a>
-	<a href="<?php echo BASE . ADMIN; ?>sets<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>"><button>Build set</button></a>
-	<a href="<?php echo BASE . ADMIN; ?>library<?php echo URL_CAP; ?>"><button>New search</button></a>
+	<a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build set</button></a>
+	<a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>"><button>New search</button></a>
 </div>
 
 <h1>Search Results (<?php echo number_format($image_ids->count); ?>)</h1>
@@ -52,7 +52,7 @@ if($image_ids->count_result > 0){
 	<?php
 	for($i = 0; $i < $images->image_count; ++$i){
 		?>
-		<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $images->images[$i]['image_id'] . URL_RW; ?>"><img src="<?php echo $images->images[$i]['image_src_square']; ?>" alt="" title="<?php echo $images->images[$i]['image_title']; ?>" class="frame" /></a>
+		<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $images->images[$i]['image_id'] . URL_RW; ?>"><img src="<?php echo $images->images[$i]['image_src_square']; ?>" alt="" title="<?php echo $images->images[$i]['image_title']; ?>" class="frame tip" /></a>
 		<?php
 	}
 	?>

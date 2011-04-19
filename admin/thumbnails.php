@@ -120,7 +120,7 @@ if(empty($size_id)){
 		<?php
 	
 		foreach($sizes as $size){
-			echo '<tr>';
+			echo '<tr class="ro">';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails' . URL_ID . $size['size_id'] . URL_RW . '">' . $size['size_title'] . '</a></strong></td>';
 				echo '<td class="center">' . $size['size_width'] . ' &#0215; ' . $size['size_height'] . '</td>';
 				echo '<td class="center">' . ucwords($size['size_type']) . '</td>';

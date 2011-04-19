@@ -114,17 +114,19 @@ if(empty($user_db_id)){
 		<tr>
 			<th>Username</th>
 			<th>Name</th>
+			<th>Email</th>
 			<th class="center">Images</th>
 			<th>Last login</th>
 		</tr>
 		<?php
 	
 		foreach($user_dbs as $user_db){
-			echo '<tr>';
+			echo '<tr class="ro">';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user_db['user_name'] . '</td>';
+				echo '<td><a href="mailto:' . $user_db['user_email'] . '">' . $user_db['user_email'] . '</a></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_image_count']) . '</a></td>';
-				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>(Never)</em>') . '</td>';
+				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>Never</em>') . '</td>';
 			echo '</tr>';
 		}
 	
@@ -160,7 +162,10 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>"><button>View images (<?php echo $user_image_count; ?>)</button></a></div>
+	<div class="actions">
+		<a href="mailto:<?php echo $user_db['user_email']; ?>"><button>Email user</button></a>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>"><button>View images (<?php echo $user_image_count; ?>)</button></a>
+	</div>
 	
 	<?php
 	

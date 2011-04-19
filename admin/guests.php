@@ -90,10 +90,10 @@ if(empty($guest_id)){
 		<?php
 	
 		foreach($guests as $guest){
-			echo '<tr>';
+			echo '<tr class="ro">';
 				echo '<td><strong><a href="' . BASE . ADMIN . 'guests' . URL_ID . $guest['guest_id'] . URL_RW . '">' . $guest['guest_title'] . '</a></strong></td>';
 				echo '<td class="center">' . number_format($guest['guest_views']) . '</td>';
-				echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>(Never)</em>') . '</td>';
+				echo '<td>' . $alkaline->formatTime($guest['guest_last_login'], null, '<em>Never</em>') . '</td>';
 			echo '</tr>';
 		}
 	

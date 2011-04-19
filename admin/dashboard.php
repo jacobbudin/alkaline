@@ -133,7 +133,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			foreach($images->images as $image){
 				?>
 				<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $image['image_id'] . URL_RW; ?>" class="nu">
-					<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame" />
+					<img src="<?php echo $image['image_src_square']; ?>" alt="" title="<?php echo $image['image_title']; ?>" class="frame tip" />
 				</a>
 				<?php
 			}

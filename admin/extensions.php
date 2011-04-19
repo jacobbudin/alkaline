@@ -265,7 +265,7 @@ if(empty($extension_id)){
 		<?php
 	
 		foreach($extensions as $extension){
-			echo '<tr>';
+			echo '<tr class="ro">';
 			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
 			if(!empty($extension['extension_creator_name'])){
 				echo ' \ ';
