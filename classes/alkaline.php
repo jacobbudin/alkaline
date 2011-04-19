@@ -141,6 +141,18 @@ class Alkaline{
 		// Delete saved Orbit extension session references
 		if($class == 'Alkaline'){
 			unset($_SESSION['alkaline']['extensions']);
+			
+			// Log-in guests via cookie
+			if(!empty($_COOKIE['guest_key']) and !empty($_COOKIE['guest_id']) and empty($_SESSION['alkaline']['guest'])){
+				$query = $this->prepare('SELECT * FROM guests WHERE guest_id = :guest_id LIMIT 0, 1;');
+				$query->execute(array(':guest_id' => $_COOKIE['guest_id']));
+				$guests = $query->fetchAll();
+				$guest = $guests[0];
+				
+				if($_COOKIE['guest_key'] == sha1(PATH . BASE . DB_DSN . DB_TYPE . $guest['guest_key'])){
+					$this->access($guest['guest_key']);
+				}
+			}
 		}
 	}
 	
@@ -352,6 +364,13 @@ class Alkaline{
 		
 		if(!$guest){
 			$this->addError('Guest not found.', 'You are not authorized for this material.', null, null, 401);
+		}
+		
+		if($this->returnConf('guest_remember')){
+			$seconds = $this->returnConf('guest_remember_time');
+			$key = sha1(PATH . BASE . DB_DSN . DB_TYPE . $guest['guest_key']);
+			setcookie('guest_id', $guest['guest_id'], time()+$seconds, '/');
+			setcookie('guest_key', $key, time()+$seconds, '/');
 		}
 		
 		$_SESSION['alkaline']['guest'] = $guest;
@@ -1484,8 +1503,8 @@ class Alkaline{
 	public function getBadges(){
 		$badges = array();
 		
-		// New
-		$badges['library'] = $this->countDirectory(PATH . SHOEBOX);
+		$badges['images'] = $this->countDirectory(PATH . SHOEBOX);
+		$badges['posts'] = $this->countDirectory(PATH . SHOEBOX, 'txt|mdown|md|markdown|textile');
 
 		$comment_ids = new Find('comments');
 		$comment_ids->status(0);
@@ -1809,7 +1828,7 @@ class Alkaline{
 	 * Get HTML <select> of all EXIF names
 	 *
 	 * @param string $name Name and ID of <select>
-	 * @param integer $theme_id Default or selected exif_name
+	 * @param integer $exif_name Default or selected exif_name
 	 * @return string
 	 */
 	public function showEXIFNames($name, $exif_name=null){
@@ -1943,30 +1962,30 @@ class Alkaline{
 		// Add default fields
 		switch($table){
 			case 'comments':
-				$fields['comment_created'] = date('Y-m-d H:i:s');
+				if(empty($fields['comment_created'])){ $fields['comment_created'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'guests':
-				$fields['guest_views'] = 0;
-				$fields['guest_created'] = date('Y-m-d H:i:s');
+				if(empty($fields['guest_views'])){ $fields['guest_views'] = 0; }
+				if(empty($fields['guest_created'])){ $fields['guest_created'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'rights':
-				$fields['right_created'] = date('Y-m-d H:i:s');
-				$fields['right_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['right_created'])){ $fields['right_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['right_modified'])){ $fields['right_modified'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'pages':
-				$fields['page_views'] = 0;
-				$fields['page_created'] = date('Y-m-d H:i:s');
-				$fields['page_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['page_views'])){ $fields['page_views'] = 0; }
+				if(empty($fields['page_created'])){ $fields['page_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['page_modified'])){ $fields['page_modified'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'posts':
-				$fields['post_views'] = 0;
-				$fields['post_created'] = date('Y-m-d H:i:s');
-				$fields['post_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['post_views'])){ $fields['post_views'] = 0; }
+				if(empty($fields['post_created'])){ $fields['post_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['post_modified'])){ $fields['post_modified'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'sets':
-				$fields['set_views'] = 0;
-				$fields['set_created'] = date('Y-m-d H:i:s');
-				$fields['set_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['set_views'])){ $fields['set_views'] = 0; }
+				if(empty($fields['set_created'])){ $fields['set_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['set_modified'])){ $fields['set_modified'] = date('Y-m-d H:i:s'); }
 				break;
 			case 'sizes':
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
@@ -1975,7 +1994,7 @@ class Alkaline{
 				if(Alkaline::edition != 'multiuser'){
 					return false;
 				}
-				$fields['user_created'] = date('Y-m-d H:i:s');
+				if(empty($fields['user_created'])){ $fields['user_created'] = date('Y-m-d H:i:s'); }
 				break;
 			default:
 				break;

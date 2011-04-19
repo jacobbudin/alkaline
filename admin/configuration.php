@@ -82,6 +82,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_markup_ext', @$_POST['comm_markup_ext']);
 	$alkaline->setConf('comm_allow_html', @$_POST['comm_allow_html']);
 	$alkaline->setConf('comm_allow_html_tags', @$_POST['comm_allow_html_tags']);
+	
+	$alkaline->setConf('guest_remember', @$_POST['guest_remember']);
+	$alkaline->setConf('guest_remember_time', @$_POST['guest_remember_time']);
+	
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
@@ -405,6 +409,23 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input pad"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
 			<td class="description">
 				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new images</label>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Guests</h3>
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="guest_remember" name="guest_remember" <?php echo $alkaline->readConf('guest_remember'); ?> value="true" /></td>
+			<td class="description">
+				<label for="guest_remember">Remember guests for
+					<select name="guest_remember_time">
+						<option value="86400" <?php echo $user->readConf('guest_remember_time', '86400'); ?>>one day</option>
+						<option value="604800" <?php echo $user->readConf('guest_remember_time', '604800'); ?>>one week</option>
+						<option value="2592000" <?php echo $user->readConf('guest_remember_time', '2592000'); ?>>one month</option>
+						<option value="7776000" <?php echo $user->readConf('guest_remember_time', '7776000'); ?>>three months</option>
+					</select>
+				after their session ends</label>
 			</td>
 		</tr>
 	</table>
