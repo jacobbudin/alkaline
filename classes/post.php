@@ -120,7 +120,7 @@ class Post extends Alkaline{
 	 * @return void
 	 */
 	public function attachUser($user){
-		$this->user = $user->user;
+		$this->user = $user;
 	}
 	
 	/**
@@ -164,6 +164,9 @@ class Post extends Alkaline{
 		
 		for($i = 0; $i < $this->post_count; ++$i){
 			$array = $array_original;
+			
+			$post_title = $array['post_title'];
+			$post_text_raw = $array['post_text_raw'];
 			
 			// Verify each key has changed; if not, unset the key
 			foreach($array as $key => $value){
@@ -237,10 +240,11 @@ class Post extends Alkaline{
 			$fields['post_modified'] = date('Y-m-d H:i:s');
 			
 			// Create version
-			if(!empty($fields['post_text_raw']) and ($fields['post_text_raw'] != $this->posts[$i]['post_text_raw']) and ($version == true)){
+			if(!empty($fields['post_text_raw']) and (($fields['post_text_raw'] != $this->posts[$i]['post_text_raw']) or ($fields['post_title'] != $this->posts[$i]['post_title'])) and ($version == true)){
 				$version_fields = array('post_id' => $this->posts[$i]['post_id'],
-					'user_id' => $this->user['user_id'],
-					'version_text_raw' => $fields['post_text_raw'],
+					'user_id' => $this->user->user['user_id'],
+					'version_title' => $post_title,
+					'version_text_raw' => $post_text_raw,
 					'version_created' => date('Y-m-d H:i:s'));
 				$this->addRow($version_fields, 'versions');
 			}
@@ -413,7 +417,7 @@ class Post extends Alkaline{
 	/**
 	 * Get version data and save to object
 	 *
-	 * @return void
+	 * @return array Array of version data
 	 */
 	public function getVersions(){
 		$query = $this->prepare('SELECT versions.* FROM versions, posts' . $this->sql . ' AND versions.post_id = posts.post_id;');
@@ -421,6 +425,94 @@ class Post extends Alkaline{
 		$this->versions = $query->fetchAll();
 		
 		return $this->versions;
+	}
+	
+	/**
+	 * Import files as posts
+	 *
+	 * @param array|string $files Full path to post files
+	 * @return void
+	 */
+	public function import($files){
+		if(empty($files)){
+			return false;
+		}
+		
+		$files = $this->convertToArray($files);
+		$post_ids = array();
+		
+		foreach($files as $file){
+			if(!file_exists($file)){
+				return false;
+			}
+		
+			// Add post to database
+			$post_title = substr($this->changeExt(trim($this->getFilename($file)), ''), 0, -1);
+			$post_title = $this->makeUnicode($post_title);
+			$post_title_url = $this->makeURL($post_title);
+
+			$post_text_raw = file_get_contents($file);
+			$post_text_raw = $this->makeUnicode($post_text_raw);
+			$post_text = $post_text_raw;
+
+			// Configuration: post_markup
+			if($this->returnConf('post_markup')){
+				$orbit = new Orbit;
+				$post_markup_ext = $this->returnConf('post_markup_ext');
+				$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			}
+			else{
+				$post_markup_ext = '';
+				$post_text = $this->nl2br($post_text_raw);
+			}
+
+			$post_images = implode(', ', $this->findIDRef($post_text));
+
+			$post_words = $this->countWords($post_text_raw, 0);
+			
+			$post_published = '';
+			if($this->user->returnPref('post_pub') === true){
+				$post_published = 'Now';
+			}
+
+			$fields = array('user_id' => @$this->user->user['user_id'],
+				'post_title' => $post_title,
+				'post_title_url' => $post_title_url,
+				'post_text_raw' => $post_text_raw,
+				'post_markup' => $post_markup_ext,
+				'post_images' => $post_images,
+				'post_text' => $post_text,
+				'post_published' => $post_published,
+				'post_words' => $post_words);
+			
+			$post_id = $this->addRow($fields, 'posts');
+			
+			// Create version
+			if(is_integer($post_id) and ($post_id > 0)){
+				$version_fields = array('post_id' => $post_id,
+					'user_id' => $this->user->user['user_id'],
+					'version_title' => $post_title,
+					'version_text_raw' => $post_text_raw,
+					'version_created' => date('Y-m-d H:i:s'));
+				$this->addRow($version_fields, 'versions');
+			}
+			
+			$post_ids[] = $post_id;
+		}
+		
+		// Store initial post_ids array
+		$existing_post_ids = $this->post_ids;
+		
+		// Construct object anew
+		self::__construct($post_ids);
+		
+		// Combine existing and imported post_ids arrays
+		if(!empty($existing_post_ids)){
+			$this->post_ids = array_merge($existing_post_ids, $this->post_ids);
+		}
+		
+		// Merge with previous post_ids
+		self::__construct($this->post_ids);
 	}
 }
 

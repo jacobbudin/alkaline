@@ -82,11 +82,11 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 		
 		<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>		
 			<h3>Instructions</h3>
-			<p>Drag images from a folder on your computer or from most applications including Aperture, Bridge, iPhoto, and Lightroom into the grey retaining area.</p>
+			<p>Drag images from a folder on your computer or from most applications including Aperture, Bridge, iPhoto, and Lightroom into the grey retaining area. You can also drag text files to create new posts.</p>
 		
 			<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 		
-			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">shoebox</a> to process your images.</p>
+			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">shoebox</a> to process your files.</p>
 		<?php } ?>
 	</div>
 </div>

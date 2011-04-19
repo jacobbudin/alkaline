@@ -74,14 +74,32 @@ if(!empty($_POST['image_ids'])){
 	exit();
 }
 
-// DETERMINE IF IMAGES IN SHOEBOX
-$images = $alkaline->seekDirectory(PATH . SHOEBOX);
-$image_count = count($images);
+// New posts
+$files = $alkaline->seekDirectory(PATH . SHOEBOX, 'txt|mdown|md|markdown|textile');
+$p_count = count($files);
 
-if(!($image_count > 0)){
-	$alkaline->addNote('There are no images in your shoebox.', 'notice');
-	header('Location: ' . BASE . ADMIN . 'library' . URL_CAP);
+foreach($files as $file){
+	$post = new Post();
+	$post->attachUser($user);
+	$post->import($file);
+}
+
+// New images
+$files = $alkaline->seekDirectory(PATH . SHOEBOX);
+$i_count = count($files);
+
+if(($i_count == 0) and ($p_count == 0)){
+	$alkaline->addNote('There are no files in your shoebox.', 'error');
+	header('Location: ' . BASE . ADMIN . 'upload' . URL_CAP);
 	exit();
+}
+elseif(($i_count == 0) and ($p_count > 0)){
+	$alkaline->addNote('You have successfully imported ' . $alkaline->returnFullCount($p_count, 'post') . '.', 'success');
+	header('Location: ' . BASE . ADMIN . 'posts' . URL_CAP);
+	exit();
+}
+else{
+	$alkaline->addNote('You have also successfully imported ' . $alkaline->returnFullCount($p_count, 'post') . '.', 'success');
 }
 
 define('TAB', 'library');
@@ -90,7 +108,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox (<?php echo $image_count; ?>)</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox (<?php echo $i_count; ?>)</h1>
 
 <form action="" method="post">
 	<div id="privacy_html" class="none">
@@ -111,7 +129,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 	<p>
 		<input id="shoebox_image_ids" type="hidden" name="image_ids" value="" />
-		<input id="shoebox_add" type="submit" value="Add images" />
+		<input id="shoebox_add" type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 	</p>
 </form>
 	
