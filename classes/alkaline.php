@@ -1607,7 +1607,12 @@ class Alkaline{
 	public function hintPostCategory($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT DISTINCT(posts.post_category) FROM posts WHERE LOWER(posts.post_category) LIKE :hint_lower ORDER BY posts.post_category ASC';
+		if(!empty($hint)){
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts WHERE LOWER(posts.post_category) LIKE :hint_lower ORDER BY posts.post_category ASC';
+		}
+		else{
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts ORDER BY posts.post_category ASC';
+		}
 		
 		$query = $this->prepare($sql);
 		$query->execute(array(':hint_lower' => $hint_lower . '%'));
@@ -1631,7 +1636,12 @@ class Alkaline{
 	public function hintPageCategory($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT DISTINCT(pages.page_category) FROM pages WHERE LOWER(pages.page_category) LIKE :hint_lower ORDER BY pages.page_category ASC';
+		if(!empty($hint)){
+			$sql = 'SELECT DISTINCT(pages.page_category) FROM pages WHERE LOWER(pages.page_category) LIKE :hint_lower ORDER BY pages.page_category ASC';
+		}
+		else{
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts ORDER BY posts.post_category ASC';
+		}
 		
 		$query = $this->prepare($sql);
 		$query->execute(array(':hint_lower' => $hint_lower . '%'));

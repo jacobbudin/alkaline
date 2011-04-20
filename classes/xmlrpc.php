@@ -46,6 +46,8 @@ class XMLRPC extends Alkaline{
 		$post_text_raw = $content['description'];
 		$post_text = $post_text_raw;
 		
+		$post_category = $content['categories'][0];
+		
 		// Configuration: post_markup
 		if($this->returnConf('post_markup')){
 			$orbit = new Orbit;
@@ -73,6 +75,7 @@ class XMLRPC extends Alkaline{
 			'post_text_raw' => $this->makeUnicode($post_text_raw),
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
+			'post_category' => $this->makeUnicode($post_category),
 			'post_text' => $this->makeUnicode($post_text),
 			'post_published' => $post_publish,
 			'post_words' => $post_words);
@@ -154,6 +157,8 @@ class XMLRPC extends Alkaline{
 		$post_text_raw = $content['description'];
 		$post_text = $post_text_raw;
 		
+		$post_category = $content['categories'][0];
+		
 		// Configuration: post_markup
 		if(!empty($_POST['post_markup'])){
 			$orbit = new Orbit;
@@ -179,6 +184,7 @@ class XMLRPC extends Alkaline{
 			'post_text_raw' => $this->makeUnicode($post_text_raw),
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
+			'post_category' => $this->makeUnicode($post_category),
 			'post_text' => $this->makeUnicode($post_text),
 			'post_published' => $post_publish,
 			'post_words' => $post_words);
@@ -284,7 +290,16 @@ class XMLRPC extends Alkaline{
 		
 		$this->auth($username, $password);
 		
-		return array();
+		$categories = $this->hintPostCategory();
+		
+		$return = array();
+		
+		foreach($categories as $cat){
+			$return['description'] = $cat;
+			$return['title'] = $cat;
+		}
+		
+		return $categories;
 	}
 }
 
