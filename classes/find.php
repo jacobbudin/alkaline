@@ -136,6 +136,11 @@ class Find extends Alkaline{
 			if(!empty($_REQUEST['tags'])){
 				$this->_tags($_REQUEST['tags']);
 			}
+			
+			// Category
+			if(!empty($_REQUEST['category'])){
+				$this->_category($_REQUEST['category']);
+			}
 
 			// Rights set
 			if(!empty($_REQUEST['rights'])){
@@ -954,6 +959,29 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by categories
+	 *
+	 * @param string|array $categories Categories
+	 * @return bool True if successful
+	 */
+	public function category($categories=null){
+		// Error checking
+		if(empty($categories)){ return false; }
+		
+		$categories = parent::convertToArray($categories);
+		
+		$categories_sql = array();
+		
+		foreach($categories as $category){
+			$categories_sql[] = $this->table . '.' . $this->table_prefix . 'category = ' . $category;
+		}
+		
+		$this->sql_conds[] = '(' . implode(' OR ', $categories_sql) . ')';
+		
+		return true;
+	}
+	
+	/**
 	 * Find by search
 	 * Images: image title, image description, image geography, and image tags
 	 * Posts: post title, post text
@@ -1531,6 +1559,9 @@ class Find extends Alkaline{
 			case 'untitled':
 				$this->_special('untitled');
 				break;
+			case 'uncategorized':
+				$this->_special('uncategorized');
+				break;
 			case 'views':
 				$this->_sort($this->table_prefix . 'views', 'DESC');
 				break;
@@ -1569,7 +1600,7 @@ class Find extends Alkaline{
 	/**
 	 * Special searches
 	 *
-	 * @param string $kind Unpublished, untitled
+	 * @param string $kind Unpublished, untitled, uncategorized
 	 * @return void
 	 */
 	protected function special($kind){
@@ -1589,6 +1620,9 @@ class Find extends Alkaline{
 				break;
 			case 'untitled':
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'title IS NULL';
+				break;
+			case 'uncategorized':
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'category IS NULL';
 				break;
 			default:
 				return false;
