@@ -419,10 +419,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="description">
 				<label for="guest_remember">Remember guests for
 					<select name="guest_remember_time">
-						<option value="86400" <?php echo $user->readConf('guest_remember_time', '86400'); ?>>one day</option>
+						<option value="86400" <?php echo $user->readConf('guest_remember_time', '86400'); ?>>24 hours</option>
+						<option value="259200" <?php echo $user->readConf('guest_remember_time', '259200'); ?>>three days</option>
 						<option value="604800" <?php echo $user->readConf('guest_remember_time', '604800'); ?>>one week</option>
 						<option value="2592000" <?php echo $user->readConf('guest_remember_time', '2592000'); ?>>one month</option>
 						<option value="7776000" <?php echo $user->readConf('guest_remember_time', '7776000'); ?>>three months</option>
+						<option value="31536000" <?php echo $user->readConf('guest_remember_time', '31536000'); ?>>one year</option>
 					</select>
 				after their session ends</label>
 			</td>
