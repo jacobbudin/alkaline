@@ -1166,8 +1166,7 @@ class Alkaline{
 	}
 	
 	private function makeHTMLSafeHelper($string){
-		$string = preg_replace('#\'#s', '&#0039;', $string);	
-		$string = preg_replace('#\"#s', '&#0034;', $string);
+		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 		return $string;
 	}
 	
@@ -2401,6 +2400,34 @@ class Alkaline{
 	}
 	
 	/**
+	 * Find meta references from an HTML string
+	 *
+	 * @param string $html Input HTML string
+	 * @return array Associate array of data (site_name, title, url)
+	 */
+	public function findMetaRef($html){
+		$array = array();
+		
+		preg_match_all('#<meta.*?>#', $html, $metas);
+		foreach($metas[0] as $meta){
+			if(stripos($meta, 'property="og:site_name"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['site_name'] = $match[1];
+			}
+			elseif(stripos($meta, 'property="og:title"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['title'] = $match[1];
+			}
+			elseif(stripos($meta, 'property="og:url"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['url'] = $match[1];
+			}
+		}
+		
+		return $array;
+	}
+	
+	/**
 	 * Make a URL-friendly string (removes special characters, replaces spaces)
 	 *
 	 * @param string $string
@@ -2796,6 +2823,7 @@ class Alkaline{
 	 * @return void
 	 */
 	public function callback($url=null){
+		unset($_SESSION['alkaline']['go']);
 		if(!empty($_SESSION['alkaline']['callback'])){
 			header('Location: ' . $_SESSION['alkaline']['callback']);
 		}
