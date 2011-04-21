@@ -46,15 +46,21 @@ if(!empty($_POST['page_id'])){
 		$page_text_raw = $_POST['page_text_raw'];
 		$page_text = $page_text_raw;
 		
+		$page_excerpt_raw = $_POST['page_excerpt_raw'];
+		$page_excerpt = $page_excerpt_raw;
+		
 		$page_markup = @$_POST['page_markup'];
 		$page_markup_ext = @$_POST['page_markup_ext'];
 		
 		if($page_markup == 'markup'){
 			$page_text = $orbit->hook('markup_' . $page_markup_ext, $page_text_raw, $page_text);
+			$page_title = $orbit->hook('markup_title_' . $page_markup_ext, $page_title, $page_title);
+			$page_excerpt = $orbit->hook('markup_' . $page_markup_ext, $page_excerpt_raw, $page_excerpt);
 		}
 		else{
 			$page_markup_ext = '';
 			$page_text = $alkaline->nl2br($page_text_raw);
+			$page_excerpt = $alkaline->nl2br($page_excerpt_raw);
 		}
 		
 		$page_images = implode(', ', $alkaline->findIDRef($page_text));

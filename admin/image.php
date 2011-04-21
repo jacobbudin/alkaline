@@ -42,10 +42,12 @@ if(!empty($_POST['image_id'])){
 		// Configuration: image_markup
 		if(!empty($_POST['image_markup'])){
 			$image_markup_ext = $_POST['image_markup'];
+			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
 			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
 		}
-		elseif($alkaline->returnConf('image_markup')){
-			$image_markup_ext = $alkaline->returnConf('image_markup_ext');
+		elseif($alkaline->returnConf('web_markup')){
+			$image_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
 			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
 		}
 		else{

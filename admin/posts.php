@@ -60,18 +60,26 @@ if(!empty($_POST['post_id'])){
 		$post_text_raw = $_POST['post_text_raw'];
 		$post_text = $post_text_raw;
 		
+		$post_excerpt_raw = $_POST['post_excerpt_raw'];
+		$post_excerpt = $post_excerpt_raw;
+		
 		// Configuration: post_markup
 		if(!empty($_POST['post_markup'])){
 			$post_markup_ext = $_POST['post_markup'];
 			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
+			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
-		elseif($alkaline->returnConf('post_markup')){
-			$post_markup_ext = $alkaline->returnConf('post_markup_ext');
+		elseif($alkaline->returnConf('web_markup')){
+			$post_markup_ext = $alkaline->returnConf('web_markup_ext');
 			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
+			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
 		else{
 			$post_markup_ext = '';
 			$post_text = $this->nl2br($post_text_raw);
+			$post_excerpt = $this->nl2br($post_excerpt_raw);
 		}
 		
 		// Comment disabling

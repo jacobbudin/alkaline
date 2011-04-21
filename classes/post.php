@@ -456,9 +456,9 @@ class Post extends Alkaline{
 			$post_text = $post_text_raw;
 
 			// Configuration: post_markup
-			if($this->returnConf('post_markup')){
+			if($this->returnConf('web_markup')){
 				$orbit = new Orbit;
-				$post_markup_ext = $this->returnConf('post_markup_ext');
+				$post_markup_ext = $this->returnConf('web_markup_ext');
 				$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
 			}
 			else{

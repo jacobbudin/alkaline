@@ -34,8 +34,8 @@ if(!empty($_POST['image_ids'])){
 		else{
 			$image_description_raw = $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-description-raw']);
 			
-			if($alkaline->returnConf('image_markup')){
-				$image_markup_ext = $alkaline->returnConf('image_markup_ext');
+			if($alkaline->returnConf('web_markup')){
+				$image_markup_ext = $alkaline->returnConf('web_markup_ext');
 				$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
 			}
 			else{

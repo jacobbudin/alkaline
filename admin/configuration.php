@@ -50,12 +50,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
-	$alkaline->setConf('image_markup', @$_POST['image_markup']);
-	if(@$_POST['image_markup'] == ''){ $_POST['image_markup_ext'] = ''; }
+	$alkaline->setConf('web_markup', @$_POST['web_markup']);
+	if(@$_POST['web_markup'] == ''){ $_POST['web_markup_ext'] = ''; }
 	
-	$alkaline->setConf('image_markup_ext', @$_POST['image_markup_ext']);
-	$alkaline->setConf('post_markup', @$_POST['post_markup']);
-	if(@$_POST['post_markup'] == ''){ $_POST['post_markup_ext'] = ''; }
+	$alkaline->setConf('web_markup_ext', @$_POST['web_markup_ext']);
 	
 	$alkaline->setConf('post_markup_ext', @$_POST['post_markup_ext']);
 	$alkaline->setConf('post_div_wrap', @$_POST['post_div_wrap']);
@@ -207,10 +205,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 				echo '</select>';
 
-				?>
+				?><br /><br />
 			</td>
 		</tr>
-	</table>
+		<tr class="markup">
+			<td class="input right pad"><input type="checkbox" id="web_markup" name="web_markup" <?php echo $alkaline->readConf('web_markup'); ?> value="true" /></td>
+			<td>
+				<label for="web_markup">Markup future content (except visitor comments) using <select name="web_markup_ext" title="<?php echo $alkaline->returnConf('web_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
+			</td>
+		</tr>
+	</table><br />
 	
 	<h3>Shoebox</h3>
 	
@@ -235,18 +239,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
-	<h3>Images</h3>
-	
-	<table>
-		<tr class="markup">
-			<td class="input pad"><input type="checkbox" id="image_markup" name="image_markup" <?php echo $alkaline->readConf('image_markup'); ?> value="true" /></td>
-			<td>
-				<label for="image_markup">Markup new image descriptions using <select name="image_markup_ext" title="<?php echo $alkaline->returnConf('image_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your images, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-image-markup' ?>">reset your image markup</a>
-			</td>
-		</tr>
-	</table>
-	
 	<h3>Posts</h3>
 	
 	<table>
@@ -254,13 +246,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input pad"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="post_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('post_size_id', $alkaline->returnConf('post_size_id')); ?> when adding images by point-and-click</label>
-			</td>
-		</tr>
-		<tr class="markup">
-			<td class="input pad"><input type="checkbox" id="post_markup" name="post_markup" <?php echo $alkaline->readConf('post_markup'); ?> value="true" /></td>
-			<td>
-				<label for="post_markup">Markup new posts using <select name="post_markup_ext" title="<?php echo $alkaline->returnConf('post_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your posts, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-post-markup' ?>">reset your post markup</a>
 			</td>
 		</tr>
 		<tr>
@@ -389,15 +374,29 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
 			<td>
-				<label for="comm_markup">Markup new comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your comments, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-comment-markup' ?>">reset your comment markup</a>
+				<label for="comm_markup">Markup visitor comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="comm_allow_html" name="comm_allow_html" <?php echo $alkaline->readConf('comm_allow_html'); ?> value="true" /></td>
 			<td>
-				<label for="comm_allow_html">Allow select HTML in comments</label><br />
-				Allow only the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="xs" />
+				<label for="comm_allow_html">Allow only select HTML in comments</label><br />
+				Permit the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="xs" />
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="comm_close" name="comm_close" <?php echo $alkaline->readConf('comm_close'); ?> value="true" /></td>
+			<td class="description">
+				<label for="comm_close">Automatically close items to new comments
+					<select name="comm_close_time">
+						<option value="86400" <?php echo $user->readConf('comm_close_time', '86400'); ?>>24 hours</option>
+						<option value="259200" <?php echo $user->readConf('comm_close_time', '259200'); ?>>three days</option>
+						<option value="604800" <?php echo $user->readConf('comm_close_time', '604800'); ?>>one week</option>
+						<option value="2592000" <?php echo $user->readConf('comm_close_time', '2592000'); ?>>one month</option>
+						<option value="7776000" <?php echo $user->readConf('comm_close_time', '7776000'); ?>>three months</option>
+						<option value="31536000" <?php echo $user->readConf('comm_close_time', '31536000'); ?>>one year</option>
+					</select>
+				after the item&#8217;s publication date</label>
 			</td>
 		</tr>
 	</table>
