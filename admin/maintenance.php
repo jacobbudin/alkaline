@@ -38,15 +38,15 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<ul class="tasks">
 				<li>
 					<strong><a href="#rebuild-thumbnails">Rebuild all image thumbnails</a></strong><br />
-					Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files
+					Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files (resource intensive)
 				</li>
 				<li>
 					<strong><a href="#delete-unused-thumbnails">Delete unclaimed image thumbnails</a></strong><br />
-					Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available space
+					Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available disk space
 				</li>
 				<li>
 					<strong><a href="#delete-shoebox">Delete all files in shoebox</a></strong><br />
-					Delete all files from your shoebox folder, increasing available space
+					Delete all files from your shoebox folder, removing troublesome files that could not be imported
 				</li>
 			</ul>
 		</div>
@@ -71,13 +71,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					Removes tags that are no longer linked to any images, increasing available space
 				</li>
 				<li>
-					<strong><a href="#reset-image-markup">Reset image markup</a></strong>
-				</li>
-				<li>
-					<strong><a href="#reset-post-markup">Reset post markup</a></strong>
-				</li>
-				<li>
-					<strong><a href="#reset-comment-markup">Reset comment markup</a></strong>
+					<strong><a href="#reset-markup">Reset markup</a></strong><br />
+					Resets markup on all images, posts, sets, etc. where not equal to the current markup language (not recommended)
 				</li>
 			</ul>
 		</div>
