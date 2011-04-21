@@ -88,7 +88,40 @@ if(!empty($_POST['comment_id'])){
 			'comment_status' => $comment_status);
 		$alkaline->updateRow($fields, 'comments', $comment_id);
 	}
-	unset($comment_id);
+	
+	if(!empty($_REQUEST['go'])){
+		$comment_ids = new Find('comments');
+		$comment_ids->memory();
+		$comment_ids->with($comment_id);
+		$comment_ids->offset(1);
+		$comment_ids->page(null, 1);
+		$comment_ids->find();
+		
+		if($_REQUEST['go'] == 'next'){
+			$_SESSION['alkaline']['go'] = 'next';
+			if(!empty($comment_ids->ids_after[0])){
+				$comment_id = $comment_ids->ids_after[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($comment_id);
+			}
+		}
+		else{
+			$_SESSION['alkaline']['go'] = 'previous';
+			if(!empty($comment_ids->ids_before[0])){
+	 			$comment_id = $comment_ids->ids_before[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($comment_id);
+			}
+		}
+	}
+	else{
+		unset($_SESSION['alkaline']['go']);
+		unset($comment_id);
+	}
 }
 
 define('TAB', 'comments');
@@ -328,7 +361,14 @@ else{
 			<input type="hidden" name="image_id" value="<?php echo $comment['image_id']; ?>" />
 			<input type="hidden" name="post_id" value="<?php echo $comment['post_id']; ?>" />
 			<input type="hidden" id="comm_markup" name="comm_markup" value="<?php echo $comment['comment_markup']; ?>" />
-			<input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+			<input type="submit" value="<?php echo (($comment['comment_status'] == 0) ? 'Publish' : 'Save changes'); ?>" />
+			and
+			<select name="go">
+				<option value="">return to previous screen</option>
+				<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next comment</option>
+				<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous comment</option>
+			</select>
+			or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 		</p>
 	</form>
 

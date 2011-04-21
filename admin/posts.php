@@ -109,7 +109,39 @@ if(!empty($_POST['post_id'])){
 		$posts->updateFields($fields);
 	}
 	
-	unset($post_id);
+	if(!empty($_REQUEST['go'])){
+		$post_ids = new Find('posts');
+		$post_ids->memory();
+		$post_ids->with($post_id);
+		$post_ids->offset(1);
+		$post_ids->page(null, 1);
+		$post_ids->find();
+		
+		if($_REQUEST['go'] == 'next'){
+			$_SESSION['alkaline']['go'] = 'next';
+			if(!empty($post_ids->ids_after[0])){
+				$post_id = $post_ids->ids_after[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($post_id);
+			}
+		}
+		else{
+			$_SESSION['alkaline']['go'] = 'previous';
+			if(!empty($post_ids->ids_before[0])){
+	 			$post_id = $post_ids->ids_before[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($post_id);
+			}
+		}
+	}
+	else{
+		unset($_SESSION['alkaline']['go']);
+		unset($post_id);
+	}
 }
 else{
 	$alkaline->deleteEmptyRow('posts', array('post_title', 'post_text_raw'));
@@ -429,6 +461,12 @@ else{
 			<input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" />
 			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
 			<input type="submit" value="Save changes" />
+			and
+			<select name="go">
+				<option value="">return to previous screen</option>
+				<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next post</option>
+				<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous post</option>
+			</select>
 			or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
 	</form>
 

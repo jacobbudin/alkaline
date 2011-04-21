@@ -76,7 +76,26 @@ if(!empty($_POST['image_id'])){
 		$images->updateTags(json_decode($_POST['image_tags_input']));
 	}
 	
-	$alkaline->callback();
+	if(!empty($_REQUEST['go'])){
+		$image_ids = new Find('images');
+		$image_ids->memory();
+		$image_ids->with($image_id);
+		$image_ids->offset(1);
+		$image_ids->page(null, 1);
+		$image_ids->find();
+		if($_REQUEST['go'] == 'next'){
+			$_SESSION['alkaline']['go'] = 'next';
+			header('Location: ' . LOCATION . BASE . ADMIN . 'images' . URL_ID . $image_ids->ids_after[0] . URL_CAP);
+		}
+		else{
+			$_SESSION['alkaline']['go'] = 'previous';
+			header('Location: ' . LOCATION . BASE . ADMIN . 'images' . URL_ID . $image_ids->ids_before[0] . URL_CAP);
+		}
+		exit();
+	}
+	else{
+		$alkaline->callback();
+	}
 }
 
 $images = new Image($image_id);
@@ -148,10 +167,10 @@ else{
 				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
 				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" />
 				and
-				<select>
-					<option>return to previous screen</option>
-					<option>go to next image</option>
-					<option>go to previous image</option>
+				<select name="go">
+					<option value="">return to previous screen</option>
+					<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next image</option>
+					<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous image</option>
 				</select>
 				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
 			</p>
