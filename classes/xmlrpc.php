@@ -49,9 +49,10 @@ class XMLRPC extends Alkaline{
 		$post_category = $content['categories'][0];
 		
 		// Configuration: post_markup
-		if($this->returnConf('post_markup')){
+		if($this->returnConf('web_markup')){
 			$orbit = new Orbit;
-			$post_markup_ext = $this->returnConf('post_markup_ext');
+			$post_markup_ext = $this->returnConf('web_markup_ext');
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
 			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
 		}
 		else{
@@ -160,9 +161,10 @@ class XMLRPC extends Alkaline{
 		$post_category = $content['categories'][0];
 		
 		// Configuration: post_markup
-		if(!empty($_POST['post_markup'])){
+		if($this->returnConf('web_markup')){
 			$orbit = new Orbit;
-			$post_markup_ext = $_POST['post_markup'];
+			$post_markup_ext = $this->returnConf('web_markup_ext');
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
 			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
 		}
 		else{
@@ -205,6 +207,8 @@ class XMLRPC extends Alkaline{
 		$now = time();
 		
 		foreach($posts->posts as $post){
+			$post['post_text_raw'] = $this->makeHTMLSafe($post['post_text_raw']);
+			
 			if(strtotime($post['post_published']) <= $now){ $is_draft = false; }
 			else{ $is_draft = true; }
 			
@@ -243,6 +247,8 @@ class XMLRPC extends Alkaline{
 		$now = time();
 		
 		foreach($posts->posts as $post){
+			$post['post_text_raw'] = $this->makeHTMLSafe($post['post_text_raw']);
+			
 			if(strtotime($post['post_published']) <= $now){ $is_draft = false; }
 			else{ $is_draft = true; }
 			
