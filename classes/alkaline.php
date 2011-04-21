@@ -353,7 +353,11 @@ class Alkaline{
 		unset($_SESSION['alkaline']['guest']);
 		
 		// Error checking
-		if(empty($key)){ return false; }
+		if(empty($key)){
+			setcookie('guest_id', false, time()+$seconds, '/');
+			setcookie('guest_key', false, time()+$seconds, '/');
+			return false; 
+		}
 		
 		$key = strip_tags($key);
 		
