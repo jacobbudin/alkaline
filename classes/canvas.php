@@ -707,6 +707,19 @@ class Canvas extends Alkaline{
 		return Alkaline::makeURL($this->value);
 	}
 	
+	
+	/**
+	 * Show first paragraph
+	 *
+	 * @return string
+	 */
+	public function excerpt(){
+		$position = stripos($this->value, "\n\n");
+		$this->value = substr($this->value, 0, $position);
+		
+		return $this->value;
+	}
+	
 	/**
 	 * Convert number to words
 	 *
