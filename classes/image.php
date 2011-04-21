@@ -88,6 +88,11 @@ class Image extends Alkaline{
 				if($this->returnConf('comm_enabled') != true){
 					$this->images[$i]['image_comment_disabled'] = 1;
 				}
+				elseif($this->returnConf('comm_close') == true){
+					if((time() - strtotime($this->images[$i]['image_published'])) > $this->returnConf('comm_close_time')){
+						$this->images[$i]['image_comment_disabled'] = 1;
+					}
+				}
 			}
 		}
 	}
