@@ -587,7 +587,7 @@ $(document).ready(function(){
 	
 	// TIPTIP
 	
-	if(typeof tipTip == 'function'){
+	if(jQuery().tipTip){
 		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
 		$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
 		$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
@@ -906,9 +906,9 @@ $(document).ready(function(){
 		val = selector.val();
 		newval = val.replace(/\s+/gmi, '-');
 		newval = newval.replace(/[^a-z0-9\-\_]/gmi, '-');
+		newval = newval.replace(/\-+/gmi, '-');
 		newval = newval.replace(/^-/gmi, '');
 		newval = newval.replace(/-$/gmi, '');
-		newval = newval.replace(/\-+/gmi, '-');
 		newval = newval.toLowerCase();
 		if(!empty(newval)){
 			$('#' + id_link).attr('placeholder', newval);
