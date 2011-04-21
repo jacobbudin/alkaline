@@ -69,10 +69,12 @@ if(!empty($_POST['page_id'])){
 		
 		$fields = array('page_title' => $alkaline->makeUnicode($page_title),
 			'page_title_url' => $page_title_url,
+			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_text_raw' => $alkaline->makeUnicode($page_text_raw),
+			'page_excerpt' => $alkaline->makeUnicode($page_excerpt),
+			'page_excerpt_raw' => $alkaline->makeUnicode($page_excerpt_raw),
 			'page_markup' => $page_markup_ext,
 			'page_images' => $page_images,
-			'page_text' => $alkaline->makeUnicode($page_text),
 			'page_category' => $alkaline->makeUnicode(@$_POST['page_category']),
 			'page_words' => $page_words);
 		
@@ -170,18 +172,24 @@ else{
 		<div class="span-24 last">
 			<div class="span-15 append-1">
 				<input type="text" id="page_title" name="page_title" placeholder="Title" <?php if(empty($post['page_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$page['page_title']; ?>" class="title notempty" />
-				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
+				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show page&#8217;s excerpt</a>
+				</p>
+				<div class="reveal">
+					<textarea id="page_excerpt_raw" name="page_excerpt_raw" style="height: 150px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_excerpt_raw']; ?></textarea>
+				</div>
 			</div>
 			<div class="span-8 last">
 				<p>
-					<label for="page_title_url">Custom URL:</label><br />
-					<input type="text" id="page_title_url" name="page_title_url" value="<?php echo @$page['page_title_url']; ?>" style="width: 300px;" /><br />
-					<span class="quiet"><?php echo 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
+					<label for="page_category">Category:</label><br />
+					<input type="text" id="page_category" name="page_category" class="page_category" value="<?php echo @$page['page_category']; ?>" />
 				</p>
 				
 				<p>
-					<label for="page_category">Category:</label><br />
-					<input type="text" id="page_category" name="page_category" class="page_category" value="<?php echo @$page['page_category']; ?>" />
+					<label for="page_title_url">Custom URL:</label><br />
+					<input type="text" id="page_title_url" name="page_title_url" class="l" value="<?php echo @$page['page_title_url']; ?>" /><br />
+					<span class="quiet"><?php echo 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
 				</p>
 				
 				<hr />
@@ -225,7 +233,7 @@ else{
 		<?php } ?>
 		
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Display recent images</a> <span class="quiet">(click to add at cursor position)</span>
 		</p>
 		<div class="reveal image_click">
 			<?php

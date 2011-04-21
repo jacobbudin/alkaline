@@ -96,10 +96,13 @@ if(!empty($_POST['post_id'])){
 		
 		$fields = array('post_title' => $alkaline->makeUnicode($post_title),
 			'post_title_url' => $post_title_url,
+			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_text_raw' => $alkaline->makeUnicode($post_text_raw),
+			'post_excerpt' => $alkaline->makeUnicode($post_excerpt),
+			'post_excerpt_raw' => $alkaline->makeUnicode($post_excerpt_raw),
+			'post_source' => $alkaline->makeUnicode($_POST['post_source']),
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
-			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_published' => @$_POST['post_published'],
 			'post_category' => $alkaline->makeUnicode(@$_POST['post_category']),
 			'post_comment_disabled' => $post_comment_disabled,
@@ -248,6 +251,7 @@ if(empty($post_id)){
 					
 					<ul>
 						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'unpublished' . URL_RW; ?>">Unpublished posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'uncategorized' . URL_RW; ?>">Uncategorized posts</a></li>
 					</ul>
 				</div>
 			</div>
@@ -366,14 +370,16 @@ else{
 			<div class="span-15 append-1">
 				<input type="text" id="post_title" name="post_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$post['post_title']; ?>" class="title notempty" />
 				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show post&#8217;s excerpt</a>
+				</p>
+				<div class="reveal">
+					<textarea id="post_excerpt_raw" name="post_excerpt_raw" style="height: 150px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_excerpt_raw']; ?></textarea>
+				</div>
+				
 			</div>
 			<div class="span-8 last">
-				<p>
-					<label for="post_title_url">Custom URL:</label><br />
-					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /><br />
-						<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
-				</p>
-			
 				<p>
 					<label for="post_published">Publish date:</label><br />
 					<input type="text" id="post_published" name="post_published" placeholder="Draft" value="<?php echo @$post['post_published_format']; ?>" />
@@ -382,6 +388,17 @@ else{
 				<p>
 					<label for="post_category">Category:</label><br />
 					<input type="text" id="post_category" name="post_category" class="post_category" value="<?php echo @$post['post_category']; ?>" />
+				</p>
+				
+				<p>
+					<label for="post_source">Source:</label><br />
+					<input type="text" id="post_source" name="post_source" placeholder="http://www.example.com/" class="post_source xl" value="<?php echo @$post['post_source']; ?>" />
+				</p>
+				
+				<p>
+					<label for="post_title_url">Custom URL:</label><br />
+					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
+						<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
 				</p>
 			
 				<hr />
@@ -425,7 +442,7 @@ else{
 		<?php } ?>
 		
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show">Show recent images</a> <span class="quiet">(click to add at cursor position)</span>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Display recent images</a> <span class="quiet">(click to add at cursor position)</span>
 		</p>
 		<div class="reveal image_click">
 			<?php
