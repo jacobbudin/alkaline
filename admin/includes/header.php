@@ -102,7 +102,7 @@
 							<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"<?php if(@TAB == 'shoebox'){ echo ' class="selected"'; } ?>>Shoebox</a>
 						</li>
 						<?php } else{ ?>
-						<li id="tab_upload" class="green">
+						<li id="tab_upload">
 							<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"<?php if(@TAB == 'upload'){ echo ' class="selected"'; } ?>>Upload</a>
 						</li>
 						<?php } ?>
