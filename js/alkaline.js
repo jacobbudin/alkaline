@@ -590,6 +590,7 @@ $(document).ready(function(){
 	if(jQuery().tipTip){
 		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
 		$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
+		$('a.tip').live('mouseenter mouseleave', function(){ $(this).tipTip({defaultPosition: 'right', delay: 200}); });
 		$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
 	}
 	
