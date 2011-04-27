@@ -24,7 +24,7 @@ if(!empty($_GET['act'])){
 	$comment_act = $_GET['act'];
 	if($comment_act == 'search'){
 		Find::clearMemory();
-
+		
 		$comment_ids = new Find('comments');
 		$comment_ids->find();
 		$comment_ids->saveMemory();
@@ -37,8 +37,87 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['comment_id'])){
 	$comment_id = $alkaline->findID($_POST['comment_id']);
+	
+	$comment = new Comment($comment_id);
+	
+	if(!empty($_POST['post_response_raw'])){
+		$comment_text_raw = $_POST['post_response_raw'];
+		
+		if(!empty($_POST['image_id'])){
+			$id = $alkaline->findID($_POST['image_id']);
+			$id_type = 'image_id';
+		}
+		elseif(!empty($_POST['post_id'])){
+			$id = $alkaline->findID($_POST['post_id']);
+			$id_type = 'post_id';
+		}
+		
+		// Configuration: comm_markup
+		if($alkaline->returnConf('web_markup')){
+			$comm_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, $comment_text_raw);
+		}
+		else{
+			$comm_markup_ext = '';
+			$comment_text = $alkaline->nl2br($comment_text_raw);
+		}
+		
+		$fields = array($id_type => $id,
+			'comment_response' => $comment_id,
+			'comment_status' => 1,
+			'comment_text' => $alkaline->makeUnicode($comment_text),
+			'comment_text_raw' => $alkaline->makeUnicode($comment_text_raw),
+			'comment_markup' => $comm_markup_ext,
+			'user_id' => $user->user['user_id'],
+			'comment_author_name' => $user->user['user_name'],
+			'comment_author_uri' => $user->user['user_uri'],
+			'comment_author_email' => $user->user['user_email'],
+			'comment_author_ip' => $_SERVER['REMOTE_ADDR']);
+		
+		$fields = $orbit->hook('comment_add', $fields, $fields);
+		
+		if(!$comment_id = $alkaline->addRow($fields, 'comments')){
+			$alkaline->addNote('The response could not be posted.', 'error');
+		}
+		else{
+			// Update comment counts
+			if($id_type == 'image_id'){
+				$alkaline->updateCount('comments', 'images', 'image_comment_count', $id);
+			}
+			elseif($id_type == 'post_id'){
+				$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
+			}
+			
+			$alkaline->addNote('The response was successfully posted.', 'success');
+		}
+	}
+	
 	if(@$_POST['comment_delete'] == 'delete'){
-		$alkaline->deleteRow('comments', $comment_id);
+		if($comment->delete()){
+			$alkaline->addNote('The comment has been deleted.', 'success');
+		}
+		
+		// Update comment counts
+		if(!empty($_POST['image_id'])){
+			$id = $alkaline->findID($_POST['image_id']);
+			$id_type = 'image_id';
+		}
+		elseif(!empty($_POST['post_id'])){
+			$id = $alkaline->findID($_POST['post_id']);
+			$id_type = 'post_id';
+		}
+		
+		if($id_type == 'image_id'){
+			$alkaline->updateCount('comments', 'images', 'image_comment_count', $id);
+		}
+		elseif($id_type == 'post_id'){
+			$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
+		}
+	}
+	elseif(@$_POST['comment_recover'] == 'recover'){
+		if($comment->recover()){
+			$alkaline->addNote('The comment has been recovered.', 'success');
+		}
 		
 		// Update comment counts
 		if(!empty($_POST['image_id'])){
@@ -173,6 +252,16 @@ if(empty($comment_id)){
 						</td>
 					</tr>
 					<tr>
+						<td class="right middle"><label for="response">Response:</label></td>
+						<td class="quiet">
+							<select id="response" name="response">
+								<option value="">All</option>
+								<option value="true">Yes</option>
+								<option value="false">No</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<td class="right middle"><label>Date created:</label></td>
 						<td class="quiet">
 							between <input type="text" class="date" name="created_begin" style="width: 10em;" />
@@ -229,8 +318,11 @@ if(empty($comment_id)){
 				'<em>Anonymous</em>';
 			}
 		
-			if(!empty($comment['comment_author_ip'])){
+			if(!empty($comment['comment_author_ip']) and empty($comment['user_id'])){
 				echo ' (<a href="">' . $comment['comment_author_ip'] . '</a>)</span>';
+			}
+			elseif(!empty($comment['user_id'])){
+				echo ' (User)';
 			}
 			echo '</td>';
 			echo '<td class="center"><button></button></td>';
@@ -305,6 +397,13 @@ else{
 		<div class="span-24 last">
 			<div class="span-15 append-1">
 				<textarea id="comment_text_raw" name="comment_text_raw" placeholder="Text" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$comment['comment_text_raw']; ?></textarea>
+				
+				<p>
+					<span class="switch">&#9656;</span> <a href="#" class="show">Post response</a> <span class="quiet">(response will become new comment)</span>
+				</p>
+				<div class="reveal">
+					<textarea id="post_response_raw" name="post_response_raw" style="height: 150px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"></textarea>
+				</div>
 			</div>
 			<div class="span-8 last">
 				<p>
@@ -313,6 +412,9 @@ else{
 
 					if(!empty($comment['comment_author_name'])){
 						echo '<a href="">' . $comment['comment_author_name'] . '</a>';
+						if($comment['user_id']){
+							echo ' (User)';
+						}
 					}
 					else{
 						echo '<em>Anonymous</em>';
