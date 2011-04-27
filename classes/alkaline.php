@@ -745,9 +745,10 @@ class Alkaline{
 	 * @param string $time Time
 	 * @param string $format Format (as in date();)
 	 * @param string $empty If null or empty input time, return this string
+	 * @param int $round Digits of rounding (as in round();)
 	 * @return string|false Time or error
 	 */
-	public function formatRelTime($time, $format=null, $empty=false){
+	public function formatRelTime($time, $format=null, $empty=false, $round=null){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
 			return $empty;
@@ -756,11 +757,17 @@ class Alkaline{
 			$format = DATE_FORMAT;
 		}
 		
-		$time = str_ireplace(' at ', ' ', $time);
-		$time = str_ireplace(' on ', ' ', $time);
+		if(!is_integer($time)){
+			$time = str_ireplace(' at ', ' ', $time);
+			$time = str_ireplace(' on ', ' ', $time);
 		
-		$time = strtotime($time);
+			$time = strtotime($time);
+		}
 		$seconds = time() - $time;
+		
+		if(is_integer($round)){
+			$seconds = round($seconds, $round);
+		}
 		
 		if(empty($seconds)){
 			$span = 'just now';
