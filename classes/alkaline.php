@@ -2486,7 +2486,12 @@ class Alkaline{
 	 */
 	public function readForm($array=null, $name, $check=true){
 		if(is_array($array)){
-			@$value = $array[$name];
+			if(isset($array[$name])){
+				$value = $array[$name];
+			}
+			else{
+				$value = null;
+			}
 		}
 		else{
 			$value = $name;
