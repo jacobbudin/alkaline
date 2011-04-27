@@ -14,6 +14,7 @@
  */
 
 class Find extends Alkaline{
+	public $admin;
 	public $ids;
 	public $ids_after;
 	public $ids_before;
@@ -108,10 +109,37 @@ class Find extends Alkaline{
 			$this->sql_conds[] = $this->table . '.' . $this->table_id . ' IN (' . implode(', ', $ids) . ')';
 		}
 		
+		// In Dashboard?
+		if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
+			$this->admin = true;
+		}
+		
+		// Don't show deleted items
+		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
+		if(in_array($this->table, $with_deleted_columns)){
+			$show_deleted = false;
+			if($this->admin == true){
+				$user = new User();
+				if(!empty($user) and $user->perm()){
+					if($user->returnPref('recovery_mode') === true){
+						$show_deleted = true;
+					}
+				}
+			}
+			if($show_deleted === false){
+				$this->null($this->table . '.' . $this->table_prefix . 'deleted');
+			}
+		}
+		
 		if(($auto_guest == true) and ($this->table == 'images')){
 			// Guest access
-			if(isset($_SESSION['alkaline']['guest']) and (strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) !== 0)){
-				$this->privacy(2);
+			if(isset($_SESSION['alkaline']['guest']) and ($this->admin != true)){
+				if($_SESSION['alkaline']['guest']['guest_inclusive']){
+					$this->privacy(2, true, false);
+				}
+				else{
+					$this->privacy(2, false, false);
+				}
 				if(!empty($_SESSION['alkaline']['guest']['guest_sets'])){
 					$this->sets(intval($_SESSION['alkaline']['guest']['guest_sets']));
 				}
@@ -284,6 +312,11 @@ class Find extends Alkaline{
 			// Status
 			if(isset($_REQUEST['status'])){
 				$this->_status($_REQUEST['status']);
+			}
+			
+			// Response
+			if(isset($_REQUEST['response'])){
+				$this->_response($_REQUEST['response']);
 			}
 			
 			// Image association
@@ -874,6 +907,27 @@ class Find extends Alkaline{
 		}
 	}
 	
+	/**
+	 * Find by whether response or not
+	 *
+	 * @param bool $response Is a response
+	 * @return bool True if successful
+	 */
+	public function response($response=true){
+		$response = $this->convertToBool($response);
+		
+		if($response === true){
+			$this->notnull($this->table . '.' . $this->table_prefix . 'response');
+			return true;
+		}
+		elseif($response === false){
+			$this->null($this->table . '.' . $this->table_prefix . 'response');
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// MEMORY
 	
 	/**
@@ -1157,42 +1211,34 @@ class Find extends Alkaline{
 	 *
 	 * @param int|string|array $privacy Privacy ID or string
 	 * @param string $all Also include all images of lower privacy levels
+	 * @param bool $auto_guest Automatically handle guest privacy
 	 * @return bool True if successful
 	 */
-	public function privacy($privacy=null, $all=false){
+	public function privacy($privacy=null, $all=true, $auto_guest=true){
 		// Error checking
 		if(empty($privacy)){ return false; }
-		if(intval($privacy)){ $privacy = intval($privacy); }
+		//  if(intval($privacy)){ $privacy = intval($privacy); }
 		if($this->table != 'images'){ return false; }
-	
-		// Guest, admin checking
-		$user = new User;
 		
-		if(!empty($_SESSION['alkaline']['guest'])){
-			$privacy = 2;
-			$all = false;
-		}
+		if(!empty($_SESSION['alkaline']['guest']) and ($auto_guest == true) and ($this->admin != true)){ return; }
 		
 		// Convert strings
 		if(is_string($privacy)){
 			$privacy = strtolower($privacy);
 			$levels = array('public' => 1, 'protected' => 2, 'private' => 3);
+			$levels2 = array('1' => 1, '2' => 2, '3' => 3);
 			if(array_key_exists($privacy, $levels)){
 				$privacy = $levels[$privacy];
+			}
+			elseif(array_key_exists($privacy, $levels2)){
+				$privacy = $levels2[$privacy];
 			}
 			else{
 				return false;
 			}
-			
-			// Set fields to search
-			if($all == true){
-				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy <= ' . $privacy;
-			}
-			else{
-				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy = ' . $privacy;
-			}
 		}
-		elseif(is_integer($privacy)){
+		
+		if(is_integer($privacy)){
 			// Set fields to search
 			if($all == true){
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy <= ' . $privacy;
@@ -1200,7 +1246,6 @@ class Find extends Alkaline{
 			else{
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy = ' . $privacy;
 			}
-			
 		}
 		elseif(is_array($privacy)){
 			parent::convertToIntegerArray($privacy);
@@ -1554,7 +1599,7 @@ class Find extends Alkaline{
 				$this->_sort($this->table_prefix . 'modified', 'DESC');
 				break;
 			case 'nonpublic':
-				$this->_privacy(array(2, 3));
+				$this->_special('nonpublic');
 				break;
 			case 'untitled':
 				$this->_special('untitled');
@@ -1624,6 +1669,8 @@ class Find extends Alkaline{
 			case 'uncategorized':
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'category IS NULL';
 				break;
+			case 'nonpublic':
+				$this->privacy(array(2, 3));
 			default:
 				return false;
 				break;
@@ -1761,6 +1808,22 @@ class Find extends Alkaline{
 		$field = $this->sanitize($field);
 		
 		$this->sql_conds[] = $field . ' IS NOT NULL';
+		
+		return true;
+	}
+	
+	/**
+	 * Find by table fields null
+	 *
+	 * @param string $field Table field
+	 * @return bool True if successful
+	 */
+	public function null($field){
+		if(empty($field)){ return false; }
+		
+		$field = $this->sanitize($field);
+		
+		$this->sql_conds[] = $field . ' IS NULL';
 		
 		return true;
 	}
