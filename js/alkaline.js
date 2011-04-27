@@ -455,6 +455,18 @@ $(document).ready(function(){
 		$(this).find('ul').hide();
 	});
 	
+	$('#navigation ul ul').hover(function(){
+		parent = $(this).closest('ul').siblings('a');
+		if(!parent.hasClass('selected')){
+			parent.addClass('blue');
+		}
+	}, function(){
+		parent = $(this).closest('ul').siblings('a');
+		if(!parent.hasClass('selected')){
+			parent.removeClass('blue');
+		}
+	});
+	
 	// PERMISSIONS
 	if(!empty(PERMISSIONS)){
 		perms = PERMISSIONS.split(', ');
