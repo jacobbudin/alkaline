@@ -165,7 +165,8 @@ if(!empty($_POST['comment_id'])){
 		$fields = array('comment_text_raw' => $alkaline->makeUnicode($comment_text_raw),
 			'comment_text' => $alkaline->makeUnicode($comment_text),
 			'comment_status' => $comment_status);
-		$alkaline->updateRow($fields, 'comments', $comment_id);
+		
+		$comment->updateFields($fields);
 	}
 	
 	if(!empty($_REQUEST['go'])){
