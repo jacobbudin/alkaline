@@ -1725,23 +1725,48 @@ class Image extends Alkaline{
 	 * Get comments data, append comment <input> HTML data
 	 *
 	 * @param bool Published (true) or all (false)
+	 * @param bool Inline responses (responses directly follow) or force chronological (false)
 	 * @return array Associative array of comments
 	 */
-	public function getComments($published=true){
+	public function getComments($published=true, $inline_responses=true){
 		if($published == true){
-			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id AND comments.comment_status > 0;');
+			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id AND  comments.comment_deleted IS NULL AND comments.comment_status > 0 ORDER BY comments.comment_created ASC;');
 		}
 		else{
-			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id;');
-		}
+			$query = $this->prepare('SELECT * FROM comments, images' . $this->sql . ' AND comments.image_id = images.image_id AND comments.comment_deleted IS NULL ORDER BY comments.comment_created ASC;');
+		}		
 		$query->execute();
 		$this->comments = $query->fetchAll();
+		
+		$comment_count = count($this->comments);
 		
 		foreach($this->comments as &$comment){
 			if(!empty($comment['comment_author_avatar'])){
 				$comment['comment_author_avatar'] = '<img src="' . $comment['comment_author_avatar'] . '" alt="" />';
 			}
 			$comment['comment_created'] = parent::formatTime($comment['comment_created']);
+		}
+		
+		// Convert to inline
+		if($inline_responses == true){
+			$comments = array();
+			for($i=0; $i < $comment_count; $i++){
+				if(empty($this->comments[$i]['comment_response'])){
+					$comments[$this->comments[$i]['comment_id']] = array();
+					$comments[$this->comments[$i]['comment_id']][] = $this->comments[$i];
+				}
+				else{
+					$comments[$this->comments[$i]['comment_response']][] = $this->comments[$i];
+				}
+			}
+			
+			$this->comments = array();
+			
+			foreach($comments as $key => $value){
+				foreach($value as $comment){
+					$this->comments[] = $comment;
+				}
+			}
 		}
 		
 		// Store image comment fields
