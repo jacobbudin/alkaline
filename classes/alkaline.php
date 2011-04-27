@@ -362,7 +362,7 @@ class Alkaline{
 		
 		$key = strip_tags($key);
 		
-		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key LIMIT 0, 1;');
+		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key;');
 		$query->execute(array(':guest_key' => $key));
 		$guests = $query->fetchAll();
 		$guest = $guests[0];
