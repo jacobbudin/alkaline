@@ -2434,6 +2434,11 @@ class Alkaline{
 		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
 		
 		$query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
+		
+		if(isset($_SESSION['alkaline']['guest'])){
+			$_SESSION['alkaline']['guest']['guest_views']++;
+			$this->exec('UPDATE guests SET guest_views = ' . $_SESSION['alkaline']['guest']['guest_views'] . ' WHERE guest_id = ' . $_SESSION['alkaline']['guest']['guest_id'] . ';');
+		}
 	}
 	
 	// FORM HANDLING
