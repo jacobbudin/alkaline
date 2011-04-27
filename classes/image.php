@@ -1542,27 +1542,18 @@ class Image extends Alkaline{
 	 * @return array Associative array of sets
 	 */
 	public function getSets(){
-		$sets = $this->getTable('sets');
+		$set_ids = new Find('sets');
+		$set_ids->find();
 		
-		foreach($sets as &$set){
+		$sets = new Set($set_ids);
+		
+		foreach($sets->sets as &$set){
 			$set_images = explode(', ', $set['set_images']);
 			foreach($this->image_ids as $image_id){
 				if(in_array($image_id, $set_images)){
 					$set['image_id'] = $image_id;
 					$this->sets[] = $set;
 				}
-			}
-		}
-		
-		$set_count = count($this->sets);
-		
-		// Attach additional fields
-		for($i = 0; $i < $set_count; ++$i){
-			if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
-				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
-			}
-			else{
-				$this->sets[$i]['set_uri'] = LOCATION . BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
 			}
 		}
 		
@@ -1610,9 +1601,12 @@ class Image extends Alkaline{
 	 * @return array Associative array of pages
 	 */
 	public function getPages(){
-		$pages = $this->getTable('pages');
+		$page_ids = new Find('pages');
+		$page_ids->find();
 		
-		foreach($pages as &$page){
+		$pages = new Page($page_ids);
+		
+		foreach($pages->pages as &$page){
 			$page_images = $page['page_images'];
 			if(empty($page_images)){ continue; }
 			
@@ -1624,19 +1618,6 @@ class Image extends Alkaline{
 				}
 			}
 		}
-		
-		$page_count = count($this->pages);
-		
-		// Attach additional fields
-		for($i = 0; $i < $page_count; ++$i){
-			if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
-				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
-			}
-			else{
-				$this->pages[$i]['page_uri'] = LOCATION . BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
-			}
-		}
-		
 		
 		return $this->pages;
 	}
