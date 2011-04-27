@@ -98,7 +98,7 @@ elseif(($i_count == 0) and ($p_count > 0)){
 	header('Location: ' . BASE . ADMIN . 'posts' . URL_CAP);
 	exit();
 }
-else{
+elseif($p_count > 0){
 	$alkaline->addNote('You have also successfully imported ' . $alkaline->returnFullCount($p_count, 'post') . '.', 'success');
 }
 
