@@ -189,7 +189,7 @@ else{
 				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" class="s notempty" /></td>
 			</tr>
 			<tr>
-				<td class="right pad"><label for="user_pass">Password:</label></td>
+				<td class="right middle"><label for="user_pass">Password:</label></td>
 				<td>
 					<input type="password" id="user_pass" name="user_pass" value="<?php if(!empty($user_db['user_user'])){ echo '********'; } ?>" class="s notempty" />
 				</td>
@@ -197,6 +197,10 @@ else{
 			<tr>
 				<td class="right middle"><label for="user_email">Email:</label></td>
 				<td><input type="text" id="user_email" name="user_email" value="<?php echo $user_db['user_email']; ?>" class="m" /></td>
+			</tr>
+			<tr>
+				<td class="right middle"><label for="user_uri">Web site:</label></td>
+				<td><input type="text" id="user_uri" name="user_uri" placeholder="http://www.johnsmith.com/" value="<?php echo $user_db['user_uri']; ?>" class="m" /></td>
 			</tr>
 			<?php
 			if(($user_db['user_id'] != 1) and ($user_db['user_id'] != $user->user['user_id'])){
