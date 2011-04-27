@@ -9,7 +9,7 @@ class Markdown extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function orbit_markup_markdown($page_text_raw){
+	public function orbit_markup_markdown($page_text){
 		require_once('functions/markdown.php');
 		require_once('functions/smartypants.php');
 		
