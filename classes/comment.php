@@ -100,6 +100,36 @@ class Comment extends Alkaline{
 	}
 	
 	/**
+	 * Deletes comments
+	 *
+	 * @param bool Delete permanently (and therefore cannot be recovered)
+	 * @return void
+	 */
+	public function delete($permanent=false){
+		if($permanent === true){
+			$this->deleteRow('comments', $this->comment_ids);
+		}
+		else{
+			$fields = array('comment_deleted' => date('Y-m-d H:i:s'));
+			$this->updateFields($fields);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Recover comments (and comments also deleted at same time)
+	 * 
+	 * @return bool
+	 */
+	public function recover(){
+		$fields = array('comment_deleted' => null);
+		$this->updateFields($fields);
+		
+		return true;
+	}
+	
+	/**
 	 * Update comment fields
 	 *
 	 * @param string $fields Associative array of columns and fields
