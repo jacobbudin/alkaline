@@ -39,9 +39,17 @@ if(!empty($_POST['guest_id'])){
 			$guest_sets = @$_POST['guest_sets_select'];
 		}
 		
+		if(@$_POST['guest_inclusive'] == 'inclusive'){
+			$guest_inclusive = 1;
+		}
+		else{
+			$guest_inclusive = 0;
+		}
+		
 		$fields = array('guest_title' => $alkaline->makeUnicode(@$_POST['guest_title']),
 			'guest_key' => @$_POST['guest_key'],
-			'guest_sets' => $guest_sets);
+			'guest_sets' => $guest_sets,
+			'guest_inclusive' => $guest_inclusive);
 		if(@$_POST['guest_reset_view_count'] == 'reset_view_count'){
 			$fields['guest_views'] = 0;
 		}
@@ -123,7 +131,10 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'guests' . URL_AID . $guest['guest_id'] . URL_RW; ?>"><button>Simulate guest</button></a> <a href="<?php echo BASE . 'access' . URL_ID .  $guest['guest_key'] . URL_RW; ?>"><button>Go to guest</button></a></div>
+	<div class="actions">
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'guests' . URL_AID . $guest['guest_id'] . URL_RW; ?>"><button>View images</button></a>
+		<a href="<?php echo BASE . 'access' . URL_ID .  $guest['guest_key'] . URL_RW; ?>"><button>Simulate guest</button></a>
+	</div>
 	
 	<?php
 	
@@ -146,14 +157,30 @@ else{
 				<td class="right pad"><label for="guest_key">Key:</label></td>
 				<td>
 					<input type="text" id="guest_key" name="guest_key" value="<?php echo $guest['guest_key']; ?>" class="s notempty" /><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'access/'; ?><span id="guest_key_link"></span></span>
+					<span class="quiet"><?php echo LOCATION . BASE . 'access' . URL_ID; ?><span id="guest_key_link"></span></span>
 				</td>
 			</tr>
 			<tr>
 				<td class="right"><label for="guest_sets">Privileges:</label></td>
 				<td>
-					<input type="radio" name="guest_sets" value="all" id="guest_sets_all" <?php if(empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/> <label for="guest_sets_all">Grant access to all protected images</label><br />
-					<input type="radio" name="guest_sets" value="select" id="guest_sets_select" <?php if(!empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/> <label for="guest_sets_select">Restrict access to the protected images in the set: &#0160; <?php echo $alkaline->showSets('guest_sets_select', @$guest['guest_sets']); ?></label><br /><br />
+					<table>
+						<tr>
+							<td class="right" style="width: 5%;"><input type="radio" name="guest_sets" value="all" id="guest_sets_all" <?php if(empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/></td>
+							<td><label for="guest_sets_all">Grant access to all protected images</label></td>
+						</tr>
+						<tr>
+							<td class="right" style="width: 5%;"><input type="radio" name="guest_sets" value="select" id="guest_sets_select" <?php if(!empty($guest['guest_sets'])){ echo 'checked="checked" '; } ?>/></td>
+							<td><label for="guest_sets_select">Restrict access to the protected images in the set: &#0160; <?php echo $alkaline->showSets('guest_sets_select', @$guest['guest_sets']); ?></label></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="right" style="width: 5%;"><input type="checkbox" id="guest_inclusive" name="guest_inclusive" value="inclusive" <?php if($guest['guest_inclusive'] == 1){ echo 'checked="checked" '; } ?> /></td>
+							<td><strong><label for="guest_inclusive">Display both public and protected images to this guest.</label></strong></td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>
