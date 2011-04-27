@@ -628,6 +628,29 @@ class Alkaline{
 	// TYPE CONVERSION
 	
 	/**
+	 * Convert a possible string to boolean
+	 *
+	 * @param mixed $input
+	 * @param mixed $default Return if unknown
+	 * @return boolean
+	 */
+	public function convertToBool(&$input, $default=''){
+		if(is_bool($input)){
+			return $input;
+		}
+		elseif(is_string($input)){
+			if($input == 'true'){
+				return true;
+			}
+			elseif($input == 'false'){
+				return false;
+			}
+		}
+		
+		return $default;
+	}
+	
+	/**
 	 * Convert a possible string or integer into an array
 	 *
 	 * @param mixed $input
@@ -1195,6 +1218,34 @@ class Alkaline{
 		$string = preg_replace('#\&\#0034\;#s', '"', $string);
 		return $string;
 	}
+	
+	/**
+	 * Make a string unique, and filename safe
+	 *
+	 * @param string $str 
+	 * @return string
+	 */
+	public function makeFilenameSafe($str){
+		$data = base64_encode($str);
+	    $data = str_replace(array('+','/','='),array('-','_',''), $data);
+	    return $data;
+	}
+	
+	/**
+	 * Reverse unique string
+	 *
+	 * @param string $str 
+	 * @return string
+	 */
+	public function reverseFilenameSafe($str) {
+	    $data = str_replace(array('-','_'),array('+','/'), $str);
+	    $mod4 = strlen($data) % 4;
+	    if ($mod4) {
+	        $data .= substr('====', $mod4);
+	    }
+	    return base64_decode($data);
+	}
+	
 	
 	/**
 	 * Strip tags from string or array
