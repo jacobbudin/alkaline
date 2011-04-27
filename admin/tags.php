@@ -37,13 +37,17 @@ if(!empty($_POST['tag_id'])){
 		$tags = $query->fetchAll();
 		$tag = @$tags[0];
 		
+		// Tag parents
+		$tag_parents = json_decode($_POST['image_tags_input']);
+		$tag_parents = array_map(array($alkaline, 'makeUnicode'), $tag_parents);
+		
+		$fields = array('tag_name' => $alkaline->makeUnicode($tag_name),
+			'tag_parents' => serialize($tag_parents));
+		$alkaline->updateRow($fields, 'tags', $tag_id);
+		
 		if(count($tags) == 1){
 			$alkaline->exec('UPDATE links SET tag_id = ' . $tag['tag_id'] . ' WHERE tag_id = ' . $tag_id);
 			$alkaline->deleteRow('tags', $tag_id);
-		}
-		else{
-			$fields = array('tag_name' => $alkaline->makeUnicode($tag_name));
-			$alkaline->updateRow($fields, 'tags', $tag_id);
 		}
 	}
 	
@@ -129,6 +133,19 @@ else{
 			<tr>
 				<td class="right middle"><label for="tag_name">Name:</label></td>
 				<td><input type="text" id="tag_name" name="tag_name" value="<?php echo $tag['tag_name']; ?>" class="m notempty" /></td>
+			</tr>
+			<tr>
+				<td class="right pad"><label for="image_tag">Siblings:</label></td>
+				<td>
+					<div class="image_tag_container">
+						<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />
+						<div id="image_tags" class="image_tags"></div>
+						<div id="image_tags_load" class="image_tags_load none"><?php if(!empty($tag['tag_parents'])){ echo json_encode(unserialize($tag['tag_parents'])); } ?></div>
+						<input type="hidden" name="image_tags_input" id="image_tags_input" class="image_tags_input" value="" />
+					</div>
+					
+					<span class="quiet">Tag parents are non-recursive.</span>
+				</td>
 			</tr>
 			<tr>
 				<td class="right"><input type="checkbox" id="tag_delete" name="tag_delete" value="delete" /></td>

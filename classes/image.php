@@ -411,6 +411,39 @@ class Image extends Alkaline{
 			}
 		
 			$sql_param_keys = array_keys($sql_params);
+			
+			$query = $this->prepare('SELECT tags.tag_parents FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+
+			$query->execute($sql_params);
+			$tags_db = $query->fetchAll();
+
+			$tags_db_parents = array();
+
+			foreach($tags_db as $tag_db){
+				if(!empty($tag_db['tag_parents'])){
+					$tag_db['tag_parents'] = unserialize($tag_db['tag_parents']);
+					if(is_array($tag_db['tag_parents'])){
+						foreach($tag_db['tag_parents'] as $tag){
+							$tags[] = $tag;
+						}
+					}
+				}
+			}
+
+			$tags = array_map('trim', $tags);
+			$tags = array_unique($tags);
+
+			// Find input tags (and their IDs) in database	
+			$sql_params = array();
+
+			$tags = array_merge($tags);
+			$tag_count = count($tags);
+
+			for($j=0; $j<$tag_count; ++$j){
+				$sql_params[':tag' . $j] = $tags[$j];
+			}
+
+			$sql_param_keys = array_keys($sql_params);
 		
 			$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
@@ -533,7 +566,41 @@ class Image extends Alkaline{
 	
 		$sql_param_keys = array_keys($sql_params);
 	
-		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+		$query = $this->prepare('SELECT tags.tag_parents FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+		
+		$query->execute($sql_params);
+		$tags_db = $query->fetchAll();
+		
+		$tags_db_parents = array();
+		
+		foreach($tags_db as $tag_db){
+			if(!empty($tag_db['tag_parents'])){
+				$tag_db['tag_parents'] = unserialize($tag_db['tag_parents']);
+				if(is_array($tag_db['tag_parents'])){
+					foreach($tag_db['tag_parents'] as $tag){
+						$tags[] = $tag;
+					}
+				}
+			}
+		}
+		
+		$tags = array_map('trim', $tags);
+		$tags = array_unique($tags);
+		
+		// Find input tags (and their IDs) in database	
+		$sql_params = array();
+		
+		$tags = array_merge($tags);
+		$tag_count = count($tags);
+		
+		for($j=0; $j<$tag_count; ++$j){
+			$sql_params[':tag' . $j] = $tags[$j];
+		}
+	
+		$sql_param_keys = array_keys($sql_params);
+		
+		$query = $this->prepare('SELECT tags.tag_id, tags.tag_name, tags.tag_parents FROM tags WHERE tags.tag_name = ' . implode(' OR tags.tag_name = ', $sql_param_keys) . ';');
+		
 		$query->execute($sql_params);
 		$tags_db = $query->fetchAll();
 		$tags_db_ids = array();
