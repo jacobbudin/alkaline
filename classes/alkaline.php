@@ -3062,6 +3062,17 @@ class Alkaline{
 		}
 	}
 	
+	/**
+	 * Sift through a URI (http://www.whatever.com/this/) for just the domain (www.whatever.com)
+	 * 
+	 * @param string $uri
+	 * @return string
+	 */
+	public function siftDomain($uri){
+		$domain = preg_replace('#https?://([^/]*).*#si', '$1', $uri);
+		return $domain;
+	}
+	
 	// MAIL
 	
 	/**
