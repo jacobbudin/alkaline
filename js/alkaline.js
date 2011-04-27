@@ -862,7 +862,7 @@ $(document).ready(function(){
 		});
 	}
 	
-	// VERSIONS
+	// VERSIONS & CITATIONS
 	
 	if((page == 'Post') || (page == 'Page')){
 		$('#compare').click(function(event){
@@ -880,6 +880,55 @@ $(document).ready(function(){
 				}
 			}, 'html');
 			event.preventDefault();
+		});
+		
+		citations = $('#' + page.toLowerCase() + '_citations').val();
+		citation_count = $('#citation_count').text();
+		citation_count = parseInt(citation_count);
+		field_id = $('#' + page.toLowerCase() + '_id').val();
+		field = page.toLowerCase() + '_id';
+		text_raw = $('#' + page.toLowerCase() + '_text_raw');
+		look_for_uri = /href="(.*?)"/igm;
+		
+		text_raw.keydown(function(){
+			contents = text_raw.val();
+			uris = look_for_uri.exec(contents);
+			if(!empty(uris)){
+				for (var i = uris.length - 1; i >= 1; i--){
+					if(citations.indexOf(uris[i]) == -1){
+						citations = citations + ' ' + uris[i];
+						$('#' + page.toLowerCase() + '_citations').val(citations);
+						$.post(BASE + ADMIN + 'tasks/load-citation.php', {uri: uris[i], field: field, field_id: field_id }, function(data, textStatus, xhr) {
+							citation = $.evalJSON(data);
+							if(!empty(citation)){
+								$('#citation_count').text(++citation_count);
+								html = '<tr><td style="width:16px;">';
+								if(!empty(citation.citation_favicon_uri)){
+									html += '<img src="' + citation.citation_favicon_uri + '" height="16" width="16" alt="" />';
+								}
+								html += '</td><td>';
+								html += '<a href="';
+								if(!empty(citation.citation_uri)){
+									html += citation.citation_uri;
+								}
+								else{
+									html += citation.citation_uri_requested;
+								}
+								html += '" title="';
+								if(!empty(citation.citation_description)){
+									html += citation.citation_description;
+								}
+								html += '" class="tip" target="_new">&#8220;' + citation.citation_title + '&#8221;</a>';
+								if(!empty(citation.citation_site_name)){
+									html += ' <span class="quiet">(' + citation.citation_site_name + ')</span>';
+								}
+								html += '</td></tr>';
+								$('table#citations').append(html);
+							}
+						});
+					}
+				};
+			}
 		});
 	}
 	
