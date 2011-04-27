@@ -1325,7 +1325,7 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
-		$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		$comment_text_raw = $_POST['comment_' . $id .'_text'];
 		
 		$orbit = new Orbit;
 		
@@ -1349,8 +1349,8 @@ class Alkaline{
 		
 		$fields = array($id_type => $id,
 			'comment_status' => $comment_status,
-			'comment_text' => $comment_text,
-			'comment_text_raw' => $comment_text_raw,
+			'comment_text' => $this->makeUnicode($comment_text),
+			'comment_text_raw' => $this->makeUnicode($comment_text_raw),
 			'comment_markup' => $comm_markup_ext,
 			'comment_author_name' => strip_tags($_POST['comment_' . $id .'_author_name']),
 			'comment_author_uri' => strip_tags($_POST['comment_' . $id .'_author_uri']),
