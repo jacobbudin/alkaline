@@ -27,11 +27,20 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['page_id'])){
 	$page_id = $alkaline->findID($_POST['page_id']);
+	
+	$page = new Page($page_id);
+	
 	if(!empty($_POST['page_delete']) and ($_POST['page_delete'] == 'delete')){
-		$alkaline->deleteRow('pages', $page_id);
+		if($page->delete()){
+			$alkaline->addNote('The page has been deleted.', 'success');
+		}
+	}
+	elseif(!empty($_POST['page_recover']) and ($_POST['page_recover'] == 'recover')){
+		if($page->recover()){
+			$alkaline->addNote('The page has been recovered.', 'success');
+		}
 	}
 	else{
-		$page = new Page($page_id);
 		$page->attachUser($user);
 		
 		$page_title = trim($_POST['page_title']);
@@ -95,8 +104,11 @@ define('TAB', 'features');
 
 // GET PAGES TO VIEW OR PAGE TO EDIT
 if(empty($page_id)){
-	$pages = $alkaline->getTable('pages', null, null, null, 'page_modified DESC');
-	$page_count = @count($pages);
+	$page_ids = new Find('pages');
+	$page_ids->sort('page_modified', 'DESC');
+	$page_ids->find();
+	
+	$pages = new Page($page_ids);
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -105,7 +117,7 @@ if(empty($page_id)){
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'pages' . URL_ACT . 'add' . URL_RW; ?>"><button>Add page</button></a></div>
 	
-	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages (<?php echo $page_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/pages.png" alt="" /> Pages (<?php echo $pages->page_count; ?>)</h1>
 	
 	<p>Pages are freeform areas for text-based content.</p>
 	
@@ -123,9 +135,9 @@ if(empty($page_id)){
 		</tr>
 		<?php
 
-		foreach($pages as $page){
+		foreach($pages->pages as $page){
 			echo '<tr class="ro">';
-				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '" class="tip" title="' . $alkaline->fitStringByWord($page['page_text_raw'], 150) . '">' . $page['page_title'] . '</a></strong><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu quiet">' . $page['page_title_url'] . '</td>';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'pages' . URL_ID . $page['page_id'] . URL_RW . '" class="tip" title="' . $alkaline->fitStringByWord(strip_tags($page['page_text']), 150) . '">' . $page['page_title'] . '</a></strong><br /><a href="' . BASE . 'page' . URL_ID . $page['page_title_url'] . URL_RW . '" class="nu quiet">' . $page['page_title_url'] . '</td>';
 				echo '<td class="center">' . number_format($page['page_views']) . '</td>';
 				echo '<td class="center">' . number_format($page['page_words']) . '</td>';
 				echo '<td>' . $alkaline->formatTime($page['page_created']) . '</td>';
@@ -196,16 +208,24 @@ else{
 				
 				<table>
 					<tr>
-						<td><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="page_markup" name="page_markup" value="markup" <?php if(!empty($page['page_markup'])){ echo 'checked="checked"'; } ?> /></td>
 						<td><label for="page_markup">Markup this page using <select name="page_markup_ext" title="<?php echo @$page['page_markup']; ?>"><?php $orbit->hook('markup_html'); ?></select>.</label></td>
 					</tr>
+					<?php if(empty($page['page_deleted'])){ ?>
 					<tr>
-						<td><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="page_delete" name="page_delete" value="delete" /></td>
 						<td>
-							<label for="page_delete">Delete this page.</label><br />
-							This action cannot be undone.
+							<label for="page_delete">Delete this page.</label>
 						</td>
 					</tr>
+					<?php } else{ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="page_recover" name="page_recover" value="recover" /></td>
+						<td>
+							<strong><label for="page_recover">Recover this page.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
 				</table>
 			</div>
 		</div>
@@ -219,9 +239,22 @@ else{
 				<label for="version_id">Show differences from:</label>
 				<select id="version_id">
 				<?php
-				foreach($pages->versions as $version){
-					echo '<option value="' . $version['version_id'] . '">' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ')</option>';
+				
+				$i = 0;
+				
+				foreach($posts->versions as $version){
+					$i++;
+					$similarity = $version['version_similarity'];
+					
+					if($similarity > 95){ $similarity = 'minor change'; }
+					elseif($similarity > 65){ $similarity = 'moderate change'; }
+					else{ $similarity = 'major change'; }
+					
+					echo '<option value="' . $version['version_id'] . '"';
+					if($i == 2){ echo ' selected="selected"'; }
+					echo '>' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ', ' . $similarity . ')</option>';
 				}
+				
 				?>
 				</select>
 				<button id="compare">Compare</button>

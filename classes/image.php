@@ -1189,19 +1189,54 @@ class Image extends Alkaline{
 	
 	/**
 	 * Delete images (and remove image from images, comments, exifs, and links tables)
-	 *
+	 * 
+	 * @param bool Delete permanently (and therefore cannot be recovered)
 	 * @return void
 	 */
-	public function delete(){
-		$this->deSizeImage(true);
+	public function delete($permanent=false){
+		if($permanent === true){
+			$this->deSizeImage(true);
+		
+			for($i = 0; $i < $this->image_count; ++$i){
+				@$this->exec('DELETE FROM images WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+				@$this->exec('DELETE FROM comments WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+				@$this->exec('DELETE FROM exifs WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+				@$this->exec('DELETE FROM links WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+			}
+		}
+		else{
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . implode(' OR image_id = ', $this->image_ids) . ';');
+			$query->execute(array(date('Y-m-d H:i:s')));
+			
+			$fields = array('image_deleted' => date('Y-m-d H:i:s'));
+			$this->updateFields($fields);
+		}
+		
 		$this->getSets();
 		
-		for($i = 0; $i < $this->image_count; ++$i){
-			@$this->exec('DELETE FROM images WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
-			@$this->exec('DELETE FROM comments WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
-			@$this->exec('DELETE FROM exifs WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
-			@$this->exec('DELETE FROM links WHERE image_id = ' . $this->images[$i]['image_id'] . ';');
+		foreach($this->sets as $set){
+			$a_set = new Set($set['set_id']);
+			$a_set->rebuild();
 		}
+		
+		return true;
+	}
+	
+	/**
+	 * Recover images (and comments also deleted at same time)
+	 * 
+	 * @return bool
+	 */
+	public function recover(){
+		for($i = 0; $i < $this->image_count; ++$i){
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . $this->images[$i]['image_id'] . ' AND comment_deleted = ' . $this->images[$i]['image_deleted'] . ';');
+			$query->execute(array(null));
+		}
+		
+		$fields = array('image_deleted' => null);
+		$this->updateFields($fields);
+		
+		$this->getSets();
 		
 		foreach($this->sets as $set){
 			$a_set = new Set($set['set_id']);
@@ -1417,7 +1452,7 @@ class Image extends Alkaline{
 	 * @return array Associative array of rights sets
 	 */
 	public function getRights(){
-		$query = $this->prepare('SELECT rights.*, images.image_id FROM rights, images' . $this->sql . ' AND rights.right_id = images.right_id;');
+		$query = $this->prepare('SELECT rights.*, images.image_id FROM rights, images' . $this->sql . ' AND rights.right_id = images.right_id AND rights.right_deleted IS NULL;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		

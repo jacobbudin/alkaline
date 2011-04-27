@@ -133,16 +133,48 @@ class Page extends Alkaline{
 			
 			// Create version
 			if(!empty($fields['page_text_raw']) and (($fields['page_text_raw'] != $this->pages[$i]['page_text_raw']) or ($fields['page_title'] != $this->pages[$i]['page_title'])) and ($version == true)){
+				similar_text($fields['post_text_raw'], $this->posts[$i]['post_text_raw'], $version_similarity);
 				$version_fields = array('page_id' => $this->pages[$i]['page_id'],
 					'user_id' => $this->user['user_id'],
 					'version_title' => $page_title,
 					'version_text_raw' => $page_text_raw,
-					'version_created' => date('Y-m-d H:i:s'));
+					'version_created' => date('Y-m-d H:i:s'),
+					'version_similarity' => round($version_similarity));
 				$this->addRow($version_fields, 'versions');
 			}
 			
 			$this->updateRow($fields, 'pages', $this->pages[$i]['page_id']);
 		}
+		
+		return true;
+	}
+	
+	/**
+	 * Deletes pages
+	 *
+	 * @param bool Delete permanently (and therefore cannot be recovered)
+	 * @return void
+	 */
+	public function delete($permanent=false){
+		if($permanent === true){
+			$this->deleteRow('pages', $this->page_ids);
+		}
+		else{
+			$fields = array('page_deleted' => date('Y-m-d H:i:s'));
+			$this->updateFields($fields);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Recover pages (and comments also deleted at same time)
+	 * 
+	 * @return bool
+	 */
+	public function recover(){
+		$fields = array('page_deleted' => null);
+		$this->updateFields($fields);
 		
 		return true;
 	}
@@ -251,7 +283,7 @@ class Page extends Alkaline{
 	 * @return array Array of version data
 	 */
 	public function getVersions(){
-		$query = $this->prepare('SELECT versions.* FROM versions, pages' . $this->sql . ' AND versions.page_id = pages.page_id;');
+		$query = $this->prepare('SELECT versions.* FROM versions, pages' . $this->sql . ' AND versions.page_id = pages.page_id ORDER BY versions.version_created DESC;');
 		$query->execute();
 		$this->versions = $query->fetchAll();
 		

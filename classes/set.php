@@ -110,6 +110,36 @@ class Set extends Alkaline{
 	}
 	
 	/**
+	 * Deletes sets
+	 *
+	 * @param bool Delete permanently (and therefore cannot be recovered)
+	 * @return void
+	 */
+	public function delete($permanent=false){
+		if($permanent === true){
+			$this->deleteRow('sets', $this->set_ids);
+		}
+		else{
+			$fields = array('set_deleted' => date('Y-m-d H:i:s'));
+			$this->updateFields($fields);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Recover sets (and comments also deleted at same time)
+	 * 
+	 * @return bool
+	 */
+	public function recover(){
+		$fields = array('set_deleted' => null);
+		$this->updateFields($fields);
+		
+		return true;
+	}
+	
+	/**
 	 * Increase set_views field by 1
 	 *
 	 * @return void

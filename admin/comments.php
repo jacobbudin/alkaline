@@ -309,8 +309,8 @@ if(empty($comment_id)){
 				echo '<img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame_mini" />';
 			}
 			echo '</td>';
-			echo '<td class="status' . $comment['comment_status'] . '"><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord($comment['comment_text'], 150) . '">';
-			echo $alkaline->fitStringByWord($comment['comment_text'], 50);
+			echo '<td class="status' . $comment['comment_status'] . '"><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150) . '">';
+			echo $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 50);
 			echo '</a></strong><br />';
 			if(!empty($comment['comment_author_name'])){
 				echo '<span class="quiet"><a href="">' . $comment['comment_author_name'] . '</a>';
@@ -446,16 +446,24 @@ else{
 				
 				<table>
 					<tr>
-						<td><input type="checkbox" id="comment_spam" name="comment_spam" value="spam" <?php if($comment['comment_status'] == -1){ echo 'checked="checked"'; } ?>/></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="comment_spam" name="comment_spam" value="spam" <?php if($comment['comment_status'] == -1){ echo 'checked="checked"'; } ?>/></td>
 						<td><strong><label for="comment_spam">Mark this comment as spam.</label></strong></td>
 					</tr>
+					<?php if(empty($comment['comment_deleted'])){ ?>
 					<tr>
-						<td><input type="checkbox" id="comment_delete" name="comment_delete" value="delete" /></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="comment_delete" name="comment_delete" value="delete" /></td>
 						<td>
-							<strong><label for="comment_delete">Delete this comment.</label></strong><br />
-							This action cannot be undone.
+							<strong><label for="comment_delete">Delete this comment.</label></strong>
 						</td>
 					</tr>
+					<?php } else{ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="comment_recover" name="comment_recover" value="recover" /></td>
+						<td>
+							<strong><label for="comment_recover">Recover this comment.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
 				</table>
 			</div>
 		</div>

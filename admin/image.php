@@ -33,7 +33,12 @@ if(!empty($_POST['image_id'])){
 	
 	if(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){
-			$alkaline->addNote('Your image has been deleted.', 'success');
+			$alkaline->addNote('The image has been deleted.', 'success');
+		}
+	}
+	elseif(@$_POST['image_recover'] == 'recover'){
+		if($images->recover()){
+			$alkaline->addNote('The image has been recovered.', 'success');
 		}
 	}
 	else{
@@ -43,12 +48,12 @@ if(!empty($_POST['image_id'])){
 		if(!empty($_POST['image_markup'])){
 			$image_markup_ext = $_POST['image_markup'];
 			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
-			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description_raw);
 		}
 		elseif($alkaline->returnConf('web_markup')){
 			$image_markup_ext = $alkaline->returnConf('web_markup_ext');
 			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
-			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description_raw);
 		}
 		else{
 			$image_markup_ext = '';
@@ -266,13 +271,21 @@ else{
 					</td>
 				</tr>
 				<?php } ?>
+				<?php if(empty($image['image_deleted'])){ ?>
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="image_delete" name="image_delete" value="delete" /></td>
 					<td>
-						<strong><label for="image_delete">Delete this image.</label></strong><br />
-						This action cannot be undone.
+						<strong><label for="image_delete">Delete this image.</label></strong>
 					</td>
 				</tr>
+				<?php } else{ ?>
+				<tr>
+					<td class="right" style="width: 5%"><input type="checkbox" id="image_recover" name="image_recover" value="recover" /></td>
+					<td>
+						<strong><label for="image_recover">Recover this image.</label></strong>
+					</td>
+				</tr>
+				<?php } ?>
 			</table>
 		</div>
 	</form>

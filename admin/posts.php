@@ -45,7 +45,14 @@ if(!empty($_POST['post_id'])){
 	$posts = new Post($post_id);
 	
 	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
-		$alkaline->deleteRow('posts', $post_id);
+		if($posts->delete()){
+			$alkaline->addNote('The post has been deleted.', 'success');
+		}
+	}
+	elseif(!empty($_POST['post_recover']) and ($_POST['post_recover'] == 'recover')){
+		if($posts->recover()){
+			$alkaline->addNote('The post has been recovered.', 'success');
+		}
 	}
 	else{
 		$post_title = trim($_POST['post_title']);
@@ -66,13 +73,13 @@ if(!empty($_POST['post_id'])){
 		// Configuration: post_markup
 		if(!empty($_POST['post_markup'])){
 			$post_markup_ext = $_POST['post_markup'];
-			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text_raw);
 			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
 			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
 		elseif($alkaline->returnConf('web_markup')){
 			$post_markup_ext = $alkaline->returnConf('web_markup_ext');
-			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text_raw);
 			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
 			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
@@ -83,7 +90,7 @@ if(!empty($_POST['post_id'])){
 		}
 		
 		// Comment disabling
-		if(@$_POST['post_comment_disabled'] == 'disabled'){
+		if(isset($_POST['post_comment_disabled']) and ($_POST['post_comment_disabled'] == 'disabled')){
 			$post_comment_disabled = 1;
 		}
 		else{
@@ -270,7 +277,7 @@ if(empty($post_id)){
 
 			foreach($posts->posts as $post){
 				echo '<tr class="ro">';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord($post['post_text'], 150) . '" class="tip"><strong class="large">' . $post['post_title'] . '</strong></a><br />
+					echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($post['post_text']), 150) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
 						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
@@ -317,6 +324,7 @@ if(empty($post_id)){
 else{
 	$posts = new Post($post_id);
 	$posts->getVersions();
+	$posts->getCitations();
 	$posts->formatTime();
 	
 	$post = $posts->posts[0];
@@ -369,7 +377,7 @@ else{
 		<div class="span-24 last">
 			<div class="span-15 append-1">
 				<input type="text" id="post_title" name="post_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$post['post_title']; ?>" class="title notempty" />
-				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
+				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 400px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
 				
 				<p class="slim">
 					<span class="switch">&#9656;</span> <a href="#" class="show">Show post&#8217;s excerpt</a>
@@ -400,21 +408,69 @@ else{
 					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
 						<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
 				</p>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show citations</a> <span class="quiet">(<span id="citation_count"><?php echo count($posts->citations); ?></span>)</span>
+				</p>
+				
+				<div class="reveal">
+					<table id="citations">
+						<?php
+						
+						foreach($posts->citations as $citation){
+							echo '<tr><td style="width:16px;">';
+							if(!empty($citation['citation_favicon_uri'])){
+								echo '<img src="' . $citation['citation_favicon_uri'] . '" height="16" width="16" alt="" />';
+							}
+							echo '</td><td>';
+							echo '<a href="';
+							if(!empty($citation['citation_uri'])){
+								echo $citation['citation_uri'];
+							}
+							else{
+								echo $citation['citation_uri_requested'];
+							}
+							echo '" title="';
+							if(!empty($citation['citation_description'])){
+								echo $citation['citation_description'];
+							}
+							echo '" class="tip" target="_new">&#8220;' . $citation['citation_title'] . '&#8221;</a>';
+							if(!empty($citation['citation_site_name'])){
+								echo ' <span class="quiet">(' . $citation['citation_site_name'] . ')</span>';
+							}
+							else{
+								echo ' <span class="quiet">(' . $alkaline->siftDomain($citation['citation_uri_requested']) . ')</span>';
+							}
+							echo '</td></tr>';
+						}
+						
+						?>
+					</table>
+				</div><br />
 			
 				<hr />
 				<table>
 					<?php if($alkaline->returnConf('comm_enabled')){ ?>
 					<tr>
-						<td><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
 						<td>
 							<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
 						</td>
 					</tr>
 					<?php } ?>
+					<?php if(empty($post['post_deleted'])){ ?>
 					<tr>
-						<td><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
-						<td><label for="post_delete">Delete this post.</label><br />This action cannot be undone.</td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
+						<td><label for="post_delete">Delete this post.</label></td>
 					</tr>
+					<?php } else{ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_recover" name="post_recover" value="recover" /></td>
+						<td>
+							<strong><label for="post_recover">Recover this post.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
 				</table>
 			</div>
 		</div>
@@ -428,9 +484,22 @@ else{
 				<label for="version_id">Show differences from:</label>
 				<select id="version_id">
 				<?php
+				
+				$i = 0;
+				
 				foreach($posts->versions as $version){
-					echo '<option value="' . $version['version_id'] . '">' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ')</option>';
+					$i++;
+					$similarity = $version['version_similarity'];
+					
+					if($similarity > 95){ $similarity = 'minor change'; }
+					elseif($similarity > 65){ $similarity = 'moderate change'; }
+					else{ $similarity = 'major change'; }
+					
+					echo '<option value="' . $version['version_id'] . '"';
+					if($i == 2){ echo ' selected="selected"'; }
+					echo '>' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ', ' . $similarity . ')</option>';
 				}
+				
 				?>
 				</select>
 				<button id="compare">Compare</button>
@@ -475,8 +544,10 @@ else{
 			?>
 		</div>
 		<p>
-			<input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" />
+			<input type="hidden" id="post_id" name="post_id" value="<?php echo $post['post_id']; ?>" />
 			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
+			<input type="hidden" id="post_citations" name="post_citations" value="<?php foreach($posts->citations as $citation){ echo $citation['citation_uri_requested']; } ?>" />
+			
 			<input type="submit" value="Save changes" />
 			and
 			<select name="go">

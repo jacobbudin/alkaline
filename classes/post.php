@@ -14,11 +14,11 @@
  */
 
 class Post extends Alkaline{
+	public $citations;
 	public $comments;
 	public $posts = array();
 	public $post_ids;
 	public $post_count = 0;
-	public $post_count_result = 0;
 	public $user;
 	public $versions;
 	protected $sql;
@@ -131,22 +131,45 @@ class Post extends Alkaline{
 	/**
 	 * Deletes posts
 	 *
+	 * @param bool Delete permanently (and therefore cannot be recovered)
 	 * @return void
 	 */
-	public function delete(){
-		$ids = array();
+	public function delete($permanent=false){
+		if($permanent === true){
+			$this->deleteRow('posts', $this->post_ids);
+		
+			// Delete row
+			$query = 'DELETE FROM versions WHERE post_id = ' . implode(' OR post_id = ', $this->post_ids) . ';';
+			$query = 'DELETE FROM citations WHERE post_id = ' . implode(' OR post_id = ', $this->post_ids) . ';';
+		
+			if(!$this->exec($query)){
+				return false;
+			}
+		}
+		else{
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . implode(' OR post_id = ', $this->post_ids) . ';');
+			$query->execute(array(date('Y-m-d H:i:s')));
+			
+			$fields = array('post_deleted' => date('Y-m-d H:i:s'));
+			$this->updateFields($fields);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Recover posts (and comments also deleted at same time)
+	 * 
+	 * @return bool
+	 */
+	public function recover(){
 		for($i = 0; $i < $this->post_count; ++$i){
-			$ids[] = $this->posts[$i]['post_id'];
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE post_id = ' . $this->posts[$i]['post_id'] . ' AND comment_deleted = ' . $this->posts[$i]['post_deleted'] . ';');
+			$query->execute(array(null));
 		}
 		
-		$this->deleteRow('posts', $ids);
-		
-		// Delete row
-		$query = 'DELETE FROM versions WHERE post_id = ' . implode(' OR post_id = ', $ids) . ';';
-		
-		if(!$this->exec($query)){
-			return false;
-		}
+		$fields = array('post_deleted' => null);
+		$this->updateFields($fields);
 		
 		return true;
 	}
@@ -246,11 +269,13 @@ class Post extends Alkaline{
 			
 			// Create version
 			if(!empty($fields['post_text_raw']) and (($fields['post_text_raw'] != $this->posts[$i]['post_text_raw']) or ($fields['post_title'] != $this->posts[$i]['post_title'])) and ($version == true)){
+				similar_text($fields['post_text_raw'], $this->posts[$i]['post_text_raw'], $version_similarity);
 				$version_fields = array('post_id' => $this->posts[$i]['post_id'],
 					'user_id' => $this->user->user['user_id'],
 					'version_title' => $post_title,
 					'version_text_raw' => $post_text_raw,
-					'version_created' => date('Y-m-d H:i:s'));
+					'version_created' => date('Y-m-d H:i:s'),
+					'version_similarity' => round($version_similarity));
 				$this->addRow($version_fields, 'versions');
 			}
 			
@@ -262,7 +287,14 @@ class Post extends Alkaline{
 			if(!$query->execute($values)){
 				return false;
 			}
+			
+			// Update object
+			foreach($fields as $row => $value){
+				$this->posts[$i][$row] = $value;
+			}
 		}
+		
+		$this->updateCitations();
 		
 		return true;
 	}
@@ -425,11 +457,33 @@ class Post extends Alkaline{
 	 * @return array Array of version data
 	 */
 	public function getVersions(){
-		$query = $this->prepare('SELECT versions.* FROM versions, posts' . $this->sql . ' AND versions.post_id = posts.post_id;');
+		$query = $this->prepare('SELECT versions.* FROM versions, posts' . $this->sql . ' AND versions.post_id = posts.post_id ORDER BY versions.version_created DESC;');
 		$query->execute();
 		$this->versions = $query->fetchAll();
 		
 		return $this->versions;
+	}
+	
+	/**
+	 * Get citation data and save to object
+	 *
+	 * @return array Array of version data
+	 */
+	public function getCitations(){
+		$query = $this->prepare('SELECT citations.* FROM citations, posts' . $this->sql . ' AND citations.post_id = posts.post_id;');
+		$query->execute();
+		$this->citations = $query->fetchAll();
+		
+		$citation_count = count($this->citations);
+		
+		for($i=0; $i < $citation_count; $i++){
+			$domain = $this->siftDomain($this->citations[$i]['citation_uri_requested']);
+			if(file_exists(PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$this->citations[$i]['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+			}
+		}
+		
+		return $this->citations;
 	}
 	
 	/**
@@ -530,6 +584,42 @@ class Post extends Alkaline{
 		
 		// Merge with previous post_ids
 		self::__construct($this->post_ids);
+	}
+	
+	/**
+	 * Update citations
+	 *
+	 * @return void
+	 */
+	public function updateCitations(){
+		$this->getCitations();
+		
+		$citations = array();
+		$to_delete = array();
+		
+		foreach($this->citations as $citation){
+			$citations[$citation['post_id']][] = $citation['citation_uri_requested'];
+			$key = array_search($citation['post_id'], $this->post_ids);
+			if($key !== false){
+				if(strpos($this->posts[$key]['post_text_raw'], $citation['citation_uri_requested']) === false){
+					$to_delete[] = $citation['citation_id'];
+				}
+			}
+		}
+		
+		foreach($this->posts as $post){
+			preg_match_all('#href="(.*?)"#si', $post['post_text_raw'], $matches);
+			foreach($matches[1] as $match){
+				if(isset($citations[$post['post_id']])){
+					if(in_array($matches[1], $citations[$post['post_id']])){ continue; }
+				}
+				$this->loadCitation($match, 'post_id', $post['post_id']);
+			}
+		}
+		
+		if(count($to_delete) > 0){
+			$this->deleteRow('citations', $to_delete);
+		}
 	}
 }
 

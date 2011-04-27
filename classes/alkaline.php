@@ -93,7 +93,7 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id');
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -1578,6 +1578,137 @@ class Alkaline{
 	}
 	
 	/**
+	 * Load a citation
+	 *
+	 * @param string $uri URI of citation
+	 * @param string $field Field for ID entry
+	 * @param int $field_id ID to enter
+	 * @return array Associative array of newly created citation row
+	 */
+	public function loadCitation($uri, $field, $field_id){
+		if((strpos($uri, 'http://') !== 0) and (strpos($uri, 'https://') !== 0)){ return false; }
+		
+		// Check if exists
+		$sql = 'SELECT * FROM citations WHERE citation_uri_requested = :citation_uri_requested';
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':citation_uri_requested' => $uri));
+		$citations = $query->fetchAll();
+		
+		foreach($citations as $citation){
+			if($citation[$field] == $field_id){ return $citation; }
+		}
+		
+		$domain = $this->siftDomain($uri);
+		
+		$ico_file = PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.ico';
+		$png_file = PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		
+		if(count($citations) == 0){
+			$html = file_get_contents($uri, null, null, 0, 7500);
+		
+			if($html == false){ return false; }
+			
+			if(!file_exists($png_file)){
+				if(!file_exists(PATH . CACHE . 'citations/favicons/')){
+					@mkdir(PATH . CACHE . 'citations/favicons/', 0777, true);
+				}
+			
+				preg_match('#<link[^>]*rel="shortcut icon"[^>]*href="([^>]*)"[^>]*>#si', $html, $match);
+				preg_match('#<link[^>]*href="([^>]*)"[^>]*rel="shortcut icon"[^>]*>#si', $html, $match2);
+				
+				if(isset($match[1])){
+					$favicon_uri = $match[1];
+				}
+				elseif(isset($match2[1])){
+					$favicon_uri = $match2[1];
+				}
+				else{
+					$favicon_uri = 'http://' . $domain . '/favicon.ico';
+				}
+			
+				if($favicon_uri[0] == '/'){
+					$favicon_uri = 'http://' . $domain . $favicon_uri;
+				}
+			
+				@copy($favicon_uri, $ico_file);
+			
+				if(file_exists($ico_file)){
+					require_once(PATH . CLASSES . 'ico/ico.php');
+				
+					$ico = new Ico($ico_file);
+					$favicon = $ico->GetIcon(0);
+					if($favicon != false){
+						imagepng($favicon, $png_file);
+						imagedestroy($favicon);
+					}
+					@unlink($ico_file);
+				}
+			}
+		
+			preg_match_all('#<meta.*?>#', $html, $metas);
+		
+			$html5_meta = array();
+		
+			foreach($metas[0] as $meta){
+				if(preg_match('#property="og:(.*?)"#si', $meta, $property)){
+					preg_match('#content="(.*?)"#si', $meta, $content);
+					$html5_meta[$property[1]] = $content[1];
+				}
+			}
+		
+			$save_fields = array('url', 'description', 'title', 'site_name');
+			$fields = array('citation_uri_requested' => $uri,
+				$field => $field_id);
+		
+			foreach($html5_meta as $property => $content){
+				if(in_array($property, $save_fields)){
+					if($property == 'url'){ $property = 'uri'; }
+					$field = 'citation_' . $property;
+					$fields[$field] = $this->makeUnicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			
+			if(empty($fields['citation_title'])){
+				preg_match('#<title>(.*?)</title>#si', $html, $match);
+				$fields['citation_title'] = $match[1];
+			}
+			
+			if(empty($fields['citation_description'])){
+				preg_match('#<meta[^>]*name="description"[^>]*content="([^>]*)"[^>]*>#si', $html, $match);
+				if(empty($match[1])){
+					preg_match('#<meta[^>]*content="([^>]*)"[^>]*name="description"[^>]*>#si', $html, $match);
+				}
+				
+				if(!empty($match[1])){
+					$fields['citation_description'] = $match[1];
+				}
+			}
+		}
+		else{
+			$fields = $citations[0];
+			unset($fields['citation_id']);
+			$fields[$field] = $field_id;
+			
+			if(file_exists(PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$favicon_found = true;
+			}
+		}
+		
+		$fields['citation_id'] = $this->addRow($fields, 'citations');
+		
+		if(empty($fields['citation_site_name'])){
+			$fields['citation_site_name'] = $domain;
+		}
+		
+		if(file_exists($png_file)){
+			$fields['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		}
+		
+		return $fields;
+	}
+	
+	/**
 	 * List tags by search, for suggestions
 	 *
 	 * @param string $hint Search string
@@ -1995,6 +2126,10 @@ class Alkaline{
 				if(empty($fields['post_created'])){ $fields['post_created'] = date('Y-m-d H:i:s'); }
 				if(empty($fields['post_modified'])){ $fields['post_modified'] = date('Y-m-d H:i:s'); }
 				break;
+			case 'citations':
+				if(empty($fields['citation_created'])){ $fields['citation_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['citation_modified'])){ $fields['citation_modified'] = date('Y-m-d H:i:s'); }
+				break;
 			case 'sets':
 				if(empty($fields['set_views'])){ $fields['set_views'] = 0; }
 				if(empty($fields['set_created'])){ $fields['set_created'] = date('Y-m-d H:i:s'); }
@@ -2074,6 +2209,8 @@ class Alkaline{
 				case 'rights':
 					$fields['right_modified'] = date('Y-m-d H:i:s');
 					break;
+				case 'citations':
+					$fields['citation_modified'] = date('Y-m-d H:i:s');
 				case 'sets':
 					$fields['set_modified'] = date('Y-m-d H:i:s');
 					break;
@@ -2170,7 +2307,27 @@ class Alkaline{
 		$field = $this->tables[$table];
 		if(empty($field)){ return false; }
 		
-		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
+		$sql = '';
+		
+		// Don't show deleted items
+		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
+		if(in_array($table, $with_deleted_columns)){
+			$show_deleted = false;
+			if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
+				$user = new User();
+				if(!empty($user) and $user->perm()){
+					if($user->returnPref('recovery_mode') === true){
+						$show_deleted = true;
+					}
+				}
+			}
+			
+			if($show_deleted === false){
+				$sql = ' WHERE ' . $table . '.' . substr($field, 0, -2) . 'deleted IS NULL';
+			}
+		}
+		
+		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . $sql . ';');
 		$query->execute();
 		$count = $query->fetch();
 		

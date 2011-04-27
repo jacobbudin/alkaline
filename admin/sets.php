@@ -12,6 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $user = new User;
+$orbit = new Orbit;
 
 $user->perm(true, 'sets');
 
@@ -26,8 +27,18 @@ if(!empty($_GET['act'])){
 // SAVE CHANGES
 if(!empty($_POST['set_id'])){
 	$set_id = $alkaline->findID($_POST['set_id']);
+	
+	$set = new Set($set_id);
+	
 	if(@$_POST['set_delete'] == 'delete'){
-		$alkaline->deleteRow('sets', $set_id);
+		if($set->delete()){
+			$alkaline->addNote('The set has been deleted.', 'success');
+		}
+	}
+	elseif(@$_POST['set_recover'] == 'recover'){
+		if($set->recover()){
+			$alkaline->addNote('The set has been recovered.', 'success');
+		}
 	}
 	else{
 		// Rebuild pile with new data
@@ -39,6 +50,7 @@ if(!empty($_POST['set_id'])){
 		$set_image_count = $image_ids->count;
 		
 		$set_title = trim($_POST['set_title']);
+		$set_description_raw = $_POST['set_description_raw'];
 		
 		if(!empty($_POST['set_title_url'])){
 			$set_title_url = $alkaline->makeURL($_POST['set_title_url']);
@@ -47,12 +59,30 @@ if(!empty($_POST['set_id'])){
 			$set_title_url = $alkaline->makeURL($set_title);
 		}
 		
+		// Configuration: set_markup
+		if(!empty($_POST['set_markup'])){
+			$set_markup_ext = $_POST['set_markup_ext'];
+			$set_description = $orbit->hook('markup_' . $set_markup_ext, $set_description_raw, $set_description_raw);
+			$set_title = $orbit->hook('markup_title_' . $set_markup_ext, $set_title, $set_title);
+		}
+		elseif($alkaline->returnConf('web_markup')){
+			$set_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$set_description = $orbit->hook('markup_' . $set_markup_ext, $set_description_raw, $set_description_raw);
+			$set_title = $orbit->hook('markup_title_' . $set_markup_ext, $set_title, $set_title);
+		}
+		else{
+			$set_markup_ext = '';
+			$set_description = $this->nl2br($set_description_raw);
+		}
+		
 		$fields = array('set_call' => serialize($_SESSION['alkaline']['search']['images']['call']),
 			'set_request' => serialize($_SESSION['alkaline']['search']['images']['request']),
 			'set_title' => $alkaline->makeUnicode($set_title),
 			'set_title_url' => $set_title_url,
 			'set_type' => $_POST['set_type'],
-			'set_description' => $alkaline->makeUnicode($_POST['set_description']),
+			'set_description_raw' => $alkaline->makeUnicode($set_description_raw),
+			'set_description' => $alkaline->makeUnicode($set_description),
+			'set_markup' => $set_markup_ext,
 			'set_images' => $set_images,
 			'set_image_count' => $set_image_count);
 		
@@ -60,7 +90,7 @@ if(!empty($_POST['set_id'])){
 			$fields['set_images'] = $_POST['set_images'];
 		}
 		
-		$alkaline->updateRow($fields, 'sets', $set_id);
+		$set->updateFields($fields);
 	}
 	unset($set_id);
 }
@@ -98,8 +128,11 @@ define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($set_id)){
-	$sets = $alkaline->getTable('sets', null, null, null, 'set_modified DESC');
-	$set_count = @count($sets);
+	$set_ids = new Find('sets');
+	$set_ids->sort('set_modified', 'DESC');
+	$set_ids->find();
+	
+	$sets = new Set($set_ids);
 	
 	define('TITLE', 'Alkaline Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
@@ -110,7 +143,7 @@ if(empty($set_id)){
 		<a href="<?php echo BASE . ADMIN . 'sets' . URL_ACT . 'build' . URL_RW; ?>"><button>Build set</button></a>
 	</div>
 
-	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets (<?php echo $set_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/sets.png" alt="" /> Sets (<?php echo $sets->set_count; ?>)</h1>
 	
 	<p>Sets are collections of images. You can also build a set by <a href="<?php echo BASE . ADMIN . 'library' . URL_CAP; ?>">performing a search</a>.</p>
 	
@@ -129,7 +162,7 @@ if(empty($set_id)){
 		</tr>
 		<?php
 	
-		foreach($sets as $set){
+		foreach($sets->sets as $set){
 			echo '<tr class="ro">';
 				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'sets' . URL_ID . $set['set_id'] . URL_RW . '">' . $set['set_title'] . '</a></strong><br /><a href="' . BASE . 'set' . URL_ID . $set['set_title_url'] . URL_RW . '" class="nu quiet">' . $set['set_title_url'] . '</td>';
 				echo '<td class="center">' . ucwords($set['set_type']) . '</td>';
@@ -187,7 +220,7 @@ else{
 		<div class="span-24 last">
 			<div class="span-15 append-1">
 				<input type="text" id="set_title" name="set_title" placeholder="Title" value="<?php echo $set['set_title']; ?>" class="title notempty" />
-				<textarea id="set_description" name="set_description" placeholder="Description" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $set['set_description']; ?></textarea>
+				<textarea id="set_description_raw" name="set_description_raw" placeholder="Description" style="height: 300px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $set['set_description_raw']; ?></textarea>
 			</div>
 			<div class="span-8 last">
 				<p>
@@ -218,13 +251,21 @@ else{
 				<hr />
 				
 				<table>
+					<?php if(empty($set['set_deleted'])){ ?>
 					<tr>
-						<td><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
+						<td class="right" style="width: 5%"><input type="checkbox" id="set_delete" name="set_delete" value="delete" /></td>
 						<td>
-							<label for="set_delete">Delete this set.</label><br />
-							This action cannot be undone.
+							<label for="set_delete">Delete this set.</label>
 						</td>
 					</tr>
+					<?php } else{ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="set_recover" name="set_recover" value="recover" /></td>
+						<td>
+							<strong><label for="set_recover">Recover this set.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
 				</table>
 			</div>
 		</div>
@@ -373,7 +414,7 @@ else{
 		</div>
 		
 		<p>
-			<span class="switch">&#9656;</span> <a href="#" class="show">Show set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Display set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
 		</p>
 
 		<div class="reveal" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
@@ -388,6 +429,8 @@ else{
 		
 			?><br /><br />
 		</div>
+		
+		<input type="hidden" id="set_markup" name="set_markup" value="<?php echo $set['set_markup']; ?>" />
 		<input type="hidden" id="set_images" name="set_images" value="<?php echo $set['set_images']; ?>" />
 		
 		<p>
