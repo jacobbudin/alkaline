@@ -1170,8 +1170,8 @@ $(document).ready(function(){
 			}
 		});
 		
-		$('#act').mouseup(function() {
-		  actEditor();
+		$('#act').change(function(){
+			actEditor();
 		});
 		
 		$('#select_all').click(function() {
