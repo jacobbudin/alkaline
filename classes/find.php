@@ -680,51 +680,81 @@ class Find extends Alkaline{
 	 * @param string $count Minimum number of tags to find
 	 * @return bool True if successful
 	 */
-	protected function anyTags($tags=null, $count=1){
+	public function anyTags($tags=null, $count=1){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
 		parent::convertToArray($tags);
 		
-		// Find tags in database
-		if(intval($tags[0])){
-			parent::convertToIntegerArray($tags);
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
-			$query->execute();
+		if(($this->table == 'images') and empty($fields)){
+			// Find tags in database
+			if(intval($tags[0])){
+				parent::convertToIntegerArray($tags);
+				$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
+				$query->execute();
+			}
+			else{
+				$sql_params = array();
+				$tag_count = count($tags);
+			
+				// Grab tag IDs
+				for($j=0; $j<$tag_count; ++$j){
+					$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
+				}
+			
+				$sql_param_keys = array_keys($sql_params);
+			
+				$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
+				$query->execute($sql_params);
+			}
+		
+			$this->tags = $query->fetchAll();
+		
+			$tag_ids = array();	
+			foreach($this->tags as $tag){
+				$tag_ids[] = $tag['tag_id'];
+			}
+		
+			// Join tables
+			$this->sql_join_on[] = $this->table . '.' . $this->table_prefix . 'id = links.image_id';
+			$this->sql_join_tables[] = 'links';
+			$this->sql_join_type = 'INNER JOIN';
+		
+			$this->sql_having_fields[] = 'COUNT(*) >= ' . intval($count);
+		
+			// Set tags to find
+			$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
+		
+			return true;
 		}
-		else{
+		elseif(($this->table == 'posts') and empty($fields)){
 			$sql_params = array();
 			$tag_count = count($tags);
-			
+		
 			// Grab tag IDs
 			for($j=0; $j<$tag_count; ++$j){
 				$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
 			}
-			
+		
 			$sql_param_keys = array_keys($sql_params);
-			
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
+		
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE LOWER(posts.post_tags) LIKE ' . implode(' OR LOWER(posts.post_tags) LIKE ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
+			$posts = $query->fetchAll();
+			
+			$ids = array();
+			
+			foreach($posts as $post){
+				$ids[] = $post['post_id'];
+			}
+			
+			if(count($ids) > 0){
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+			}
+			else{
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+			}
 		}
-		
-		$this->tags = $query->fetchAll();
-		
-		$tag_ids = array();	
-		foreach($this->tags as $tag){
-			$tag_ids[] = $tag['tag_id'];
-		}
-		
-		// Join tables
-		$this->sql_join_on[] = $this->table . '.' . $this->table_prefix . 'id = links.image_id';
-		$this->sql_join_tables[] = 'links';
-		$this->sql_join_type = 'INNER JOIN';
-		
-		$this->sql_having_fields[] = 'COUNT(*) >= ' . intval($count);
-		
-		// Set tags to find
-		$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
-		
-		return true;
 	}
 	
 	/**
@@ -733,7 +763,7 @@ class Find extends Alkaline{
 	 * @param string|int|array $tags Tags to search for
 	 * @return bool True if successful
 	 */
-	protected function allTags($tags=null){
+	public function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -798,7 +828,7 @@ class Find extends Alkaline{
 	 * @param string|int|array $tags Tags to search for
 	 * @return bool True if successful
 	 */
-	protected function notTags($tags=null){
+	public function notTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
