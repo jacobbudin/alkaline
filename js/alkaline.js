@@ -900,7 +900,7 @@ $(document).ready(function(){
 		field_id = $('#' + page.toLowerCase() + '_id').val();
 		field = page.toLowerCase() + '_id';
 		text_raw = $('#' + page.toLowerCase() + '_text_raw');
-		look_for_uri = /href="(.*?)"/igm;
+		look_for_uri = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
 		
 		text_raw.keydown(function(){
 			contents = text_raw.val();

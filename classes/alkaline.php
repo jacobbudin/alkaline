@@ -1664,9 +1664,12 @@ class Alkaline{
 		$png_file = PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
 		
 		if(count($citations) == 0){
-			$html = file_get_contents($uri, null, null, 0, 7500);
-		
+			ini_set('default_socket_timeout', 1);
+			$html = @file_get_contents($uri, null, null, 0, 7500);
+			ini_restore('default_socket_timeout');
+			
 			if($html == false){ return false; }
+			if(!preg_match('#Content-Type:\s*text/html#si', implode(' ', $http_response_header))){ return false; }
 			
 			if(!file_exists($png_file)){
 				if(!file_exists(PATH . CACHE . 'citations/favicons/')){
