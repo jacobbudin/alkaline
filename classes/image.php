@@ -18,6 +18,7 @@ class Image extends Alkaline{
 	public $db;
 	public $images = array();
 	public $pages;
+	public $related;
 	public $sets;
 	public $sizes;
 	public $tags;
@@ -323,7 +324,7 @@ class Image extends Alkaline{
 					if(empty($value)){
 						$fields[$key] = null;
 					}
-					elseif(strtolower($value) == 'now'){
+					elseif(trim(strtolower($value)) == 'now'){
 						$value = date('Y-m-d H:i:s');
 						$fields[$key] = $value;
 					}
@@ -525,11 +526,14 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
+			$image_tags = implode('; ', $tags_to_update);
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified, image_tags = :image_tags, image_tag_count = :image_tag_count WHERE image_id = :image_id;');
 			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
+				$query->execute(array(':image_modified' => $now, ':image_tags' => $image_tags, ':image_tag_count' => count($tags_to_update), ':image_id' => $image_id));
 			}
 		}
+		
+		$this->updateRelated();
 		
 		return true;
 	}
@@ -666,10 +670,21 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
-			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
+			
+			$affected_images = new Image($affected_image_ids);
+			$affected_images->getTags();
+			
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified, image_tags = :image_tags, image_tag_count = :image_tag_count WHERE image_id = :image_id;');
+			
+			foreach($affected_images->images as $image){
+				$query->execute(array(':image_modified' => $now, ':image_tags' => implode('; ', $image['image_tags_array']), ':image_tag_count' => count($image['image_tags']), ':image_id' => $image['image_id']));
 			}
+			
+			// $now = date('Y-m-d H:i:s');
+			// $query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
+			// foreach($affected_image_ids as $image_id){
+			// 	$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
+			// }
 		}
 		
 		$tags_db_ids = array_unique($tags_db_ids);
@@ -717,9 +732,14 @@ class Image extends Alkaline{
 		
 		if(count($affected_image_ids) > 0){
 			$now = date('Y-m-d H:i:s');
-			$query = $this->prepare('UPDATE images SET image_modified = :image_modified WHERE image_id = :image_id;');
-			foreach($affected_image_ids as $image_id){
-				$query->execute(array(':image_modified' => $now, ':image_id' => $image_id));
+			
+			$affected_images = new Image($affected_image_ids);
+			$affected_images->getTags();
+			
+			$query = $this->prepare('UPDATE images SET image_modified = :image_modified, image_tags = :image_tags, image_tag_count = :image_tag_count WHERE image_id = :image_id;');
+			
+			foreach($affected_images->images as $image){
+				$query->execute(array(':image_modified' => $now, ':image_tags' => implode('; ', $image['image_tags_array']), ':image_tag_count' => count($image['image_tags']), ':image_id' => $image['image_id']));
 			}
 		}
 		
@@ -1491,22 +1511,15 @@ class Image extends Alkaline{
 			$this->tags[$i]['tag_uri'] = LOCATION . $this->tags[$i]['tag_uri_rel'];
 		}
 		
+		foreach($this->images as &$image){
+			$image['image_tags_array'] = array();
+		}
+		
 		foreach($tags as $tag){
 			$image_id = intval($tag['image_id']);
 			$key = array_search($image_id, $this->image_ids);
 			if($image_id = $this->image_ids[$key]){
-				if(empty($this->images[$key]['image_tags'])){
-					@$this->images[$key]['image_tags'] = $tag['tag_name'];
-				}
-				else{
-					$this->images[$key]['image_tags'] .= ', ' . $tag['tag_name']; 
-				}
-				if(empty($this->images[$key]['image_tag_count'])){
-					$this->images[$key]['image_tag_count'] = 1;
-				}
-				else{
-					$this->images[$key]['image_tag_count']++;
-				}
+				$this->images[$key]['image_tags_array'][] = $tag['tag_name'];
 			}
 		}
 		
@@ -1783,6 +1796,75 @@ class Image extends Alkaline{
 		}
 		
 		return $this->comments;
+	}
+	
+	/**
+	 * Find related images
+	 *
+	 * @param int $limit Number of images to retrieve
+	 * @return Image
+	 */
+	public function getRelated($limit=null){
+		$ids = array();
+		
+		foreach($this->images as $image){
+			$ids = array_merge($ids, explode(', ', $image['image_related']));
+		}
+		
+		$ids = array_unique($ids);
+		$ids = array_slice($ids, 0, $limit);
+		
+		$this->related = new Image($ids);
+		
+		return $this->related;
+	}
+	
+	/**
+	 * Update related images
+	 *
+	 * @param int $limit Number of images to find 
+	 * @return void
+	 */
+	public function updateRelated($limit=100){
+		$this->getTags();
+		
+		$now = date('Y-m-d H:i:s');
+
+		$query = $this->prepare('UPDATE images SET image_modified = :image_modified, image_related = :image_related, image_related_hash = :image_related_hash WHERE image_id = :image_id;');
+		
+		// Check to see if recently updated
+		for($i=0; $i < $this->image_count; $i++){ 
+			$image_related_hash = md5($this->images[$i]['image_tags']);
+			if($image_related_hash != $this->images[$i]['image_related_hash']){
+				$image_related = array();
+				
+				$related_image_ids = new Find('images');
+				$related_image_ids->anyTags($this->images[$i]['image_tags_array']);
+				$related_image_ids->page(1, $limit);
+				$related_image_ids->find();
+				
+				$key = array_search($this->images[$i]['image_id'], $related_image_ids->ids);
+				
+				if($key !== false){
+					unset($related_image_ids->ids[$key]);
+				}
+				
+				$ids = array_merge($related_image_ids->ids);
+				
+				$related_images = new Image($ids);
+				$related_images->getTags();
+				
+				foreach($related_images->images as $image){
+					$image_related[$image['image_id']] = count(array_intersect($this->images[$i]['image_tags_array'], $image['image_tags_array']));
+				}
+				
+				arsort($image_related);
+				
+				$image_related = implode(', ', array_keys($image_related));
+				
+				$query->execute(array(':image_modified' => $now, ':image_related' => $image_related, ':image_related_hash' => $image_related_hash, ':image_id' => $this->images[$i]['image_id']));
+			}
+		}
 	}
 	
 	/**

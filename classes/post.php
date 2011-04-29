@@ -147,7 +147,7 @@ class Post extends Alkaline{
 			}
 		}
 		else{
-			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . implode(' OR post_id = ', $this->post_ids) . ';');
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE post_id = ' . implode(' OR post_id = ', $this->post_ids) . ';');
 			$query->execute(array(date('Y-m-d H:i:s')));
 			
 			$fields = array('post_deleted' => date('Y-m-d H:i:s'));
@@ -292,9 +292,11 @@ class Post extends Alkaline{
 			foreach($fields as $row => $value){
 				$this->posts[$i][$row] = $value;
 			}
+			
 		}
 		
 		$this->updateCitations();
+		$this->updateRelated();
 		
 		return true;
 	}
@@ -374,6 +376,120 @@ class Post extends Alkaline{
 		for($i = 0; $i < $this->post_count; ++$i){
 			$this->posts[$i]['post_numeric'] = $values[$i];
 			$this->posts[$i]['post_alpha'] = ucwords($this->numberToWords($values[$i]));
+		}
+	}
+	
+	/**
+	 * Find related posts
+	 *
+	 * @param int $limit Number of posts to retrieve
+	 * @return Post
+	 */
+	public function getRelated($limit=null){
+		$ids = array();
+		
+		foreach($this->posts as $post){
+			$ids = array_merge($ids, explode(', ', $post['post_related']));
+		}
+		
+		$ids = array_unique($ids);
+		$ids = array_slice($ids, 0, $limit);
+		
+		$this->related = new Post($ids);
+		
+		return $this->related;
+	}
+	
+	/**
+	 * Update related posts
+	 *
+	 * @param int $limit Number of posts to find 
+	 * @return void
+	 */
+	public function updateRelated($limit=100){
+		$now = date('Y-m-d H:i:s');
+
+		$query = $this->prepare('UPDATE posts SET post_modified = :post_modified, post_tags = :post_tags, post_related = :post_related, post_related_hash = :post_related_hash WHERE post_id = :post_id;');
+		
+		$stop_words = array('a', 'about', 'above', 'above', 'across', 'after', 'afterwards', 'again', 'against', 'all', 'almost', 'alone', 'along', 'already', 'also','although','always','am','among', 'amongst', 'amoungst', 'amount', 'an', 'and', 'another', 'any','anyhow','anyone','anything','anyway', 'anywhere', 'are', 'around', 'as', 'at', 'back','be','became', 'because','become','becomes', 'becoming', 'been', 'before', 'beforehand', 'behind', 'being', 'below', 'beside', 'besides', 'between', 'beyond', 'bill', 'both', 'bottom','but', 'by', 'call', 'can', 'cannot', 'cant', 'co', 'con', 'could', 'couldnt', 'cry', 'de', 'describe', 'detail', 'do', 'done', 'dont', 'down', 'due', 'during', 'each', 'eg', 'eight', 'either', 'eleven','else', 'elsewhere', 'empty', 'enough', 'etc', 'even', 'ever', 'every', 'everyone', 'everything', 'everywhere', 'except', 'few', 'fifteen', 'fify', 'fill', 'find', 'fire', 'first', 'five', 'for', 'former', 'formerly', 'forty', 'found', 'four', 'from', 'front', 'full', 'further', 'get', 'give', 'go', 'had', 'has', 'hasnt', 'have', 'he', 'hence', 'her', 'here', 'hereafter', 'hereby', 'herein', 'hereupon', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'however', 'hundred', 'i', 'ie', 'if', 'in', 'inc', 'indeed', 'interest', 'into', 'is', 'it', 'its', 'itself', 'keep', 'last', 'lets', 'latter', 'latterly', 'least', 'less', 'ltd', 'made', 'many', 'may', 'me', 'meanwhile', 'might', 'mill', 'mine', 'more', 'moreover', 'most', 'mostly', 'move', 'much', 'must', 'my', 'myself', 'name', 'namely', 'neither', 'never', 'nevertheless', 'next', 'nine', 'no', 'nobody', 'none', 'noone', 'nor', 'not', 'nothing', 'now', 'nowhere', 'of', 'off', 'often', 'on', 'once', 'one', 'only', 'onto', 'or', 'other', 'others', 'otherwise', 'our', 'ours', 'ourselves', 'out', 'over', 'own','part', 'per', 'perhaps', 'please', 'put', 'rather', 're', 'same', 'see', 'seem', 'seemed', 'seeming', 'seems', 'serious', 'several', 'she', 'should', 'show', 'side', 'since', 'sincere', 'six', 'sixty', 'so', 'some', 'somehow', 'someone', 'something', 'sometime', 'sometimes', 'somewhere', 'still', 'such', 'system', 'take', 'ten', 'than', 'that', 'the', 'their', 'them', 'themselves', 'then', 'thence', 'there', 'thereafter', 'thereby', 'therefore', 'therein', 'thereupon', 'these', 'they', 'thickv', 'thin', 'third', 'this', 'those', 'though', 'three', 'through', 'throughout', 'thru', 'thus', 'to', 'together', 'too', 'top', 'toward', 'towards', 'twelve', 'twenty', 'two', 'un', 'under', 'until', 'up', 'upon', 'us', 'very', 'via', 'was', 'we', 'well', 'were', 'what', 'whatever', 'when', 'whence', 'whenever', 'where', 'whereafter', 'whereas', 'whereby', 'wherein', 'whereupon', 'wherever', 'whether', 'which', 'while', 'whither', 'who', 'whoever', 'whole', 'whom', 'whose', 'why', 'will', 'with', 'within', 'without', 'would', 'yet', 'you', 'your', 'yours', 'yourself', 'yourselves', 'the');
+		
+		// Check to see if recently updated
+		for($i=0; $i < $this->post_count; $i++){
+			// Compute tags
+			$post_text_raw = strip_tags($this->posts[$i]['post_text_raw']);
+			preg_match_all('#[A-Z]+[A-Za-z\']*(\s[A-Z]+[A-Za-z\']*)*#s', $post_text_raw, $matches);
+			preg_match_all('#[a-z]{7,}#s', $post_text_raw, $matches2);
+			
+			$post_tags = array();
+			
+			foreach($matches[0] as $match){
+				$match = explode(' ', $match);
+				if(in_array(strtolower($match[0]), $stop_words)){
+					unset($match[0]);
+					if((count($match) == 2) and in_array(strtolower($match[1]), $stop_words)){
+						$match = '';
+					}
+				}
+				if(is_array($match)){
+					$match = implode(' ', $match);
+				}
+				$match_temp = $match;
+				$match_temp = strtolower(str_replace('\'', '', $match_temp));
+				if(!in_array($match_temp, $stop_words)){
+					$match = preg_replace('#\'s$#si', '', $match);
+					$post_tags[] = $match;
+				}
+			}
+			
+			foreach($matches2[0] as $match){
+				$match_temp = $match;
+				$match_temp = strtolower(str_replace('\'', '', $match_temp));
+				if(!in_array($match_temp, $stop_words)){
+					if(!preg_match('#ly$#si', $match)){
+						$post_tags[] = $match;
+					}
+				}
+			}
+			
+			$post_tag_count = count($post_tags);
+			
+			for($m=0; $m < $post_tag_count; $m++){
+				if(empty($post_tags[$m])){
+					unset($post_tags[$m]);
+				}
+			}
+			
+			$post_tags = array_merge(array_unique($post_tags));
+			
+			$post_related_hash = md5(implode('; ', $post_tags));
+			if($post_related_hash != $this->posts[$i]['post_related_hash']){
+				$post_related = array();
+				
+				$related_post_ids = new Find('posts');
+				$related_post_ids->anyTags($post_tags);
+				$related_post_ids->page(1, $limit);
+				$related_post_ids->find();
+				
+				$key = array_search($this->posts[$i]['post_id'], $related_post_ids->ids);
+				
+				if($key !== false){
+					unset($related_post_ids->ids[$key]);
+				}
+				
+				$ids = array_merge($related_post_ids->ids);
+				
+				$related_posts = new Post($ids);
+				
+				foreach($related_posts->posts as $post){
+					$post_related[$post['post_id']] = count(array_intersect(explode('; ', $this->posts[$i]['post_tags']), explode('; ', $post['post_tags'])));
+				}
+				
+				arsort($post_related);
+				
+				$post_related = implode(', ', array_keys($post_related));
+				
+				$query->execute(array(':post_modified' => $now, ':post_related' => $post_related, ':post_related_hash' => $post_related_hash, ':post_tags' => implode('; ', $post_tags), ':post_id' => $this->posts[$i]['post_id']));
+			}
 		}
 	}
 	
