@@ -193,7 +193,7 @@ if(empty($post_id)){
 	
 		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
-		<form action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
+		<form action="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'search' . URL_RW; ?>" method="post">
 			<p style="margin-bottom: 0;">
 				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 			</p>
@@ -324,6 +324,7 @@ if(empty($post_id)){
 else{
 	$posts = new Post($post_id);
 	$posts->getVersions();
+	$posts->getRelated();
 	$posts->getCitations();
 	$posts->formatTime();
 	
@@ -446,9 +447,25 @@ else{
 						
 						?>
 					</table>
-				</div><br />
-			
+				</div>
+				
+				<p>
+					<span class="switch">&#9656;</span> <a href="#" class="show">Display related posts</a> <span class="quiet">(<?php echo $posts->related->post_count; ?>)</span>
+				</p>
+				<div class="reveal">
+					<ul>
+					<?php
+
+					foreach($posts->related->posts as $related_post){
+						echo '<li><a href="' . BASE . ADMIN . 'posts' . URL_ID . $related_post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($related_post['post_text']), 150) . '" class="tip">' . $related_post['post_title'] . '</a> <span class="quiet">(' . $alkaline->formatTime($related_post['post_created'], 'j M Y') . ')</span></li>';
+					}
+
+					?>
+					</ul>
+				</div>
+							
 				<hr />
+				
 				<table>
 					<?php if($alkaline->returnConf('comm_enabled')){ ?>
 					<tr>

@@ -106,6 +106,8 @@ if(!empty($_POST['image_id'])){
 $images = new Image($image_id);
 $sizes = $images->getSizes();
 $images->getTags(true);
+$images->getRelated();
+$images->related->getSizes('square');
 $images->getColorkey(300, 40);
 $comments = $images->getComments();
 $exifs = $images->getEXIF();
@@ -166,19 +168,8 @@ else{
 	<form action="" method="post">
 		<div class="span-15 append-1">
 			<img src="<?php echo $image['image_src_admin']; ?>" alt="" />
-			<p>
-				<input type="text" id="image_title" name="image_title" placeholder="Title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
-				<textarea id="image_description_raw" name="image_description_raw" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
-				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
-				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" />
-				and
-				<select name="go">
-					<option value="">return to previous screen</option>
-					<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next image</option>
-					<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous image</option>
-				</select>
-				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
-			</p>
+			<input type="text" id="image_title" name="image_title" placeholder="Title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
+			<textarea id="image_description_raw" name="image_description_raw" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
 		</div>
 		<div class="span-8 last">
 			<div class="image_tag_container">
@@ -287,6 +278,36 @@ else{
 				</tr>
 				<?php } ?>
 			</table>
+		</div>
+		
+		<div class="span-24 last">
+			<p>
+				<span class="switch">&#9656;</span> <a href="#" class="show">Display related images</a> <span class="quiet">(<?php echo $images->related->image_count; ?>)</span>
+			</p>
+			<div class="reveal">
+				<?php
+				
+				foreach($images->related->images as $related_image){
+					?>
+					<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $related_image['image_id'] . URL_RW; ?>" class="nu">
+						<img src="<?php echo $related_image['image_src_square']; ?>" alt="" title="<?php echo $related_image['image_title']; ?>" class="frame tip" />
+					</a>
+					<?php
+				}
+
+				?><br /><br />
+			</div>
+			<p>
+				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
+				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" />
+				and
+				<select name="go">
+					<option value="">return to previous screen</option>
+					<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next image</option>
+					<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous image</option>
+				</select>
+				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+			</p>
 		</div>
 	</form>
 </div>

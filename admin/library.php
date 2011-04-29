@@ -229,6 +229,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</a>
 			<?php
 		}
+		
 		?>
 	</p>
 	<?php
