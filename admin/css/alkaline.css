@@ -25,6 +25,7 @@ a:hover, a:active{
 
 hr{
 	height: 1px;
+	margin-bottom: 2.5em;
 }
 
 textarea{
@@ -76,6 +77,7 @@ h1{
 	overflow: hidden;
 	width: 50%;
 	white-space: nowrap;
+	margin-bottom: 1em;
 }
 
 h2{
@@ -126,34 +128,51 @@ th{
 p.slim { margin-bottom: .75em; }
 
 img.frame{
-	border: solid 3px #fff;
 	margin: .2em .4em .2em 0;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+	-moz-box-shadow: 0 0 3px #aaa;
+	-webkit-box-shadow: 0 0 3px #aaa;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+img.frame_fade{
+	margin: .2em .4em .2em 0;
+	-moz-box-shadow: 0 0 3px #aaa;
+	-webkit-box-shadow: 0 0 3px #aaa;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	opacity: 0.3;
+	-moz-opacity: 0.3;
+	filter:alpha(opacity=30);
 }
 
 img.frame_mini{
 	float: right;
 	height: 35px;
 	width: 35px;
-	border: solid 3px #fff;
 	margin: .2em .2em .2em 1em;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+	-moz-box-shadow: 0 0 2px #aaa;
+	-webkit-box-shadow: 0 0 2px #aaa;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 }
 
-img.frame_selected{
-	border: solid 3px #fbde42;
+img.frame_fade_selected{
 	margin: .2em .4em .2em 0;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+	-moz-box-shadow: 0 0 3px #aaa;
+	-webkit-box-shadow: 0 0 3px #aaa;
+	background-color: #fffe00;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	opacity: 1;
+	-moz-opacity: 1;
+	filter:alpha(opacity=100);
 }
 
 canvas.colorkey{
-	border: solid 3px #fff;
 	margin-bottom: .5em;
-	-moz-box-shadow: 0 0 3px #ddd;
-	-webkit-box-shadow: 0 0 3px #ddd;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
 }
 
 table.census td{
@@ -237,7 +256,7 @@ td.status-1{
 
 #footer{
 	color: #777;
-	margin-bottom: 3em;
+	margin: -.5em 0 3em 0;
 }
 
 #footer a{ color: #777; }
@@ -535,7 +554,7 @@ img.ui-datepicker-trigger{
 	color: #fff;
 	border-radius:  4px;
 	-moz-border-radius: 4px;
-	padding: 40px 0;
+	padding: 20px 0 40px 0;
 	margin-bottom: 1.5em;
 }
 

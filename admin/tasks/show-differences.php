@@ -44,10 +44,15 @@ if(empty($comparison)){
 ?>
 
 <div class="span-24 comparison_split last">
-	<div class="span-10 append-1 prepend-1 comparison_left">
-		<?php echo $comparison_mod; ?>
+	<div class="actions append-1 append-bottom">
+		<a href="#revert"><button>Revert to previous version</button></a>
 	</div>
-	<div class="span-10 append-1 prepend-1 last comparison_right">
-		<?php echo $comparison; ?>
+	<div class="span-24 last">
+		<div class="span-10 append-1 prepend-1 comparison_left">
+			<?php echo $comparison_mod; ?>
+		</div>
+		<div class="span-10 append-1 prepend-1 last comparison_right">
+			<?php echo $comparison; ?>
+		</div>
 	</div>
 </div>

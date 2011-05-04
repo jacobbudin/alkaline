@@ -236,7 +236,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					$selected = '_selected';
 				}
 				?>
-				<img src="<?php echo $image['image_src_square']; ?>" alt="" id="image-<?php echo $image['image_id']; ?>" title="<?php echo $image['image_title']; ?>" class="frame<?php echo $selected; ?> tip" />
+				<img src="<?php echo $image['image_src_square']; ?>" alt="" id="image-<?php echo $image['image_id']; ?>" title="<?php echo $image['image_title']; ?>" class="frame_fade<?php echo $selected; ?> tip" />
 				<?php
 			}
 			?>

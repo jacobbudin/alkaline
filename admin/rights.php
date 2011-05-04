@@ -87,7 +87,7 @@ else{
 }
 
 // CREATE RIGHTS SET
-if($right_act == 'add'){
+if(isset($right_act) and ($right_act == 'add')){
 	$right_id = $alkaline->addRow(null, 'rights');
 }
 
@@ -105,7 +105,7 @@ if(empty($right_id)){
 	
 	define('TITLE', 'Alkaline Right Sets');
 	require_once(PATH . ADMIN . 'includes/header.php');
-
+	
 	?>
 	
 	<div class="actions"><a href="<?php echo BASE . ADMIN . 'rights' . URL_ACT . 'add' . URL_RW; ?>"><button>Add rights set</button></a></div>
@@ -129,7 +129,7 @@ if(empty($right_id)){
 	
 		foreach($rights->rights as $right){
 			echo '<tr class="ro">';
-				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '" class="tip" title="' . $alkaline->fitStringByWord($right['right_description'], 150) . '">' . $right['right_title'] . '</a></strong></td>';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '" class="tip" title="' . $alkaline->fitStringByWord(strip_tags($right['right_description']), 150) . '">' . $right['right_title'] . '</a></strong></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW . '">' . $right['right_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($right['right_created']) . '</td>';
 				echo '<td>' . ucfirst($alkaline->formatRelTime($right['right_modified'])) . '</td>';

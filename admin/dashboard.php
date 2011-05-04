@@ -91,8 +91,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/timeline.png" alt="" /> Timeline</h1><br />
 	
-
-		<?php
+	<?php
 
 	$timestamps = array();
 	$items = array();
