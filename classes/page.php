@@ -34,6 +34,7 @@ class Page extends Alkaline{
 		
 		// Input handling
 		if(is_object($page_ids)){
+			$last_modified = $page_ids->last_modified;
 			$page_ids = $page_ids->ids;
 		}
 		
@@ -42,38 +43,60 @@ class Page extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (pages.page_id IS NULL)';
 		
-		if(count($this->page_ids) > 0){
-			// Retrieve pages from database
-			$this->sql = ' WHERE (pages.page_id IN (' . implode(', ', $this->page_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM pages' . $this->sql . ';');
-			$query->execute();
-			$pages = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
 		
-			// Ensure pages array correlates to page_ids array
-			foreach($this->page_ids as $page_id){
-				foreach($pages as $page){
-					if($page_id == $page['page_id']){
-						$this->pages[] = $page;
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if(($pages = $cache->get('pages:' . implode(',', $this->page_ids), 'pages')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->pages = unserialize($pages);
+		}
+		else{
+			if(count($this->page_ids) > 0){
+				// Retrieve pages from database
+				$this->sql = ' WHERE (pages.page_id IN (' . implode(', ', $this->page_ids) . '))';
+			
+				$query = $this->prepare('SELECT * FROM pages' . $this->sql . ';');
+				$query->execute();
+				$pages = $query->fetchAll();
+		
+				// Ensure pages array correlates to page_ids array
+				foreach($this->page_ids as $page_id){
+					foreach($pages as $page){
+						if($page_id == $page['page_id']){
+							$this->pages[] = $page;
+						}
 					}
 				}
-			}
 		
-			// Store page count as integer
-			$this->page_count = count($this->pages);
+				// Store page count as integer
+				$page_count = count($this->pages);
 		
-			// Attach additional fields
-			for($i = 0; $i < $this->page_count; ++$i){
-				if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
-					$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
-				}
-				else{
-					$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
-				}
+				// Attach additional fields
+				for($i = 0; $i < $page_count; ++$i){
+					if(empty($this->pages[$i]['page_title_url']) or (URL_RW != '/')){
+						$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . URL_RW;
+					}
+					else{
+						$this->pages[$i]['page_uri_rel'] = BASE . 'page' . URL_ID . $this->pages[$i]['page_id'] . '-' . $this->pages[$i]['page_title_url'] . URL_RW;
+					}
 
-				$this->pages[$i]['page_uri'] = LOCATION . $this->pages[$i]['page_uri_rel'];
+					$this->pages[$i]['page_uri'] = LOCATION . $this->pages[$i]['page_uri_rel'];
+				}
 			}
+			
+			$cache->save(serialize($this->pages));
 		}
+		
+		// Store page count as integer
+		$this->page_count = count($this->pages);
 	}
 	
 	public function __destruct(){

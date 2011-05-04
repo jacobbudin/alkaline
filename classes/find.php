@@ -107,15 +107,16 @@ class Find extends Alkaline{
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 		
+		// Cache these tables
+		if(in_array($this->table, $this->tables_cache)){
+			$this->sql .= ', ' . $this->table . '.' . $this->table_prefix . 'modified AS last_modified';
+			$this->cache = true;
+		}
+		
 		// Optional starter set
 		if(!empty($ids)){
 			$ids = parent::convertToIntegerArray($ids);
 			$this->sql_conds[] = $this->table . '.' . $this->table_id . ' IN (' . implode(', ', $ids) . ')';
-		}
-		
-		// In Dashboard?
-		if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
-			$this->admin = true;
 		}
 		
 		// Don't show deleted items
@@ -1998,6 +1999,12 @@ class Find extends Alkaline{
 		$this->ids = array();
 		foreach($images as $image){
 			$this->ids[] = intval($image[$this->table_prefix . 'id']);
+			if($this->cache === true){
+				$last_modified = strtotime($image['last_modified']);
+				if($last_modified > $this->last_modified){
+					$this->last_modified = $last_modified;
+				}
+			}
 		}
 		
 		if(!empty($this->order)){

@@ -34,6 +34,7 @@ class Right extends Alkaline{
 		
 		// Input handling
 		if(is_object($right_ids)){
+			$last_modified = $right_ids->last_modified;
 			$right_ids = $right_ids->ids;
 		}
 		
@@ -42,26 +43,45 @@ class Right extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (rights.right_id IS NULL)';
 		
-		if(count($this->right_ids) > 0){
-			// Retrieve rights from database
-			$this->sql = ' WHERE (rights.right_id IN (' . implode(', ', $this->right_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM rights' . $this->sql . ';');
-			$query->execute();
-			$rights = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
 		
-			// Ensure rights array correlates to right_ids array
-			foreach($this->right_ids as $right_id){
-				foreach($rights as $right){
-					if($right_id == $right['right_id']){
-						$this->rights[] = $right;
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if(($rights = $cache->get('rights:' . implode(',', $this->right_ids), 'rights')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->rights = unserialize($rights);
+		}
+		else{
+			if(count($this->right_ids) > 0){
+				// Retrieve rights from database
+				$this->sql = ' WHERE (rights.right_id IN (' . implode(', ', $this->right_ids) . '))';
+			
+				$query = $this->prepare('SELECT * FROM rights' . $this->sql . ';');
+				$query->execute();
+				$rights = $query->fetchAll();
+		
+				// Ensure rights array correlates to right_ids array
+				foreach($this->right_ids as $right_id){
+					foreach($rights as $right){
+						if($right_id == $right['right_id']){
+							$this->rights[] = $right;
+						}
 					}
 				}
 			}
-		
-			// Store right count as integer
-			$this->right_count = count($this->rights);
+			
+			$cache->save(serialize($this->rights));
 		}
+		
+		// Store right count as integer
+		$this->right_count = count($this->rights);
 	}
 	
 	public function __destruct(){

@@ -36,6 +36,7 @@ class Post extends Alkaline{
 		
 		// Input handling
 		if(is_object($post_ids)){
+			$last_modified = $post_ids->last_modified;
 			$post_ids = $post_ids->ids;
 		}
 		
@@ -44,48 +45,70 @@ class Post extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (posts.post_id IS NULL)';
 		
-		if(count($this->post_ids) > 0){
-			// Retrieve posts from database
-			$this->sql = ' WHERE (posts.post_id IN (' . implode(', ', $this->post_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM posts' . $this->sql . ';');
-			$query->execute();
-			$posts = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
 		
-			// Ensure posts array correlates to post_ids array
-			foreach($this->post_ids as $post_id){
-				foreach($posts as $post){
-					if($post_id == $post['post_id']){
-						$this->posts[] = $post;
-					}
-				}
-			}
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
 		
-			// Store post count as integer
-			$this->post_count = count($this->posts);
-		
-			// Attach additional fields
-			for($i = 0; $i < $this->post_count; ++$i){
-				$title_url = $this->makeURL($this->posts[$i]['post_title']);
-				if(empty($title_url) or (URL_RW != '/')){
-					$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
-				}
-				else{
-					$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $title_url . URL_RW;
-				}
-				
-				$this->posts[$i]['post_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
-				
-				if($this->returnConf('comm_enabled') != true){
-					$this->posts[$i]['post_comment_disabled'] = 1;
-				}
-				elseif($this->returnConf('comm_close') == true){
-					if((time() - strtotime($this->images[$i]['image_published'])) > $this->returnConf('comm_close_time')){
-						$this->images[$i]['image_comment_disabled'] = 1;
-					}
-				}
-			}
+		if(($posts = $cache->get('posts:' . implode(',', $this->post_ids), 'posts')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->posts = unserialize($posts);
 		}
+		else{
+			if(count($this->post_ids) > 0){
+				// Retrieve posts from database
+				$this->sql = ' WHERE (posts.post_id IN (' . implode(', ', $this->post_ids) . '))';
+			
+				$query = $this->prepare('SELECT * FROM posts' . $this->sql . ';');
+				$query->execute();
+				$posts = $query->fetchAll();
+		
+				// Ensure posts array correlates to post_ids array
+				foreach($this->post_ids as $post_id){
+					foreach($posts as $post){
+						if($post_id == $post['post_id']){
+							$this->posts[] = $post;
+						}
+					}
+				}
+		
+				// Store post count as integer
+				$post_count = count($this->posts);
+		
+				// Attach additional fields
+				for($i = 0; $i < $post_count; ++$i){
+					$title_url = $this->makeURL($this->posts[$i]['post_title']);
+					if(empty($title_url) or (URL_RW != '/')){
+						$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
+					}
+					else{
+						$this->posts[$i]['post_uri_rel'] = BASE . 'post' . URL_ID . $this->posts[$i]['post_id'] . '-' . $title_url . URL_RW;
+					}
+				
+					$this->posts[$i]['post_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
+				
+					if($this->returnConf('comm_enabled') != true){
+						$this->posts[$i]['post_comment_disabled'] = 1;
+					}
+					elseif($this->returnConf('comm_close') == true){
+						if((time() - strtotime($this->images[$i]['image_published'])) > $this->returnConf('comm_close_time')){
+							$this->images[$i]['image_comment_disabled'] = 1;
+						}
+					}
+				}
+			}
+			
+			$cache->save(serialize($this->posts));
+		}
+		
+		// Store post count as integer
+		$this->post_count = count($this->posts);
 	}
 	
 	public function __destruct(){
@@ -749,7 +772,7 @@ class Post extends Alkaline{
 		}
 		
 		foreach($this->posts as $post){
-			preg_match_all('#href="(.*?)"#si', $post['post_text_raw'], $matches);
+			preg_match_all('#\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))#si', $post['post_text_raw'], $matches);
 			foreach($matches[1] as $match){
 				if(isset($citations[$post['post_id']])){
 					if(in_array($matches[1], $citations[$post['post_id']])){ continue; }

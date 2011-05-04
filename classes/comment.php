@@ -35,6 +35,7 @@ class Comment extends Alkaline{
 		
 		// Input handling
 		if(is_object($comment_ids)){
+			$last_modified = $comment_ids->last_modified;
 			$comment_ids = $comment_ids->ids;
 		}
 		
@@ -43,42 +44,61 @@ class Comment extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (comments.comment_id IS NULL)';
 		
-		if(count($this->comment_ids) > 0){
-			// Retrieve comments from database
-			$this->sql = ' WHERE (comments.comment_id IN (' . implode(', ', $this->comment_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM comments' . $this->sql . ';');
-			$query->execute();
-			$comments = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
 		
-			// Ensure comments array correlates to comment_ids array
-			foreach($this->comment_ids as $comment_id){
-				foreach($comments as $comment){
-					if($comment_id == $comment['comment_id']){
-						$this->comments[] = $comment;
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if(($comments = $cache->get('comments:' . implode(',', $this->image_ids), 'comments')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->comments = unserialize($comments);
+		}
+		else{
+			if(count($this->comment_ids) > 0){
+				// Retrieve comments from database
+				$this->sql = ' WHERE (comments.comment_id IN (' . implode(', ', $this->comment_ids) . '))';
+			
+				$query = $this->prepare('SELECT * FROM comments' . $this->sql . ';');
+				$query->execute();
+				$comments = $query->fetchAll();
+		
+				// Ensure comments array correlates to comment_ids array
+				foreach($this->comment_ids as $comment_id){
+					foreach($comments as $comment){
+						if($comment_id == $comment['comment_id']){
+							$this->comments[] = $comment;
+						}
 					}
 				}
 			}
-		
-			// Store comment count as integer
-			$this->comment_count = count($this->comments);
-		
-			// Attach additional fields
-			for($i = 0; $i < $this->comment_count; ++$i){
-				if($this->comments[$i]['image_id'] != 0){
-					$this->image_ids[] = $this->comments[$i]['image_id'];
-				}
-				if($this->comments[$i]['post_id'] != 0){
-					$this->post_ids[] = $this->comments[$i]['post_id'];
-				}
-			}
 			
-			$this->image_ids = array_unique($this->image_ids, SORT_NUMERIC);
-			$this->image_ids = array_values($this->image_ids);
-
-			$this->post_ids = array_unique($this->post_ids, SORT_NUMERIC);
-			$this->post_ids = array_values($this->post_ids);
+			$cache->save(serialize($this->comments));
 		}
+		
+		// Store comment count as integer
+		$this->comment_count = count($this->comments);
+		
+		// Attach additional fields
+		for($i = 0; $i < $this->comment_count; ++$i){
+			if($this->comments[$i]['image_id'] != 0){
+				$this->image_ids[] = $this->comments[$i]['image_id'];
+			}
+			if($this->comments[$i]['post_id'] != 0){
+				$this->post_ids[] = $this->comments[$i]['post_id'];
+			}
+		}
+	
+		$this->image_ids = array_unique($this->image_ids, SORT_NUMERIC);
+		$this->image_ids = array_values($this->image_ids);
+
+		$this->post_ids = array_unique($this->post_ids, SORT_NUMERIC);
+		$this->post_ids = array_values($this->post_ids);
 	}
 	
 	public function __destruct(){

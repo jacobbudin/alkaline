@@ -34,6 +34,7 @@ class Set extends Alkaline{
 		
 		// Input handling
 		if(is_object($set_ids)){
+			$last_modified = $set_ids->last_modified;
 			$set_ids = $set_ids->ids;
 		}
 		
@@ -42,39 +43,62 @@ class Set extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (sets.set_id IS NULL)';
 		
-		if(count($this->set_ids) > 0){
-			// Retrieve sets from database
-			$this->sql = ' WHERE (sets.set_id IN (' . implode(', ', $this->set_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM sets' . $this->sql . ';');
-			$query->execute();
-			$sets = $query->fetchAll();
 		
-			// Ensure sets array correlates to set_ids array
-			foreach($this->set_ids as $set_id){
-				foreach($sets as $set){
-					if($set_id == $set['set_id']){
-						$this->sets[] = $set;
+		// Cache
+		require_once('cache_lite/Lite.php');
+		
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if(($sets = $cache->get('sets:' . implode(',', $this->set_ids), 'sets')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->sets = unserialize($sets);
+		}
+		else{
+			if(count($this->set_ids) > 0){
+				// Retrieve sets from database
+				$this->sql = ' WHERE (sets.set_id IN (' . implode(', ', $this->set_ids) . '))';
+			
+				$query = $this->prepare('SELECT * FROM sets' . $this->sql . ';');
+				$query->execute();
+				$sets = $query->fetchAll();
+		
+				// Ensure sets array correlates to set_ids array
+				foreach($this->set_ids as $set_id){
+					foreach($sets as $set){
+						if($set_id == $set['set_id']){
+							$this->sets[] = $set;
+						}
 					}
 				}
-			}
 		
-			// Store set count as integer
-			$this->set_count = count($this->sets);
+				// Store set count as integer
+				$set_count = count($this->sets);
 		
-			// Attach additional fields
-			for($i = 0; $i < $this->set_count; ++$i){
-				if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
-					$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
-				}
-				else{
-					$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
-				}
+				// Attach additional fields
+				for($i = 0; $i < $set_count; ++$i){
+					if(empty($this->sets[$i]['set_title_url']) or (URL_RW != '/')){
+						$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . URL_RW;
+					}
+					else{
+						$this->sets[$i]['set_uri_rel'] = BASE . 'set' . URL_ID . $this->sets[$i]['set_id'] . '-' . $this->sets[$i]['set_title_url'] . URL_RW;
+					}
 
-				$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
- 				$this->sets[$i]['set_request']= unserialize($this->sets[$i]['set_request']);
+					$this->sets[$i]['set_uri'] = LOCATION . $this->sets[$i]['set_uri_rel'];
+	 				$this->sets[$i]['set_request']= unserialize($this->sets[$i]['set_request']);
+				}
 			}
+			
+			$cache->save(serialize($this->sets));
 		}
+		
+		// Store set count as integer
+		$this->set_count = count($this->sets);
 	}
 	
 	public function __destruct(){

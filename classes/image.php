@@ -44,6 +44,7 @@ class Image extends Alkaline{
 		
 		// Input handling
 		if(is_object($image_ids)){
+			$last_modified = $image_ids->last_modified;
 			$image_ids = $image_ids->ids;
 		}
 		
@@ -52,50 +53,72 @@ class Image extends Alkaline{
 		// Error checking
 		$this->sql = ' WHERE (images.image_id IS NULL)';
 		
-		if(count($this->image_ids) > 0){
-			// Retrieve images from database
-			$this->sql = ' WHERE (images.image_id IN (' . implode(', ', $this->image_ids) . '))';
-			
-			$query = $this->prepare('SELECT * FROM images' . $this->sql . ';');
-			$query->execute();
-			$images = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
 		
-			// Ensure images array correlates to image_ids array
-			foreach($this->image_ids as $image_id){
-				foreach($images as $image){
-					if($image_id == $image['image_id']){
-						$this->images[] = $image;
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if(($images = $cache->get('images:' . implode(',', $this->image_ids), 'images')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+			$this->images = unserialize($images);
+		}
+		else{
+			if(count($this->image_ids) > 0){
+				// Retrieve images from database
+				$this->sql = ' WHERE (images.image_id IN (' . implode(', ', $this->image_ids) . '))';
+
+				$query = $this->prepare('SELECT * FROM images' . $this->sql . ';');
+				$query->execute();
+				$images = $query->fetchAll();
+
+				// Ensure images array correlates to image_ids array
+				foreach($this->image_ids as $image_id){
+					foreach($images as $image){
+						if($image_id == $image['image_id']){
+							$this->images[] = $image;
+						}
 					}
 				}
-			}
-		
-			// Store image count as integer
-			$this->image_count = count($this->images);
-		
-			// Attach additional fields
-			for($i = 0; $i < $this->image_count; ++$i){
-				$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
-				$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
-				$title_url = $this->makeURL($this->images[$i]['image_title']);
-				if(empty($title_url) or (URL_RW != '/')){
-					$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
-				}
-				else{
-					$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . '-' . $title_url . URL_RW;
-				}
-				
-				$this->images[$i]['image_uri'] = LOCATION . $this->images[$i]['image_uri_rel'];
-				
-				if($this->returnConf('comm_enabled') != true){
-					$this->images[$i]['image_comment_disabled'] = 1;
-				}
-				elseif($this->returnConf('comm_close') == true){
-					if((time() - strtotime($this->images[$i]['image_published'])) > $this->returnConf('comm_close_time')){
+
+				// Store image count as integer
+				$image_count = count($this->images);
+
+				// Attach additional fields
+				for($i = 0; $i < $image_count; ++$i){
+					$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+					$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
+					$title_url = $this->makeURL($this->images[$i]['image_title']);
+					if(empty($title_url) or (URL_RW != '/')){
+						$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . URL_RW;
+					}
+					else{
+						$this->images[$i]['image_uri_rel'] = BASE . 'image' . URL_ID . $this->images[$i]['image_id'] . '-' . $title_url . URL_RW;
+					}
+
+					$this->images[$i]['image_uri'] = LOCATION . $this->images[$i]['image_uri_rel'];
+
+					if($this->returnConf('comm_enabled') != true){
 						$this->images[$i]['image_comment_disabled'] = 1;
 					}
+					elseif($this->returnConf('comm_close') == true){
+						if((time() - strtotime($this->images[$i]['image_published'])) > $this->returnConf('comm_close_time')){
+							$this->images[$i]['image_comment_disabled'] = 1;
+						}
+					}
 				}
 			}
+			
+		    $cache->save(serialize($this->images));
 		}
+		
+		// Store image count as integer
+		$this->image_count = count($this->images);
 	}
 	
 	public function __destruct(){
@@ -1342,31 +1365,54 @@ class Image extends Alkaline{
 	public function getSizes($sizes=null){
 		$sizes = $this->convertToArray($sizes);
 		
-		// Find size's prefix and suffix
-		if(!empty($sizes)){
-			$sizes = array_map('strtolower', $sizes);
-			$sizes_count = count($sizes);
-			
-			$sizes_new = array();
-			
-			foreach($sizes as $size){
-				$sizes_new[] = $size;
-				$sizes_new[] = $size;
-			}
-			
-			$sizes = $sizes_new;
-			
-			$value_slots = array_fill(0, $sizes_count, '?');
-			
-			$query = $this->prepare('SELECT * FROM sizes WHERE LOWER(size_title) = ' . implode(' OR LOWER(size_title) = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR LOWER(size_label) = ', $value_slots) . ' ORDER BY (size_width*size_height) DESC');
-			$query->execute($sizes);
-		}
-		else{
-			$query = $this->prepare('SELECT * FROM sizes ORDER BY (size_width*size_height) DESC');
-			$query->execute();
+		if(empty($sizes)){
+			$sizes = array();
 		}
 		
-		$sizes = $query->fetchAll();
+		// Cache
+		require_once('cache_lite/Lite.php');
+		
+		// Set a few options
+		$options = array(
+		    'cacheDir' => PATH . CACHE,
+		    'lifeTime' => 3600
+		);
+
+		// Create a Cache_Lite object
+		$cache = new Cache_Lite($options);
+		
+		if($sizes = $cache->get('sizes:' . implode(',', $sizes), 'sizes')){
+			$sizes = unserialize($sizes);
+		}
+		else{
+			// Find size's prefix and suffix
+			if(!empty($sizes)){
+				$sizes = array_map('strtolower', $sizes);
+				$sizes_count = count($sizes);
+			
+				$sizes_new = array();
+			
+				foreach($sizes as $size){
+					$sizes_new[] = $size;
+					$sizes_new[] = $size;
+				}
+			
+				$sizes = $sizes_new;
+			
+				$value_slots = array_fill(0, $sizes_count, '?');
+			
+				$query = $this->prepare('SELECT * FROM sizes WHERE LOWER(size_title) = ' . implode(' OR LOWER(size_title) = ', $value_slots) . ' OR LOWER(size_label) = ' . implode(' OR LOWER(size_label) = ', $value_slots) . ' ORDER BY (size_width*size_height) DESC');
+				$query->execute($sizes);
+			}
+			else{
+				$query = $this->prepare('SELECT * FROM sizes ORDER BY (size_width*size_height) DESC');
+				$query->execute();
+			}
+			
+			$sizes = $query->fetchAll();
+			$cache->save(serialize($sizes));
+		}
+		
 		$this->sizes = array();
 		
 		for($j=0; $j < $this->image_count; $j++){
