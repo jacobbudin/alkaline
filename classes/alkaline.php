@@ -1675,6 +1675,18 @@ class Alkaline{
 				if(!file_exists(PATH . CACHE . 'citations/favicons/')){
 					@mkdir(PATH . CACHE . 'citations/favicons/', 0777, true);
 				}
+				
+				ini_set('default_socket_timeout', 1);
+				$favicon = @file_get_contents('http://www.google.com/s2/u/0/favicons?domain=' . $domain);
+				ini_restore('default_socket_timeout');
+				
+				$favicon = imagecreatefromstring($favicon);
+				imagealphablending($favicon, false);
+				imagesavealpha($favicon, true);
+				imagepng($favicon, $png_file);
+				imagedestroy($favicon);
+				
+				/*
 			
 				preg_match('#<link[^>]*rel="shortcut icon"[^>]*href="([^>]*)"[^>]*>#si', $html, $match);
 				preg_match('#<link[^>]*href="([^>]*)"[^>]*rel="shortcut icon"[^>]*>#si', $html, $match2);
@@ -1696,16 +1708,21 @@ class Alkaline{
 				@copy($favicon_uri, $ico_file);
 			
 				if(file_exists($ico_file)){
-					require_once(PATH . CLASSES . 'ico/ico.php');
-				
-					$ico = new Ico($ico_file);
-					$favicon = $ico->GetIcon(0);
-					if($favicon != false){
-						imagepng($favicon, $png_file);
-						imagedestroy($favicon);
-					}
-					@unlink($ico_file);
+					$thumbnail = new Thumbnail($ico_file);
+					$thumbnail->resize(16, 16);
+					$thumbnail->save($png_file);
+					
+					//require_once(PATH . CLASSES . 'ico/ico.php');
+					//
+					// $ico = new Ico($ico_file);
+					// $favicon = $ico->GetIcon(0);
+					// if($favicon != false){
+					// 	imagepng($favicon, $png_file);
+					// 	imagedestroy($favicon);
+					// }
+					// @unlink($ico_file);
 				}
+				*/
 			}
 		
 			preg_match_all('#<meta.*?>#', $html, $metas);
