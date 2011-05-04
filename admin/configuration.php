@@ -90,6 +90,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('stat_ignore_user', @$_POST['stat_ignore_user']);
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
 	$alkaline->setConf('syndication_summary_only', @$_POST['syndication_summary_only']);
+	$alkaline->setConf('sphinx_enabled', @$_POST['sphinx_enabled']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
@@ -209,7 +210,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr class="markup">
-			<td class="input right pad"><input type="checkbox" id="web_markup" name="web_markup" <?php echo $alkaline->readConf('web_markup'); ?> value="true" /></td>
+			<td class="input right middle"><input type="checkbox" id="web_markup" name="web_markup" <?php echo $alkaline->readConf('web_markup'); ?> value="true" /></td>
 			<td>
 				<label for="web_markup">Markup future content (except visitor comments) using <select name="web_markup_ext" title="<?php echo $alkaline->returnConf('web_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
 			</td>
@@ -466,7 +467,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="syndication_summary_only" name="syndication_summary_only" <?php echo $alkaline->readConf('syndication_summary_only'); ?> value="true" /></td>
 			<td class="description">
-				<label for="syndication_summary_only">Only include post summaries</label> (require click-through to read full post)
+				<label for="syndication_summary_only">Only include post summaries</label><br />
+				Requires visitors to click through to read full posts
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Sphinx</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="sphinx_enabled" name="sphinx_enabled" <?php echo $alkaline->readConf('sphinx_enabled'); ?> value="true" /></td>
+			<td class="description">
+				<label for="sphinx_enabled">Use Sphinx to process search queries</label> (if installed and configured)
 			</td>
 		</tr>
 	</table>

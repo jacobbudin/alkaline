@@ -154,6 +154,24 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="right">ImageMagick version:</td>
 			<td><?php if(class_exists('Imagick', false)){ $im_info = Imagick::getVersion(); preg_match('#[0-9.]+#s', $im_info['versionString'], $version); echo $version[0]; } else { echo 'Not installed'; } ?></td>
 		</tr>
+		<tr>
+			<td class="right">Sphinx status:</td>
+			<td>
+				<?php
+				
+				if(class_exists('SphinxClient', false)){
+					$sphinx = new SphinxClient;
+					$status = $sphinx->status();
+					if($status === false){ echo 'Not running'; }
+					else{ echo 'Running&#0133;'; }
+				}
+				else{
+					echo 'Not installed';
+				}
+				
+				?>
+			</td>
+		</tr>
 	</table>
 </div>
 

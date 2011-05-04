@@ -27,9 +27,14 @@ class Alkaline{
 	const product = 'Alkaline';
 	const version = '1.1';
 	
+	public $admin;
+	
 	public $db_type;
 	public $db_version;
+	
 	public $tables;
+	public $tables_cache;
+	public $tables_index;
 	
 	protected $db;
 	protected $notifications;
@@ -93,7 +98,14 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id', 'items' => 'item_id');
+		$this->tables_cache = array('citations', 'extensions', 'images', 'pages', 'posts', 'rights', 'sets', 'sizes');
+		$this->tables_index = array('comments', 'images', 'pages', 'posts', 'rights', 'sets', 'tags');
+		
+		// Check if in Dashboard
+		if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
+			$this->admin = true;
+		}
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -1537,6 +1549,8 @@ class Alkaline{
 		unset($tables['sizes']);
 		unset($tables['rights']);
 		unset($tables['versions']);
+		unset($tables['citations']);
+		unset($tables['items']);
 		
 		if(Alkaline::edition == 'standard'){ unset($tables['users']); }
 		
@@ -2392,7 +2406,7 @@ class Alkaline{
 		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
 		if(in_array($table, $with_deleted_columns)){
 			$show_deleted = false;
-			if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
+			if($this->admin === true){
 				$user = new User();
 				if(!empty($user) and $user->perm()){
 					if($user->returnPref('recovery_mode') === true){

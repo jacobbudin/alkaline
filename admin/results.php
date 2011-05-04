@@ -46,6 +46,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <?php
 
+if(!empty($image_ids->finds)){
+	echo '<p class="large">';
+	foreach($image_ids->finds as $find){
+		if($find['find_table'] == 'images'){
+			echo '<strong>' . ucwords($find['find_table']) . ' (' . ucwords($find['find_count']) . ')</strong> &#0160;&#0160;&#0160;';
+		}
+		else{
+			echo '<a href="' . BASE . ADMIN . $find['find_table'] . URL_CAP . '?q=' . urlencode($image_ids->query) . '">' . ucwords($find['find_table']) . '</a> <span class="quiet">(' . ucwords($find['find_count']) . ')</span> &#0160;&#0160;&#0160;';
+		}
+	}
+	echo '</p>';
+}
+
 if($image_ids->count_result > 0){
 	?>
 	<p>

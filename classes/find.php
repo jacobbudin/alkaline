@@ -15,6 +15,7 @@
 
 class Find extends Alkaline{
 	public $admin;
+	public $cache;
 	public $ids;
 	public $ids_after;
 	public $ids_before;
@@ -22,9 +23,11 @@ class Find extends Alkaline{
 	public $count_result = 0;
 	public $offset_length;
 	public $order;
+	public $finds;
 	public $first;
 	public $first_reverse;
 	public $last;
+	public $last_modified;
 	public $last_reverse;
 	public $page;
 	public $page_begin;
@@ -42,6 +45,7 @@ class Find extends Alkaline{
 	public $table_prefix;
 	public $tags;
 	public $with;
+	public $query;
 	
 	private $call;
 	
@@ -156,7 +160,7 @@ class Find extends Alkaline{
 			}
 
 			// Title and description
-			if(!empty($_REQUEST['q'])){
+			if(!empty($_REQUEST['q'])){ 
 				$this->_search($_REQUEST['q']);
 			}
 
@@ -1079,27 +1083,67 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($search)){ return false; }
 		
+		$this->query = $search;
+		
+		if($this->returnConf('sphinx_enabled')){
+			if($table = array_search($this->table, $this->tables_index)){
+				if(class_exists('SphinxClient', false)){
+					$sphinx = new SphinxClient;
+					$sphinx->setSortMode(SPH_SORT_RELEVANCE);
+					$response = $sphinx->query($search);
+
+					$results = $response['matches'];
+					
+					$ids = array();
+					$table_results = array();
+
+					foreach($results as $result){						
+						if($result['attrs']['table'] == $table){
+							$ids[] = $result['attrs']['table_id'];
+						}
+						if(isset($table_results[$result['attrs']['table']])){
+							++$table_results[$result['attrs']['table']];
+						}
+						else{
+							$table_results[$result['attrs']['table']] = 1;
+						}
+					}
+					
+					foreach($table_results as $table => $count){
+						$table = $this->tables_index[$table];
+						$this->finds[] = array('find_table' => $table,
+											'find_count' => $count);
+					}
+					
+					if(count($ids) > 0){
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+						$this->order = $this->convertToIntegerArray($ids);
+					}
+					else{
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+					}
+
+					return true;
+				}
+			}
+		}
+		
 		// Prepare input
 		$search_lower = strtolower($search);
-		$search_lower = preg_replace('#\s#', '%', $search_lower);
+		$search_lower = preg_replace('#[^a-z0-9]#si', '%', $search_lower);
+		
+		$search_lower_tags = explode('%', $search_lower);
+		sort($search_lower_tags);
+		$search_lower_tags = '%' . implode('%', $search_lower_tags) . '%';
+		
 		$search_lower = '%' . $search_lower . '%';
 		
 		$ids = array();
 		
 		if(($this->table == 'images') and empty($fields)){
 			// Search title, description
-			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title_lower OR LOWER(images.image_description) LIKE :image_description_lower OR LOWER(images.image_geo) LIKE :image_geo_lower)');
-			$query->execute(array(':image_title_lower' => $search_lower, ':image_description_lower' => $search_lower, ':image_geo_lower' => $search_lower));
-			$images = $query->fetchAll();
-		
-			foreach($images as $image){
-				$ids[] = $image[$this->table_prefix . 'id'];
-			}
-		
-			// Search tags
-			$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
-			$query->execute(array(':tag_name_lower' => $search_lower));
-		
+			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title OR LOWER(images.image_description_raw) LIKE :image_description_raw OR LOWER(images.image_geo) LIKE :image_geo OR LOWER(images.image_tags) LIKE :image_tags)');
+			$query->execute(array(':image_title' => $search_lower, ':image_description_raw' => $search_lower, ':image_geo' => $search_lower, ':image_tags' => $search_lower_tags));
 			$images = $query->fetchAll();
 		
 			foreach($images as $image){
@@ -1107,8 +1151,8 @@ class Find extends Alkaline{
 			}
 		}
 		elseif(($this->table == 'posts') and empty($fields)){
-			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title) OR (LOWER(post_category) LIKE :post_category);');
-			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower, ':post_category' => $search_lower));
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text_raw) LIKE :post_text_raw) OR (LOWER(post_title) LIKE :post_title) OR (LOWER(post_category) LIKE :post_category);');
+			$query->execute(array(':post_text_raw' => $search_lower, ':post_title' => $search_lower, ':post_category' => $search_lower));
 			$posts = $query->fetchAll();
 
 			foreach($posts as $post){
@@ -1880,17 +1924,9 @@ class Find extends Alkaline{
 			}
 		}
 		elseif(empty($this->order)){
-			if($this->table == 'images'){
-				$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'uploaded DESC';
-				if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-					$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'uploaded';
-				}
-			}
-			else{
-				$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'created DESC';
-				if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-					$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'created';
-				}
+			$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'id DESC';
+			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
+				$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'id';
 			}
 		}
 		

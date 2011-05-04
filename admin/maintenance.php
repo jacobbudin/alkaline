@@ -45,6 +45,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available disk space
 				</li>
 				<li>
+					<strong><a href="#build-items">Build items table</a></strong><br />
+					For Sphinx users only, builds items table for document ID purposes
+				</li>
+				<li>
 					<strong><a href="#delete-shoebox">Delete all files in shoebox</a></strong><br />
 					Delete all files from your shoebox folder, removing troublesome files that could not be imported
 				</li>
@@ -57,6 +61,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<li>
 					<strong><a href="#update-counts">Update counts</a></strong><br />
 					Recount various count fields that may have become inaccurate&#8212;particularly if you manually edit the database tables
+				</li>
+				<li>
+					<strong><a href="#rebuild-tags">Rebuild image tags</a></strong><br />
+					Rebuild tag fields that may have gone astray
 				</li>
 				<li>
 					<strong><a href="#rebuild-sets">Rebuild set catalog</a></strong><br />
