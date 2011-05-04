@@ -2146,7 +2146,7 @@ class Alkaline{
 			$ids = self::convertToIntegerArray($ids);
 			$field = $this->tables[$table];
 			
-			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE (' . $field . ' IN (' . implode(', ', $ids) . '))' . $order_by_sql . $limit_sql . ';');
 		}
 		
 		$query->execute($sql_params);
@@ -2155,6 +2155,20 @@ class Alkaline{
 		// Delete extra users on standard licenses
 		if(($table == 'users') and (count($contents) > 1)){
 			$this->deleteDisallowedUsers();
+		}
+		
+		$contents_ordered = array();
+		
+		if(!empty($ids)){
+			// Ensure posts array correlates to post_ids array
+			foreach($ids as $id){
+				foreach($contents as $content){
+					if($id == $content[$field]){
+						$contents_ordered[] = $content;
+					}
+				}
+			}
+			$contents = $contents_ordered;
 		}
 		
 		return $contents;
