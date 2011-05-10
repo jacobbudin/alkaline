@@ -309,25 +309,26 @@ if(empty($comment_id)){
 				echo '<img src="' . $images->images[$key]['image_src_square'] . '" title="' . $images->images[$key]['image_title'] . '" class="frame_mini" />';
 			}
 			echo '</td>';
-			echo '<td class="status' . $comment['comment_status'] . '"><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150) . '">';
+			echo '<td class="status' . $comment['comment_status'] . '">';
+			echo '<div class="actions"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></div>';
+			echo '<strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150) . '">';
 			echo $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 50);
-			echo '</a></strong><br />';
-			if(!empty($comment['comment_author_name'])){
-				echo '<span class="quiet"><a href="">' . $comment['comment_author_name'] . '</a>';
+			echo '</a></strong><br /><span class="quiet">';
+			
+			if(!empty($comment['user_id'])){
+				echo '<img src="' . BASE . ADMIN . 'images/icons/user.png" alt="" /> <a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'user' . URL_AID . $comment['user_id'] . URL_RW . '" class="nu">' . $comment['comment_author_name'] . '</a>';
+			}
+			elseif(!empty($comment['comment_author_name'])){
+				echo '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?q=' . urlencode($comment['comment_author_name']) . '" class="nu">' . $comment['comment_author_name'] . '</a>';
 			}
 			else{
 				'<em>Anonymous</em>';
 			}
 		
 			if(!empty($comment['comment_author_ip']) and empty($comment['user_id'])){
-				echo ' (<a href="">' . $comment['comment_author_ip'] . '</a>)</span>';
+				echo ' (<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?q=' . urlencode($comment['comment_author_ip']) . '" class="nu">' . $comment['comment_author_ip'] . '</a>)';
 			}
-			elseif(!empty($comment['user_id'])){
-				echo ' (User)';
-			}
-			echo '</td>';
-			echo '<td class="center"><button></button></td>';
-			echo '<td>' . $comment['comment_created_format'] . '</td></tr>';
+			echo '</span></td><td></td><td>' . $comment['comment_created_format'] . '</td></tr>';
 		
 		}
 	
@@ -392,7 +393,7 @@ else{
 		</div>
 	<?php } ?>
 	
-	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comment</h1><br />
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/comments.png" alt="" /> Comment</h1>
 
 	<form action="<?php echo BASE . ADMIN . 'comments' . URL_CAP; ?>" method="post">
 		<div class="span-24 last">
@@ -409,37 +410,50 @@ else{
 			<div class="span-8 last">
 				<p>
 					<label for="comment_text">Author:</label><br />
+					<span class="quiet">
 					<?php
 
 					if(!empty($comment['comment_author_name'])){
-						echo '<a href="">' . $comment['comment_author_name'] . '</a>';
 						if($comment['user_id']){
-							echo ' (User)';
+							echo '<img src="' . BASE . ADMIN . 'images/icons/user.png" alt="" /> <a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'user' . URL_AID . $comment['user_id'] . URL_RW . '" class="nu"> ';
 						}
+						echo '<a href="">' . $comment['comment_author_name'] . '</a>';
 					}
 					else{
 						echo '<em>Anonymous</em>';
 					}
 
 					?>
+					</span>
 				</p>
 				<?php
 				if(!empty($comment['comment_author_email'])){
-					echo '<p>
+					?>
+					<p>
 						<label>Email:</label><br />
-						<a href="mailto:' . $comment['comment_author_email'] . '">' . $comment['comment_author_email'] . '</a>
-						</p>';
+						<span class="quiet">
+							<a href="mailto:<?php echo $comment['comment_author_email']; ?>"><?php echo $comment['comment_author_email']; ?></a>
+						</span>
+					</p>
+					<?php
 				}
 				?>
 				<?php		
 				if(!empty($comment['comment_author_uri'])){
-					echo '<tr><td class="right"><label>Web site:</label></td><td><a href="' . $comment['comment_author_uri'] . '">' . $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100) . '</a></td></tr>';
+					?>
+					<p>
+						<label>Web site:</label><br />
+						<span class="quiet">
+							<a href="<?php echo $comment['comment_author_uri']; ?>"><?php echo $alkaline->fitString($alkaline->minimizeURL($comment['comment_author_uri']), 100); ?></a>
+						</span>
+					</p>
+					<?php
 				}
 
 				?>
 				<p>
 					<label for="comment_ip_address">IP address:</label><br />
-					<?php echo '<a href="">' . $comment['comment_author_ip'] . '</a>'; ?>
+					<span class="quiet"><?php echo $comment['comment_author_ip']; ?></span>
 				</p>
 				
 				<hr />
