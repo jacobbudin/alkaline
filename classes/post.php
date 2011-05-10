@@ -19,6 +19,7 @@ class Post extends Alkaline{
 	public $posts = array();
 	public $post_ids;
 	public $post_count = 0;
+	public $trackbacks;
 	public $user;
 	public $versions;
 	protected $sql;
@@ -92,6 +93,17 @@ class Post extends Alkaline{
 					}
 				
 					$this->posts[$i]['post_uri'] = LOCATION . $this->posts[$i]['post_uri_rel'];
+					$this->posts[$i]['post_trackback_uri'] = LOCATION . BASE . 'trackback' . URL_ID . $this->posts[$i]['post_id'] . URL_RW;
+					
+					$this->posts[$i]['post_rdf'] = '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+					             xmlns:dc="http://purl.org/dc/elements/1.1/"
+					             xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+					    <rdf:Description
+					        rdf:about="' . $this->posts[$i]['post_uri'] . '"
+					        dc:identifier="' . $this->posts[$i]['post_uri'] . '"
+					        dc:title="' . $this->makeHTMLSafe($this->posts[$i]['post_title']) . '"
+					        trackback:ping="' . $this->posts[$i]['post_trackback_uri'] . '" />
+					    </rdf:RDF>';
 				
 					if($this->returnConf('comm_enabled') != true){
 						$this->posts[$i]['post_comment_disabled'] = 1;
@@ -631,7 +643,7 @@ class Post extends Alkaline{
 	/**
 	 * Get citation data and save to object
 	 *
-	 * @return array Array of version data
+	 * @return array Citations
 	 */
 	public function getCitations(){
 		$query = $this->prepare('SELECT citations.* FROM citations, posts' . $this->sql . ' AND citations.post_id = posts.post_id;');
@@ -642,12 +654,34 @@ class Post extends Alkaline{
 		
 		for($i=0; $i < $citation_count; $i++){
 			$domain = $this->siftDomain($this->citations[$i]['citation_uri_requested']);
-			if(file_exists(PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png')){
-				$this->citations[$i]['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+			if(file_exists(PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$this->citations[$i]['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
 			}
 		}
 		
 		return $this->citations;
+	}
+	
+	/**
+	 * Get trackback data and save to object
+	 *
+	 * @return array Trackbacks
+	 */
+	public function getTrackbacks(){
+		$query = $this->prepare('SELECT trackbacks.* FROM trackbacks, posts' . $this->sql . ' AND trackbacks.post_id = posts.post_id;');
+		$query->execute();
+		$this->trackbacks = $query->fetchAll();
+		
+		$trackback_count = count($this->trackbacks);
+		
+		for($i=0; $i < $trackback_count; $i++){
+			$domain = $this->siftDomain($this->trackbacks[$i]['trackback_uri']);
+			if(file_exists(PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$this->trackbacks[$i]['trackback_favicon_uri'] = LOCATION . BASE . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+			}
+		}
+		
+		return $this->trackbacks;
 	}
 	
 	/**
