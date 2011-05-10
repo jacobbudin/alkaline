@@ -479,6 +479,11 @@ function buttonize(){
 	});
 }
 
+function findID(string){
+	string = string.replace(/[^0-9]/gi, '');
+	return parseInt(string);
+}
+
 $(document).ready(function(){
 	// NAVIGATION
 	$('#navigation ul ul').hide();
@@ -834,7 +839,7 @@ $(document).ready(function(){
 			text = '<a href="' + uri_rel + '"><img src="' + src + '" alt="' + alt + '" /></a>';
 		}
 	
-		var input = $('textarea');
+		var input = $('textarea[id$="text_raw"]');
 		var range = input.caret();
 		
 		var value = input.val();
@@ -919,9 +924,20 @@ $(document).ready(function(){
 		});
 	}
 	
-	// VERSIONS & CITATIONS
+	// VERSIONS & CITATIONS & TRACKBACKS
 	
 	if((page == 'Post') || (page == 'Page')){
+		$('a[href="#revert"]').live('click', function(){
+			version_id = $(this).attr('id');
+			version_id = findID(version_id);
+			$.post(BASE + ADMIN + 'tasks/get-version.php', { id: version_id }, function(data){
+				version = $.evalJSON(data);
+				title = $('input[id$="title"]').val(version.version_title);
+				text_raw = $('textarea[id$="text_raw"]').val(version.version_text_raw);
+			});
+			event.preventDefault();
+		});
+		
 		$('#compare').click(function(event){
 			title = $('input[id$="title"]').val();
 			text_raw = $('textarea[id$="text_raw"]').val();

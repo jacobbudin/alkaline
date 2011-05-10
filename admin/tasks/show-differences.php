@@ -45,7 +45,7 @@ if(empty($comparison)){
 
 <div class="span-24 comparison_split last">
 	<div class="actions append-1 append-bottom">
-		<a href="#revert"><button>Revert to previous version</button></a>
+		<a href="#revert" id="version-<?php echo $version['version_id']; ?>"><button>Revert to previous version</button></a>
 	</div>
 	<div class="span-24 last">
 		<div class="span-10 append-1 prepend-1 comparison_left">
