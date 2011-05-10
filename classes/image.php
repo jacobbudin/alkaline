@@ -164,12 +164,12 @@ class Image extends Alkaline{
 		$image_ids = array();
 		
 		foreach($files as $file){
-			if(!file_exists($file)){
+			if(!is_file($file)){
 				return false;
 			}
-		
+			
 			$filename = $this->getFilename($file);
-		
+			
 			// Add image to database
 			$image_ext = $this->getExt($file);
 			$image_mime = $this->getMIME($file);
