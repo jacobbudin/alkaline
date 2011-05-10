@@ -312,6 +312,64 @@ class Page extends Alkaline{
 		
 		return $this->versions;
 	}
+	
+	/**
+	 * Get citation data and save to object
+	 *
+	 * @return array Array of version data
+	 */
+	public function getCitations(){
+		$query = $this->prepare('SELECT citations.* FROM citations, pages' . $this->sql . ' AND citations.page_id = pages.page_id;');
+		$query->execute();
+		$this->citations = $query->fetchAll();
+		
+		$citation_count = count($this->citations);
+		
+		for($i=0; $i < $citation_count; $i++){
+			$domain = $this->siftDomain($this->citations[$i]['citation_uri_requested']);
+			if(file_exists(PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$this->citations[$i]['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+			}
+		}
+		
+		return $this->citations;
+	}
+	
+	/**
+	 * Update citations
+	 *
+	 * @return void
+	 */
+	public function updateCitations(){
+		$this->getCitations();
+		
+		$citations = array();
+		$to_delete = array();
+		
+		foreach($this->citations as $citation){
+			$citations[$citation['page_id']][] = $citation['citation_uri_requested'];
+			$key = array_search($citation['page_id'], $this->page_ids);
+			if($key !== false){
+				if(strpos($this->pages[$key]['page_text_raw'], $citation['citation_uri_requested']) === false){
+					$to_delete[] = $citation['citation_id'];
+				}
+			}
+		}
+		
+		foreach($this->pages as $page){
+			preg_match_all('#\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))#si', $page['page_text_raw'], $matches);
+			foreach($matches[1] as $match){
+				if(isset($citations[$page['page_id']])){
+					if(in_array($matches[1], $citations[$page['page_id']])){ continue; }
+				}
+				$this->loadCitation($match, 'page_id', $page['page_id']);
+			}
+		}
+		
+		if(count($to_delete) > 0){
+			$this->deleteRow('citations', $to_delete);
+		}
+	}
 }
 
 ?>
