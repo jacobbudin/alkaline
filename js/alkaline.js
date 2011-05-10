@@ -1013,7 +1013,7 @@ $(document).ready(function(){
 			}
 		});
 		
-		$('#act').mouseup(function() {
+		$('#act').change(function() {
 		  actEditor();
 		});
 		

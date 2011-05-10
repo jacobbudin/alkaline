@@ -4,6 +4,7 @@
 *.psd
 .*
 test.php
+cache/*
 
 # the following patterns will be ignored for revision control purposes
 

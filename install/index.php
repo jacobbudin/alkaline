@@ -19,7 +19,7 @@ else{
 	$path = explode('\\', __FILE__);
 	$path = array_splice($path, 1, -2);
 	$path = implode('\\', $path);
-	define('PATH', $path . '\\');
+	define('PATH', '\\' . $path . '\\');
 }
 
 preg_match_all('#(?:/)?(.*)/(?:.*)install#si', $_SERVER['SCRIPT_NAME'], $matches);
