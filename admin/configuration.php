@@ -81,6 +81,9 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_allow_html', @$_POST['comm_allow_html']);
 	$alkaline->setConf('comm_allow_html_tags', @$_POST['comm_allow_html_tags']);
 	
+	$alkaline->setConf('trackback_enabled', @$_POST['trackback_enabled']);
+	$alkaline->setConf('trackback_email', @$_POST['trackback_email']);
+	
 	$alkaline->setConf('guest_remember', @$_POST['guest_remember']);
 	$alkaline->setConf('guest_remember_time', @$_POST['guest_remember_time']);
 	
@@ -244,7 +247,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="input"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="post_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('post_size_id', $alkaline->returnConf('post_size_id')); ?> when adding images by point-and-click</label>
 			</td>
@@ -272,9 +275,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); if(class_exists('imagick')){ echo 'disabled="disabled"'; } ?> value="true" /></td>
 			<td class="description">
-				<label for="thumb_imagick">Use ImageMagick library</label> (if installed)<br />
+				<label for="thumb_imagick">Use ImageMagick library</label>
+				<?php if(class_exists('imagick')){ echo '(not installed)'; } ?>
+				<br />
 				Create higher-quality thumbnails at the cost of increased system resources
 			</td>
 		</tr>
@@ -337,7 +342,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="input middle"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="page_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('page_size_id', $alkaline->returnConf('page_size_id')); ?> when adding images by point-and-click</label>
 			</td>
@@ -373,7 +378,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
 			<td>
 				<label for="comm_markup">Markup visitor comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
 			</td>
@@ -382,7 +387,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="comm_allow_html" name="comm_allow_html" <?php echo $alkaline->readConf('comm_allow_html'); ?> value="true" /></td>
 			<td>
 				<label for="comm_allow_html">Allow only select HTML in comments</label><br />
-				Permit the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="xs" />
+				Permit the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="s" />
 			</td>
 		</tr>
 		<tr>
@@ -402,11 +407,30 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 	</table>
 	
+	<h3>Trackbacks</h3>
+	
+	<p>Trackbacks allow you to monitor discussion of your posts on other blogs.</p>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="trackback_enabled" name="trackback_enabled" <?php echo $alkaline->readConf('trackback_enabled'); ?> value="true" /></td>
+			<td class="description">
+				<label for="trackback_enabled">Enable trackbacks</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="trackback_email" name="trackback_email" <?php echo $alkaline->readConf('trackback_email'); ?> value="true" /></td>
+			<td class="description">
+				<label for="trackback_email">Email new trackbacks to administrator</label>
+			</td>
+		</tr>
+	</table>
+	
 	<h3>Rights</h3>
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
 			<td class="description">
 				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new images</label>
 			</td>
@@ -463,6 +487,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<h3>Syndication</h3>
 	
+	<p><a href="http://atomenabled.org/">Atom</a> XML feeds allow your site&#8217;s visitors to keep track of updates on your site.</p>
+	
 	<table>
 		<tr>
 			<td class="input"><input type="checkbox" id="syndication_summary_only" name="syndication_summary_only" <?php echo $alkaline->readConf('syndication_summary_only'); ?> value="true" /></td>
@@ -474,6 +500,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</table>
 	
 	<h3>Sphinx</h3>
+	
+	<p><a href="http://sphinxsearch.com/">Sphinx</a> is an enterprise-grade search server. It must be manually installed and configured.</p>
 	
 	<table>
 		<tr>

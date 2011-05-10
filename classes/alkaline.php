@@ -98,8 +98,8 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id', 'items' => 'item_id');
-		$this->tables_cache = array('citations', 'extensions', 'images', 'pages', 'posts', 'rights', 'sets', 'sizes');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id', 'items' => 'item_id', 'trackbacks' => 'trackback_id');
+		$this->tables_cache = array('comments', 'extensions', 'images', 'pages', 'posts', 'rights', 'sets', 'sizes');
 		$this->tables_index = array('comments', 'images', 'pages', 'posts', 'rights', 'sets', 'tags');
 		
 		// Check if in Dashboard
@@ -1446,6 +1446,155 @@ class Alkaline{
 		}
 		
 		return true;
+	}
+	
+	// TRACKBACKS
+	
+	/**
+	 * Add trackbacks from $_REQUEST data
+	 *
+	 * @return string XML response
+	 */
+	public function addTrackbacks(){
+		// Configuration: trackback_enabled
+		if(!$this->returnConf('trackback_enabled')){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Trackbacks on this Web site are disabled.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if(isset($_REQUEST['id'])){ $id = $this->findID(strip_tags($_REQUEST['id'])); }
+		if(isset($_REQUEST['title'])){ $title = strip_tags($_REQUEST['title']); }
+		if(isset($_REQUEST['excerpt'])){ $excerpt = strip_tags($_REQUEST['excerpt']); }
+		if(isset($_REQUEST['url'])){ $uri = strip_tags($_REQUEST['url']); }
+		if(isset($_REQUEST['blog_name'])){ $blog_name = strip_tags($_REQUEST['blog_name']); }
+		
+		if(empty($uri)){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>No URL sent.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if(empty($id)){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>No post ID sent.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		// Get favicon
+		$domain = $this->siftDomain($uri);
+		
+		$ico_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.ico';
+		$png_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		
+		if(!file_exists($png_file)){
+			if(!file_exists(PATH . CACHE . 'favicons/')){
+				@mkdir(PATH . CACHE . 'favicons/', 0777, true);
+			}
+			
+			ini_set('default_socket_timeout', 1);
+			$favicon = @file_get_contents('http://www.google.com/s2/u/0/favicons?domain=' . $domain);
+			ini_restore('default_socket_timeout');
+			
+			$favicon = imagecreatefromstring($favicon);
+			imagealphablending($favicon, false);
+			imagesavealpha($favicon, true);
+			imagepng($favicon, $png_file);
+			imagedestroy($favicon);
+		}
+		
+		// Check if duplicate
+		$query = $this->prepare('SELECT * FROM trackbacks WHERE post_id = :post_id AND trackback_uri = :trackback_uri;');
+		
+		if(!$query->execute(array(':post_id' => $id, ':trackback_uri' => $uri))){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Internal server error.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		$trackbacks = $query->fetchAll();
+		
+		if(count($trackbacks) > 0){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Duplicate submission.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		// Store to database
+		$fields = array('post_id' => $id,
+			'trackback_title' => $this->makeUnicode($title),
+			'trackback_uri' => $uri,
+			'trackback_excerpt' => $this->makeUnicode($excerpt),
+			'trackback_blog_name' => $this->makeUnicode($blog_name),
+			'trackback_ip' => $_SERVER['REMOTE_ADDR']);
+		
+		if(!$trackback_id = $this->addRow($fields, 'trackbacks')){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Internal server error.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if($this->returnConf('trackback_email')){
+			$this->email(0, 'New trackback', 'A new trackback has been submitted:' . "\r\n\n" . $uri . "\r\n\n" . LOCATION . BASE . ADMIN . 'posts' . URL_ID . $id . URL_RW);
+		}
+		
+		$this->updateCount('trackbacks', 'posts', 'post_trackback_count', $id);
+		
+		// If no errors
+		$xml = '<?xml version="1.0" encoding="utf-8"?>';
+		$xml .= '<response>';
+		$xml .= '<error>0</error>';
+		$xml .= '</response>';
+		
+		return $xml;
+	}
+	
+	// VERSIONS
+	
+	/**
+	 * Revert to title and text of a previous version
+	 *
+	 * @param int $version_id 
+	 * @return bool True if successful
+	 */
+	public function revertVersion($version_id){
+		if(empty($version_id)){ return false; }
+		if(!$version_id = intval($version_id)){ return false; }
+		
+		$version = $this->getRow('versions', $version_id);
+		
+		if(empty($version)){ return false; }
+		
+		if(!empty($version['post_id'])){
+			$post = new Post($version['post_id']);
+			$fields = array('post_title' => $version['version_title'],
+				'post_text_raw' => $version['version_text_raw']);
+			return $post->updateFields($fields, null, false);
+		}
+		elseif(!empty($version['page_id'])){
+			$page = new Page($version['page_id']);
+			$fields = array('page_title' => $version['version_title'],
+				'page_text_raw' => $version['version_text_raw']);
+			return $page->updateFields($fields, null, false);
+		}
 	}
 	
 	// TABLE COUNTING
