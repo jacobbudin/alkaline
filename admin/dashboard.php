@@ -64,9 +64,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	<div class="span-6 prepend-top last">
 		<h3>Hello</h3>
-		
 		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
-		
+
 		<h3>Census</h3>
 		<table class="census">
 			<?php
@@ -76,15 +75,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			}
 			?>
 		</table>
-		
+
 		<h3>Alkaline</h3>
 		<p>You are running Alkaline <?php echo Alkaline::version; ?>.</p>
 	</div>
 </div>
 
-<hr />
-
-<div class="span-24 last">
+<div class="span-24 prepend-top last">
 	<div class="actions">
 		<a href="<?php echo BASE . ADMIN . 'atom' . URL_CAP; ?>"><button>Subscribe</button></a>
 	</div>

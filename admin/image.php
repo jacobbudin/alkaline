@@ -119,7 +119,7 @@ if(!$image = @$images->images[0]){
 
 $comment_count = count($comments);
 if($comment_count > 0){
-	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '"><button>View ' . $alkaline->returnCount($comment_count, 'comments') . ' (' . $comment_count . ')</button></a>';
+	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '"><button>View ' . $alkaline->returnCount($comment_count, 'comment') . ' (' . $comment_count . ')</button></a>';
 }
 else{
 	$comment_action = '';
@@ -167,7 +167,7 @@ else{
 <div class="span-24 last">
 	<form action="" method="post">
 		<div class="span-15 append-1">
-			<img src="<?php echo $image['image_src_admin']; ?>" alt="" width="590" />
+			<img src="<?php echo $image['image_src_admin']; ?>" alt="" />
 			<input type="text" id="image_title" name="image_title" placeholder="Title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
 			<textarea id="image_description_raw" name="image_description_raw" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
 		</div>

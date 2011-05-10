@@ -278,12 +278,7 @@ if(empty($extension_id)){
 			}
 			echo '<br /><span class="quiet">' . $extension['extension_description'] . '</span></td>';
 			echo '<td class="center">';
-			if($extension['extension_status'] == 1){
-				echo 'Enabled';
-			}
-			else{
-				echo 'Disabled';
-			}
+			echo (($extension['extension_status'] == 1) ? 'Enabled' : 'Disabled');
 			echo '</td>';
 			echo '<td class="center">' . $extension['extension_version'] . '</td>';
 			if(!empty($extension['extension_build_latest'])){

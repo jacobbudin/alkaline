@@ -25,7 +25,11 @@ a:hover, a:active{
 
 hr{
 	height: 1px;
-	margin-bottom: 2.5em;
+}
+
+hr.invisible{
+	background-color: transparent;
+	color: transparent;
 }
 
 textarea{
@@ -150,7 +154,7 @@ img.frame_mini{
 	float: right;
 	height: 35px;
 	width: 35px;
-	margin: .2em .2em .2em 1em;
+	margin: .2em 0;
 	-moz-box-shadow: 0 0 2px #aaa;
 	-webkit-box-shadow: 0 0 2px #aaa;
 	border-radius: 4px;
@@ -192,15 +196,26 @@ table.census a{
 }
 
 td.status1{
-	border-top: 5px #ddd solid;
+	padding-left: 20px;
 }
 
 td.status0{
-	border-top: 5px #00b506 solid;
+	background: transparent url(../images/icons/new.png) 7px 1em no-repeat;
+	padding-left: 20px;
 }
 
 td.status-1{
-	border-top: 5px #b50202 solid;
+	background: transparent url(../images/icons/spam.png) 7px 1em no-repeat;
+	opacity: 0.4;
+	-moz-opacity: 0.4;
+	filter:alpha(opacity=40);
+	padding-left: 20px;
+}
+
+.info_bar{
+	float: right;
+	color: #999;
+	margin-top: -1.25em;
 }
 
 #panels{
@@ -256,7 +271,7 @@ td.status-1{
 
 #footer{
 	color: #777;
-	margin: -.5em 0 3em 0;
+	margin-bottom: 3em;
 }
 
 #footer a{ color: #777; }
@@ -457,8 +472,6 @@ span.tag{
 	padding: 0 .5em;
 }
 
-tbody tr:nth-child(even) td, tbody tr.even td { background: inherit; }
-
 .statistics_holder{
 	position: relative;
 	width: 100%;
@@ -533,6 +546,10 @@ img.ui-datepicker-trigger{
 	top: -1px;
 }
 
+#configuration table{
+	margin-bottom: 3em;
+}
+
 #footer, #footer a{
 	color: #777;
 }
@@ -542,6 +559,11 @@ img.ui-datepicker-trigger{
 	float: right;
 	text-align: right;
 	min-width: 310px;
+}
+
+td .actions{
+	margin-top: .5em;
+	min-width: 0;
 }
 
 .actions a{
@@ -610,7 +632,7 @@ ol.errors li{
 .preload{ visibility: hidden; position: absolute; top: -9999px; left: -9999px; }
 .quiet a{ color: #666; }
 .full { width: 100%; }
-textarea.code{ font-family: "Anonymous Pro", "Courier New", Courier, monospace; background-color: #eee; }
+textarea.code{ font-family: "Anonymous Pro", "Courier New", Courier, monospace; background-color: #eee; font-size: .9em; }
 textarea.serif{ font-family: Georgia, "Times New Roman", Times, serif; background-color: #eee; }
 textarea.l { font-size: 1.1em; line-height: 1.5em; }
 textarea.xl { font-size: 1.3em; line-height: 1.5em; }

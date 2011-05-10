@@ -14,8 +14,8 @@
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/print.css" type="text/css" media="print" />	
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/formalize.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen, projection" />
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/alkaline.css" type="text/css" media="screen, projection" />
-	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/smoothness/jquery-ui-1.8.11.custom.css" type="text/css" media="screen, projection" />
 	<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo BASE . JS; ?>jquery/excanvas.min.js"></script><![endif]-->
 	<link rel="shortcut icon" href="<?php echo BASE . ADMIN; ?>images/favicon.ico" />
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.5.2.min.js" type="text/javascript"></script>
@@ -38,7 +38,7 @@
 					?>
 					<div>
 						<strong>
-							<img src="<?php echo BASE . ADMIN; ?>images/icons/home.png" alt="" />
+							<img src="<?php echo BASE . ADMIN; ?>images/icons/home_top.png" alt="" />
 							<?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : ''); ?>
 						</strong> &#0160;
 						<a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>">Launch</a>
@@ -46,7 +46,7 @@
 					
 					<div>
 						<strong>
-							<img src="<?php echo BASE . ADMIN; ?>images/icons/user.png" alt="" />
+							<img src="<?php echo BASE . ADMIN; ?>images/icons/user_top.png" alt="" />
 							<?php echo $user->user['user_user']; ?>
 						</strong> &#0160;
 						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Images</a>,
