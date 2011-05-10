@@ -1823,8 +1823,8 @@ class Alkaline{
 		
 		$domain = $this->siftDomain($uri);
 		
-		$ico_file = PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.ico';
-		$png_file = PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		$ico_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.ico';
+		$png_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
 		
 		if(count($citations) == 0){
 			ini_set('default_socket_timeout', 1);
@@ -1835,8 +1835,8 @@ class Alkaline{
 			if(!preg_match('#Content-Type:\s*text/html#si', implode(' ', $http_response_header))){ return false; }
 			
 			if(!file_exists($png_file)){
-				if(!file_exists(PATH . CACHE . 'citations/favicons/')){
-					@mkdir(PATH . CACHE . 'citations/favicons/', 0777, true);
+				if(!file_exists(PATH . CACHE . 'favicons/')){
+					@mkdir(PATH . CACHE . 'favicons/', 0777, true);
 				}
 				
 				ini_set('default_socket_timeout', 1);
@@ -1932,7 +1932,7 @@ class Alkaline{
 			unset($fields['citation_id']);
 			$fields[$field] = $field_id;
 			
-			if(file_exists(PATH . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+			if(file_exists(PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png')){
 				$favicon_found = true;
 			}
 		}
@@ -1944,7 +1944,7 @@ class Alkaline{
 		}
 		
 		if(file_exists($png_file)){
-			$fields['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'citations/favicons/' . $this->makeFilenameSafe($domain) . '.png';
+			$fields['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
 		}
 		
 		return $fields;
