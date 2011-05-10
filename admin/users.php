@@ -87,6 +87,8 @@ define('TAB', 'settings');
 if(empty($user_db_id)){
 	// Update image counts
 	$alkaline->updateCounts('images', 'users', 'user_image_count');
+	$alkaline->updateCounts('posts', 'users', 'user_post_count');
+	$alkaline->updateCounts('comments', 'users', 'user_comment_count');
 	
 	$user_dbs = $alkaline->getTable('users');
 	$user_db_count = @count($user_dbs);
@@ -115,7 +117,9 @@ if(empty($user_db_id)){
 			<th>Username</th>
 			<th>Name</th>
 			<th>Email</th>
-			<th class="center">Images</th>
+			<th class="center" style="width:10%">Images</th>
+			<th class="center" style="width:10%">Posts</th>
+			<th class="center" style="width:10%">Comments</th>
 			<th>Last login</th>
 		</tr>
 		<?php
@@ -126,6 +130,8 @@ if(empty($user_db_id)){
 				echo '<td>' . $user_db['user_name'] . '</td>';
 				echo '<td><a href="mailto:' . $user_db['user_email'] . '">' . $user_db['user_email'] . '</a></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_image_count']) . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'posts' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_post_count']) . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_comment_count']) . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>Never</em>') . '</td>';
 			echo '</tr>';
 		}
