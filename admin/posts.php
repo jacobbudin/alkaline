@@ -267,19 +267,23 @@ if(empty($post_id)){
 		<table>
 			<tr>
 				<th>Title</th>
-				<th></th>
 				<th class="center">Views</th>
 				<th class="center">Words</th>
 				<th>Created</th>
 				<th>Last modified</th>
 			</tr>
 			<?php
+			
+			$now = time();
 
 			foreach($posts->posts as $post){
 				echo '<tr class="ro">';
-					echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($post['post_text']), 150) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
+					echo '<td class="status';
+					echo ((empty($post['post_published']) or (strtotime($post['post_published']) > $now)) ? '0' : '1');
+					echo '">';
+					echo '<div class="actions"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></div>';
+					echo '<strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($post['post_text']), 150) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
 						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
-					echo '<td class="center"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
@@ -325,6 +329,7 @@ else{
 	$posts = new Post($post_id);
 	$posts->getVersions();
 	$posts->getRelated();
+	$posts->getTrackbacks();
 	$posts->getCitations();
 	$posts->formatTime();
 	
@@ -453,6 +458,38 @@ else{
 					</table>
 				</div>
 				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show trackbacks</a> <span class="quiet">(<span id="citation_count"><?php echo count($posts->trackbacks); ?></span>)</span>
+				</p>
+				
+				<div class="reveal">
+					<table id="trackbacks">
+						<?php
+						
+						foreach($posts->trackbacks as $trackback){
+							echo '<tr><td style="width:16px;">';
+							if(!empty($trackback['trackback_favicon_uri'])){
+								echo '<img src="' . $trackback['trackback_favicon_uri'] . '" height="16" width="16" alt="" id="trackback-' . $trackback['trackback_id'] . '" />';
+							}
+							echo '</td><td>';
+							echo '<a href="' . $trackback['trackback_uri'] . '" title="';
+							if(!empty($trackback['trackback_excerpt'])){
+								echo $trackback['trackback_excerpt'];
+							}
+							echo '" class="tip" target="_new">&#8220;' . $trackback['trackback_title'] . '&#8221;</a>';
+							if(!empty($trackback['trackback_blog_name'])){
+								echo ' <span class="quiet">(' . $trackback['trackback_blog_name'] . ')</span>';
+							}
+							else{
+								echo ' <span class="quiet">(' . $alkaline->siftDomain($trackback['trackback_uri']) . ')</span>';
+							}
+							echo '</td></tr>';
+						}
+						
+						?>
+					</table>
+				</div>
+				
 				<p>
 					<span class="switch">&#9656;</span> <a href="#" class="show">Display related posts</a> <span class="quiet">(<?php echo $posts->related->post_count; ?>)</span>
 				</p>
@@ -562,7 +599,7 @@ else{
 				echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
 			}
 
-			?>
+			?><br /><br />
 		</div>
 		<p>
 			<input type="hidden" id="post_id" name="post_id" value="<?php echo $post['post_id']; ?>" />
