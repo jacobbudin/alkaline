@@ -56,7 +56,7 @@ class Comment extends Alkaline{
 		// Create a Cache_Lite object
 		$cache = new Cache_Lite($options);
 		
-		if(($comments = $cache->get('comments:' . implode(',', $this->image_ids), 'comments')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+		if(($comments = $cache->get('comments:' . implode(',', $this->comment_ids), 'comments')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
 			$this->comments = unserialize($comments);
 		}
 		else{
