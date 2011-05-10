@@ -1,0 +1,58 @@
+<hr />
+
+<div id="post" class="span-24 last">
+	<div class="span-14 last">
+	{block:Posts}
+		<div class="datetime">{Post_Created|reltime}</div>
+		<h2>{Post_Title}</h2>
+
+		{Post_Text}
+		
+		{Post_RDF}
+		
+		<hr />
+		
+		{if:Comments}
+			<table>
+			{block:Comments}
+				<tr>
+					<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<p class="quiet">{if:Comment_Author_Name}&#8212; {Comment_Author_Name}, {/if:Comment_Author_Name}{Comment_Created|reltime}</p></td>
+				</tr>
+			{/block:Comments}
+			</table>
+		{else:Comments}
+			{if:Post_Comment_Disabled}
+			{else:Post_Comment_Disabled}
+				<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
+			{/if:Post_Comment_Disabled}
+		{/if:Comments}
+		{if:Post_Comment_Disabled}
+			<p>Comments have been disabled for this post.</p>
+		{else:Post_Comment_Disabled}
+			<hr />
+			<table class="comments">
+				<tr>
+					<td class="right">Author:</td>
+					<td>{Post_Comment_Author_Name}</td>
+				</tr>
+				<tr>
+					<td class="right">Email:</td>
+					<td>{Post_Comment_Author_Email}</td>
+				</tr>
+				<tr>
+					<td class="right">URL:</td>
+					<td>{Post_Comment_Author_Uri}</td>
+				</tr>
+				<tr>
+					<td class="right">Comment:</td>
+					<td>{Post_Comment_Text}</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>{Post_Comment_Submit}</td>
+				</tr>
+			</table>
+		{/if:Post_Comment_Disabled}
+	{/block:Posts}
+	</div>
+</div>

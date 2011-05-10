@@ -1,0 +1,19 @@
+<hr />
+
+<h2><em>Collections</em></h2>
+
+<div class="span-24 last">
+	{block:Sets}
+	<div class="span-8 {if:Set_Sequence}{Set_Sequence}{/if:Set_Sequence}">
+		<h6><a href="{Set_URI}">{Set_Title}</a> ({Set_Image_Count} images)</h6>
+		{if:Images}
+		{block:Images}
+			<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="frame" height="45" width="45" /></a>
+		{/block:Images}
+		{/if:Images}
+		<p>
+			{Set_Description|fit250}
+		</p>
+	</div>
+	{/block:Sets}
+</div>

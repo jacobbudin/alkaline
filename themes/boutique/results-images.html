@@ -1,0 +1,16 @@
+{if:Images}
+	{block:Images}
+		<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="frame" style="margin-right:3px" /></a>
+	{/block:Images}<br />
+{else:Images}
+	<p class="big"><em>No images matched your search criteria.</em></p>
+{/if:Images}
+
+{if:Images}
+	<div class="span-16 prepend-top">
+		{if:Page_Count}<em>You are currently on page {Page_Current} of {Page_Count}.</em>{/if:Page_Count}
+	</div>
+	<div class="span-8 right last">
+		&#0160;{if:Page_Next}<div class="ribbon_outer"><p class="ribbon"><a href="{Page_Next_URI}">Continue browsing</a></p></div>{/if:Page_Next}
+	</div>
+{/if:Images}
