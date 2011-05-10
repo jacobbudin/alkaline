@@ -1311,7 +1311,7 @@ $(document).ready(function(){
 		
 		$('#act_do').click(function(event){
 			if(count == 0){
-				alert('Select at least one image to perform an action.');
+				addNote('Select at least one image to perform an action.', 'error');
 				event.preventDefault();
 			}
 		});
@@ -1459,6 +1459,17 @@ $(document).ready(function(){
 		});
 	
 		$(".tickLabels").css('font-size', '');
+	}
+	
+	// COMMENTS
+	
+	if(page == 'Comment'){
+		$('#comment_spam').click(function(){
+			checked = $(this).attr('checked');
+			if(checked == true){
+				$('#comment_delete').attr('checked', 'checked');
+			}
+		});
 	}
 	
 	// STATISTICS
