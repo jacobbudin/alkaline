@@ -21,11 +21,11 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 928;
+	const build = 982;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
-	const version = '1.0.2';
+	const version = '1.0.3';
 	
 	public $db_type;
 	public $db_version;
