@@ -195,7 +195,7 @@ class User extends Alkaline{
 				$_SESSION['alkaline']['destination'] = $this->location();
 				session_write_close();
 				
-				header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
+				header('Location: ' . LOCATION . BASE . ADMIN . 'login' . URL_CAP);
 				exit();
 			}
 			else{
