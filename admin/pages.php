@@ -185,6 +185,9 @@ else{
 			<div class="span-15 append-1">
 				<input type="text" id="page_title" name="page_title" placeholder="Title" <?php if(empty($post['page_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$page['page_title']; ?>" class="title notempty" />
 				<textarea id="page_text_raw" name="page_text_raw" placeholder="Text" style="height: 500px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$page['page_text_raw']; ?></textarea>
+				<p class="info_bar">
+					
+				</p>
 				<p class="slim">
 					<span class="switch">&#9656;</span> <a href="#" class="show">Show page&#8217;s excerpt</a>
 				</p>

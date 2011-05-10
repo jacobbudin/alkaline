@@ -380,6 +380,10 @@ else{
 				<input type="text" id="post_title" name="post_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$post['post_title']; ?>" class="title notempty" />
 				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 400px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
 				
+				<p class="info_bar">
+					
+				</p>
+				
 				<p class="slim">
 					<span class="switch">&#9656;</span> <a href="#" class="show">Show post&#8217;s excerpt</a>
 				</p>

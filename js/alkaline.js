@@ -963,10 +963,95 @@ $(document).ready(function(){
 		field = page.toLowerCase() + '_id';
 		text_raw = $('#' + page.toLowerCase() + '_text_raw');
 		look_for_uri = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.])(?:[^\s()<>]+|\([^\s()<>]+\))+(?:\([^\s()<>]+\)|[^`!()\[\]{};:'".,<>?«»“”‘’\s]))/gi;
+		// Count words
+		contents = text_raw.val();
 		
-		text_raw.keydown(function(event){
-			if(event.which != 13){ return; }
+		chars = parseInt(contents.length);
+		chars = chars.toLocaleString();
+		contents = contents.trim();
+		words = contents.match(/\s+/gi);
+		if(!empty(words)){
+			words = parseInt(words.length + 1);
+			words = words.toLocaleString();
+		}
+		else{
+			if(empty(contents)){
+				words = 0;
+			}
+			else{
+				words = 1;
+			}
+		}
+		
+		paras = contents.match(/\n{2,}/gi);
+		if(!empty(paras)){
+			paras = parseInt(paras.length + 1);
+			paras = paras.toLocaleString();
+		}
+		else{
+			if(empty(contents)){
+				paras = 0;
+			}
+			else{
+				paras = 1;
+			}
+		}
+
+		$('.info_bar').text(chars + ' characters, ' + words + ' words, ' + paras + ' paragraphs');
+		
+		$('#trackbacks img').hover(function() {
+			recall_src = $(this).attr('src');
+			$(this).attr('src', BASE + ADMIN + 'images/icons/trash.png');
+			$(this).css('cursor', 'pointer');
+		}, function() {
+			$(this).attr('src', recall_src);
+			$(this).css('cursor', '');
+		});
+		
+		$('#trackbacks img').click(function(){
+			id = $(this).attr('id');
+			id = findID(id);
+			$(this).parents('tr').fadeOut();
+			$.post(BASE + ADMIN + 'tasks/delete-trackback.php', {id: id});
+		});
+		
+		text_raw.keyup(function(event){
+			// Count words
 			contents = text_raw.val();
+
+			chars = parseInt(contents.length);
+			chars = chars.toLocaleString();
+			contents = contents.trim();
+			words = contents.match(/\s+/gi);
+			if(!empty(words)){
+				words = parseInt(words.length + 1);
+				words = words.toLocaleString();
+			}
+			else{
+				if(empty(contents)){
+					words = 0;
+				}
+				else{
+					words = 1;
+				}
+			}
+
+			paras = contents.match(/\n{2,}/gi);
+			if(!empty(paras)){
+				paras = parseInt(paras.length + 1);
+				paras = paras.toLocaleString();
+			}
+			else{
+				if(empty(contents)){
+					paras = 0;
+				}
+				else{
+					paras = 1;
+				}
+			}
+			$('.info_bar').text(chars + ' characters, ' + words + ' words, ' + paras + ' paragraphs');
+			
+			if(event.which != 13){ return; }
 			uris = look_for_uri.exec(contents);
 			if(!empty(uris)){
 				for (var i = uris.length - 1; i >= 1; i--){
