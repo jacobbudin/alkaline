@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>6b7723dbb6a0b09d362dd012796a2e97cf7b5b91</uid>
+	<file>dropbox</file>
+	<class>Dropbox</class>
+	<title>Dropbox</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Downloads files from Dropbox.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>
