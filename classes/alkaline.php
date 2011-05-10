@@ -634,7 +634,7 @@ class Alkaline{
 	 * @return string Subject output
 	 */
 	public function replaceVar($var, $replacement, $subject){
-		return preg_replace('#^\s*' . str_replace('$', '\$', $var) . '\s*=(.*)$#mi', $replacement, $subject);
+		return preg_replace('#^\s*' . str_replace('$', '\$', $var) . '\s*=(.*)$#mi', str_replace('\\', '\\\\', $replacement), $subject);
 	}
 	
 	// TYPE CONVERSION

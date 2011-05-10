@@ -33,18 +33,34 @@ else{
 define('BASE', '/' . $dir);
 define('FOLDER_PREFIX', '');
 
-define('ADMIN', FOLDER_PREFIX . 'admin/');
-define('CACHE', FOLDER_PREFIX . 'cache/');
-define('CLASSES', FOLDER_PREFIX . 'classes/');
-define('DB', FOLDER_PREFIX . 'db/');
-define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
-define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
-define('INCLUDES', FOLDER_PREFIX . 'includes/');
-define('JS', FOLDER_PREFIX . 'js/');
-define('IMAGES', FOLDER_PREFIX . 'images/');
-define('INSTALL', FOLDER_PREFIX . 'install/');
-define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
-define('THEMES', FOLDER_PREFIX . 'themes/');
+if(SERVER_TYPE == 'win'){
+	define('ADMIN', FOLDER_PREFIX . 'admin\\');
+	define('CACHE', FOLDER_PREFIX . 'cache\\');
+	define('CLASSES', FOLDER_PREFIX . 'classes\\');
+	define('DB', FOLDER_PREFIX . 'db\\');
+	define('EXTENSIONS', FOLDER_PREFIX . 'extensions\\');
+	define('FUNCTIONS', FOLDER_PREFIX . 'functions\\');
+	define('INCLUDES', FOLDER_PREFIX . 'includes\\');
+	define('JS', FOLDER_PREFIX . 'js\\');
+	define('IMAGES', FOLDER_PREFIX . 'images\\');
+	define('INSTALL', FOLDER_PREFIX . 'install\\');
+	define('SHOEBOX', FOLDER_PREFIX . 'shoebox\\');
+	define('THEMES', FOLDER_PREFIX . 'themes\\');
+}
+else{
+	define('ADMIN', FOLDER_PREFIX . 'admin/');
+	define('CACHE', FOLDER_PREFIX . 'cache/');
+	define('CLASSES', FOLDER_PREFIX . 'classes/');
+	define('DB', FOLDER_PREFIX . 'db/');
+	define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
+	define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
+	define('INCLUDES', FOLDER_PREFIX . 'includes/');
+	define('JS', FOLDER_PREFIX . 'js/');
+	define('IMAGES', FOLDER_PREFIX . 'images/');
+	define('INSTALL', FOLDER_PREFIX . 'install/');
+	define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
+	define('THEMES', FOLDER_PREFIX . 'themes/');	
+}
 
 require_once(PATH . CLASSES . 'alkaline.php');
 
@@ -239,7 +255,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		// Add admin thumbnails
 		
 		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
-		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
+		$query->execute(array('Dashboard (L)', 'admin',  590, 590, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
 		$query->execute(array('Large', 'large', 950, 950, 'scale', '_l'));
 		$query->execute(array('Medium', 'medium', 270, 270, 'scale', '_m'));
