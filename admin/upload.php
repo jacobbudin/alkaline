@@ -12,6 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $user = new User;
+$orbit = new Orbit();
 
 // cliqcliq Quickpic support
 if(isset($_REQUEST['context']) and ($_REQUEST['context'] == sha1(PATH . BASE . DB_DSN . DB_TYPE))){
@@ -33,6 +34,8 @@ if(isset($_REQUEST['context']) and ($_REQUEST['context'] == sha1(PATH . BASE . D
 }
 
 $user->perm(true, 'upload');
+
+$orbit->hook('shoebox');
 
 if(!empty($_FILES)){
 	$filename = $_FILES['user_file']['name'][0];
@@ -58,10 +61,11 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 
 ?>
 
+<div class="actions">Done uploading? <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
+
 <div class="span-24 last">
-	<div class="span-18 colborder">
-			<div class="actions">Done uploading? <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
-		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
+	<div class="span-18 append-1">
 		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
 			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
 				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
@@ -73,10 +77,7 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 			<?php } ?>
 		</form>
 	</div>
-	<div class="span-5 last">
-		<div id="progress">
-		</div>
-		
+	<div class="span-5 append-top last">
 		<h3>Status</h3>
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
