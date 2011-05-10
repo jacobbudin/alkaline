@@ -153,6 +153,7 @@ if(empty($page_id)){
 }
 else{
 	$pages = new Page($page_id);
+	$pages->getCitations();
 	$pages->getVersions();
 	$page = $pages->pages[0];
 	$page = $alkaline->makeHTMLSafe($page);
@@ -207,6 +208,45 @@ else{
 					<span class="quiet"><?php echo 'page' . URL_ID; ?><span id="page_title_url_link"></span></span>
 				</p>
 				
+					<p>
+						<span class="switch">&#9656;</span> <a href="#" class="show">Show citations</a> <span class="quiet">(<span id="citation_count"><?php echo count($pages->citations); ?></span>)</span>
+					</p>
+
+					<div class="reveal">
+						<table id="citations">
+							<?php
+
+							foreach($pages->citations as $citation){
+								echo '<tr><td style="width:16px;">';
+								if(!empty($citation['citation_favicon_uri'])){
+									echo '<img src="' . $citation['citation_favicon_uri'] . '" height="16" width="16" alt="" />';
+								}
+								echo '</td><td>';
+								echo '<a href="';
+								if(!empty($citation['citation_uri'])){
+									echo $citation['citation_uri'];
+								}
+								else{
+									echo $citation['citation_uri_requested'];
+								}
+								echo '" title="';
+								if(!empty($citation['citation_description'])){
+									echo $citation['citation_description'];
+								}
+								echo '" class="tip" target="_new">&#8220;' . $citation['citation_title'] . '&#8221;</a>';
+								if(!empty($citation['citation_site_name'])){
+									echo ' <span class="quiet">(' . $citation['citation_site_name'] . ')</span>';
+								}
+								else{
+									echo ' <span class="quiet">(' . $alkaline->siftDomain($citation['citation_uri_requested']) . ')</span>';
+								}
+								echo '</td></tr>';
+							}
+
+							?>
+						</table>
+					</div>
+				
 				<hr />
 				
 				<table>
@@ -245,7 +285,7 @@ else{
 				
 				$i = 0;
 				
-				foreach($posts->versions as $version){
+				foreach($pages->versions as $version){
 					$i++;
 					$similarity = $version['version_similarity'];
 					
@@ -299,10 +339,15 @@ else{
 				echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
 			}
 		
-			?>
+			?><br /><br />
 		</div>
 		
-		<p><input type="hidden" name="page_id" value="<?php echo $page['page_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
+		<input type="hidden" id="page_id" name="page_id" value="<?php echo $page['page_id']; ?>" />
+		<input type="hidden" id="page_citations" name="page_citations" value="<?php foreach($pages->citations as $citation){ echo $citation['citation_uri_requested']; } ?>" />
+		
+		<p>
+			<input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+		</p>
 	</form>
 
 	<?php
