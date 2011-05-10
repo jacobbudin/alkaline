@@ -201,6 +201,111 @@ class Orbit extends Alkaline{
 	}
 	
 	/**
+	 * Store task for consecutive execution
+	 *
+	 * @param callback $callback 
+	 * @return void
+	 */
+	public function storeTask($callback){
+		if(is_array($callback)){
+			list($class, $method) = $callback;
+			if(is_object($class)){
+				$class = get_class($class);
+				$callback = array($class, $method);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		// Find arguments
+		$arguments = func_get_args();
+		$arguments = array_slice($arguments, 1);
+		
+		if(!isset($_SESSION['alkaline']['tasks'])){
+			$_SESSION['alkaline']['tasks'] = 1;
+		}
+		
+		++$_SESSION['alkaline']['tasks'];
+		
+		if(!file_exists(PATH . CACHE . 'tasks/')){
+			@mkdir(PATH . CACHE . 'tasks/', 0777, true);
+		}
+		
+		$contents = array($callback, $arguments);
+		
+		file_put_contents(PATH . CACHE . 'tasks/' . md5(DB_DSN . PATH . $_SESSION['alkaline']['tasks']), serialize($contents));
+	}
+	
+	/**
+	 * Execute stored task
+	 *
+	 * @param int $id Task ID
+	 * @return bool True if successful
+	 */
+	public function executeTask($id){
+		$path = PATH . CACHE . 'tasks/' . md5(DB_DSN . PATH . $id);
+		if(file_exists($path)){
+			$contents = file_get_contents($path, false);
+		}
+		else{
+			$contents = false;
+		}
+		
+		if($contents === false){
+			if($id == $_SESSION['alkaline']['tasks']){
+				unset($_SESSION['alkaline']['tasks']);
+			}
+			return false;
+		}
+		
+		list($callback, $arguments) = unserialize($contents);
+		list($class, $method) = $callback;
+		
+		if(!empty($this->extensions)){
+			foreach($this->extensions as $extension){
+				if($extension['extension_class'] == $class){
+					require_once($extension['extension_file']);
+					if(method_exists($class, $method)){
+						$orbit = new $class();
+						$return = call_user_func_array(array($orbit, $method), $arguments);
+					}
+				}
+			}
+		}
+		
+		if($return === false){
+			return false;
+		}
+		
+		if($id == $_SESSION['alkaline']['tasks']){
+			unset($_SESSION['alkaline']['tasks']);
+		}
+		
+		@unlink($path);
+		return true;
+	}
+	
+	/**
+	 * Prompt JavaScript initiation of tasks
+	 *
+	 * @return void
+	 */
+	public function promptTasks(){
+		$tasks = array();
+		
+		if(empty($_SESSION['alkaline']['tasks'])){ return; }
+		
+		$count = $_SESSION['alkaline']['tasks'];
+		
+		for($i=1; $i <= $count; $i++){
+			$tasks[] = $i;
+		}
+		
+		return '<div id="alkaline_tasks" class="none">' . json_encode($tasks) . '</div>';
+	}
+	
+	/**
 	 * Execute Orbit hook
 	 *
 	 * @param string $hook Hook name

@@ -209,7 +209,8 @@ function empty(mixed_var){
     return false;
 }
 
-function imageArray(input){
+function imageArray(task, input){
+	$('#progress').slideDown();
 	image_count = input.length;
 	progress = 0;
 	progress_step = 100 / input.length;
@@ -225,7 +226,9 @@ function imageArray(input){
 			    cache: false,
 			    success: function(data)
 			    {
-			        appendImage(data);
+					if(!empty(data.image_id)){
+						appendImage(data);
+					}
 					updateProgress();
 			    }
 			});
@@ -245,15 +248,30 @@ function imageArray(input){
 			});
 		}
 	}
+	else{
+		for(item in input){
+			$.ajaxq("default", {
+				type: "POST",
+			    url: BASE + ADMIN + "tasks/" + task + ".php",
+				data: { image_id: input[item] },
+			    cache: false,
+			    success: function(data)
+			    {
+			        updateMaintProgress(false);
+			    }
+			});
+		}
+	}
 }
 
-function updateMaintProgress(){
+function updateMaintProgress(redirect){
 	if(!empty(progress_step)){
 		progress += progress_step;
 	}
 	progress_int = parseInt(progress);
 	$("#progress").progressbar({ value: progress_int });
 	if(progress > 99.99999){
+		if(redirect === false){ $("#progress").slideUp(); return; }
 		$.ajaxq("default", {
 			type: "POST",
 		    url: BASE + ADMIN + "tasks/add-notification.php",
@@ -261,7 +279,7 @@ function updateMaintProgress(){
 		    cache: false,
 		    success: function(data)
 		    {
-		        window.location = BASE + ADMIN;
+				window.location = BASE + ADMIN;
 		    }
 		});
 	}
@@ -372,21 +390,26 @@ function updateProgress(val){
 	}
 }
 
-function executeTask(){
-	$.ajax({
-		url: BASE + ADMIN + "tasks/" + task + ".php",
-		cache: false,
-		error: function(data){ alert(data); },
-		dataType: "json",
-		success: function(data){
-			if(empty(data)){
-				progress = 100; updateMaintProgress();
+function executeTask(task, data){
+	if(empty(data)){
+		$.ajax({
+			url: BASE + ADMIN + "tasks/" + task + ".php",
+			cache: false,
+			error: function(data){ alert(data); },
+			dataType: "json",
+			success: function(data){
+				if(empty(data)){
+					progress = 100; updateMaintProgress();
+				}
+				else{
+					imageArray(task, data);
+				}
 			}
-			else{
-				imageArray(data);
-			}
-		}
-	});
+		});
+	}
+	else{
+		imageArray(task, data);
+	}
 	
 	$("#tasks").slideUp(500);
 	$("#note").slideUp(500);
@@ -510,6 +533,21 @@ $(document).ready(function(){
 				$(this).hide();
 			}
 		});
+	}
+	
+	
+	// TASKS & DEFAULT PROGRESS BAR
+	
+	if($('#progress').length == 0){
+		$('#content').prepend('<p id="progress"></p>');
+		$("#progress").progressbar({ value: 0 }).hide();
+	}
+	
+	orbit_tasks = $('#alkaline_tasks').text();
+	
+	if(!empty(orbit_tasks)){
+		orbit_tasks = $.evalJSON(orbit_tasks);
+		executeTask('execute-orbit-tasks', orbit_tasks);
 	}
 	
 	if($(document).has('ul#slideshow').length){
@@ -818,7 +856,6 @@ $(document).ready(function(){
 		var upload_count = 0;
 		var upload_count_text;
 		var no_of_files;
-		$("#progress").hide(0);
 		$("#upload").html5_upload({
 			url: BASE + ADMIN + 'upload.php',
 			sendBoundary: window.FormData || $.browser.mozilla,
@@ -1094,18 +1131,17 @@ $(document).ready(function(){
 	// MAINTENANCE
 	
 	if(page == 'Maintenance'){
-		$("#progress").hide(0);
 		url = location.href;
 		task_in_url = /\#([a-z0-9_\-]+)$/i;
 		task = url.match(task_in_url);
 		if(!empty(task)){
 			task = task[1];
-			executeTask();
+			executeTask(task);
 		}
 		$("#tasks a").click(function(event){
 			if($(this).attr("href").slice(0,1) == '#'){
 				task = $(this).attr("href").slice(1);
-				executeTask();
+				executeTask(task);
 			}
 		});
 	}
@@ -1113,8 +1149,7 @@ $(document).ready(function(){
 	// SHOEBOX
 	
 	if(page == 'Shoebox'){
-		task = 'add-images';
-		executeTask();
+		executeTask('add-images');
 		
 		$("#shoebox_add").attr("disabled", "disabled");
 		$("#progress").progressbar({ value: 0 });
