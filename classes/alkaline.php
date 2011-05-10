@@ -1618,7 +1618,7 @@ class Alkaline{
 		$result_id_field = $this->tables[$result_table];
 		
 		// Get count
-		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
+		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id AND ' . substr($count_id_field, 0, -2) . 'deleted IS NULL;');
 		
 		if(!$query->execute(array(':result_id' => $result_id))){
 			return false;
@@ -1655,7 +1655,7 @@ class Alkaline{
 		$results = $this->getTable($result_table);
 		
 		// Get count
-		$select = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
+		$select = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id AND ' . substr($count_id_field, 0, -2) . 'deleted IS NULL;');
 		
 		// Update row
 		$update = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = :result_id;');
@@ -1700,6 +1700,7 @@ class Alkaline{
 		unset($tables['versions']);
 		unset($tables['citations']);
 		unset($tables['items']);
+		unset($tables['trackbacks']);
 		
 		if(Alkaline::edition == 'standard'){ unset($tables['users']); }
 		
