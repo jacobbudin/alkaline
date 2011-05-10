@@ -19,7 +19,7 @@ else{
 	$path = explode('\\', __FILE__);
 	$path = array_splice($path, 1, -2);
 	$path = implode('\\', $path);
-	define('PATH', $path . '\\');
+	define('PATH', '\\' . $path . '\\');
 }
 
 preg_match_all('#(?:/)?(.*)/(?:.*)install#si', $_SERVER['SCRIPT_NAME'], $matches);
@@ -82,7 +82,7 @@ if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
 if($alkaline->checkPerm(PATH . CACHE) != '0777'){
 	$alkaline->addNote('Cache (cache/) folder is not writable (CHMOD 777).', 'error');
 }
-if($alkaline->checkPerm(PATH . 'config.json') != '0777'){
+if(($alkaline->checkPerm(PATH . 'config.json') != '0777') and (SERVER_TYPE != 'win')){
 	$alkaline->addNote('Configuration (config.json) file is not writable (CHMOD 777).', 'error');
 }
 if($alkaline->checkPerm(PATH . 'config.php') == '0777'){
@@ -101,11 +101,11 @@ if(@$_POST['install'] == 'Install'){
 		$alkaline->addNote('Cannot find configuration file.', 'error');
 	}
 	
-	$config = $alkaline->replaceVar('$base', '$base = \'' . $_POST['install_base'] . '\';', $config);
-	$config = $alkaline->replaceVar('$path', '$path = \'' . $_POST['install_path'] . '\';', $config);
+	$config = $alkaline->replaceVar('$base', $_POST['install_base'], $config);
+	$config = $alkaline->replaceVar('$path', $_POST['install_path'], $config);
 	
 	if($_POST['install_server'] == 'win'){
-		$config = $alkaline->replaceVar('$server_type', '$server_type = \'win\';', $config);
+		$config = $alkaline->replaceVar('$server_type', 'win', $config);
 	}
 	
 	if($_POST['install_db_type'] == 'mysql'){
@@ -131,10 +131,10 @@ if(@$_POST['install'] == 'Install'){
 		
 		$dsn .= 'dbname=' . $_POST['install_db_name'];
 		
-		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
-		$config = $alkaline->replaceVar('$db_type', '$db_type = \'mysql\';', $config);
-		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $username . '\';', $config);
-		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $password . '\';', $config);
+		$config = $alkaline->replaceVar('$db_dsn', $dsn, $config);
+		$config = $alkaline->replaceVar('$db_type', 'mysql', $config);
+		$config = $alkaline->replaceVar('$db_user', $username, $config);
+		$config = $alkaline->replaceVar('$db_pass', $password, $config);
 	}
 	elseif($_POST['install_db_type'] == 'sqlite'){
 		if(!empty($_POST['install_db_file'])){
@@ -160,8 +160,8 @@ if(@$_POST['install'] == 'Install'){
 		
 		$dsn = 'sqlite:' . $path;
 		
-		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
-		$config = $alkaline->replaceVar('$db_type', '$db_type = \'sqlite\';', $config);
+		$config = $alkaline->replaceVar('$db_dsn', $dsn, $config);
+		$config = $alkaline->replaceVar('$db_type', 'sqlite', $config);
 		
 		if($alkaline->checkPerm($path) != '0777'){
 			$alkaline->addNote('Your SQLite database is not writable (CHMOD 777).', 'error');
@@ -190,14 +190,14 @@ if(@$_POST['install'] == 'Install'){
 		
 		$dsn .= 'dbname=' . $_POST['install_db_name'];
 		
-		$config = $alkaline->replaceVar('$db_dsn', '$db_dsn = \'' . $dsn . '\';', $config);
-		$config = $alkaline->replaceVar('$db_type', '$db_type = \'pgsql\';', $config);
-		$config = $alkaline->replaceVar('$db_user', '$db_user = \'' . $username . '\';', $config);
-		$config = $alkaline->replaceVar('$db_pass', '$db_pass = \'' . $username . '\';', $config);
+		$config = $alkaline->replaceVar('$db_dsn', $dsn, $config);
+		$config = $alkaline->replaceVar('$db_type', 'pgsql', $config);
+		$config = $alkaline->replaceVar('$db_user', $username, $config);
+		$config = $alkaline->replaceVar('$db_pass', $password, $config);
 	}
 	
 	if(!empty($_POST['install_db_prefix'])){
-		$config = $alkaline->replaceVar('$table_prefix', '$table_prefix = \'' . $_POST['install_db_prefix'] . '\';', $config);
+		$config = $alkaline->replaceVar('$table_prefix', $_POST['install_db_prefix'], $config);
 	}
 }
 
@@ -288,7 +288,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	
 	<p>Once you&#8217;re done, <a href="<?php echo BASE . ADMIN; ?>">log in to access your Dashboard</a>.</p>
 	
-	<textarea style="height: 30em;" class="code"><?php echo $config; ?></textarea>
+	<textarea style="height: 30em;" class="code"><?php echo addslashes($config); ?></textarea>
 	
 	<?php
 }

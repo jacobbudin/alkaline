@@ -139,8 +139,10 @@ class Alkaline{
 						$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
 						$this->db->sqliteCreateFunction('SIN', 'sin', 1);
 					}
-				
-					$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
+					
+					if(is_object($this->db)){
+						$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
+					}
 				}
 			}
 		}
@@ -634,7 +636,8 @@ class Alkaline{
 	 * @return string Subject output
 	 */
 	public function replaceVar($var, $replacement, $subject){
-		return preg_replace('#^\s*' . str_replace('$', '\$', $var) . '\s*=(.*)$#mi', str_replace('\\', '\\\\', $replacement), $subject);
+		$replacement = str_replace('\\', '\\\\\\\\', $replacement);
+		return preg_replace('#^\s*(' . str_replace('$', '\$', $var) . ')\s*=(.*)$#mi', '\\1 = \'' . $replacement . '\';', $subject);
 	}
 	
 	// TYPE CONVERSION
