@@ -92,7 +92,7 @@ if(!empty($_POST['comment_id'])){
 		}
 	}
 	
-	if(@$_POST['comment_delete'] == 'delete'){
+	if(isset($_POST['comment_delete']) and ($_POST['comment_delete'] == 'delete')){
 		if($comment->delete()){
 			$alkaline->addNote('The comment has been deleted.', 'success');
 		}
@@ -114,7 +114,7 @@ if(!empty($_POST['comment_id'])){
 			$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
 		}
 	}
-	elseif(@$_POST['comment_recover'] == 'recover'){
+	elseif(isset($_POST['comment_recover']) and ($_POST['comment_recover'] == 'recover')){
 		if($comment->recover()){
 			$alkaline->addNote('The comment has been recovered.', 'success');
 		}
@@ -134,6 +134,50 @@ if(!empty($_POST['comment_id'])){
 		}
 		elseif($id_type == 'post_id'){
 			$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
+		}
+	}
+	elseif(!empty($_POST['comment_quick'])){
+		if($_POST['comment_quick'] == 'go_image'){
+			header('Location: ' . BASE . ADMIN . 'image' . URL_ID . $comment->comments[0]['image_id'] . URL_RW);
+			exit();
+		}
+		elseif($_POST['comment_quick'] == 'go_post'){
+			header('Location: ' . BASE . ADMIN . 'posts' . URL_ID . $comment->comments[0]['post_id'] . URL_RW);
+			exit();
+		}
+		elseif($_POST['comment_quick'] == 'publish'){
+			$fields = array('comment_status' => 1);
+			$comment->updateFields($fields);
+		}
+		elseif($_POST['comment_quick'] == 'unpublish'){
+			$fields = array('comment_status' => 0);
+			$comment->updateFields($fields);
+		}
+		elseif($_POST['comment_quick'] == 'spam'){
+			$fields = array('comment_status' => -1);
+			$comment->updateFields($fields);
+		}
+		elseif($_POST['comment_quick'] == 'delete'){
+			if($comment->delete()){
+				$alkaline->addNote('The comment has been deleted.', 'success');
+			}
+
+			// Update comment counts
+			if(!empty($_POST['image_id'])){
+				$id = $alkaline->findID($_POST['image_id']);
+				$id_type = 'image_id';
+			}
+			elseif(!empty($_POST['post_id'])){
+				$id = $alkaline->findID($_POST['post_id']);
+				$id_type = 'post_id';
+			}
+
+			if($id_type == 'image_id'){
+				$alkaline->updateCount('comments', 'images', 'image_comment_count', $id);
+			}
+			elseif($id_type == 'post_id'){
+				$alkaline->updateCount('comments', 'posts', 'post_comment_count', $id);
+			}
 		}
 	}
 	else{
@@ -310,7 +354,27 @@ if(empty($comment_id)){
 			}
 			echo '</td>';
 			echo '<td class="status' . $comment['comment_status'] . '">';
-			echo '<div class="actions"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></div>';
+			echo '<div class="actions"><button class="tip" title=\'<form action="" method="post"><select name="comment_quick">';
+			if($comment['comment_status'] == 0){
+				echo '<option value="publish">Publish</option>';
+				echo '<option value="spam">Mark as spam</option>';
+				echo '<option value="delete">Delete</option>';
+			}
+			elseif($comment['comment_status'] == 1){
+				echo '<option value="unpublish">Unpublish</option>';
+				echo '<option value="delete">Delete</option>';
+			}
+			elseif($comment['comment_status'] == -1){
+				echo '<option value="publish">Publish</option>';
+				echo '<option value="delete">Delete</option>';
+			}
+			if(is_int($key)){
+				echo '<option value="go_image">Go to image</option>';
+			}
+			else{
+				echo '<option value="go_post">Go to post</option>';
+			}
+			echo '</select> <input type="hidden" name="comment_id" value="' . $comment['comment_id'] . '" /><input type="submit" value="Do" /></form>\'></button></div>';
 			echo '<strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150) . '">';
 			echo $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 50);
 			echo '</a></strong><br /><span class="quiet">';

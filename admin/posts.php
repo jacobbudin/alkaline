@@ -54,6 +54,20 @@ if(!empty($_POST['post_id'])){
 			$alkaline->addNote('The post has been recovered.', 'success');
 		}
 	}
+	elseif(!empty($_POST['post_quick'])){
+		if($_POST['post_quick'] == 'view_images'){
+			header('Location: ' . BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW);
+			exit();
+		}
+		elseif($_POST['post_quick'] == 'publish'){
+			$fields = array('post_published' => 'now');
+			$posts->updateFields($fields);
+		}
+		elseif($_POST['post_quick'] == 'unpublish'){
+			$fields = array('post_published' => '');
+			$posts->updateFields($fields);
+		}
+	}
 	else{
 		$post_title = trim($_POST['post_title']);
 		
@@ -281,7 +295,14 @@ if(empty($post_id)){
 					echo '<td class="status';
 					echo ((empty($post['post_published']) or (strtotime($post['post_published']) > $now)) ? '0' : '1');
 					echo '">';
-					echo '<div class="actions"><button class="tip" title=\'<select><option value="publish">Publish</option><option value="view_images">View images</option></select> <input type="Submit" value="Do" />\'></button></div>';
+					echo '<div class="actions"><button class="tip" title=\'<form action="" method="post"><select name="post_quick">';
+					if(empty($post['post_published']) and (strtotime($post['post_published']) <= $now)){
+						echo '<option value="publish">Publish</option>';
+					}
+					else{
+						echo '<option value="unpublish">Unpublish</option>';
+					}
+					echo '<option value="view_images">View images</option></select> <input type="hidden" name="post_id" value="' . $post['post_id'] . '" /><input type="submit" value="Do" /></form>\'></button></div>';
 					echo '<strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($post['post_text']), 150) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
 						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
