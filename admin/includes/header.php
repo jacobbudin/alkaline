@@ -19,7 +19,7 @@
 	<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo BASE . JS; ?>jquery/excanvas.min.js"></script><![endif]-->
 	<link rel="shortcut icon" href="<?php echo BASE . ADMIN; ?>images/favicon.ico" />
 	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.5.2.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.12.custom.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.json-2.2.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.min.js" type="text/javascript"></script>
 	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
