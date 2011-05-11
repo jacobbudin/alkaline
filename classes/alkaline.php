@@ -2362,38 +2362,40 @@ class Alkaline{
 		}
 		
 		$table = $this->sanitize($table);
+		$now = date('Y-m-d H:i:s');
 		
 		// Add default fields
 		switch($table){
 			case 'comments':
-				if(empty($fields['comment_created'])){ $fields['comment_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['comment_created'])){ $fields['comment_created'] = $now; }
+				if(empty($fields['comment_modified'])){ $fields['comment_modified'] = $now; }
 				break;
 			case 'guests':
 				if(empty($fields['guest_views'])){ $fields['guest_views'] = 0; }
-				if(empty($fields['guest_created'])){ $fields['guest_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['guest_created'])){ $fields['guest_created'] = $now; }
 				break;
 			case 'rights':
-				if(empty($fields['right_created'])){ $fields['right_created'] = date('Y-m-d H:i:s'); }
-				if(empty($fields['right_modified'])){ $fields['right_modified'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['right_created'])){ $fields['right_created'] = $now; }
+				if(empty($fields['right_modified'])){ $fields['right_modified'] = $now; }
 				break;
 			case 'pages':
 				if(empty($fields['page_views'])){ $fields['page_views'] = 0; }
-				if(empty($fields['page_created'])){ $fields['page_created'] = date('Y-m-d H:i:s'); }
-				if(empty($fields['page_modified'])){ $fields['page_modified'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['page_created'])){ $fields['page_created'] = $now; }
+				if(empty($fields['page_modified'])){ $fields['page_modified'] = $now; }
 				break;
 			case 'posts':
 				if(empty($fields['post_views'])){ $fields['post_views'] = 0; }
-				if(empty($fields['post_created'])){ $fields['post_created'] = date('Y-m-d H:i:s'); }
-				if(empty($fields['post_modified'])){ $fields['post_modified'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['post_created'])){ $fields['post_created'] = $now; }
+				if(empty($fields['post_modified'])){ $fields['post_modified'] = $now; }
 				break;
 			case 'citations':
-				if(empty($fields['citation_created'])){ $fields['citation_created'] = date('Y-m-d H:i:s'); }
-				if(empty($fields['citation_modified'])){ $fields['citation_modified'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['citation_created'])){ $fields['citation_created'] = $now; }
+				if(empty($fields['citation_modified'])){ $fields['citation_modified'] = $now; }
 				break;
 			case 'sets':
 				if(empty($fields['set_views'])){ $fields['set_views'] = 0; }
-				if(empty($fields['set_created'])){ $fields['set_created'] = date('Y-m-d H:i:s'); }
-				if(empty($fields['set_modified'])){ $fields['set_modified'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['set_created'])){ $fields['set_created'] = $now; }
+				if(empty($fields['set_modified'])){ $fields['set_modified'] = $now; }
 				break;
 			case 'sizes':
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
@@ -2402,7 +2404,7 @@ class Alkaline{
 				if(Alkaline::edition != 'multiuser'){
 					return false;
 				}
-				if(empty($fields['user_created'])){ $fields['user_created'] = date('Y-m-d H:i:s'); }
+				if(empty($fields['user_created'])){ $fields['user_created'] = $now; }
 				break;
 			default:
 				break;
@@ -2459,26 +2461,30 @@ class Alkaline{
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
+		$now = date('Y-m-d H:i:s');
 		
 		// Add default fields
 		if($default === true){
 			switch($table){
 				case 'images':
-					$fields['image_modified'] = date('Y-m-d H:i:s');
+					$fields['image_modified'] = $now;
+					break;
+				case 'comments':
+					$fields['comment_modified'] = $now;
 					break;
 				case 'rights':
-					$fields['right_modified'] = date('Y-m-d H:i:s');
+					$fields['right_modified'] = $now;
 					break;
 				case 'citations':
-					$fields['citation_modified'] = date('Y-m-d H:i:s');
+					$fields['citation_modified'] = $now;
 				case 'sets':
-					$fields['set_modified'] = date('Y-m-d H:i:s');
+					$fields['set_modified'] = $now;
 					break;
 				case 'pages':
-					$fields['page_modified'] = date('Y-m-d H:i:s');
+					$fields['page_modified'] = $now;
 					break;
 				case 'posts':
-					$fields['post_modified'] = date('Y-m-d H:i:s');
+					$fields['post_modified'] = $now;
 					break;
 			}
 		}
