@@ -826,7 +826,7 @@ $(document).ready(function(){
 		$(this).css('cursor', 'pointer');
 	}, function() {
 		$(this).css('cursor', 'inherit');
-	}).click(function() {
+	}).live('click', function() {
 		src = $(this).attr('href');
 		alt = $(this).children('img').attr('alt');
 		id = $(this).children('img').attr('id');
@@ -937,6 +937,18 @@ $(document).ready(function(){
 			});
 			event.preventDefault();
 		});
+		
+		$('.search_bar input[type="submit"]').live('click', function(){
+			q = $(this).siblings('input').val();
+			$('#recent_images').slideUp();
+			$.post(BASE + ADMIN + 'tasks/load-images.php', { q: q }, function(data){
+				$('#recent_images .load').html(data);
+				$('#recent_images').delay(0).slideDown();
+			});
+			event.preventDefault();
+		});
+		
+		
 		
 		$('#compare').click(function(event){
 			title = $('input[id$="title"]').val();

@@ -592,35 +592,41 @@ else{
 		<p>
 			<span class="switch">&#9656;</span> <a href="#" class="show">Display recent images</a> <span class="quiet">(click to add at cursor position)</span>
 		</p>
-		<div class="reveal image_click">
-			<?php
+		<div id="recent_images" class="reveal image_click">
+			<div class="search_bar">
+				<input type="search" class="recent_image_search" name="q" placeholder="Search" results="10" />
+				<input type="submit" value="Load" />
+			</div>
+			<div class="load">
+				<?php
 	
-			$image_ids = new Find('images');
-			$image_ids->sort('image_uploaded', 'DESC');
-			$image_ids->post(1, 100);
-			$image_ids->find();
+				$image_ids = new Find('images');
+				$image_ids->sort('image_uploaded', 'DESC');
+				$image_ids->post(1, 100);
+				$image_ids->find();
 	
-			$images = new Image($image_ids);
-			$images->getSizes();
+				$images = new Image($image_ids);
+				$images->getSizes();
 	
-			if($alkaline->returnConf('post_size_label')){
-				$label = 'image_src_' . $alkaline->returnConf('post_size_label');
-			}
-			else{
-				$label = 'image_src_admin';
-			}
+				if($alkaline->returnConf('post_size_label')){
+					$label = 'image_src_' . $alkaline->returnConf('post_size_label');
+				}
+				else{
+					$label = 'image_src_admin';
+				}
 	
-			if($alkaline->returnConf('post_div_wrap')){
-				echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
-			}
+				if($alkaline->returnConf('post_div_wrap')){
+					echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
+				}
 	
-			foreach($images->images as $image){
-				$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
-				echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
-				echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
-			}
+				foreach($images->images as $image){
+					$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
+					echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+					echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
+				}
 
-			?><br /><br />
+				?>
+			</div><br />
 		</div>
 		<p>
 			<input type="hidden" id="post_id" name="post_id" value="<?php echo $post['post_id']; ?>" />

@@ -218,6 +218,12 @@ td.status-1{
 	margin-top: -1.25em;
 }
 
+.search_bar{
+	float: right;
+	color: #999;
+	margin-top: -3.1em;
+}
+
 #panels{
 	position: relative;
 	bottom: -1em;
