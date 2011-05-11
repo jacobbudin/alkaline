@@ -56,7 +56,7 @@ if(!empty($_POST['post_id'])){
 	}
 	elseif(!empty($_POST['post_quick'])){
 		if($_POST['post_quick'] == 'view_images'){
-			header('Location: ' . BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW);
+			header('Location: ' . BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $posts->posts[0]['post_id'] . URL_RW);
 			exit();
 		}
 		elseif($_POST['post_quick'] == 'publish'){
