@@ -216,7 +216,9 @@ else{
 			<div class="reveal">
 				<?php echo $image_colorkey; ?>
 				
-				<p>Export: <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=ase'; ?>" title="Adobe Swatch Exchange">ASE</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=css'; ?>" title="Cascading Style Sheets">CSS</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=gpl'; ?>" title="GIMP Palette">GPL</a></p>
+				<ul>
+					<li>Export: <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=ase'; ?>" title="Adobe Swatch Exchange">ASE</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=css'; ?>" title="Cascading Style Sheets">CSS</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=gpl'; ?>" title="GIMP Palette">GPL</a></li>
+				</ul>
 			</div>
 			<?php } ?>
 			
@@ -239,14 +241,14 @@ else{
 			
 			if(count($exifs) > 0){
 				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';
-				echo '<div class="reveal"><table>' . "\n";
+				echo '<div class="reveal"><ul>' . "\n";
 				foreach($exifs as $exif){
 					$value = @unserialize(stripslashes($exif['exif_value']));
 					if(!is_array($value)){
-						echo '<tr><td class="right">' . $exif['exif_name'] . ':</td><td>' . $value . '</td></tr>' . "\n";
+						echo '<li>' . ucwords(strtolower($exif['exif_key'])) . '_' . $exif['exif_name'] . ': <span class="quiet">' . $value . '</span></li>' . "\n";
 					}
 				}
-				echo '</table></div>';
+				echo '</ul></div>';
 			}
 			
 			?>
