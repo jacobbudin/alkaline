@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>480e5c4274b35756edc1bb1641eb56364cb6b9d2</uid>
+	<file>facebook</file>
+	<class>Facebook</class>
+	<title>Facebook</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Uploads images and posts to Facebook.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>
