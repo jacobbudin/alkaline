@@ -151,7 +151,7 @@ class Canvas extends Alkaline{
 		
 		if(is_array($array)){
 			foreach($array as $key => $value){
-				if(isset($value)){
+				if(isset($value) and !is_array($value) and !is_object($value)){
 					// Set variable, scrub to remove conditionals
 					$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
 					$this->template = self::scrub($key, $this->template);
