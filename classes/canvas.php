@@ -91,7 +91,14 @@ class Canvas extends Alkaline{
 			$this->addError(E_USER_ERROR, 'No default theme selected');
 		}
 		
-		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT)) . "\n";
+		$path = $this->correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT);
+		
+		if(is_file($path)){
+			$this->template .= file_get_contents($path) . "\n";
+		}
+		else{
+			$this->addError(E_USER_ERROR, 'Cannot locate theme file');
+		}
 	}
 	
 	/**
