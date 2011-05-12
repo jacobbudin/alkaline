@@ -142,6 +142,18 @@ class Flickr extends Orbit{
 		
 		$now = time();
 		
+		if(!isset($image[0]['image_tags_array'])){
+			$image_ids = array();
+			
+			foreach($images as $image){
+				$image_ids[] = $image['image_id'];
+			}
+			
+			$images = new Image($image_ids);
+			$images->getTags();
+			$images = $images->images;
+		}
+		
 		foreach($images as $image){
 			$image_published = strtotime($image['image_published']);
 			
@@ -170,7 +182,24 @@ class Flickr extends Orbit{
 			$title = '';
 		}
 		
-		$result = $this->flickr->sync_upload($image['image_file'], $title, $description);
+		$tags = array();
+		
+		foreach($image['image_tags_array'] as $tag){
+			$tags[] = '"' . str_replace('"', '\"', $tag) . '"';
+		}
+		
+		$tags = implode(' ', $tags);
+		
+		$photo_id = $this->flickr->sync_upload($image['image_file'], $title, $description, $tags);
+		
+		if(!empty($image['image_taken'])){
+			$this->flickr->photos_setDates($photo_id, null, $image['image_taken']);
+		}
+		
+		if(!empty($image['image_geo_lat']) and !empty($image['image_geo_long'])){
+			$this->flickr->photos_geo_setLocation($photo_id, $image['image_geo_lat'], $image['image_geo_long'], 11);
+			echo $this->flickr->error_code;
+		}
 	}
 }
 
