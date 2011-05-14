@@ -71,6 +71,7 @@ class Alkaline{
 		
 		// Set error handler
 		set_error_handler(array($this, 'addError'), E_ALL);
+		set_exception_handler(array($this, 'addException'));
 		
 		// Determine class
 		$class = get_class($this);
@@ -115,41 +116,34 @@ class Alkaline{
 		// Initiate database connection, if necessary
 		$no_db_classes = array('Canvas');
 		
-		try{
-			if(!in_array($class, $no_db_classes)){
-				if(defined('DB_TYPE') and defined('DB_DSN')){
-					// Determine database type
-					$this->db_type = DB_TYPE;
+		if(!in_array($class, $no_db_classes)){
+			if(defined('DB_TYPE') and defined('DB_DSN')){
+				// Determine database type
+				$this->db_type = DB_TYPE;
+		
+				if($this->db_type == 'mssql'){
+					// $this->db = new PDO(DB_DSN);
+				}
+				elseif($this->db_type == 'mysql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+				}
+				elseif($this->db_type == 'pgsql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+					$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+				}
+				elseif($this->db_type == 'sqlite'){
+					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 			
-					if($this->db_type == 'mssql'){
-						// $this->db = new PDO(DB_DSN);
-					}
-					elseif($this->db_type == 'mysql'){
-						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-					}
-					elseif($this->db_type == 'pgsql'){
-						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
-						$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-					}
-					elseif($this->db_type == 'sqlite'){
-						$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+					$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+					$this->db->sqliteCreateFunction('COS', 'cos', 1);
+					$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+				}
 				
-						$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
-						$this->db->sqliteCreateFunction('COS', 'cos', 1);
-						$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
-						$this->db->sqliteCreateFunction('SIN', 'sin', 1);
-					}
-					
-					if(is_object($this->db)){
-						$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
-					}
+				if(is_object($this->db)){
+					$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
 				}
 			}
-		}
-		catch(PDOException $e){
-			$message = $e->getMessage();
-			$message = 'Database: ' . $message;
-			$this->addError(E_USER_ERROR, $message, null, null, 500);
 		}
 		
 		// Delete saved Orbit extension session references
@@ -1010,7 +1004,7 @@ class Alkaline{
         $ret = '';
 
         // add a minus sign
-        if (substr($num, 0, 1) == '-') {
+        if(substr($num, 0, 1) == '-'){
             $ret = $_sep . $_minus;
             $num = substr($num, 1);
         }
@@ -1019,19 +1013,18 @@ class Alkaline{
         $num = trim($num);
         $num = preg_replace('/^0+/', '', $num);
 
-        if (strlen($num) > 3) {
+        if(strlen($num) > 3){
             $maxp = strlen($num)-1;
             $curp = $maxp;
-            for ($p = $maxp; $p > 0; --$p) { // power
-
+            for($p = $maxp; $p > 0; --$p){ // power
                 // check for highest power
-                if (isset($_exponent[$p])) {
+                if(isset($_exponent[$p])){
                     // send substr from $curp to $p
                     $snum = substr($num, $maxp - $curp, $curp - $p + 1);
                     $snum = preg_replace('/^0+/', '', $snum);
-                    if ($snum !== '') {
+                    if($snum !== ''){
                         $cursuffix = $_exponent[$power][count($_exponent[$power])-1];
-                        if ($powsuffix != '') {
+                        if($powsuffix != ''){
                             $cursuffix .= $_sep . $powsuffix;
                         }
 
@@ -1042,16 +1035,17 @@ class Alkaline{
                 }
             }
             $num = substr($num, $maxp - $curp, $curp - $p + 1);
-            if ($num == 0) {
+            if($num == 0){
                 return $ret;
             }
-        } elseif ($num == 0 || $num == '') {
+        }
+		elseif($num == 0 || $num == ''){
             return $_sep . $_digits[0];
         }
 
         $h = $t = $d = 0;
 
-        switch(strlen($num)) {
+        switch(strlen($num)){
         case 3:
             $h = (int)substr($num, -3, 1);
 
@@ -1067,19 +1061,19 @@ class Alkaline{
             break;
         }
 
-        if ($h) {
+        if($h){
             $ret .= $_sep . $_digits[$h] . $_sep . 'hundred';
 
             // in English only - add ' and' for [1-9]01..[1-9]99
             // (also for 1001..1099, 10001..10099 but it is harder)
             // for now it is switched off, maybe some language purists
             // can force me to enable it, or to remove it completely
-            // if (($t + $d) > 0)
+            // if(($t + $d) > 0)
             //   $ret .= $_sep . 'and';
         }
 
         // ten, twenty etc.
-        switch ($t) {
+        switch ($t){
         case 9:
         case 7:
         case 6:
@@ -1107,7 +1101,7 @@ class Alkaline{
             break;
 
         case 1:
-            switch ($d) {
+            switch($d){
             case 0:
                 $ret .= $_sep . 'ten';
                 break;
@@ -1142,28 +1136,29 @@ class Alkaline{
             break;
         }
 
-        if ($t != 1 && $d > 0) { // add digits only in <0>,<1,9> and <21,inf>
+        if($t != 1 && $d > 0){ // add digits only in <0>,<1,9> and <21,inf>
             // add minus sign between [2-9] and digit
-            if ($t > 1) {
+            if($t > 1){
                 $ret .= '-' . $_digits[$d];
-            } else {
+            }
+			else{
                 $ret .= $_sep . $_digits[$d];
             }
         }
 
-        if ($power > 0) {
-            if (isset($_exponent[$power])) {
+        if($power > 0){
+            if(isset($_exponent[$power])){
                 $lev = $_exponent[$power];
             }
 
-            if (!isset($lev) || !is_array($lev)) {
+            if(!isset($lev) || !is_array($lev)){
                 return null;
             }
 
             $ret .= $_sep . $lev[0];
         }
 
-        if ($powsuffix != '') {
+        if($powsuffix != ''){
             $ret .= $_sep . $powsuffix;
         }
 
@@ -3339,17 +3334,25 @@ class Alkaline{
 	/**
 	 * Set errors
 	 *
-	 * @param int|string $severity Severity (PHP error constant) or title (user-generated)
+	 * @param int|string|Exception $severity Severity (PHP error constant), title (user-generated), or exception (OO-code generated)
 	 * @param string $message 
 	 * @param string $filename
 	 * @param int $line_number
 	 * @param int|string|array $http_headers Index array of HTTP headers to send (if an item is an integer, send as status code)
 	 * @return void
 	 */
-	public function addError($severity, $message, $filename=null, $line_number=null, $http_headers=null){
+	public function addError($severity, $message=null, $filename=null, $line_number=null, $http_headers=null){
 		if(!(error_reporting() & $severity)){
 			// This error code is not included in error_reporting
 			// return;
+		}
+		
+		// Is exception?
+		if(is_object($severity)){
+			$message = $severity->getMessage();
+			$filename = $severity->getFile();
+			$line_number = $severity->getLine();
+			$severity = E_USER_ERROR;
 		}
 		
 		if(is_string($severity)){
@@ -3559,24 +3562,39 @@ class Alkaline{
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 			case E_USER_ERROR:
-				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
-				session_write_close();
-				
-				// Get error page
-				ob_start();
-				chdir(PATH . ADMIN);
-				require('error.php');
-				ob_flush();
-				
-				// Quit
-				exit();
-				break;
+				try{
+					throw new ErrorException($message, 0, E_USER_ERROR, $filename, $line_number);
+				}
+				catch(ErrorException $e){
+					$this->addException($e);
+				}
 			default:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Add Exception
+	 *
+	 * @param Exception $e 
+	 * @return void
+	 */
+	public function addException($e){
+		$_SESSION['alkaline']['exception'] = $e;
+		session_write_close();
+		
+		// Get error page
+		ob_start();
+		chdir(PATH . ADMIN);
+		require('error.php');
+		ob_flush();
+	
+		// Quit
+		exit();
+		break;
 	}
 	
 	/**
@@ -3631,7 +3649,7 @@ class Alkaline{
 		// Dispose of messages
 		unset($_SESSION['alkaline']['errors']);
 		
-		return '<span>(<a href="#" class="show">' . implode(' ,', $overview) . '</a>)</span><div class="reveal"><ol class="errors">' . implode("\n", $list) . '</ol></div>';
+		return '<span>(<a href="#" class="show">' . implode(', ', $overview) . '</a>)</span><div class="reveal"><ol class="errors">' . implode("\n", $list) . '</ol></div>';
 	}
 	
 	/**

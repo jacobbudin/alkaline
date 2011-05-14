@@ -15,28 +15,31 @@ define('TAB', 'Error');
 define('TITLE', 'Alkaline Error');
 require_once(PATH . ADMIN . 'includes/header.php');
 
-if($_SESSION['alkaline']['errors']){
-	$error_constants = array();
-	foreach($_SESSION['alkaline']['errors'] as $error){
-		$error_constants[] = $error['constant'];
-	}
-}
+$e = $_SESSION['alkaline']['exception'];
 
-$key = array_search(E_USER_ERROR, $error_constants, true);
+?>
 
-if($key !== false){
-	$error = $_SESSION['alkaline']['errors'][$key];
-	echo '<p>' . $error['message'];
-	if(!empty($error['filename'])){
-		echo ' (' . $error['filename'] . ', line ' . $error['line_number'] .')';
-	} 
-	echo '.</p>';
-}
-else{
+<h2>Error</h2>
+
+<p><strong><?php echo $e->getMessage(); ?></strong></p>
+
+<ol>
+<?php
+
+$trace = $e->getTrace();
+
+foreach($trace as $stack){
 	?>
-	<p>A critical error has occurred.</p>
+	<li>
+		<?php echo $stack['class']; ?> <?php echo str_replace('->', '&#8594;', $stack['type']); ?> <?php echo $stack['function']; ?>
+		<span class="quiet">(<?php echo $stack['file']; ?>, line <?php echo $stack['line']; ?>)</span>
+	</li>
 	<?php
 }
+
+?>
+</ol>
+<?php
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 
