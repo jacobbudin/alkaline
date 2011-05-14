@@ -112,6 +112,8 @@ $extensions_installed = array();
 $extensions_updated = array();
 
 foreach($seek_extensions as &$extension_folder){
+	if(strpos('.', $extension_folder) === 0){ continue; }
+	
 	$extension_folder = $alkaline->getFilename($extension_folder);
 	if(!in_array($extension_folder, $extension_folders)){
 		$data = file_get_contents(PATH . EXTENSIONS . $extension_folder . '/extension.xml');
