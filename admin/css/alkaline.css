@@ -43,7 +43,7 @@ textarea{
 .notice {background:#eee;color:#555;border-color:#ddd;}
 .success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
 
-input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: 0; }
+input[type=checkbox], input[type=radio], input.checkbox, input.radio { position:relative; top: -1px; }
 input[type=text], input.text, input[type=password], input.password { padding:.35em; width: 60%; }
 
 input.xs{ width: 10%; }
@@ -195,6 +195,10 @@ table.census a{
 	background: #ccc url(../images/header_bg.png) bottom left repeat-x;
 }
 
+#header{
+	margin-top: 3em;
+}
+
 td.status1{
 	padding-left: 20px;
 }
@@ -238,6 +242,8 @@ td.status-1{
 }
 
 #userbar{
+	position: fixed;
+	z-index: 200;
 	margin-bottom: 2em;
 }
 
@@ -251,6 +257,9 @@ td.status-1{
 	margin-left: 1em;
 	font-size: .9em;
 	color: #999;
+	opacity: 0.85;
+	-moz-opacity: 0.85;
+	filter:alpha(opacity=85);
 }
 
 #userbar strong{
@@ -266,9 +275,6 @@ td.status-1{
 }
 
 #userbar img{
-	opacity: 0.7;
-	-moz-opacity: 0.7;
-	filter:alpha(opacity=70);
 	position: relative;
 	top: -2px;
 	padding: 0 3px;

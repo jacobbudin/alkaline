@@ -245,7 +245,7 @@ else{
 				foreach($exifs as $exif){
 					$value = @unserialize(stripslashes($exif['exif_value']));
 					if(!is_array($value)){
-						echo '<li>' . ucwords(strtolower($exif['exif_key'])) . '_' . $exif['exif_name'] . ': <span class="quiet">' . $value . '</span></li>' . "\n";
+						echo '<li><strong>' . ucwords(strtolower($exif['exif_key'])) . '_' . $exif['exif_name'] . ':</strong><br />' . $value . '</li>' . "\n";
 					}
 				}
 				echo '</ul></div>';

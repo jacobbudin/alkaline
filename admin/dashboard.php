@@ -160,21 +160,23 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			if($type == 'comment'){
 				echo '<p><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $items[$i]['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->fitStringByWord(strip_tags($items[$i]['comment_text']), 150) . '">';
 				echo $alkaline->fitStringByWord(strip_tags($items[$i]['comment_text']), 50);
-				echo '</a></strong><br />';
-				if(!empty($items[$i]['comment_author_name'])){
-					echo '<span class="quiet"><a href="">' . $items[$i]['comment_author_name'] . '</a>';
+				echo '</a></strong><br /><span class="quiet">';
+				
+				if(!empty($items[$i]['user_id'])){
+					echo '<img src="' . BASE . ADMIN . 'images/icons/user.png" alt="" /> <a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'user' . URL_AID . $items[$i]['user_id'] . URL_RW . '" class="nu">' . $items[$i]['comment_author_name'] . '</a>';
+				}
+				elseif(!empty($items[$i]['comment_author_name'])){
+					echo '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?q=' . urlencode($items[$i]['comment_author_name']) . '" class="nu">' . $items[$i]['comment_author_name'] . '</a>';
 				}
 				else{
 					'<em>Anonymous</em>';
 				}
 
 				if(!empty($items[$i]['comment_author_ip']) and empty($items[$i]['user_id'])){
-					echo ' (<a href="">' . $items[$i]['comment_author_ip'] . '</a>)</span>';
+					echo ' (<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?q=' . urlencode($items[$i]['comment_author_ip']) . '" class="nu">' . $items[$i]['comment_author_ip'] . '</a>)';
 				}
-				elseif(!empty($items[$i]['user_id'])){
-					echo ' (User)';
-				}
-				echo '</p>';
+				
+				echo '</span></p>';
 		
 				$timeline[$modified][] = ob_get_contents();
 			}

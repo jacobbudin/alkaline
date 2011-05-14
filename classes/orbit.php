@@ -19,6 +19,7 @@ class Orbit extends Alkaline{
 	
 	public $class;
 	public $file;
+	public $folder;
 	public $hooks;
 	public $preferences;
 	public $title;
