@@ -109,6 +109,7 @@ if(empty($page_id)){
 	$page_ids->find();
 	
 	$pages = new Page($page_ids);
+	$pages->hook();
 	
 	define('TITLE', 'Alkaline Pages');
 	require_once(PATH . ADMIN . 'includes/header.php');
