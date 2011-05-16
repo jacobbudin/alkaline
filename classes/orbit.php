@@ -248,6 +248,7 @@ class Orbit extends Alkaline{
 		$path = PATH . CACHE . 'tasks/' . md5(DB_DSN . PATH . $id);
 		if(file_exists($path)){
 			$contents = file_get_contents($path, false);
+			@unlink($path);
 		}
 		else{
 			$contents = false;
@@ -276,6 +277,7 @@ class Orbit extends Alkaline{
 		}
 		
 		if($return === false){
+			file_put_contents($path, $contents);
 			return false;
 		}
 		
@@ -283,7 +285,6 @@ class Orbit extends Alkaline{
 			unset($_SESSION['alkaline']['tasks']);
 		}
 		
-		@unlink($path);
 		return true;
 	}
 	
