@@ -143,8 +143,8 @@ class User extends Alkaline{
 		if($remember == true){
 			$key = $this->user['user_id'] . $this->user['user_user'] . $this->user['user_pass'] . DB_DSN . time();
 			$key = sha1($key . SALT);
-			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, '/');
-			setcookie('key', $key, time()+USER_REMEMBER, '/');
+			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, BASE);
+			setcookie('key', $key, time()+USER_REMEMBER, BASE);
 		}
 		
 		// Destroy sensitive information from object
@@ -171,12 +171,12 @@ class User extends Alkaline{
 		// Destroy session
 		$_SESSION = array();
 		if(isset($_COOKIE[session_name()])){
-			setcookie(session_name(), '', time()-42000, '/');
+			setcookie(session_name(), '', time()-42000, BASE);
 		}
 		session_destroy();
 		
-		setcookie('uid', '', time()-3600, '/');
-		setcookie('key', '', time()-3600, '/');
+		setcookie('uid', '', time()-3600, BASE);
+		setcookie('key', '', time()-3600, BASE);
 		session_start();
 	}
 	
