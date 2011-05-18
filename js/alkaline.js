@@ -226,7 +226,7 @@ function imageArray(task, input){
 			    cache: false,
 			    success: function(data)
 			    {
-					if(!empty(data.image_id)){
+					if(!empty(data)){
 						appendImage(data);
 					}
 					updateProgress();
