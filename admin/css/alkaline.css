@@ -192,7 +192,7 @@ table.census a{
 }
 
 #header_holder{
-	background: #ccc url(../images/header_bg.png) bottom left repeat-x;
+	background: #222 url(../images/header_bg.png) bottom left repeat-x;
 }
 
 #header{
@@ -243,8 +243,8 @@ td.status-1{
 
 #userbar{
 	position: fixed;
-	z-index: 200;
 	margin-bottom: 2em;
+	z-index: 200;
 }
 
 #userbar div{
@@ -560,6 +560,10 @@ img.ui-datepicker-trigger{
 
 #configuration table{
 	margin-bottom: 3em;
+}
+
+#configuration table table{
+	margin-bottom: 0;
 }
 
 #footer, #footer a{
