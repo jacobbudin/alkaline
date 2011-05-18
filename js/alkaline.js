@@ -748,7 +748,7 @@ $(document).ready(function(){
 	
 	if(window.fluid){
 		updateFluid();
-		setInterval(updateFluid, 60000);
+		setInterval(updateFluid, 30000);
 	}
 	
 	// ADVANCED SEARCH
