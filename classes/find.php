@@ -557,18 +557,22 @@ class Find extends Alkaline{
 		
 		// Set begin date
 		if(!empty($begin)){
-			if(is_int($begin)){ $begin = strval($begin); }
-			if(strlen($begin) == 4){ $begin .= '-01-01'; }
-			$begin = date('Y-m-d', strtotime($begin));
+			if(!is_int($begin)){
+				if(strlen($begin) == 4){ $begin .= '-01-01'; }
+				$begin = strtotime($begin);
+			}
+			$begin = date('Y-m-d H:i:s', $begin);
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'created >= :post_created_begin';
 			$this->sql_params[':post_created_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
 		if(!empty($end)){
-			if(is_int($end)){ $end = strval($end); }
-			if(strlen($end) == 4){ $end .= '-01-01'; }
-			$end = date('Y-m-d', strtotime($end));
+			if(!is_int($end)){
+				if(strlen($end) == 4){ $end .= '-01-01'; }
+				$end = strtotime($end);
+			}
+			$end = date('Y-m-d H:i:s', $end);
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'created <= :post_created_end';
 			$this->sql_params[':post_created_end'] = $end . ' 23:59:59"';
 		}
@@ -1091,6 +1095,17 @@ class Find extends Alkaline{
 				if(class_exists('SphinxClient', false)){
 					$sphinx = new SphinxClient;
 					$sphinx->setSortMode(SPH_SORT_RELEVANCE);
+					if($this->returnConf('sphinx_server')){
+						if($this->returnConf('sphinx_port')){
+							$s->setServer($this->returnConf('sphinx_server'), $this->returnConf('sphinx_port'));
+						}
+						else{
+							$s->setServer($this->returnConf('sphinx_server'));
+						}
+					}
+					if($this->returnConf('sphinx_max_exec')){
+						$s->setMaxQueryTime($this->returnConf('sphinx_max_exec'));
+					}
 					$response = $sphinx->query($search);
 
 					$results = $response['matches'];
