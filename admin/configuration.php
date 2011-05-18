@@ -94,6 +94,10 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
 	$alkaline->setConf('syndication_summary_only', @$_POST['syndication_summary_only']);
 	$alkaline->setConf('sphinx_enabled', @$_POST['sphinx_enabled']);
+	$alkaline->setConf('sphinx_server', @$_POST['sphinx_server']);
+	$alkaline->setConf('sphinx_port', @$_POST['sphinx_port']);
+	$alkaline->setConf('sphinx_index', @$_POST['sphinx_index']);
+	$alkaline->setConf('sphinx_max_exec', @$_POST['sphinx_max_exec']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
@@ -139,7 +143,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="web_description">Description:</label></td>
+			<td class="right"><label for="web_description">Description:</label></td>
 			<td><textarea id="web_description" name="web_description" style="height: 70px; line-height: 1.5em;"><?php echo $alkaline->returnConf('web_description'); ?></textarea></td>
 		</tr>
 		<tr>
@@ -150,13 +154,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="theme_id">Theme:</label></td>
+			<td class="right middle"><label for="theme_id">Theme:</label></td>
 			<td>
 				<?php echo $alkaline->showThemes('theme_id', $alkaline->returnConf('theme_id')); ?>
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="web_timezone">Time zone:</label></td>
+			<td class="right middle"><label for="web_timezone">Time zone:</label></td>
 			<td>
 				<?php
 
@@ -209,8 +213,12 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 				echo '</select>';
 
-				?><br /><br />
+				?>
 			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
 		</tr>
 		<tr class="markup">
 			<td class="input right middle"><input type="checkbox" id="web_markup" name="web_markup" <?php echo $alkaline->readConf('web_markup'); ?> value="true" /></td>
@@ -409,7 +417,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<h3>Trackbacks</h3>
 	
-	<p>Trackbacks allow you to monitor discussion of your posts on other blogs.</p>
+	<p>Trackbacks allow you to monitor discussion of your posts on other Web sites.</p>
 	
 	<table>
 		<tr>
@@ -507,7 +515,34 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		<tr>
 			<td class="input"><input type="checkbox" id="sphinx_enabled" name="sphinx_enabled" <?php echo $alkaline->readConf('sphinx_enabled'); ?> value="true" /></td>
 			<td class="description">
-				<label for="sphinx_enabled">Use Sphinx to process search queries</label> (if installed and configured)
+				<label for="sphinx_enabled">Use Sphinx to process search queries</label> (if installed and configured)<br /><br />
+				<table>
+					<tr>
+						<td class="right middle"><label for="sphinx_server">Server:</label></td>
+						<td><input type="text" id="sphinx_server" name="sphinx_server" class="s" placeholder="localhost" /> <span class="quiet">(optional)</span></td>
+					</tr>
+					<tr>
+						<td class="right middle"><label for="sphinx_port">Port:</label></td>
+						<td><input type="text" id="sphinx_port" name="sphinx_port" class="xs" /> <span class="quiet">(optional)</span></td>
+					</tr>
+					<tr>
+						<td class="right middle"><label for="sphinx_index">Index(es):</label></td>
+						<td><input type="text" id="sphinx_index" name="sphinx_index" class="s" /> <span class="quiet">(optional)</span></td>
+					</tr>
+					<tr>
+						<td class="right middle"><label for="sphinx_max_exec">Maximum execution time:</label></td>
+						<td>
+							<select id="sphinx_max_exec" name="sphinx_max_exec">
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', ''); ?>>None</option>
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', '1'); ?>>1 second</option>
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', '3'); ?>>3 seconds</option>
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', '5'); ?>>5 seconds</option>
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', '10'); ?>>10 seconds</option>
+								<option value="" <?php echo $user->readConf('sphinx_max_exec', '30'); ?>>30 seconds</option>
+							</select>
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
