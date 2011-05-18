@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>7c6622f08d3fe0096da56e08fc99b5165de485ba</uid>
+	<file>bbcode</file>
+	<class>BBCode</class>
+	<title>BBCode</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Adds BBCode markup.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>
