@@ -1321,6 +1321,7 @@ $(document).ready(function(){
 			$('#act_set_id').hide();
 			$('#act_right_id').hide();
 			$('#act_privacy_id').hide();
+			$('#act_send').hide();
 			
 			act = $('#act').val();
 			if(act == 'tag_add'){
@@ -1346,6 +1347,9 @@ $(document).ready(function(){
 			}
 			else if(act == 'publish'){
 				$('#act_publish').show();
+			}
+			else if(act == 'send'){
+				$('#act_send').show();
 			}
 		}
 		

@@ -12,6 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $user = new User;
+$orbit = new Orbit;
 
 $user->perm(true, 'features');
 
@@ -59,6 +60,14 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				}
 				$notification .= '&#8221;.';
 				$alkaline->addNote($notification, 'success');
+			}
+		}
+		elseif($act == 'send'){
+			if(!empty($_POST['act_send'])){
+				$act_send = $_POST['act_send'];
+				$images = new Image($image_ids);
+				
+				$orbit->hook('send_' . $act_send, $images);
 			}
 		}
 		elseif($act == 'set_add'){
@@ -203,6 +212,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<select name="act" id="act">
 					<option value="tag_add">Add tag</option>
 					<option value="tag_remove">Remove tag</option>
+					<option value="send">Send to</option>
 					<option value="set_add">Add to static set</option>
 					<option value="set_remove">Remove from static set</option>
 					<option value="right">Switch to rights set</option>
@@ -217,6 +227,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showSets('act_set_id', true); ?>
 				<?php echo $alkaline->showRights('act_right_id'); ?>
 				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
+				<select id="act_send" name="act_send">
+					<?php $orbit->hook('send_html'); ?>
+				</select>
 				<input type="hidden" name="image_ids" id="image_ids" value="" />
 				<input type="submit" id="act_do" name="do" value="Do" />
 			</p>
