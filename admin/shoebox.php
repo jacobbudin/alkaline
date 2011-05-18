@@ -110,6 +110,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <h1><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox (<?php echo $i_count; ?>)</h1>
 
+<div class="none get_location_set">
+	<?php echo $_SESSION['alkaline']['location']; ?>
+</div>
+
 <form action="" method="post">
 	<div id="privacy_html" class="none">
 		<?php echo $alkaline->showPrivacy('image--privacy'); ?>

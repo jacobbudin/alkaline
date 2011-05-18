@@ -182,8 +182,9 @@ else{
 			<br />
 			
 			<p>
-				<label for="">Location:</label><br />
-				<input type="text" id="image_geo" name="image_geo" class="image_geo" value="<?php echo $image['image_geo']; ?>" />
+				<label for="image_geo">Location:</label><br />
+				<input type="text" id="image_geo" name="image_geo" class="image_geo get_location_result l" value="<?php echo $image['image_geo']; ?>" />&#0160;
+				<a href="#get_location" class="get_location"><img src="<?php echo BASE . ADMIN; ?>images/icons/location.png" alt="" style="vertical-align: middle;" /></a>
 				<?php
 				
 				if(!empty($image['image_geo_lat'])){
@@ -193,6 +194,7 @@ else{
 					<?php
 				}
 				?>
+				<div class="none get_location_set"><?php echo $_SESSION['alkaline']['location']; ?></div>
 			</p>
 			
 			<p>

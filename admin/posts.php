@@ -121,6 +121,7 @@ if(!empty($_POST['post_id'])){
 			'post_text_raw' => $alkaline->makeUnicode($post_text_raw),
 			'post_excerpt' => $alkaline->makeUnicode($post_excerpt),
 			'post_excerpt_raw' => $alkaline->makeUnicode($post_excerpt_raw),
+			'post_geo' => @$_POST['post_geo'],
 			'post_source' => $alkaline->makeUnicode($_POST['post_source']),
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
@@ -430,15 +431,38 @@ else{
 				</p>
 				
 				<p>
-					<label for="post_source">Source:</label><br />
-					<input type="text" id="post_source" name="post_source" placeholder="http://www.example.com/" class="post_source xl" value="<?php echo @$post['post_source']; ?>" />
+					<label for="post_geo">Location:</label><br />
+					<input type="text" id="post_geo" name="post_geo" class="image_geo get_location_result l" value="<?php echo $post['post_geo']; ?>" />&#0160;
+					<a href="#get_location" class="get_location"><img src="<?php echo BASE . ADMIN; ?>images/icons/location.png" alt="" style="vertical-align: middle;" /></a>
+					<?php
+
+					if(!empty($post['post_geo_lat'])){
+						?>
+						<br />
+						<img src="<?php echo BASE . ADMIN; ?>images/icons/geo.png" alt="" /> <?php echo round($post['post_geo_lat'], 5); ?>, <?php echo round($post['post_geo_long'], 5); ?>
+						<?php
+					}
+					?>
+					<div class="none get_location_set"><?php echo $_SESSION['alkaline']['location']; ?></div>
 				</p>
 				
-				<p>
-					<label for="post_title_url">Custom URL:</label><br />
-					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
-						<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show additional fields</a></span>
 				</p>
+				
+				<div class="reveal">
+					<p>
+						<label for="post_source">Source:</label><br />
+						<input type="text" id="post_source" name="post_source" placeholder="http://www.example.com/" class="post_source xl" value="<?php echo @$post['post_source']; ?>" />
+					</p>
+				
+				
+					<p>
+						<label for="post_title_url">Custom URL:</label><br />
+						<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
+							<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
+					</p>
+				</div>
 				
 				<p class="slim">
 					<span class="switch">&#9656;</span> <a href="#" class="show">Show citations</a> <span class="quiet">(<span id="citation_count"><?php echo count($posts->citations); ?></span>)</span>

@@ -375,7 +375,7 @@ function appendImage(image){
 	else{
 		var geo = '<br /><img src="' + BASE + ADMIN + 'images/icons/geo.png" alt="" /> ' + image.image_geo_lat + ', ' + image.image_geo_long;
 	}
-	$("#shoebox_images").append('<div id="image-' + image.image_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + image.image_src_admin + '" alt="" /><p><input type="text" id="image-' + image.image_id + '-title" name="image-' + image.image_id + '-title" value="' + image.image_title + '" class="title bottom-border" /><textarea id="image-' + image.image_id + '-description-raw" name="image-' + image.image_id + '-description-raw">' + image.image_description_raw + '</textarea></p></div><div class="span-8 last"><div class="image_tag_container"><label for="image_tag">Tags:</label><br /><input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /><input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br /><div id="image_tags" class="image_tags"></div><div id="image_tags_load" class="image_tags_load none">' + image.image_tags + '</div><input type="hidden" name="image-' + image.image_id + '-tags_input" id="image_tags_input" class="image_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="image-' + image.image_id + '-geo" name="image-' + image.image_id + '-geo" class="image_geo" value="' + image.image_geo + '" />' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="image-' + image.image_id + '-published" name="image-' + image.image_id + '-published" value="' + image.image_published + '" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="image-' + image.image_id + '-delete" name="image-' + image.image_id + '-delete" value="delete" /></td><td><strong><label for="image-' + image.image_id + '-delete">Delete this image.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
+	$("#shoebox_images").append('<div id="image-' + image.image_id + '" class="id span-24 last"><div class="span-15 append-1"><img src="' + image.image_src_admin + '" alt="" /><p><input type="text" id="image-' + image.image_id + '-title" name="image-' + image.image_id + '-title" value="' + image.image_title + '" class="title bottom-border" placeholder="Title" /><textarea id="image-' + image.image_id + '-description-raw" name="image-' + image.image_id + '-description-raw" placeholder="Description">' + image.image_description_raw + '</textarea></p></div><div class="span-8 last"><div class="image_tag_container"><label for="image_tag">Tags:</label><br /><input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /><input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br /><div id="image_tags" class="image_tags"></div><div id="image_tags_load" class="image_tags_load none">' + image.image_tags + '</div><input type="hidden" name="image-' + image.image_id + '-tags_input" id="image_tags_input" class="image_tags_input" value="" /></div><br /><p><label for="">Location:</label><br /><input type="text" id="image-' + image.image_id + '-geo" name="image-' + image.image_id + '-geo" class="image_geo get_location_result l" value="' + image.image_geo + '" />&#0160; <a href="#get_location" class="get_location"><img src="' + BASE + ADMIN + 'images/icons/location.png" alt="" style="vertical-align: middle;" /></a>' + geo + '</p><p><label for="">Publish date:</label><br /><input type="text" id="image-' + image.image_id + '-published" name="image-' + image.image_id + '-published" value="' + image.image_published + '" placeholder="Unpublished" /></p><p><label for="">Privacy level:</label><br />' + privacy + '</p><p><label for="">Rights set:</label><br />' + rights + '</p><hr /><table><tr><td class="right" style="width: 5%"><input type="checkbox" id="image-' + image.image_id + '-delete" name="image-' + image.image_id + '-delete" value="delete" /></td><td><strong><label for="image-' + image.image_id + '-delete">Delete this image.</label></strong><br />This action cannot be undone.</td></tr></table></div></div><hr />');
 	updateAllTags();
 }
 
@@ -708,7 +708,24 @@ $(document).ready(function(){
 		$(this).after('<input type="submit" name="install" value="Installing..." disabled="disabled" />');
 	});
 	
-	// ADVANCED SEARCH
+	// GEOLOCATION
+	$('a.get_location').live('click', function(event){
+		pos = $('.get_location_set').text();
+		if(pos.length > 0){
+			pos = pos.trim();
+			$(this).siblings('input.get_location_result').val(pos);
+		}
+		else{
+			if(navigator.geolocation){
+				navigator.geolocation.getCurrentPosition(function(pos){
+					latitude = pos.coords.latitude;
+					longitude = pos.coords.longitude;
+					$.post(BASE + ADMIN + 'tasks/set-location.php', { latitude: latitude, longitude: longitude }, function(data){ pos = data.trim(); $(this).siblings('input.get_location_result').val(data); });
+				});
+			}
+		}
+		event.preventDefault();
+	});
 	
 	if(page == 'Images'){
 		$('a.advanced_link').click(function(){
