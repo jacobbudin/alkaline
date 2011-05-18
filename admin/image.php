@@ -303,14 +303,14 @@ else{
 			</div>
 			<p>
 				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
-				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" />
+				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" class="autosave_delete" />
 				and
 				<select name="go">
 					<option value="">return to previous screen</option>
 					<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next image</option>
 					<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous image</option>
 				</select>
-				or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
+				or <a href="<?php echo $alkaline->back(); ?>" class="autosave_delete">cancel</a>
 			</p>
 		</div>
 	</form>

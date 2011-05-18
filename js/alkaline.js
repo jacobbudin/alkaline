@@ -502,6 +502,84 @@ function updateFluid(){
 	});
 }
 
+// AUTOSAVE
+
+function autosave_save(){
+	$('.autosave_delete').click(autosave_delete);
+	autosave_title_new = $('input.title').slice(0,1).val();
+	autosave_text_new = $('textarea').slice(0,1).val();
+	if(autosave_text_new == ''){ return; }
+	if(typeof autosave_title == 'undefined'){
+		autosave_title = autosave_title_new;
+		autosave_text = autosave_text_new;
+		return;
+	}
+	autosave_title = autosave_title_new;
+	autosave_text = autosave_text_new;
+	document.cookie = 'autosave_title=' + encodeURIComponent(autosave_title) + '; max-age=2592000'
+	document.cookie = 'autosave_text=' + encodeURIComponent(autosave_text) + '; max-age=2592000'
+	url = location.href;
+	pos = url.indexOf('#');
+	if(pos != -1){
+		url = url.substring(0, pos);
+	}
+	document.cookie = 'autosave_uri=' + encodeURIComponent(url) + '; max-age=2592000'
+}
+
+function autosave_delete(){
+	document.cookie = 'autosave_uri=; max-age=0';
+	document.cookie = 'autosave_title=; max-age=0';
+	document.cookie = 'autosave_text=; max-age=0';
+	clearNotes();
+}
+
+function autosave_exists(){
+	cookies = getCookies();
+	if(cookies.hasOwnProperty('autosave_uri') && cookies.hasOwnProperty('autosave_text')){
+		addNote('You have an unsaved item. You may <a href="' + cookies.autosave_uri + '#recover">recover the item</a> or <a href="" id="autosave_delete">delete the unsaved changes</a>.', 'error');
+	}
+	else{
+		autosave_delete();
+	}
+}
+
+function autosave_recover(){
+	url = location.href;
+	if(url.search(/\#recover/) > 0){
+		cookies = getCookies();
+		
+		if(cookies.hasOwnProperty('autosave_title')){
+			title = $('input.title').slice(0,1).val(cookies.autosave_title);
+		}
+		if(cookies.hasOwnProperty('autosave_text')){
+			text = $('textarea').slice(0,1).val(cookies.autosave_text);
+		}
+		autosave_delete();
+	}
+}
+
+function autosave(){
+	autosave_recover();
+	setInterval(autosave_save, 10000);
+}
+
+function getCookies(){
+	cookies = {};
+	all = document.cookie;
+	if(all === '')
+		return cookies;
+	list = all.split("; ");
+	for (var i=0; i < list.length; i++) {
+		cookie = list[i];
+		pos = cookie.indexOf("=");
+		name = cookie.substring(0, pos);
+		value = cookie.substring(pos+1);
+		value = decodeURIComponent(value);
+		cookies[name] = value;
+	};
+	return cookies;
+}
+
 $(document).ready(function(){
 	// NAVIGATION
 	$('#navigation ul ul').hide();
@@ -557,6 +635,15 @@ $(document).ready(function(){
 			}
 		});
 	}
+	
+	// AUTOSAVE
+	autosave_exists();
+	$('#autosave_recover').live('click', function(){
+		autosave_recover();
+	});
+	$('#autosave_delete').live('click', function(){
+		autosave_delete();
+	});
 	
 	// TASKS & DEFAULT PROGRESS BAR
 	
@@ -768,6 +855,10 @@ $(document).ready(function(){
 	}
 	*/
 	
+	if(page == 'Image'){
+		autosave();
+	}
+	
 	// PRIMARY - LABEL SELECT CHECKBOXES
 	
 	$("label select").click(
@@ -971,6 +1062,8 @@ $(document).ready(function(){
 	// VERSIONS & CITATIONS & TRACKBACKS
 	
 	if((page == 'Post') || (page == 'Page')){
+		autosave();
+		
 		$('a[href="#revert"]').live('click', function(){
 			version_id = $(this).attr('id');
 			version_id = findID(version_id);

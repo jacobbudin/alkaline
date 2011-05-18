@@ -657,14 +657,14 @@ else{
 			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
 			<input type="hidden" id="post_citations" name="post_citations" value="<?php foreach($posts->citations as $citation){ echo $citation['citation_uri_requested']; } ?>" />
 			
-			<input type="submit" value="Save changes" />
+			<input type="submit" value="Save changes" class="autosave_delete" />
 			and
 			<select name="go">
 				<option value="">return to previous screen</option>
 				<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next post</option>
 				<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous post</option>
 			</select>
-			or <a href="<?php echo $alkaline->back(); ?>">cancel</a></p>
+			or <a href="<?php echo $alkaline->back(); ?>" class="autosave_delete">cancel</a></p>
 	</form>
 
 	<?php
