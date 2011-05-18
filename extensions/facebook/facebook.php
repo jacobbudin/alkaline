@@ -11,6 +11,7 @@ class FacebookHandler extends Orbit{
 		
 		$this->facebook_active = $this->returnPref('facebook_active');
 		$this->facebook_name = $this->returnPref('facebook_name');
+		$this->facebook_profile_id = $this->returnPref('facebook_profile_id');
 		$this->facebook_album_id = $this->returnPref('facebook_album_id');
 		$this->facebook_access_token = $this->returnPref('facebook_access_token');
 		$this->facebook_format_image = $this->returnPref('facebook_format_image');
@@ -229,18 +230,6 @@ class FacebookHandler extends Orbit{
 		
 		$now = time();
 		
-		if(!isset($image[0]['image_tags_array'])){
-			$image_ids = array();
-			
-			foreach($images as $image){
-				$image_ids[] = $image['image_id'];
-			}
-			
-			$images = new Image($image_ids);
-			$images->getTags();
-			$images = $images->images;
-		}
-		
 		foreach($images as $image){
 			$image_published = strtotime($image['image_published']);
 			
@@ -254,6 +243,61 @@ class FacebookHandler extends Orbit{
 		
 		$this->setPref('facebook_last_image_time', $now);
 		$this->savePref();
+	}
+	
+	public function orbit_post($posts){
+		if(strpos($this->facebook_transmit, 'post') === false){ return; }
+		
+		if(count($posts) < 1){ return; }
+		
+		// Seek array for new post
+		$latest = 0;
+		$now = time();
+		
+		foreach($posts as $post){
+			$post_published = strtotime($post['post_published']);
+			
+			if(empty($post_published)){ continue; }
+			if($post_published > $now){ continue; }
+			if($post_published <= $this->facebook_last_post_time){ continue; }
+			
+			if($post_published > $latest){
+				$latest = $post_published;
+				$latest_post = $post;
+			}
+		}
+		
+		// Save this post as last
+		if(empty($latest_post)){ return; }
+		if($latest_post['post_id'] == $this->facebook_last_post_id){ return; }
+		
+		$this->setPref('facebook_last_post_time', $latest);
+		$this->savePref();
+		
+		// Format post
+		$canvas = new Canvas($this->facebook_format_post);
+		$canvas->assignArray($latest_post);
+		$canvas->generate();
+		
+		// Reformat relative links
+		$canvas->template = str_ireplace('href="/', 'href="' . LOCATION . '/', $canvas->template);
+		$canvas->template = str_ireplace('href=\'/', 'href=\'' . LOCATION . '/', $canvas->template);
+		
+		$canvas->template = str_ireplace('src="/', 'src="' . LOCATION . '/', $canvas->template);
+		$canvas->template = str_ireplace('src=\'/', 'src=\'' . LOCATION . '/', $canvas->template);
+		
+		$canvas->template = trim($canvas->template);
+		
+		// Send to Tumblr
+		$parameters = array('type' => 'regular',
+			'format' => 'html',
+			'title' => $latest_post['post_title'],
+			'body' => $canvas->template);
+
+		$params = array('access_token' => $this->facebook_access_token,
+			'subject' => $post['post_title'],
+			'message' => $canvas->template);
+		$photos = $this->facebook->api($this->facebook_album_id . '/photos', 'POST', $params);
 	}
 	
 	public function upload($image){
