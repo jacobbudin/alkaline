@@ -484,6 +484,24 @@ function findID(string){
 	return parseInt(string);
 }
 
+function updateFluid(){
+	$.get(BASE + ADMIN + 'tasks/update-fluid.php', null, function(data){
+		data = $.evalJSON(data);
+		if(data.dockBadge != 0){
+			window.fluid.dockBadge = data.dockBadge;
+		}
+		else{
+			window.fluid.dockBadge = null;
+		}
+		for (var i = data.showGrowlNotification.length - 1; i >= 0; i--){
+			window.fluid.showGrowlNotification({
+				title: data.showGrowlNotification[i].title,
+				description: data.showGrowlNotification[i].description
+			});
+		};
+	});
+}
+
 $(document).ready(function(){
 	// NAVIGATION
 	$('#navigation ul ul').hide();
@@ -539,7 +557,6 @@ $(document).ready(function(){
 			}
 		});
 	}
-	
 	
 	// TASKS & DEFAULT PROGRESS BAR
 	
@@ -727,6 +744,15 @@ $(document).ready(function(){
 		event.preventDefault();
 	});
 	
+	// FLUID APP
+	
+	if(window.fluid){
+		updateFluid();
+		setInterval(updateFluid, 60000);
+	}
+	
+	// ADVANCED SEARCH
+	/*
 	if(page == 'Images'){
 		$('a.advanced_link').click(function(){
 			$('a.advanced').click();
@@ -740,6 +766,7 @@ $(document).ready(function(){
 			}
 		}
 	}
+	*/
 	
 	// PRIMARY - LABEL SELECT CHECKBOXES
 	
