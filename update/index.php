@@ -13,7 +13,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 
-$builds = array(918, 928);
+$builds = array(918, 928, 1000, 1100);
 
 foreach($builds as $build){
 	// Import default SQL
