@@ -514,6 +514,9 @@ function autosave_save(){
 		autosave_text = autosave_text_new;
 		return;
 	}
+	else if((autosave_title == autosave_title_new) && (autosave_text = autosave_text_new)){
+		return;
+	}
 	autosave_title = autosave_title_new;
 	autosave_text = autosave_text_new;
 	document.cookie = 'autosave_title=' + encodeURIComponent(autosave_title) + '; max-age=2592000'
@@ -554,7 +557,6 @@ function autosave_recover(){
 		if(cookies.hasOwnProperty('autosave_text')){
 			text = $('textarea').slice(0,1).val(cookies.autosave_text);
 		}
-		autosave_delete();
 	}
 }
 
