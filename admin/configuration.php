@@ -92,6 +92,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
 	$alkaline->setConf('stat_ignore_user', @$_POST['stat_ignore_user']);
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
+	$alkaline->setConf('syndication_cache_time', @$_POST['syndication_cache_time']);
 	$alkaline->setConf('syndication_summary_only', @$_POST['syndication_summary_only']);
 	$alkaline->setConf('sphinx_enabled', @$_POST['sphinx_enabled']);
 	$alkaline->setConf('sphinx_server', @$_POST['sphinx_server']);
@@ -498,6 +499,21 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<p><a href="http://atomenabled.org/">Atom</a> XML feeds allow your site&#8217;s visitors to keep track of updates on your site.</p>
 	
 	<table>
+		<tr>
+			<td class="input"><input type="checkbox" checked="checked" disabled="disabled" /></td>
+			<td class="description">
+				<label>Cache the newsfeed for
+					<select id="syndication_cache_time" name="syndication_cache_time">
+						<option value="15" <?php echo $user->readConf('syndication_cache_time', '15'); ?>>15 seconds</option>
+						<option value="30" <?php echo $user->readConf('syndication_cache_time', '30'); ?>>30 seconds</option>
+						<option value="60" <?php echo $user->readConf('syndication_cache_time', '60'); ?>>1 minute</option>
+						<option value="120" <?php echo $user->readConf('syndication_cache_time', '120'); ?>>2 minutes</option>
+						<option value="300" <?php echo $user->readConf('syndication_cache_time', '300'); ?>>5 minutes</option>
+					</select>
+				</label><br />
+				Caching the newsfeed longer improves performance at the expense of being out of date
+			</td>
+		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="syndication_summary_only" name="syndication_summary_only" <?php echo $alkaline->readConf('syndication_summary_only'); ?> value="true" /></td>
 			<td class="description">
