@@ -823,11 +823,19 @@ $(document).ready(function(){
 		}
 		else{
 			if(navigator.geolocation){
+				geo_selector = $(this);
+				geo_selector.siblings('input.get_location_result').attr('placeholder', 'Locating...');
 				navigator.geolocation.getCurrentPosition(function(pos){
 					latitude = pos.coords.latitude;
 					longitude = pos.coords.longitude;
-					$.post(BASE + ADMIN + 'tasks/set-location.php', { latitude: latitude, longitude: longitude }, function(data){ pos = data.trim(); $(this).siblings('input.get_location_result').val(data); });
+					$.post(BASE + ADMIN + 'tasks/set-location.php', { latitude: latitude, longitude: longitude }, function(pos){
+						pos = pos.trim();
+						geo_selector.siblings('input.get_location_result').attr('placeholder', '').val(pos);
+					});
 				});
+			}
+			else{
+				addNote('Your Web browser does not support automatic geolocation.', 'error');
 			}
 		}
 		event.preventDefault();
