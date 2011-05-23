@@ -15,6 +15,6 @@ $user = new User;
 
 $user->perm(true, 'maintenance');
 
-$alkaline->emptyDirectory(PATH . SHOEBOX);
+$alkaline->emptyDirectory(PATH . CACHE . 'tasks/');
 
 ?>

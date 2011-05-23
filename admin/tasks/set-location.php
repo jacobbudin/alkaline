@@ -15,7 +15,9 @@ $alkaline = new Alkaline;
 $hint = strip_tags($_POST);
 
 $geo = new Geo('(' . $_POST['latitude'] . ', ' . $_POST['longitude'] . ')');
+$geo = strval($geo);
 
-$_SESSION['alkaline']['location'] = strval($geo);
+$_SESSION['alkaline']['location'] = $geo;
+echo $geo;
 
 ?>
