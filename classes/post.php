@@ -688,6 +688,63 @@ class Post extends Alkaline{
 	}
 	
 	/**
+	 * Send trackback to original Web site
+	 *
+	 * @return bool True if successful
+	 */
+	public function sendTrackbacks(){
+		$sent_post_ids = array();
+		
+		foreach($this->posts as $post){
+			// Trackback URI available?
+			if(!empty($post['post_source']) and empty($post['post_trackback_sent'])){
+				$html = file_get_contents($post['post_source'], false);
+				if(!preg_match('#trackback:ping="(.*?)"#', $html, $trackback)){ continue; }
+				
+				
+				$data = http_build_query(
+				    array(
+				        'title' => $post['post_title'],
+				        'excerpt' => $this->fitStringByWord($post['post_text'], 250),
+						'url' => $post['post_uri'],
+						'blog_name' => $this->returnConf('web_title')
+				    )
+				);
+				
+				$opts = array(
+					'http' => array(
+						'method' => 'POST',
+						'header' => 'Content-type: application/x-www-form-urlencoded; charset=utf-8',
+						'content' => $data
+					)
+				);
+				
+				$context = stream_context_create($opts);
+				$body = file_get_contents($trackback[1], false, $context);
+			}
+			
+			
+			
+			// Any errors?
+			if(!empty($body)){
+				$xml = simplexml_load_string($body);
+				if((integer) $xml->error === 0){
+					$sent_post_ids[] = $post['post_id'];
+				}
+			}
+		}
+		
+		if(count($sent_post_ids) == 0){
+			return false;
+		}
+		
+		$sent_posts = new Post($sent_post_ids);
+		$sent_posts->updateFields(array('post_trackback_sent' => 1));
+		
+		return true;
+	}
+	
+	/**
 	 * Import files as posts
 	 *
 	 * @param array|string $files Full path to post files

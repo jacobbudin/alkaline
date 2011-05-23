@@ -360,12 +360,20 @@ else{
 	
 	$now = time();
 	$launch_action = '';
+	$trackback_action = '';
 	
 	if(!empty($post['post_published'])){
 		$published = strtotime($post['post_published']);
 		if($published <= $now){
 			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '"><button>Launch post</button></a>';
 		}
+	}
+	
+	if(!empty($post['post_source']) and empty($post['post_trackback_sent'])){
+		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '"><button>Send trackback</button></a>';
+	}
+	elseif(!empty($post['post_source'])){
+		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '"><button disabled="disabled">Send trackback</button></a>';		
 	}
 	
 	if(!empty($post_act) and ($post_act == 'add')){
@@ -387,6 +395,7 @@ else{
 	
 	<div class="actions">
 		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
+		<?php echo $trackback_action; ?>
 		<?php echo $launch_action; ?>
 	</div>
 	
@@ -443,7 +452,7 @@ else{
 						<?php
 					}
 					?>
-					<div class="none get_location_set"><?php echo $_SESSION['alkaline']['location']; ?></div>
+					<div class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></div>
 				</p>
 				
 				<p class="slim">

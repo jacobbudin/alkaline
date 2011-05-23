@@ -23,6 +23,7 @@ ALTER TABLE `posts` ADD `post_excerpt` text;
 ALTER TABLE `posts` ADD `post_excerpt_raw` text;
 ALTER TABLE `posts` ADD `post_source` varchar(255) DEFAULT NULL;
 ALTER TABLE `posts` ADD `post_trackback_count` smallint(5) unsigned DEFAULT NULL;
+ALTER TABLE `posts` ADD `post_trackback_sent` tinyint(4)  DEFAULT NULL;
 ALTER TABLE `posts` ADD `post_geo` tinytext;
 ALTER TABLE `posts` ADD `post_geo_lat` decimal(10,7) DEFAULT NULL;
 ALTER TABLE `posts` ADD `post_geo_long` decimal(10,7) DEFAULT NULL;

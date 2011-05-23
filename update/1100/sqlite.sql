@@ -21,6 +21,7 @@ ALTER TABLE `posts` ADD `post_excerpt` TEXT;
 ALTER TABLE `posts` ADD `post_excerpt_raw` TEXT;
 ALTER TABLE `posts` ADD `post_source` TEXT;
 ALTER TABLE `posts` ADD `post_trackback_count` INTEGER;
+ALTER TABLE `posts` ADD `post_trackback_sent` INTEGER;
 ALTER TABLE `posts` ADD `post_geo` TEXT;
 ALTER TABLE `posts` ADD `post_geo_lat` REAL;
 ALTER TABLE `posts` ADD `post_geo_long` REAL;
