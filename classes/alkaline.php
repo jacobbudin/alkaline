@@ -2395,6 +2395,9 @@ class Alkaline{
 			case 'sizes':
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
 				break;
+			case 'trackbacks':
+				if(empty($fields['trackback_created'])){ $fields['trackback_created'] = $now; }
+				break;
 			case 'users':
 				if(Alkaline::edition != 'multiuser'){
 					return false;
