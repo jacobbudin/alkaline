@@ -58,6 +58,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/overview.png" alt="" /> Overview</h1>
+	
+	<?php ob_start(); ?>
 
 	<h2>Alkaline</h2>
 	<table>
@@ -173,6 +175,58 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 	</table>
+	
+	<?php
+	
+	$settings = ob_get_flush();
+	ob_end_clean();
+	
+	?>
+	
+	<div class="actions" style="margin-top:0">
+		<a href="<?php echo BASE . ADMIN . 'tasks/send-diagnostic-report.php'; ?>" class="tip" title="Sends a diagnostic report to Alkaline engineers to help identify the cause of your support case."><button>Send diagnostic report</button></a>
+	</div>
+	
+	<h2>Diagnostics</h2>
+	
+	<p>
+		<span class="switch">&#9656;</span> <a href="#" class="show">Show diagnostic report</a></span>
+	</p>
+	<div class="reveal">
+		<?php
+	
+		ob_start();
+		phpinfo();
+		$phpinfo = ob_get_contents(); 
+		ob_end_clean();
+	
+		?>
+		<textarea style="height: 30em;" class="code"><?php
+			// Cache
+			require_once(PATH . CLASSES . 'cache_lite/Lite.php');
+
+			// Set a few options
+			$options = array(
+			    'cacheDir' => PATH . CACHE,
+			    'lifeTime' => 30,
+			);
+
+			// Create a Cache_Lite object
+			$cache = new Cache_Lite($options);
+
+			if($report = $cache->get('diagnostic_report')){
+				echo $report;
+			}
+			else{
+				$report = trim(strip_tags(preg_replace('#\n\s+#si', "\n", $settings))) . "\n\n";
+				$report .= trim(strip_tags(preg_replace('#<style type="text/css">.*?</style>|<title>.*?</title>#si', '', $phpinfo)));
+				$report = preg_replace("#\n{3,}#", "\n\n", $report);
+				$report = preg_replace("#\x20{2,}|\t{2,}#", ' ', $report);
+				$cache->save($report);
+			}
+			
+			echo $report; ?></textarea>
+	</div>
 </div>
 
 <?php
