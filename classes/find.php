@@ -1107,13 +1107,18 @@ class Find extends Alkaline{
 						$s->setMaxQueryTime($this->returnConf('sphinx_max_exec'));
 					}
 					$response = $sphinx->query($search);
+					
+					if(empty($response['matches'])){
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+						return true;
+					}
 
 					$results = $response['matches'];
 					
 					$ids = array();
 					$table_results = array();
 
-					foreach($results as $result){						
+					foreach($results as $result){
 						if($result['attrs']['table'] == $table){
 							$ids[] = $result['attrs']['table_id'];
 						}
