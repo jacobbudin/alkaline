@@ -50,7 +50,7 @@ $context = stream_context_create($opts);
 $body = file_get_contents('http://www.alkalineapp.com/boomerang/report/', false, $context);
 
 if($body == 'true'){
-	$alkaline->addNote('Your diagnostic report has been submitted. Please submit a bug report if you have not already done so.', 'success');
+	$alkaline->addNote('Your diagnostic report has been submitted. Please <a href="http://www.alkalineapp.com/support/">submit a bug report</a> if you have not already done so.', 'success');
 }
 else{
 	$alkaline->addNote('Your diagnostic report could not be submitted at this time.', 'error');
