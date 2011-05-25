@@ -865,6 +865,10 @@ class Post extends Alkaline{
 			}
 		}
 		
+		if(count($to_delete) > 0){
+			$this->deleteRow('citations', $to_delete);
+		}
+		
 		foreach($this->posts as $post){
 			preg_match_all('#\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))#si', $post['post_text_raw'], $matches);
 			foreach($matches[1] as $match){
@@ -873,10 +877,22 @@ class Post extends Alkaline{
 				}
 				$this->loadCitation($match, 'post_id', $post['post_id']);
 			}
-		}
-		
-		if(count($to_delete) > 0){
-			$this->deleteRow('citations', $to_delete);
+			
+			$query = $this->prepare('SELECT citations.* FROM citations, posts WHERE posts.post_id = :post_id AND citations.post_id = posts.post_id;');
+			$query->execute(array(':post_id' => $post['post_id']));
+			$citations = $query->fetchAll();
+			
+			$post_citations = array();
+			$ignore_keys = array('citation_created', 'citation_modified');
+			
+			foreach($citations as $citation){
+				foreach($citation as $key => $value){
+					if(is_numeric($key) or is_numeric($value) or empty($value) or in_array($key, $ignore_keys)){ continue; }
+					$post_citations[] = $value;
+				}
+			}
+			
+			$this->updateRow(array('post_citations' => implode(' ', $post_citations)), 'posts', $post['post_id']);
 		}
 	}
 }

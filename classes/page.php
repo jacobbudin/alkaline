@@ -356,6 +356,10 @@ class Page extends Alkaline{
 			}
 		}
 		
+		if(count($to_delete) > 0){
+			$this->deleteRow('citations', $to_delete);
+		}
+		
 		foreach($this->pages as $page){
 			preg_match_all('#\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))#si', $page['page_text_raw'], $matches);
 			foreach($matches[1] as $match){
@@ -364,10 +368,22 @@ class Page extends Alkaline{
 				}
 				$this->loadCitation($match, 'page_id', $page['page_id']);
 			}
-		}
-		
-		if(count($to_delete) > 0){
-			$this->deleteRow('citations', $to_delete);
+			
+			$query = $this->prepare('SELECT citations.* FROM citations, pages WHERE pages.page_id = :page_id AND citations.page_id = pages.page_id;');
+			$query->execute(array(':page_id' => $page['page_id']));
+			$citations = $query->fetchAll();
+			
+			$page_citations = array();
+			$ignore_keys = array('citation_created', 'citation_modified');
+			
+			foreach($citations as $citation){
+				foreach($citation as $key => $value){
+					if(is_numeric($key) or is_numeric($value) or empty($value) or in_array($key, $ignore_keys)){ continue; }
+					$page_citations[] = $value;
+				}
+			}
+			
+			$this->updateRow(array('page_citations' => implode(' ', $page_citations)), 'pages', $page['page_id']);
 		}
 	}
 }
