@@ -63,12 +63,6 @@ class Alkaline{
 			unset($process);
 		}
 		
-		// Send browser headers
-		if(!headers_sent()){
-			header('Cache-Control: no-cache, must-revalidate', false);
-			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
-		}
-		
 		// Set error handler
 		set_error_handler(array($this, 'addError'), E_ALL);
 		set_exception_handler(array($this, 'addException'));
@@ -82,6 +76,12 @@ class Alkaline{
 		// Debug info
 		$chief_classes = array('Alkaline', 'XMLRPC');
 		if(in_array(get_class($this), $chief_classes)){
+			// Send browser headers
+			if(!headers_sent()){
+				header('Cache-Control: no-cache, must-revalidate', false);
+				header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
+			}
+			
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
 			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'config.json')), true);
