@@ -10,6 +10,7 @@ class Tumblr extends Orbit{
 		parent::__construct();
 		
 		$this->tumblr_active = $this->returnPref('tumblr_active');
+		$this->tumblr_auto = $this->returnPref('tumblr_auto');
 		$this->tumblr_transmit = $this->returnPref('tumblr_transmit');
 		$this->tumblr_format_image = $this->returnPref('tumblr_format_image');
 		$this->tumblr_format_post = $this->returnPref('tumblr_format_post');
@@ -56,7 +57,7 @@ class Tumblr extends Orbit{
 	
 	public function orbit_config(){
 		?>
-		<p>Every time you publish an image or post, your <a href="http://www.tumblr.com/">Tumblr</a> will be updated. (If you publish multiple images or posts simultaneously, your Tumblelog will only be updated once.)</p>
+		<p>Let Alkaline update your <a href="http://www.tumblr.com/">Tumblr</a>.</p>
 		<?php
 		if($this->tumblr_active){
 			$this->tumblr_format_image = $this->makeHTMLSafe($this->tumblr_format_image);
@@ -65,7 +66,7 @@ class Tumblr extends Orbit{
 			<table>
 				<tr>
 					<td class="right"><label>Name:</label></td>
-					<td><a href="http://<?php echo $this->tumblr_name; ?>.tumblr.com/"><?php echo $this->tumblr_name; ?></a> &#0160; <button><a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>">Unlink from Tumblr</button></a></td>
+					<td><a href="http://<?php echo $this->tumblr_name; ?>.tumblr.com/"><?php echo $this->tumblr_name; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'tumblr')); ?>"><button>Unlink from Tumblr</button></a></td>
 				</tr>
 				<tr>
 					<td class="right middle"><label for="tumblr_transmit">Transmit:</label></td>
@@ -78,18 +79,22 @@ class Tumblr extends Orbit{
 					</td>
 				</tr>
 				<tr>
-					<td class="right pad"><label for="tumblr_format_image">Image format:</label></td>
+					<td class="right"><label for="tumblr_format_image">Image format:</label></td>
 					<td>
 						<textarea type="text" id="tumblr_format_image" name="tumblr_format_image" style="width: 30em;" class="code"><?php echo $this->tumblr_format_image; ?></textarea><br />
-						<span class="quiet">Your image will automatically be posted, use the text area above to write an optional caption. Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</span>
+						<p class="quiet">Your image will automatically be posted, you can use the text area above to write an optional caption. Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</p>
 					</td>
 				</tr>
 				<tr>
-					<td class="right pad"><label for="tumblr_format_post">Post format:</label></td>
+					<td class="right"><label for="tumblr_format_post">Post format:</label></td>
 					<td>
 						<textarea type="text" id="tumblr_format_post" name="tumblr_format_post" style="width: 30em;" class="code"><?php echo $this->tumblr_format_post; ?></textarea><br />
-						<span class="quiet">Your title will automatically be posted, use the text area above to write an optional body text (or summary). Use Canvas tags such as <code>{Post_Title}</code> and <code>{Post_URI}</code> above.</span>
+						<p class="quiet">Your title will automatically be posted, you can use the text area above to write an optional body text (or summary). Use Canvas tags such as <code>{Post_Text}</code> and <code>{Post_URI}</code> above.</p>
 					</td>
+				</tr>
+				<tr>
+					<td class="right"><input type="checkbox" id="tumblr_auto" name="tumblr_auto" value="auto" <?php if($this->tumblr_auto == 'auto'){ echo 'checked="checked"'; } ?> /></td>
+					<td><strong><label for="tumblr_auto">Enable automatic mode.</label></strong> When you publish, your Tumblog will be automatically updated.</td>
 				</tr>
 			</table>
 			<?php
@@ -219,28 +224,7 @@ class Tumblr extends Orbit{
 		$this->setPref('tumblr_last_image_time', $now);
 		$this->setPref('tumblr_last_post_time', $now);
 		
-		if(strpos($this->tumblr_transmit, 'image')){
-			if(empty($this->tumblr_last_image_id)){
-				$image_ids = new Find('images');
-				$image_ids->published();
-				$image_ids->sort('image_published', 'DESC');
-				$image_ids->privacy('public');
-				$image_ids->find();
-				$image = new Image($image_ids);
-				$image->hook();
-			}
-		}
-		
-		if(strpos($this->tumblr_transmit, 'post')){			
-			if(empty($this->tumblr_last_post_id)){
-				$post_ids = new Find('posts');
-				$post_ids->published();
-				$post_ids->sort('post_published', 'DESC');
-				$post_ids->find();
-				$posts = new Post($post_ids);
-				$posts->hook();
-			}
-		}
+		$this->setPref('tumblr_auto', @$_POST['tumblr_auto']);
 		
 		$this->setPref('tumblr_transmit', @$_POST['tumblr_transmit']);
 		$this->setPref('tumblr_format_image', @$_POST['tumblr_format_image']);
@@ -249,13 +233,11 @@ class Tumblr extends Orbit{
 		$this->savePref();
 	}
 	
-	public function orbit_image($images){
+	public function orbit_image($images, $override=false){
+		if(($this->tumblr_auto != 'auto') && ($override === false)){ return; }
 		if(strpos($this->tumblr_transmit, 'image') === false){ return; }
-		
 		if(count($images) < 1){ return; }
 		
-		// Seek array for new image
-		$latest = 0;
 		$now = time();
 		
 		foreach($images as $image){
@@ -266,37 +248,39 @@ class Tumblr extends Orbit{
 			if($image_published <= $this->tumblr_last_image_time){ continue; }
 			if($image['image_privacy'] != 1){ continue; }
 			
-			if($image_published > $latest){
-				$latest = $image_published;
-				$latest_image = $image;
-			}
+			$this->storeTask(array($this, 'upload_image'), $image);
 		}
 		
-		if(empty($latest_image)){ return; }
-		if($latest_image['image_id'] == $this->tumblr_last_image_id){ return; }
-		
-		// Get image, tags
-		$images = new Image($latest_image['image_id']);
-		$tags = $images->getTags();
-		$latest_image = $images->images[0];
-		
-		$latest_image_tags = array();
-		
-		foreach($tags as $tag){
-			$latest_image_tags[] = $tag['tag_name'];
-		}
-		
-		// Format tags
-		$latest_image_tags = '"' . implode('","', $latest_image_tags) . '"';
-		
-		// Save this image as last
-		$this->setPref('tumblr_last_image_time', $latest);
-		$this->setPref('tumblr_last_image_id', $latest_image['image_id']);
+		$this->setPref('tumblr_last_image_time', $now);
 		$this->savePref();
+	}
+	
+	public function orbit_post($posts, $override=false){
+		if(($this->tumblr_auto != 'auto') && ($override === false)){ return; }
+		if(strpos($this->tumblr_transmit, 'post') === false){ return; }
+		if(count($posts) < 1){ return; }
 		
+		$now = time();
+		
+		foreach($posts as $post){
+			$post_published = strtotime($post['post_published']);
+			
+			if(empty($post_published)){ continue; }
+			if($post_published > $now){ continue; }
+			if($post_published <= $this->tumblr_last_post_time){ continue; }
+			if($post['post_privacy'] != 1){ continue; }
+			
+			$this->storeTask(array($this, 'upload_post'), $post);
+		}
+		
+		$this->setPref('tumblr_last_post_time', $now);
+		$this->savePref();
+	}
+	
+	public function upload_image($image){
 		// Format caption
 		$canvas = new Canvas($this->tumblr_format_image);
-		$canvas->assignArray($latest_image);
+		$canvas->assignArray($image);
 		$canvas->generate();
 		
 		// Reformat relative links
@@ -311,47 +295,18 @@ class Tumblr extends Orbit{
 		// Send to Tumblr
 		$parameters = array('type' => 'photo',
 			'format' => 'html',
-			'tags' => $latest_image_tags,
-			'source' => LOCATION . $latest_image['image_src'],
+			'tags' => $image_tags,
+			'source' => LOCATION . $image['image_src'],
 			'caption' => $canvas->template,
-			'click-through-url' => $latest_image['image_uri']);
+			'click-through-url' => $image['image_uri']);
 		
 		$this->tumblr->post('write', $parameters);
 	}
 	
-	public function orbit_post($posts){
-		if(strpos($this->tumblr_transmit, 'post') === false){ return; }
-		
-		if(count($posts) < 1){ return; }
-		
-		// Seek array for new post
-		$latest = 0;
-		$now = time();
-		
-		foreach($posts as $post){
-			$post_published = strtotime($post['post_published']);
-			
-			if(empty($post_published)){ continue; }
-			if($post_published > $now){ continue; }
-			if($post_published <= $this->tumblr_last_post_time){ continue; }
-			
-			if($post_published > $latest){
-				$latest = $post_published;
-				$latest_post = $post;
-			}
-		}
-		
-		// Save this post as last
-		if(empty($latest_post)){ return; }
-		if($latest_post['post_id'] == $this->tumblr_last_post_id){ return; }
-		
-		$this->setPref('tumblr_last_post_time', $latest);
-		$this->setPref('tumblr_last_post_id', $latest_post['post_id']);
-		$this->savePref();
-		
+	public function upload_post($post){
 		// Format post
 		$canvas = new Canvas($this->tumblr_format_post);
-		$canvas->assignArray($latest_post);
+		$canvas->assignArray($post);
 		$canvas->generate();
 		
 		// Reformat relative links
@@ -366,10 +321,26 @@ class Tumblr extends Orbit{
 		// Send to Tumblr
 		$parameters = array('type' => 'regular',
 			'format' => 'html',
-			'title' => $latest_post['post_title'],
+			'title' => $post['post_title'],
 			'body' => $canvas->template);
 
 		$this->tumblr->post('write', $parameters);
+	}
+	
+	public function orbit_send_html_image(){
+		echo '<option value="tumblr">Tumblr</option>';
+	}
+	
+	public function orbit_send_html_post(){
+		echo '<option value="tumblr">Tumblr</option>';
+	}
+	
+	public function orbit_send_tumblr_image($images){
+		return $this->orbit_image($images, true);
+	}
+	
+	public function orbit_send_tumblr_post($posts){
+		return $this->orbit_post($posts, true);
 	}
 }
 

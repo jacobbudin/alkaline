@@ -67,7 +67,7 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				$act_send = $_POST['act_send'];
 				$images = new Image($image_ids);
 				
-				$orbit->hook('send_' . $act_send, $images);
+				$orbit->hook('send_' . $act_send . '_image', $images);
 			}
 		}
 		elseif($act == 'set_add'){
@@ -228,7 +228,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php echo $alkaline->showRights('act_right_id'); ?>
 				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
 				<select id="act_send" name="act_send">
-					<?php $orbit->hook('send_html'); ?>
+					<?php $orbit->hook('send_html_image'); ?>
 				</select>
 				<input type="hidden" name="image_ids" id="image_ids" value="" />
 				<input type="submit" id="act_do" name="do" value="Do" />

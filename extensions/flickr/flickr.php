@@ -17,6 +17,7 @@ class Flickr extends Orbit{
 		
 		$this->flickr_nsid = $this->returnPref('flickr_nsid');
 		$this->flickr_token = $this->returnPref('flickr_token');
+		$this->flickr_auto = $this->returnPref('flickr_auto');
 		$this->flickr_username = $this->returnPref('flickr_username');
 		$this->flickr_last_image_time = $this->returnPref('flickr_last_image_time');
 		$this->flickr_format_image = $this->returnPref('flickr_format_image');
@@ -39,7 +40,7 @@ class Flickr extends Orbit{
 	
 	public function orbit_config(){
 		?>
-		<p>When you publish one or more images, the images will be uploaded to <a href="http://www.flickr.com/">Flickr</a>.</p>
+		<p>Let Alkaline upload to <a href="http://www.flickr.com/">Flickr</a>.</p>
 		<?php
 		if($this->flickr_active){
 			$this->flickr_format_image = $this->makeHTMLSafe($this->flickr_format_image);
@@ -55,6 +56,10 @@ class Flickr extends Orbit{
 						<textarea type="text" id="flickr_format_image" name="flickr_format_image" style="width: 30em;" class="code"><?php echo $this->flickr_format_image; ?></textarea><br />
 						<span class="quiet">Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</span>
 					</td>
+				</tr>
+				<tr>
+					<td class="right"><input type="checkbox" id="flickr_auto" name="flickr_auto" value="auto" <?php if($this->flickr_auto == 'auto'){ echo 'checked="checked"'; } ?> /></td>
+					<td><strong><label for="flickr_auto">Enable automatic mode.</label></strong> When you publish, photos will be uploaded to Flickr.</td>
 				</tr>
 			</table>
 			<?php
@@ -131,13 +136,16 @@ class Flickr extends Orbit{
 	public function orbit_config_save(){
 		$now = time();
 		
+		$this->setPref('flickr_auto', @$_POST['flickr_auto']);
+		
 		$this->setPref('flickr_last_image_time', $now);
 		$this->setPref('flickr_format_image', @$_POST['flickr_format_image']);
 		
 		$this->savePref();
 	}
 	
-	public function orbit_image($images){
+	public function orbit_image($images, $override=false){
+		if(($this->flickr_auto != 'auto') && ($override === false)){ return; }
 		if(count($images) < 1){ return; }
 		
 		$now = time();
@@ -200,6 +208,14 @@ class Flickr extends Orbit{
 			$this->flickr->photos_geo_setLocation($photo_id, $image['image_geo_lat'], $image['image_geo_long'], 11);
 			echo $this->flickr->error_code;
 		}
+	}
+	
+	public function orbit_send_html_image(){
+		echo '<option value="flickr">Flickr</option>';
+	}
+	
+	public function orbit_send_flickr_image($images){
+		return $this->orbit_image($images, true);
 	}
 }
 

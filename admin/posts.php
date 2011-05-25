@@ -44,7 +44,10 @@ if(!empty($_POST['post_id'])){
 	
 	$posts = new Post($post_id);
 	
-	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
+	if(!empty($_POST['post_send']) and ($_POST['post_send'] == 'send')){
+		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts);
+	}
+	elseif(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		if($posts->delete()){
 			$alkaline->addNote('The post has been deleted.', 'success');
 		}
@@ -373,7 +376,7 @@ else{
 		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '"><button>Send trackback</button></a>';
 	}
 	elseif(!empty($post['post_source'])){
-		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '"><button disabled="disabled">Send trackback</button></a>';		
+		$trackback_action = '<button disabled="disabled">Send trackback</button>';
 	}
 	
 	if(!empty($post_act) and ($post_act == 'add')){
@@ -562,6 +565,17 @@ else{
 				<hr />
 				
 				<table>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_send" name="post_send" value="send" /></td>
+						<td>
+							<label for="post_send">
+								Send to
+								<select id="post_send_service" name="post_send_service">
+									<?php $orbit->hook('send_html_post'); ?>
+								</select>
+							</label>.
+						</td>
+					</tr>
 					<?php if($alkaline->returnConf('comm_enabled')){ ?>
 					<tr>
 						<td class="right" style="width: 5%"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>

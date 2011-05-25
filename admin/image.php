@@ -31,7 +31,10 @@ if(!empty($_POST['image_id'])){
 	
 	$images = new Image($image_id);
 	
-	if(@$_POST['image_delete'] == 'delete'){
+	if(!empty($_POST['image_send']) and ($_POST['image_send'] == 'send')){
+		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images);
+	}
+	elseif(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){
 			$alkaline->addNote('The image has been deleted.', 'success');
 		}
@@ -194,7 +197,7 @@ else{
 					<?php
 				}
 				?>
-				<div class="none get_location_set"><?php echo $_SESSION['alkaline']['location']; ?></div>
+				<div class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></div>
 			</p>
 			
 			<p>
@@ -258,6 +261,17 @@ else{
 			<hr />
 			
 			<table>
+				<tr>
+					<td class="right" style="width: 5%"><input type="checkbox" id="image_send" name="image_send" value="send" /></td>
+					<td>
+						<label for="image_send">
+							Send to
+							<select id="image_send_service" name="image_send_service">
+								<?php $orbit->hook('send_html_image'); ?>
+							</select>.
+						</label>
+					</td>
+				</tr>
 				<?php if($alkaline->returnConf('comm_enabled')){ ?>
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="image_comment_disabled" name="image_comment_disabled" value="disabled" <?php if($image['image_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
