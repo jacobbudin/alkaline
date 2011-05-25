@@ -587,7 +587,7 @@ td .actions{
 	min-width: 0;
 }
 
-.actions a{
+.actions button{
 	margin-left: .5em;
 }
 

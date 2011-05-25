@@ -374,7 +374,7 @@ else{
 	}
 	
 	if(!empty($post['post_source']) and empty($post['post_trackback_sent'])){
-		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '"><button>Send trackback</button></a>';
+		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '" class="tip" title="Send a trackback to alert the author of the source content to your post."><button>Send trackback</button></a>';
 	}
 	elseif(!empty($post['post_source'])){
 		$trackback_action = '<button disabled="disabled">Send trackback</button>';
@@ -398,8 +398,8 @@ else{
 	?>
 	
 	<div class="actions">
-		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
 		<?php echo $trackback_action; ?>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
 		<?php echo $launch_action; ?>
 	</div>
 	

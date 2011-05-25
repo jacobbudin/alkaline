@@ -470,10 +470,16 @@ function buttonize(){
 		}
 		else{
 			button = $(this).text();
+			disabled = $(this).attr('disabled');
 			button = button.replace(/(\w+).*/, "$1").toLowerCase();
 			width = '12';
 			if(empty(button)){ button = 'act'; width = '22'; }
-			$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="' + width + '" /> ');
+			if(disabled != 'disabled'){
+				$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="' + width + '" /> ');
+			}
+			else{
+				$(this).prepend('<img src="' + BASE + ADMIN + 'images/actions/' + button + '.png" alt="" height="12" width="' + width + '" style="opacity:.5;" /> ');
+			}
 			$(this).addClass('buttonized');
 		}
 	});
@@ -1025,6 +1031,7 @@ $(document).ready(function(){
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
 				no_of_files = total;
+				$('.actions').find('button').attr('disabled', 'disabled').find('img').css('opacity', '0.5');
 				// if(total == 1){
 				// 	return confirm("You are about to upload 1 file. Are you sure?");
 				// }
@@ -1051,6 +1058,7 @@ $(document).ready(function(){
 				}
 				$("#upload_count_text").text(upload_count_text);
 				if(number == (total - 1)){
+					$('.actions').find('button').removeAttr('disabled').find('img').css('opacity', '');
 					$("#progress").slideUp(500);
 					$("#h2_shoebox").delay(500).slideDown(500);
 				}

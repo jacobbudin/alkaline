@@ -61,7 +61,7 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 
 ?>
 
-<div class="actions">Done uploading? <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
+<div class="actions"><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
 <h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
 
 <div class="span-24 last">
