@@ -27,6 +27,7 @@ ALTER TABLE `posts` ADD `post_trackback_sent` tinyint(4)  DEFAULT NULL;
 ALTER TABLE `posts` ADD `post_geo` tinytext;
 ALTER TABLE `posts` ADD `post_geo_lat` decimal(10,7) DEFAULT NULL;
 ALTER TABLE `posts` ADD `post_geo_long` decimal(10,7) DEFAULT NULL;
+ALTER TABLE `posts` ADD `right_id` tinyint(3) unsigned DEFAULT NULL
 ALTER TABLE `rights` ADD `right_deleted` datetime DEFAULT NULL;
 ALTER TABLE `rights` ADD `right_markup` varchar(255) DEFAULT NULL;
 ALTER TABLE `rights` ADD `right_description_raw` text;

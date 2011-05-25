@@ -131,7 +131,8 @@ if(!empty($_POST['post_id'])){
 			'post_published' => @$_POST['post_published'],
 			'post_category' => $alkaline->makeUnicode(@$_POST['post_category']),
 			'post_comment_disabled' => $post_comment_disabled,
-			'post_words' => $post_words);
+			'post_words' => $post_words,
+			'right_id' => @$_POST['right_id']);
 		
 		$posts->attachUser($user);
 		$posts->updateFields($fields);
@@ -473,6 +474,11 @@ else{
 						<label for="post_title_url">Custom URL:</label><br />
 						<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
 							<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
+					</p>
+					
+					<p>
+						<label for="right_id">Rights set:</label><br />
+						<?php echo $alkaline->showRights('right_id', $post['right_id']); ?>
 					</p>
 				</div>
 				

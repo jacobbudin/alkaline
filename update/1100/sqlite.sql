@@ -28,6 +28,7 @@ ALTER TABLE `posts` ADD `post_geo_long` REAL;
 ALTER TABLE `rights` ADD `right_deleted` TEXT;
 ALTER TABLE `rights` ADD `right_markup` TEXT;
 ALTER TABLE `rights` ADD `right_description_raw` TEXT;
+ALTER TABLE `rights` ADD `right_id` INTEGER;
 ALTER TABLE `sets` ADD `set_deleted` TEXT;
 ALTER TABLE `sets` ADD `set_markup` TEXT;
 ALTER TABLE `sets` ADD `set_description_raw` TEXT;

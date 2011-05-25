@@ -201,17 +201,17 @@ else{
 			</p>
 			
 			<p>
-				<label for="">Publish date:</label><br />
+				<label for="image_published">Publish date:</label><br />
 				<input type="text" id="image_published" name="image_published" placeholder="Unpublished" value="<?php echo $alkaline->formatTime($image['image_published']); ?>" />
 			</p>
 			
 			<p>
-				<label for="">Privacy level:</label><br />
+				<label for="image_privacy">Privacy level:</label><br />
 				<?php echo $alkaline->showPrivacy('image_privacy', $image['image_privacy']); ?>
 			</p>
 			
 			<p>
-				<label for="">Rights set:</label><br />
+				<label for="right_id">Rights set:</label><br />
 				<?php echo $alkaline->showRights('right_id', $image['right_id']); ?>
 			</p>
 			

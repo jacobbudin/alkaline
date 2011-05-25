@@ -25,6 +25,7 @@ ALTER TABLE "posts" ADD "post_trackback_sent" INTEGER;
 ALTER TABLE "posts" ADD "post_geo" TEXT;
 ALTER TABLE "posts" ADD "post_geo_lat" REAL;
 ALTER TABLE "posts" ADD "post_geo_long" REAL;
+ALTER TABLE "posts" ADD "right_id" INTEGER;
 ALTER TABLE "rights" ADD "right_deleted" TIMESTAMP;
 ALTER TABLE "rights" ADD "right_markup" TEXT;
 ALTER TABLE "rights" ADD "right_description_raw" TEXT;
