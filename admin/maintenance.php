@@ -52,6 +52,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<strong><a href="#delete-shoebox">Delete all files in shoebox</a></strong><br />
 					Delete all files from your shoebox folder, removing troublesome files that could not be imported
 				</li>
+				<li>
+					<strong><a href="#delete-tasks">Delete cached tasks</a></strong><br />
+					Delete unperformed tasks relating to installed extensions
+				</li>
 			</ul>
 		</div>
 		<div class="span-10 last">	
