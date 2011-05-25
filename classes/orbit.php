@@ -311,9 +311,10 @@ class Orbit extends Alkaline{
 	 * Execute Orbit hook
 	 *
 	 * @param string $hook Hook name
+	 * @param string|array $extension Class name
 	 * @return mixed Default value
 	 */
-	public function hook($hook){
+	public function hook($hook, $extension_class=null){
 		// Configuration: maint_disable
 		$safe_hooks = array('config', 'config_load', 'config_save');
 		if(!in_array($hook, $safe_hooks)){
@@ -338,6 +339,14 @@ class Orbit extends Alkaline{
 		// Find respective extensions, execute their code
 		if(!empty($this->extensions)){
 			foreach($this->extensions as $extension){
+				if(!empty($extension_class)){
+					if(is_string($extension_class)){
+						if($extension_class != $extension['extension_class']){ continue; }
+					}
+					elseif(is_array($extension_class)){
+						if(!in_array($extension['extension_class'], $extension_class)){ continue; }
+					}
+				}
 				if(@in_array($hook, $extension['extension_hooks'])){
 					require_once($extension['extension_file']);
 					$orbit = new $extension['extension_class']();
