@@ -1747,10 +1747,10 @@ class Alkaline{
 	 */
 	public function getTags($show_hidden_tags=false){
 		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_name;');
 		}
 		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_id ASC;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_id ASC;');
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
