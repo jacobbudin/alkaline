@@ -94,7 +94,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<tr>
 				<td></td>
 				<td>
-					<input type="hidden" name="destination" value="<?php echo $_SESSION['alkaline']['destination']; ?>" />
+					<input type="hidden" name="destination" value="<?php if(isset($_SESSION['alkaline']['destination'])){ echo $_SESSION['alkaline']['destination']; } ?>" />
 					<input type="submit" value="Login" />
 				</td>
 			</tr>

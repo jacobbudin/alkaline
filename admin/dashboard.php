@@ -51,7 +51,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 <h1><img src="<?php echo BASE . ADMIN; ?>images/icons/dashboard.png" alt="" /> Dashboard</h1>
 
 <div class="span-24 last">
-	<div class="span-17 append-1">
+	<div class="span-16 append-2">
 		<?php
 		if($user->returnConf('stat_enabled') !== false){
 			?>
@@ -83,7 +83,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 <div class="span-24 prepend-top last">
 	<div class="actions">
-		<a href="<?php echo BASE . ADMIN . 'atom' . URL_CAP; ?>"><button>Subscribe</button></a>
+		<a href="<?php echo BASE . ADMIN . 'atom' . URL_CAP; ?>" class="tip" title="Keep track of new comments, trackbacks, and daily stats from your newsreader."><button>Subscribe to dashboard</button></a>
 	</div>
 	
 	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/timeline.png" alt="" /> Timeline</h1><br />

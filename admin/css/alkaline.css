@@ -30,6 +30,7 @@ hr{
 hr.invisible{
 	background-color: transparent;
 	color: transparent;
+	margin-bottom: 1em;
 }
 
 textarea{
@@ -196,7 +197,14 @@ table.census a{
 }
 
 #header{
-	margin-top: 3em;
+	margin: 4.5em 0 0.5em;
+}
+
+#header .logo{
+	position: relative;
+	left: -32px;
+	top: -32px;
+	margin-bottom: -64px;
 }
 
 td.status1{
@@ -230,7 +238,7 @@ td.status-1{
 
 #panels{
 	position: relative;
-	bottom: -1em;
+	bottom: -0.3em;
 	color: #444;
 	text-align: right;
 }
@@ -257,21 +265,18 @@ td.status-1{
 	margin-left: 1em;
 	font-size: .9em;
 	color: #999;
-	opacity: 0.85;
-	-moz-opacity: 0.85;
-	filter:alpha(opacity=85);
 }
 
 #userbar strong{
-	color: #ccc;
+	color: #fff;
 }
 
 #userbar a{
-	color: #999;
+	color: #0096db;
 }
 
 #userbar a:hover, #userbar a:active{
-	color: #fff;
+	color: #8dc9e8;
 }
 
 #userbar img{
@@ -287,7 +292,6 @@ td.status-1{
 }
 
 #footer a{ color: #777; }
-#footer img{ position: relative; top: -2px; margin-right: 2px; vertical-align: middle; }
 
 #navigation ul{
 	position: relative;
@@ -305,6 +309,7 @@ td.status-1{
 }
 
 #navigation ul ul{
+	display: none;
 	position: absolute; z-index: 100;
 	width: 12em;
 	padding: 10px 0;
@@ -417,9 +422,9 @@ a button{
 	text-decoration: none;
 }
 
-#navigation ul li.red a{
-	text-shadow: #730106 -1px -1px 1px;
-	background-color: #b50202;
+#navigation ul li.alt a{
+	text-shadow: #382054 -1px -1px 1px;
+	background-color: #5f368d;
 	color: #fff;
 }
 
@@ -438,8 +443,8 @@ a button{
 	color: #fff;
 }
 
-#navigation ul li.red a:hover, #navigation ul li.red a:active{
-	background-color: #da020d;
+#navigation ul li.alt a:hover, #navigation ul li.alt a:active{
+	background-color: #834cbf;
 	color: #fff;
 }
 

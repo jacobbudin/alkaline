@@ -761,8 +761,22 @@ $(document).ready(function(){
 	
 	if(jQuery().tipTip){
 		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
-		$('a.tip').tipTip({defaultPosition: 'right', delay: 200});
-		$('a.tip').live('mouseenter mouseleave', function(){ $(this).tipTip({defaultPosition: 'right', delay: 200}); });
+		$('a.tip').each(function(index) {
+			if($(this).has('.actions')){
+				$(this).tipTip({defaultPosition: 'left', delay: 200});
+			}
+			else{
+				$(this).tipTip({defaultPosition: 'right', delay: 200});
+			}
+		});
+		$('a.tip').live('mouseenter mouseleave', function(){
+			if($(this).has('.actions')){
+				$(this).tipTip({defaultPosition: 'left', delay: 200});
+			}
+			else{
+				$(this).tipTip({defaultPosition: 'right', delay: 200});
+			}
+		});
 		$('img.tip').tipTip({defaultPosition: 'top', delay: 200});
 	}
 	
@@ -1578,11 +1592,11 @@ $(document).ready(function(){
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 10 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: .01 },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
 			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
-			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+			grid: { color: "#777", borderColor: "transparent", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 	
 		$.each(stats.getData()[0].data, function(i, el){
@@ -1660,11 +1674,11 @@ $(document).ready(function(){
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 0 },
 			colors: ["#0096db", "#8dc9e8"],
 			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, timeformat: "%h %p" },
 			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
-			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+			grid: { color: "#777", borderColor: "transparent", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
 		
@@ -1691,11 +1705,11 @@ $(document).ready(function(){
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 0 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: .01, minTickSize: [3, "day"] },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0, minTickSize: [3, "day"] },
 			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
-			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+			grid: { color: "#777", borderColor: "transparent", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
 		var m_statistics_views = $("#m_views").attr("title");
@@ -1720,11 +1734,11 @@ $(document).ready(function(){
 			hoverable: true,
 			yaxis: 1
 		}],{
-			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "nw", margin: 10 },
+			legend: { show: true, backgroundOpacity: 0, labelBoxBorderColor: "#ddd", position: "ne", margin: 0 },
 			colors: ["#0096db", "#8dc9e8"],
-			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: .01 },
+			xaxis: { mode: "time", tickLength: 0, autoscaleMargin: 0 },
 			yaxis: { tickDecimals: 0, tickFormatter: function toShortNum(val, axis){ return shortNum(val); } },
-			grid: { color: "#777", borderColor: "#ccc", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
+			grid: { color: "#777", borderColor: "transparent", tickColor: "#eee", labelMargin: 10, hoverable: true, autoHighlight: true }
 		});
 		
 		$.each(h_stats.getData()[0].data, function(i, el){
