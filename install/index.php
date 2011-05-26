@@ -288,7 +288,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	
 	<p>Once you&#8217;re done, <a href="<?php echo BASE . ADMIN; ?>">log in to access your Dashboard</a>.</p>
 	
-	<textarea style="height: 30em;" class="code"><?php echo addslashes($config); ?></textarea>
+	<textarea style="height: 30em;" class="code"><?php echo $config; ?></textarea>
 	
 	<?php
 }
