@@ -178,8 +178,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<?php
 	
-	$settings = ob_get_flush();
+	$settings = ob_get_contents();
 	ob_end_clean();
+	echo $settings;
 	
 	?>
 	
@@ -197,7 +198,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 		ob_start();
 		phpinfo();
-		$phpinfo = ob_get_contents(); 
+		$phpinfo = ob_get_contents();
 		ob_end_clean();
 	
 		?>
