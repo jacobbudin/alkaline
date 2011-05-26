@@ -166,7 +166,7 @@ img.frame_fade_selected{
 	margin: .2em .4em .2em 0;
 	-moz-box-shadow: 0 0 3px #aaa;
 	-webkit-box-shadow: 0 0 3px #aaa;
-	background-color: #fffe00;
+	background-color: #ddd;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	opacity: 1;
