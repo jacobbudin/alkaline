@@ -65,7 +65,7 @@ if($image_ids->count_result > 0){
 	<?php
 	for($i = 0; $i < $images->image_count; ++$i){
 		?>
-		<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $images->images[$i]['image_id'] . URL_RW; ?>"><img src="<?php echo $images->images[$i]['image_src_square']; ?>" alt="" title="<?php echo $images->images[$i]['image_title']; ?>" class="frame tip" /></a>
+		<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $images->images[$i]['image_id'] . URL_RW; ?>"><img src="<?php echo $images->images[$i]['image_src_square']; ?>" alt="" title="<?php echo htmlentities($images->images[$i]['image_title']); ?>" class="frame tip" /></a>
 		<?php
 	}
 	?>

@@ -129,7 +129,7 @@ if(empty($right_id)){
 	
 		foreach($rights->rights as $right){
 			echo '<tr class="ro">';
-				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '" class="tip" title="' . $alkaline->fitStringByWord(strip_tags($right['right_description']), 150) . '">' . $right['right_title'] . '</a></strong></td>';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'rights' . URL_ID . $right['right_id'] . URL_RW . '" class="tip" title="' . htmlentities($alkaline->fitStringByWord(strip_tags($right['right_description']), 150)) . '">' . $right['right_title'] . '</a></strong></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'rights' . URL_AID . $right['right_id'] . URL_RW . '">' . $right['right_image_count'] . '</a></td>';
 				echo '<td>' . $alkaline->formatTime($right['right_created']) . '</td>';
 				echo '<td>' . ucfirst($alkaline->formatRelTime($right['right_modified'])) . '</td>';
