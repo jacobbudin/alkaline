@@ -102,8 +102,8 @@ if(!empty($_POST['post_id'])){
 		}
 		else{
 			$post_markup_ext = '';
-			$post_text = $this->nl2br($post_text_raw);
-			$post_excerpt = $this->nl2br($post_excerpt_raw);
+			$post_text = $alkaline->nl2br($post_text_raw);
+			$post_excerpt = $alkaline->nl2br($post_excerpt_raw);
 		}
 		
 		// Comment disabling
