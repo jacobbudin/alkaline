@@ -12,7 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $user = new User;
-$orbit = new Orbit();
+$orbit = new Orbit;
 
 // cliqcliq Quickpic support
 if(isset($_REQUEST['context']) and ($_REQUEST['context'] == sha1(PATH . BASE . DB_DSN . DB_TYPE))){

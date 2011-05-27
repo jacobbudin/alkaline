@@ -135,7 +135,7 @@ else{
 				<td><input type="text" id="tag_name" name="tag_name" value="<?php echo $tag['tag_name']; ?>" class="m notempty" /></td>
 			</tr>
 			<tr>
-				<td class="right pad"><label for="image_tag">Siblings:</label></td>
+				<td class="right pad"><label for="image_tag">Parents:</label></td>
 				<td>
 					<div class="image_tag_container">
 						<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />
