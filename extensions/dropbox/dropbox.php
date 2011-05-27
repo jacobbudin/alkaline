@@ -142,6 +142,8 @@ class Dropbox extends Orbit{
 	}
 	
 	public function orbit_shoebox(){
+		if($this->dropbox_active != true){ return; }
+		
 		$folder = $this->dropbox->metadata($this->dropbox_folder);
 		
 		foreach($folder['contents'] as $file){
