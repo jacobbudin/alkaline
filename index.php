@@ -27,7 +27,14 @@ $image_ids->find();
 $images = new Image($image_ids);
 $images->formatTime();
 $images->getSizes();
-$images->addSequence('last', 3);
+$images->getEXIF();
+$images->getColorkey(950, 15);
+$images->getSets();
+$images->getTags();
+$images->getRights();
+$images->getPages();
+$images->getComments();
+$images->addSequence('medium_last', 3);
 $images->hook();
 
 $page_ids = new Find('pages');
@@ -56,21 +63,6 @@ $index->assign('Page_Current', $image_ids->page);
 $index->assign('Page_Count', $image_ids->page_count);
 $index->loop($images);
 $index->display();
-
-if($image_ids->page == 1){
-	$set_ids = new Find('sets');
-	$set_ids->find();
-
-	$sets = new Set($set_ids);
-	$sets->addSequence('last', 3);
-	$sets->getImages(5);
-	$sets->images->getSizes();
-	
-	$set_list = new Canvas;
-	$set_list->load('set_list');
-	$set_list->loop($sets);
-	$set_list->display();
-}
 
 $footer = new Canvas;
 $footer->load('footer');
