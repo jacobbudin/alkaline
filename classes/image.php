@@ -52,6 +52,9 @@ class Image extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (images.image_id IS NULL)';
+		if(count($this->image_ids) > 0){	
+			$this->sql = ' WHERE (images.image_id IN (' . implode(', ', $this->image_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -65,14 +68,11 @@ class Image extends Alkaline{
 		// Create a Cache_Lite object
 		$cache = new Cache_Lite($options);
 		
-		if(($images = $cache->get('images:' . implode(',', $this->image_ids), 'images')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
+		if(!empty($this->image_ids) && ($images = $cache->get('images:' . implode(',', $this->image_ids), 'images')) && !empty($last_modified) && ($cache->lastModified() > $last_modified)){
 			$this->images = unserialize($images);
 		}
 		else{
 			if(count($this->image_ids) > 0){
-				// Retrieve images from database
-				$this->sql = ' WHERE (images.image_id IN (' . implode(', ', $this->image_ids) . '))';
-
 				$query = $this->prepare('SELECT * FROM images' . $this->sql . ';');
 				$query->execute();
 				$images = $query->fetchAll();
@@ -112,9 +112,8 @@ class Image extends Alkaline{
 						}
 					}
 				}
+				$cache->save(serialize($this->images));
 			}
-			
-		    $cache->save(serialize($this->images));
 		}
 		
 		// Store image count as integer
@@ -160,11 +159,15 @@ class Image extends Alkaline{
 			return false;
 		}
 		
-		$files = $this->convertToArray($files);
+		if(is_string($files)){
+			$files = array($files);
+		}
+		
 		$image_ids = array();
 		
 		foreach($files as $file){
 			if(!is_file($file)){
+				var_dump($file);
 				return false;
 			}
 			

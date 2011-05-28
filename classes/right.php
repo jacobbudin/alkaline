@@ -42,6 +42,9 @@ class Right extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (rights.right_id IS NULL)';
+		if(count($this->right_ids) > 0){
+			$this->sql = ' WHERE (rights.right_id IN (' . implode(', ', $this->right_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -59,10 +62,7 @@ class Right extends Alkaline{
 			$this->rights = unserialize($rights);
 		}
 		else{
-			if(count($this->right_ids) > 0){
-				// Retrieve rights from database
-				$this->sql = ' WHERE (rights.right_id IN (' . implode(', ', $this->right_ids) . '))';
-			
+			if(count($this->right_ids) > 0){			
 				$query = $this->prepare('SELECT * FROM rights' . $this->sql . ';');
 				$query->execute();
 				$rights = $query->fetchAll();

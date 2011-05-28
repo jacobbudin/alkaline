@@ -43,6 +43,9 @@ class Comment extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (comments.comment_id IS NULL)';
+		if(count($this->comment_ids) > 0){
+			$this->sql = ' WHERE (comments.comment_id IN (' . implode(', ', $this->comment_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -61,9 +64,6 @@ class Comment extends Alkaline{
 		}
 		else{
 			if(count($this->comment_ids) > 0){
-				// Retrieve comments from database
-				$this->sql = ' WHERE (comments.comment_id IN (' . implode(', ', $this->comment_ids) . '))';
-			
 				$query = $this->prepare('SELECT * FROM comments' . $this->sql . ';');
 				$query->execute();
 				$comments = $query->fetchAll();

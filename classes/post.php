@@ -45,6 +45,9 @@ class Post extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (posts.post_id IS NULL)';
+		if(count($this->post_ids) > 0){
+			$this->sql = ' WHERE (posts.post_id IN (' . implode(', ', $this->post_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -62,10 +65,7 @@ class Post extends Alkaline{
 			$this->posts = unserialize($posts);
 		}
 		else{
-			if(count($this->post_ids) > 0){
-				// Retrieve posts from database
-				$this->sql = ' WHERE (posts.post_id IN (' . implode(', ', $this->post_ids) . '))';
-			
+			if(count($this->post_ids) > 0){			
 				$query = $this->prepare('SELECT * FROM posts' . $this->sql . ';');
 				$query->execute();
 				$posts = $query->fetchAll();

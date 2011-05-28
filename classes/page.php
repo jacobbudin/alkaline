@@ -42,6 +42,9 @@ class Page extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (pages.page_id IS NULL)';
+		if(count($this->page_ids) > 0){
+			$this->sql = ' WHERE (pages.page_id IN (' . implode(', ', $this->page_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -59,10 +62,7 @@ class Page extends Alkaline{
 			$this->pages = unserialize($pages);
 		}
 		else{
-			if(count($this->page_ids) > 0){
-				// Retrieve pages from database
-				$this->sql = ' WHERE (pages.page_id IN (' . implode(', ', $this->page_ids) . '))';
-			
+			if(count($this->page_ids) > 0){			
 				$query = $this->prepare('SELECT * FROM pages' . $this->sql . ';');
 				$query->execute();
 				$pages = $query->fetchAll();

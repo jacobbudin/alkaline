@@ -42,7 +42,9 @@ class Set extends Alkaline{
 		
 		// Error checking
 		$this->sql = ' WHERE (sets.set_id IS NULL)';
-		
+		if(count($this->set_ids) > 0){
+			$this->sql = ' WHERE (sets.set_id IN (' . implode(', ', $this->set_ids) . '))';
+		}
 		
 		// Cache
 		require_once('cache_lite/Lite.php');
@@ -61,9 +63,6 @@ class Set extends Alkaline{
 		}
 		else{
 			if(count($this->set_ids) > 0){
-				// Retrieve sets from database
-				$this->sql = ' WHERE (sets.set_id IN (' . implode(', ', $this->set_ids) . '))';
-			
 				$query = $this->prepare('SELECT * FROM sets' . $this->sql . ';');
 				$query->execute();
 				$sets = $query->fetchAll();
