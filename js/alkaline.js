@@ -363,6 +363,10 @@ function updateAllTags(){
 
 function appendImage(image){
 	var image = $.evalJSON(image);
+	if(empty(image.image_id)){
+		addNote('You have an invalid file in your shoebox folder.', 'error');
+		return;
+	}
 	image_ids = $("#shoebox_image_ids").val();
 	image_ids += image.image_id + ',';
 	$("#shoebox_image_ids").attr("value", image_ids);
