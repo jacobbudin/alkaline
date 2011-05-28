@@ -61,8 +61,16 @@ if(!empty($_POST['page_id'])){
 		$page_markup = @$_POST['page_markup'];
 		$page_markup_ext = @$_POST['page_markup_ext'];
 		
-		if($page_markup == 'markup'){
-			$page_text = $orbit->hook('markup_' . $page_markup_ext, $page_text_raw, $page_text);
+		// Configuration: page_markup
+		if(!empty($_page['page_markup'])){
+			$page_markup_ext = $_page['page_markup'];
+			$page_text = $orbit->hook('markup_' . $page_markup_ext, $page_text_raw, $page_text_raw);
+			$page_title = $orbit->hook('markup_title_' . $page_markup_ext, $page_title, $page_title);
+			$page_excerpt = $orbit->hook('markup_' . $page_markup_ext, $page_excerpt_raw, $page_excerpt);
+		}
+		elseif($alkaline->returnConf('web_markup')){
+			$page_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$page_text = $orbit->hook('markup_' . $page_markup_ext, $page_text_raw, $page_text_raw);
 			$page_title = $orbit->hook('markup_title_' . $page_markup_ext, $page_title, $page_title);
 			$page_excerpt = $orbit->hook('markup_' . $page_markup_ext, $page_excerpt_raw, $page_excerpt);
 		}
