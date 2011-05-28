@@ -45,7 +45,10 @@ if(!empty($_POST['image_id'])){
 		}
 	}
 	else{
+		$image_title = trim($_POST['image_title']);
+		
 		$image_description_raw = @$_POST['image_description_raw'];
+		$image_description = $image_description_raw;
 		
 		// Configuration: image_markup
 		if(!empty($_POST['image_markup'])){
@@ -70,7 +73,7 @@ if(!empty($_POST['image_id'])){
 			$image_comment_disabled = 0;
 		}
 		
-		$fields = array('image_title' => @$_POST['image_title'],
+		$fields = array('image_title' => $image_title,
 			'image_description' => $image_description,
 			'image_description_raw' => $image_description_raw,
 			'image_markup' => $image_markup_ext,
