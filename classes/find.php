@@ -967,6 +967,19 @@ class Find extends Alkaline{
 		return false;
 	}
 	
+	/**
+	 * Find by title URL
+	 *
+	 * @param bool $title Title
+	 * @return bool True if successful
+	 */
+	public function title($title){
+		$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'title_url = :title_url';
+		$this->sql_params[':title_url'] = $title;
+		
+		return true;
+	}
+	
 	// MEMORY
 	
 	/**
