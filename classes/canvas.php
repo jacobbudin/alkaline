@@ -185,7 +185,7 @@ class Canvas extends Alkaline{
 	 * @param string $title
 	 * @return bool True if successful
 	 */
-	public function setTitle($title){
+	public function setTitle($title=null){
 		$source = $this->returnConf('web_title');
 		
 		if(empty($title)){
