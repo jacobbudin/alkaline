@@ -163,9 +163,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				
 				if(class_exists('SphinxClient', false)){
 					$sphinx = new SphinxClient;
-					$status = $sphinx->status();
-					if($status === false){ echo 'Not running'; }
-					else{ echo 'Running&#0133;'; }
+					if(method_exists($sphinx, 'status')){
+						$status = $sphinx->status();
+						if($status === false){ echo 'Not running'; }
+						else{ echo 'Running&#0133;'; }
+					}
+					else{
+						echo 'Installed';
+					}
 				}
 				else{
 					echo 'Not installed';
