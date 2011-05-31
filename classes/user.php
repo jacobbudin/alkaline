@@ -43,7 +43,7 @@ class User extends Alkaline{
 	 */
 	public function __destruct(){
 		// Store user to session data
-		if(self::perm() == true){
+		if(isset($this->user)){
 			$_SESSION['alkaline']['user'] = $this->user;
 		}
 		
@@ -155,6 +155,9 @@ class User extends Alkaline{
 		$this->user['user_permissions'] = unserialize($this->user['user_permissions']);
 		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
 		
+		// Save in session
+		$_SESSION['alkaline']['user'] = $this->user;
+		
 		// Update database
 		$fields = array('user_last_login' => date('Y-m-d H:i:s'), 'user_key' => $key);
 		return $this->updateRow($fields, 'users', $this->user['user_id']);
@@ -168,15 +171,19 @@ class User extends Alkaline{
 	public function deauth(){
 		unset($this->user);
 		
+		$now = time();
+		
+		setcookie('uid', '', $now-42000, BASE);
+		setcookie('key', '', $now-42000, BASE);
+		
 		// Destroy session
 		$_SESSION = array();
-		if(isset($_COOKIE[session_name()])){
-			setcookie(session_name(), '', time()-42000, BASE);
-		}
-		session_destroy();
 		
-		setcookie('uid', '', time()-3600, BASE);
-		setcookie('key', '', time()-3600, BASE);
+		if(isset($_COOKIE[session_name()])){
+			setcookie(session_name(), '', $now-42000, BASE);
+		}
+		
+		session_destroy();
 		session_start();
 	}
 	
