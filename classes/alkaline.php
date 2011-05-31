@@ -3673,7 +3673,7 @@ class Alkaline{
 	 * @return void
 	 */
 	public function report($message, $number=null){
-		if(@$_SESSION['alkaline']['warning'] == $message){ return false; }
+		if(isset($_SESSION['alkaline']['warning']) and ($_SESSION['alkaline']['warning'] == $message)){ return false; }
 		
 		$_SESSION['alkaline']['warning'] = $message;
 		
