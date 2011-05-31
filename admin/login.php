@@ -16,6 +16,7 @@ $user = new User;
 if(!empty($_POST['login_user'])){ $username = strip_tags($_POST['login_user']); }
 if(!empty($_POST['login_pass'])){ $password = strip_tags($_POST['login_pass']); }
 if(!empty($_POST['login_remember'])){ $remember = strip_tags($_POST['login_remember']); }
+else{ $remember = null; }
 
 if(!empty($remember) and ($remember == 1)){ $remember = true; }
 
