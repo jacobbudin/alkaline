@@ -17,9 +17,9 @@ if($_SERVER['SCRIPT_FILENAME'][0] == '/'){
 else{
 	define('SERVER_TYPE', 'win');
 	$path = explode('\\', __FILE__);
-	$path = array_splice($path, 1, -2);
-	$path = implode('\\', $path);
-	define('PATH', '\\' . $path . '\\');
+	$path_new = array_splice($path, 1, -2);
+	$path_new = implode('\\', $path_new);
+	define('PATH', $path[0] . '\\' . $path_new . '\\');
 }
 
 preg_match_all('#(?:/)?(.*)/(?:.*)install#si', $_SERVER['SCRIPT_NAME'], $matches);
