@@ -2,6 +2,7 @@
 *.jpg
 *.gif
 *.psd
+*.ico
 .*
 test.php
 
