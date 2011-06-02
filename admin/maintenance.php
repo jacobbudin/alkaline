@@ -83,6 +83,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					Removes tags that are no longer linked to any images, increasing available space
 				</li>
 				<li>
+					<strong><a href="#delete-old-versions">Delete old versions</a></strong><br />
+					Removes versions of minor changes older than 2 weeks, and versions of moderate changes older than 6 months
+				</li>
+				<li>
 					<strong><a href="#reset-markup">Reset markup</a></strong><br />
 					Resets markup on all images, posts, sets, etc. where not equal to the current markup language (not recommended)
 				</li>
