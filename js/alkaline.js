@@ -1648,6 +1648,7 @@ $(document).ready(function(){
 		});
 	
 		$(".tickLabels").css('font-size', '');
+		$('.legend table').removeAttr('left').css('top', '0px').css('right', '0px');
 	}
 	
 	// COMMENTS
@@ -1822,6 +1823,7 @@ $(document).ready(function(){
 		});
 	
 		$(".tickLabels").css('font-size', '');
+		$('.legend table').removeAttr('left').css('top', '0px').css('right', '0px');
 		
 	}
 });
