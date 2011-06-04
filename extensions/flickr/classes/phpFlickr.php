@@ -589,9 +589,9 @@ if ( !class_exists('phpFlickr') ) {
 				$api_sig = md5($this->secret . "api_key" . $this->api_key . "perms" . $perms);
 				
 				if ($this->service == "23") {
-					header("Location: http://www.23hq.com/services/auth/?api_key=" . $this->api_key . "&perms=" . $perms . "&api_sig=". $api_sig);
+					return "http://www.23hq.com/services/auth/?api_key=" . $this->api_key . "&perms=" . $perms . "&api_sig=". $api_sig;
 				} else {
-					header("Location: http://www.flickr.com/services/auth/?api_key=" . $this->api_key . "&perms=" . $perms . "&api_sig=". $api_sig);
+					return "http://www.flickr.com/services/auth/?api_key=" . $this->api_key . "&perms=" . $perms . "&api_sig=". $api_sig;
 				}
 				exit;
 			} else {

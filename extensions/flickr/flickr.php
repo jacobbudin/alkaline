@@ -109,7 +109,10 @@ class Flickr extends Orbit{
 		if(!empty($_GET['link'])){
 			switch($_GET['link']){
 				case 'flickr':
-					$this->flickr->auth('write');
+					$to = $this->flickr->auth('write');
+					$params = array('to' => $to,
+						'from' => $this->locationFull(array('from' => 'flickr')));
+					header('Location: http://www.alkalineapp.com/callback/?' . http_build_query($params));
 					break;
 			}
 		}
@@ -150,7 +153,7 @@ class Flickr extends Orbit{
 		
 		$now = time();
 		
-		if(!isset($image[0]['image_tags_array'])){
+		if(!isset($images[0]['image_tags_array'])){
 			$image_ids = array();
 			
 			foreach($images as $image){
@@ -163,18 +166,22 @@ class Flickr extends Orbit{
 		}
 		
 		foreach($images as $image){
-			$image_published = strtotime($image['image_published']);
+			if($override == false){
+				$image_published = strtotime($image['image_published']);
 			
-			if(empty($image_published)){ continue; }
-			if($image_published > $now){ continue; }
-			if($image_published <= $this->flickr_last_image_time){ continue; }
-			if($image['image_privacy'] != 1){ continue; }
+				if(empty($image_published)){ continue; }
+				if($image_published > $now){ continue; }
+				if($image_published <= $this->flickr_last_image_time){ continue; }
+				if($image['image_privacy'] != 1){ continue; }
+			}
 			
 			$this->storeTask(array($this, 'upload'), $image);
 		}
 		
-		$this->setPref('flickr_last_image_time', $now);
-		$this->savePref();
+		if($override == false){
+			$this->setPref('flickr_last_image_time', $now);
+			$this->savePref();
+		}
 	}
 	
 	public function upload($image){
@@ -198,7 +205,7 @@ class Flickr extends Orbit{
 		
 		$tags = implode(' ', $tags);
 		
-		$photo_id = $this->flickr->sync_upload($image['image_file'], $title, $description, $tags);
+		$photo_id = $this->flickr->sync_upload($image['image_file'], html_entity_decode($title, ENT_QUOTES, 'UTF-8'), html_entity_decode($description, ENT_QUOTES, 'UTF-8'), $tags);
 		
 		if(!empty($image['image_taken'])){
 			$this->flickr->photos_setDates($photo_id, null, $image['image_taken']);
@@ -206,7 +213,6 @@ class Flickr extends Orbit{
 		
 		if(!empty($image['image_geo_lat']) and !empty($image['image_geo_long'])){
 			$this->flickr->photos_geo_setLocation($photo_id, $image['image_geo_lat'], $image['image_geo_long'], 11);
-			echo $this->flickr->error_code;
 		}
 	}
 	
