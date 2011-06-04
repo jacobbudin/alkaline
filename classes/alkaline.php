@@ -63,10 +63,6 @@ class Alkaline{
 			unset($process);
 		}
 		
-		// Set error handler
-		set_error_handler(array($this, 'addError'), E_ALL);
-		set_exception_handler(array($this, 'addException'));
-		
 		// Determine class
 		$class = get_class($this);
 		
@@ -162,6 +158,10 @@ class Alkaline{
 				}
 			}
 		}
+		
+		// Set error handler
+		set_error_handler(array($this, 'addError'), E_ALL);
+		set_exception_handler(array($this, 'addException'));
 	}
 	
 	/**
@@ -3196,9 +3196,10 @@ class Alkaline{
 	/**
 	 * Current page for redirects (removes all GET variables except page)
 	 *
+	 * @param array $get Append to URL (GET variables as associative array)
 	 * @return string
 	 */
-	public function location(){
+	public function location($get){
 		$location = LOCATION;
 		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
 		
@@ -3206,6 +3207,12 @@ class Alkaline{
 		preg_match('#page=[0-9]+#si', $_SERVER['REQUEST_URI'], $matches);
 		if(!empty($matches[0])){
 			$location .= '?' . $matches[0];
+			if(!empty($params)){
+				$location .= '&' . http_build_query($get);
+			}
+		}
+		elseif(!empty($params)){
+			$location .= '?' . http_build_query($get);
 		}
 		
 		return $location;
