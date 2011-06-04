@@ -32,7 +32,7 @@ if(!empty($_POST['image_id'])){
 	$images = new Image($image_id);
 	
 	if(!empty($_POST['image_send']) and ($_POST['image_send'] == 'send')){
-		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images);
+		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images->images, null);
 	}
 	elseif(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){

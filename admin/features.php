@@ -67,7 +67,7 @@ if(!empty($_POST['do']) and ($_POST['do'] == 'Do')){
 				$act_send = $_POST['act_send'];
 				$images = new Image($image_ids);
 				
-				$orbit->hook('send_' . $act_send . '_image', $images);
+				$orbit->hook('send_' . $act_send . '_image', $images->images, null);
 			}
 		}
 		elseif($act == 'set_add'){

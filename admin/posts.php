@@ -45,7 +45,7 @@ if(!empty($_POST['post_id'])){
 	$posts = new Post($post_id);
 	
 	if(!empty($_POST['post_send']) and ($_POST['post_send'] == 'send')){
-		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts);
+		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts->posts, null);
 	}
 	elseif(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		if($posts->delete()){
