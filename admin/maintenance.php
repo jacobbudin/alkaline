@@ -41,6 +41,10 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files (resource intensive)
 				</li>
 				<li>
+					<strong><a href="#reorganize-library">Reorganize image library</a></strong><br />
+					Move files, as necessary, according to the current <a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">hierarchical directory mode</a> setting
+				</li>
+				<li>
 					<strong><a href="#delete-unused-thumbnails">Delete unclaimed image thumbnails</a></strong><br />
 					Delete stray thumbnails that are no longer part of your Alkaline installation, increasing available disk space
 				</li>

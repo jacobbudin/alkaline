@@ -9,6 +9,7 @@ ALTER TABLE `images` ADD `image_deleted` datetime DEFAULT NULL;
 ALTER TABLE `images` ADD `image_tags` text;
 ALTER TABLE `images` ADD `image_related` text;
 ALTER TABLE `images` ADD `image_related_hash` varchar(16) DEFAULT NULL;
+ALTER TABLE `images` ADD `image_directory` varchar(255) DEFAULT NULL;
 ALTER TABLE `pages` ADD `page_deleted` datetime DEFAULT NULL;
 ALTER TABLE `pages` ADD `page_excerpt` text;
 ALTER TABLE `pages` ADD `page_excerpt_raw` text;

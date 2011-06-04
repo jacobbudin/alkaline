@@ -71,10 +71,11 @@ class Find extends Alkaline{
 	 *
 	 * @param string Table to perform search
 	 * @param string|array|int $ids Limit results to select IDs in table
-	 * @param string $auto_guest Set guest access restrictions
-	 * @param string $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
+	 * @param bool $auto_guest Set guest access restrictions
+	 * @param bool $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
+	 * @param bool $ignore_deleted Ignore "deleted" table rows (except in recovery mode)
 	 */
-	public function __construct($table=null, $ids=null, $auto_guest=true, $process_request=true){
+	public function __construct($table=null, $ids=null, $auto_guest=true, $process_request=true, $ignore_deleted=true){
 		parent::__construct();
 		
 		// Error handling
@@ -123,6 +124,10 @@ class Find extends Alkaline{
 		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
 		if(in_array($this->table, $with_deleted_columns)){
 			$show_deleted = false;
+			
+			if($ignore_deleted === false){
+				$show_deleted = true;
+			}
 			if($this->admin == true){
 				$user = new User();
 				if(!empty($user) and $user->perm()){

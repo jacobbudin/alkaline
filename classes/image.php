@@ -91,7 +91,12 @@ class Image extends Alkaline{
 
 				// Attach additional fields
 				for($i = 0; $i < $image_count; ++$i){
-					$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+					if(empty($this->images[$i]['image_directory'])){	
+						$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+					}
+					else{
+						$this->images[$i]['image_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$i]['image_directory'] . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext']);
+					}
 					$this->images[$i]['image_src'] = BASE . IMAGES . $this->images[$i]['image_id'] . '.' . $this->images[$i]['image_ext'];
 					$title_url = $this->makeURL($this->images[$i]['image_title']);
 					if(empty($title_url) or (URL_RW != '/')){
@@ -275,7 +280,7 @@ class Image extends Alkaline{
 				$size_append = $size['size_append'];
 				$size_watermark = $size['size_watermark'];
 				$size_label = $size['size_label'];
-				$size_dest = parent::correctWinPath(PATH . IMAGES . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
+				$size_dest = parent::correctWinPath(PATH . IMAGES . $images[$i]['image_directory'] . $size_prepend . $images[$i]['image_id'] . $size_append . '.' . $images[$i]['image_ext']);
 				
 				if(in_array($images[$i]['image_ext'], array('pdf', 'svg'))){
 					$size_dest = $this->changeExt($size_dest, 'png');
@@ -1435,13 +1440,15 @@ class Image extends Alkaline{
 					$image_ext = 'png';
 				}
 				
-				$size['size_src'] = BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
+				$size['size_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $this->images[$j]['image_ext']);
+				
+				$size['size_src'] = BASE . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
 				
 				$width = $size['size_width'];
 				$height = $size['size_height'];
 
-			    $this->images[$j][$size_label] = BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
-			    $this->images[$j][$size_img_label] = '<img src="' . BASE . IMAGES . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
+			    $this->images[$j][$size_label] = BASE . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
+			    $this->images[$j][$size_img_label] = '<img src="' . BASE . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext . ' alt="" />';
 				
 				$width_orig = $this->images[$j]['image_width'];
 				$height_orig = $this->images[$j]['image_height'];

@@ -50,6 +50,8 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
+	$alkaline->setConf('image_hdm', @$_POST['image_hdm']);
+	$alkaline->setConf('image_hdm_format', @$_POST['image_hdm_format']);
 	$alkaline->setConf('web_markup', @$_POST['web_markup']);
 	if(@$_POST['web_markup'] == ''){ $_POST['web_markup_ext'] = ''; }
 	
@@ -248,6 +250,25 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="shoe_geo" name="shoe_geo" <?php echo $alkaline->readConf('shoe_geo'); ?> value="true" /></td>
 			<td class="description">
 				<label for="shoe_geo">Import geolocation data</label> (as available)
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Images</h3>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="image_hdm" name="image_hdm" <?php echo $alkaline->readConf('image_hdm'); ?> value="true" /></td>
+			<td class="description">
+				<label for="image_hdm">
+					Enable hierarchical directory mode using
+					<select name="image_hdm_format">
+						<option value="yyyy/mm/dd" <?php echo $user->readConf('image_hdm_format', 'yyyy/mm/dd'); ?>>date uploaded-based (YYYY/MM/DD)</option>
+						<option value="1000" <?php echo $user->readConf('image_hdm_format', '1000'); ?>>ID-based (1000, 2000, 3000)</option>
+					</select>
+					format
+				</label><br />
+				Recommended for efficiently storing image libraries, be sure to <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP; ?>">reorganize your image library</a> after changing this setting
 			</td>
 		</tr>
 	</table>

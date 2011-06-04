@@ -7,6 +7,7 @@ ALTER TABLE "images" ADD "image_deleted" TIMESTAMP;
 ALTER TABLE "images" ADD "image_tags" TEXT;
 ALTER TABLE "images" ADD "image_related" TEXT;
 ALTER TABLE "images" ADD "image_related_hash" TEXT;
+ALTER TABLE "images" ADD "image_directory" TEXT;
 ALTER TABLE "pages" ADD "page_deleted" TIMESTAMP;
 ALTER TABLE "pages" ADD "page_excerpt" TEXT;
 ALTER TABLE "pages" ADD "page_excerpt_raw" TEXT;
