@@ -187,6 +187,7 @@ if(!empty($post_act) and ($post_act == 'add')){
 // GET POSTS TO VIEW OR PAGE TO EDIT
 if(empty($post_id)){
 	$post_ids = new Find('posts');
+	$post_ids->sort('post_modified', 'DESC');
 	$post_ids->page(null, 50);
 	if(isset($post_act) and ($post_act == 'results')){ $post_ids->memory(); }
 	$post_ids->find();
