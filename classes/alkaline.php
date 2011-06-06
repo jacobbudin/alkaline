@@ -772,7 +772,12 @@ class Alkaline{
 		
 			$time = strtotime($time);
 		}
-		$seconds = time() - $time;
+		
+		$offset = date_offset_get(new DateTime);
+		$now = time() + $offset;
+		$seconds = $now - $time;
+		$day = $now - strtotime(date('Y-m-d', $time));
+		$month = $now - strtotime(date('Y-m', $time));
 		
 		if(is_integer($round)){
 			$seconds = round($seconds, $round);
@@ -797,12 +802,12 @@ class Alkaline{
 					else{ $span = $hours . ' hours ago'; }
 					break;
 				case($seconds < 2419200):
-					$days = intval($seconds / 86400);
+					$days = floor($day / 86400);
 					if($days < 2){ $span = 'yesterday'; }
 					else{ $span = $days . ' days ago'; }
 					break;
 				case($seconds < 29030400):
-					$months = intval($seconds / 2419200);
+					$months = floor($month / 2419200);
 					if($months < 2){ $span = 'a month ago'; }
 					else{ $span = $months . ' months ago'; }
 					break;
