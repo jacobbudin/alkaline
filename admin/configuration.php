@@ -550,36 +550,46 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="sphinx_enabled" name="sphinx_enabled" <?php echo $alkaline->readConf('sphinx_enabled'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="sphinx_enabled" name="sphinx_enabled" <?php echo $alkaline->readConf('sphinx_enabled'); ?> <?php if(!class_exists('SphinxClient', false)){ echo 'disabled="disabled"'; } ?> value="true" /></td>
 			<td class="description">
-				<label for="sphinx_enabled">Use Sphinx to process search queries</label> (if installed and configured)<br /><br />
-				<table>
-					<tr>
-						<td class="right middle"><label for="sphinx_server">Server:</label></td>
-						<td><input type="text" id="sphinx_server" name="sphinx_server" class="s" placeholder="localhost" /> <span class="quiet">(optional)</span></td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="sphinx_port">Port:</label></td>
-						<td><input type="text" id="sphinx_port" name="sphinx_port" class="xs" /> <span class="quiet">(optional)</span></td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="sphinx_index">Index(es):</label></td>
-						<td><input type="text" id="sphinx_index" name="sphinx_index" class="s" /> <span class="quiet">(optional)</span></td>
-					</tr>
-					<tr>
-						<td class="right middle"><label for="sphinx_max_exec">Maximum execution time:</label></td>
-						<td>
-							<select id="sphinx_max_exec" name="sphinx_max_exec">
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', ''); ?>>None</option>
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', '1'); ?>>1 second</option>
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', '3'); ?>>3 seconds</option>
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', '5'); ?>>5 seconds</option>
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', '10'); ?>>10 seconds</option>
-								<option value="" <?php echo $user->readConf('sphinx_max_exec', '30'); ?>>30 seconds</option>
-							</select>
-						</td>
-					</tr>
-				</table>
+				<label for="sphinx_enabled">Use Sphinx to process search queries</label>
+				<?php if(class_exists('SphinxClient', false)){ ?>
+					(if installed and configured)
+				<?php } else{ ?>
+					(not installed)
+				<?php } ?>
+				
+				<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show advanced options</a></p>
+
+				<div class="reveal">
+					<table>
+						<tr>
+							<td class="right middle"><label for="sphinx_server">Server:</label></td>
+							<td><input type="text" id="sphinx_server" name="sphinx_server" class="s" placeholder="localhost" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_port">Port:</label></td>
+							<td><input type="text" id="sphinx_port" name="sphinx_port" class="xs" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_index">Index(es):</label></td>
+							<td><input type="text" id="sphinx_index" name="sphinx_index" class="s" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_max_exec">Maximum execution time:</label></td>
+							<td>
+								<select id="sphinx_max_exec" name="sphinx_max_exec">
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', ''); ?>>None</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '1'); ?>>1 second</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '3'); ?>>3 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '5'); ?>>5 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '10'); ?>>10 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '30'); ?>>30 seconds</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</td>
 		</tr>
 	</table>
