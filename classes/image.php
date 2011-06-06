@@ -1175,6 +1175,7 @@ class Image extends Alkaline{
 				if((count($exif) > 0) and is_array($exif)){
 					$inserts = array();
 					foreach(@$exif as $key => $section){
+						array_multisort($section, SORT_DESC);
 					    foreach($section as $name => $value){
 							// Check for geo data
 							if(($key == 'GPS') and ($name == 'GPSLatitude')){
