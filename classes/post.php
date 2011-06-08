@@ -199,8 +199,8 @@ class Post extends Alkaline{
 	 */
 	public function recover(){
 		for($i = 0; $i < $this->post_count; ++$i){
-			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE post_id = ' . $this->posts[$i]['post_id'] . ' AND comment_deleted = ' . $this->posts[$i]['post_deleted'] . ';');
-			$query->execute(array(null));
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE post_id = ' . $this->posts[$i]['post_id'] . ' AND comment_deleted = ?;');
+			$query->execute(array(null, $this->posts[$i]['post_deleted']));
 		}
 		
 		$fields = array('post_deleted' => null);
