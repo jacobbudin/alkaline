@@ -74,7 +74,7 @@ class User extends Alkaline{
 	 * @param bool $remember 
 	 * @return bool True if successful
 	 */
-	public function auth($username, $password, $remember=false){
+	public function auth($username='', $password='', $remember=false){
 		// Error checking
 		if(empty($username) or empty($password)){
 			return false;
@@ -100,7 +100,7 @@ class User extends Alkaline{
 	 * @param bool $remember 
 	 * @return bool True if successful
 	 */
-	protected function authByCookie($user_id, $user_key, $remember=true){
+	protected function authByCookie($user_id=0, $user_key='', $remember=true){
 		// Error checking
 		if(empty($user_id) or empty($user_key)){ return false ; }
 		
@@ -240,7 +240,7 @@ class User extends Alkaline{
 	 * @param string $unset 
 	 * @return void
 	 */
-	public function setPref($name, $unset=''){
+	public function setPref($name='', $unset=''){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
@@ -253,7 +253,7 @@ class User extends Alkaline{
 	 * @param string $check 
 	 * @return void
 	 */
-	public function readPref($name, $check=true){
+	public function readPref($name='', $check=true){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::readForm($this->user['user_preferences'], $name, $check);
@@ -266,7 +266,7 @@ class User extends Alkaline{
 	 * @param string $default 
 	 * @return void
 	 */
-	public function returnPref($name, $default=null){
+	public function returnPref($name='', $default=null){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::returnForm($this->user['user_preferences'], $name, $default);
@@ -293,7 +293,7 @@ class User extends Alkaline{
 	 * @param bool $overwrite 
 	 * @return void
 	 */
-	public function updateFields($fields, $overwrite=true){
+	public function updateFields($fields=array(), $overwrite=true){
 		if(!$this->perm(true)){ return false; }
 		
 		// Verify each key has changed; if not, unset the key
@@ -322,7 +322,7 @@ class User extends Alkaline{
 	 * @param string $message 
 	 * @return void
 	 */
-	public function email($subject, $message){
+	public function email($subject='', $message=''){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::email($this->user['user_email'], $subject, $message);
