@@ -1348,8 +1348,8 @@ class Image extends Alkaline{
 	 */
 	public function recover(){
 		for($i = 0; $i < $this->image_count; ++$i){
-			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . $this->images[$i]['image_id'] . ' AND comment_deleted = ' . $this->images[$i]['image_deleted'] . ';');
-			$query->execute(array(null));
+			$query = $this->prepare('UPDATE comments SET comment_deleted = ? WHERE image_id = ' . $this->images[$i]['image_id'] . ' AND comment_deleted = ?;');
+			$query->execute(array(null, $this->images[$i]['image_deleted']));
 		}
 		
 		$fields = array('image_deleted' => null);
