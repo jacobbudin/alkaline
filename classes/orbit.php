@@ -183,15 +183,6 @@ class Orbit extends Alkaline{
 	}
 	
 	/**
-	 * Current page for redirects
-	 *
-	 * @return void
-	 */
-	public function location(){
-		return parent::location();
-	}
-	
-	/**
 	 * Reset preferences
 	 *
 	 * @return PDOStatement
@@ -293,7 +284,7 @@ class Orbit extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function promptTasks(){
+	public static function promptTasks(){
 		$tasks = array();
 		
 		if(empty($_SESSION['alkaline']['tasks'])){ return; }

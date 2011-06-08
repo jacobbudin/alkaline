@@ -1865,7 +1865,7 @@ class Find extends Alkaline{
 	 * @param string $radius Search radius (in miles)
 	 * @return bool True if successful
 	 */
-	public function location($geo, $radius){
+	public function location($geo='', $radius=50){
 		$place = new Geo($geo);
 		
 		if(!($radius = floatval($radius))){ return false; }
@@ -2167,7 +2167,7 @@ class Find extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function clearMemory(){
+	public static function clearMemory(){
 		unset($_SESSION['alkaline']['search']);
 	}
 }

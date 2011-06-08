@@ -159,6 +159,10 @@ class Alkaline{
 			}
 		}
 		
+		if(ini_get('error_reporting') > 30719){
+			error_reporting(E_ALL);
+		}
+		
 		// Set error handler
 		set_error_handler(array($this, 'addError'), E_ALL);
 		set_exception_handler(array($this, 'addException'));
@@ -727,7 +731,7 @@ class Alkaline{
 	 * @param string $empty If null or empty input time, return this string
 	 * @return string|false Time or error
 	 */
-	public function formatTime($time, $format=null, $empty=false){
+	public function formatTime($time=null, $format=null, $empty=false){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
 			return $empty;
@@ -773,8 +777,7 @@ class Alkaline{
 			$time = strtotime($time);
 		}
 		
-		$offset = date_offset_get(new DateTime);
-		$now = time() + $offset;
+		$now = time();
 		$seconds = $now - $time;
 		$day = $now - strtotime(date('Y-m-d', $time));
 		$month = $now - strtotime(date('Y-m', $time));
@@ -3204,7 +3207,7 @@ class Alkaline{
 	 * @param array $get Append to URL (GET variables as associative array)
 	 * @return string
 	 */
-	public function location($get){
+	public function location($get=null){
 		$location = LOCATION;
 		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
 		
@@ -3317,7 +3320,7 @@ class Alkaline{
 	 * @param string $message 
 	 * @return True if successful
 	 */
-	public function email($to=0, $subject, $message){
+	public function email($to=0, $subject=null, $message=null){
 		if(empty($subject) or empty($message)){ return false; }
 		
 		if($to == 0){
@@ -3356,7 +3359,7 @@ class Alkaline{
 	 * @param int|string|array $http_headers Index array of HTTP headers to send (if an item is an integer, send as status code)
 	 * @return void
 	 */
-	public function addError($severity, $message=null, $filename=null, $line_number=null, $http_headers=null){
+	public static function addError($severity, $message=null, $filename=null, $line_number=null, $http_headers=null){
 		if(!(error_reporting() & $severity)){
 			// This error code is not included in error_reporting
 			// return;
@@ -3581,7 +3584,7 @@ class Alkaline{
 					throw new ErrorException($message, 0, E_USER_ERROR, $filename, $line_number);
 				}
 				catch(ErrorException $e){
-					$this->addException($e);
+					self::addException($e);
 				}
 			default:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
@@ -3597,7 +3600,7 @@ class Alkaline{
 	 * @param Exception $e 
 	 * @return void
 	 */
-	public function addException($e){
+	public static function addException($e){
 		$_SESSION['alkaline']['exception'] = $e;
 		session_write_close();
 		
@@ -3617,7 +3620,7 @@ class Alkaline{
 	 *
 	 * @return void|string HTML-formatted notifications 
 	 */
-	public function returnErrors(){
+	public static function returnErrors(){
 		if(!isset($_SESSION['alkaline']['errors'])){ return; }
 		
 		$count = @count($_SESSION['alkaline']['errors']);
