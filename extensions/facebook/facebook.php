@@ -234,10 +234,12 @@ class FacebookHandler extends Orbit{
 			
 			if(empty($image_published)){ continue; }
 			if($image_published > $now){ continue; }
-			if($image_published <= $this->facebook_last_image_time){ continue; }
-			if($image['image_privacy'] != 1){ continue; }
+			if($override !== true){
+				if($image_published <= $this->facebook_last_image_time){ continue; }
+				if($image['image_privacy'] != 1){ continue; }
+			}
 			
-			$this->storeTask(array($this, 'upload'), $image);
+			$this->storeTask(array($this, 'upload_image'), $image);
 		}
 		
 		$this->setPref('facebook_last_image_time', $now);
@@ -247,11 +249,8 @@ class FacebookHandler extends Orbit{
 	public function orbit_post($posts, $override=false){
 		if(($this->facebook_auto != 'auto') && ($override === false)){ return; }
 		if(strpos($this->facebook_transmit, 'post') === false){ return; }
-		
 		if(count($posts) < 1){ return; }
 		
-		// Seek array for new post
-		$latest = 0;
 		$now = time();
 		
 		foreach($posts as $post){
@@ -259,48 +258,18 @@ class FacebookHandler extends Orbit{
 			
 			if(empty($post_published)){ continue; }
 			if($post_published > $now){ continue; }
-			if($post_published <= $this->facebook_last_post_time){ continue; }
-			
-			if($post_published > $latest){
-				$latest = $post_published;
-				$latest_post = $post;
+			if($override !== true){
+				if($post_published <= $this->facebook_last_post_time){ continue; }
 			}
+			
+			$this->storeTask(array($this, 'upload_post'), $post);
 		}
 		
-		// Save this post as last
-		if(empty($latest_post)){ return; }
-		if($latest_post['post_id'] == $this->facebook_last_post_id){ return; }
-		
-		$this->setPref('facebook_last_post_time', $latest);
+		$this->setPref('facebook_last_post_time', $now);
 		$this->savePref();
-		
-		// Format post
-		$canvas = new Canvas($this->facebook_format_post);
-		$canvas->assignArray($latest_post);
-		$canvas->generate();
-		
-		// Reformat relative links
-		$canvas->template = str_ireplace('href="/', 'href="' . LOCATION . '/', $canvas->template);
-		$canvas->template = str_ireplace('href=\'/', 'href=\'' . LOCATION . '/', $canvas->template);
-		
-		$canvas->template = str_ireplace('src="/', 'src="' . LOCATION . '/', $canvas->template);
-		$canvas->template = str_ireplace('src=\'/', 'src=\'' . LOCATION . '/', $canvas->template);
-		
-		$canvas->template = trim($canvas->template);
-		
-		// Send to Tumblr
-		$parameters = array('type' => 'regular',
-			'format' => 'html',
-			'title' => $latest_post['post_title'],
-			'body' => $canvas->template);
-
-		$params = array('access_token' => $this->facebook_access_token,
-			'subject' => $post['post_title'],
-			'message' => $canvas->template);
-		$photos = $this->facebook->api($this->facebook_album_id . '/photos', 'POST', $params);
 	}
 	
-	public function upload($image){
+	public function upload_image($image){
 		$canvas = new Canvas($this->facebook_format_image);
 		$canvas->assignArray($image);
 		$canvas->generate();
@@ -313,6 +282,28 @@ class FacebookHandler extends Orbit{
 			'source' => '@' . $image['image_file'],
 			'message' => $description);
 		$photos = $this->facebook->api($this->facebook_album_id . '/photos', 'POST', $params);
+	}
+	
+	public function upload_post($post){
+		// Format post
+		$canvas = new Canvas($this->facebook_format_post);
+		$canvas->assignArray($post);
+		$canvas->generate();
+		
+		// Reformat relative links
+		$canvas->template = str_ireplace('href="/', 'href="' . LOCATION . '/', $canvas->template);
+		$canvas->template = str_ireplace('href=\'/', 'href=\'' . LOCATION . '/', $canvas->template);
+		
+		$canvas->template = str_ireplace('src="/', 'src="' . LOCATION . '/', $canvas->template);
+		$canvas->template = str_ireplace('src=\'/', 'src=\'' . LOCATION . '/', $canvas->template);
+		
+		$canvas->template = trim($canvas->template);
+		
+		// Send to Facebook
+		$params = array('access_token' => $this->facebook_access_token,
+			'subject' => $post['post_title'],
+			'message' => $canvas->template);
+		$photos = $this->facebook->api($this->facebook_album_id . '/notes', 'POST', $params);
 	}
 	
 	public function orbit_send_html_image(){

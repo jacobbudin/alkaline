@@ -72,21 +72,21 @@ class Twitter extends Orbit{
 					</td>
 				</tr>
 				<tr>
-					<td class="right pad"><label for="twitter_format_image">Image format:</label></td>
+					<td class="right"><label for="twitter_format_image">Image format:</label></td>
 					<td>
 						<textarea type="text" id="twitter_format_image" name="twitter_format_image" style="width: 30em;" class="code"><?php echo $this->twitter_format_image; ?></textarea><br />
 						<span class="quiet">Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</span>
 					</td>
 				</tr>
 				<tr>
-					<td class="right pad"><label for="twitter_format_post">Post format:</label></td>
+					<td class="right"><label for="twitter_format_post">Post format:</label></td>
 					<td>
 						<textarea type="text" id="twitter_format_post" name="twitter_format_post" style="width: 30em;" class="code"><?php echo $this->twitter_format_post; ?></textarea><br />
 						<span class="quiet">Use Canvas tags such as <code>{Post_Title}</code> and <code>{Post_URI}</code> above.</span>
 					</td>
 				</tr>
 				<tr>
-					<td class="right pad"><label for="twitter_uri_shortener">URL Shortener:</label></td>
+					<td class="right"><label for="twitter_uri_shortener">URL Shortener:</label></td>
 					<td>
 						<select id="twitter_uri_shortener" name="twitter_uri_shortener">
 							<option value="">None</option>
@@ -242,7 +242,8 @@ class Twitter extends Orbit{
 	}
 	
 	public function orbit_image($images, $override=false){
-		if(strpos($this->twitter_transmit, 'image') === false){ return; }
+		if(($this->twitter_auto != 'auto') && ($override === false)){ return; }
+		if((strpos($this->twitter_transmit, 'image') === false) && ($override === false)){ return; }
 		if(count($images) < 1){ return; }
 		
 		$now = time();
@@ -252,8 +253,10 @@ class Twitter extends Orbit{
 			
 			if(empty($image_published)){ continue; }
 			if($image_published > $now){ continue; }
-			if($image_published <= $this->twitter_last_image_time){ continue; }
-			if($image['image_privacy'] != 1){ continue; }
+			if($override !== true){
+				if($image_published <= $this->twitter_last_image_time){ continue; }
+				if($image['image_privacy'] != 1){ continue; }
+			}
 			
 			$this->storeTask(array($this, 'upload_image'), $image);
 		}
@@ -263,9 +266,9 @@ class Twitter extends Orbit{
 	}
 	
 	public function orbit_post($posts, $override=false){
-		if(strpos($this->twitter_transmit, 'post') === false){ return; }
+		if(($this->twitter_auto != 'auto') && ($override === false)){ return; }
+		if((strpos($this->twitter_transmit, 'post') === false) && ($override === false)){ return; }
 		if(count($posts) < 1){ return; }
-		
 		$now = time();
 		
 		foreach($posts as $post){
@@ -273,8 +276,9 @@ class Twitter extends Orbit{
 			
 			if(empty($post_published)){ continue; }
 			if($post_published > $now){ continue; }
-			if($post_published <= $this->twitter_last_post_time){ continue; }
-			if($post['post_privacy'] != 1){ continue; }
+			if($override !== true){
+				if($post_published <= $this->twitter_last_post_time){ continue; }
+			}
 			
 			$this->storeTask(array($this, 'upload_post'), $post);
 		}

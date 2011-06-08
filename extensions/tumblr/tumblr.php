@@ -245,8 +245,10 @@ class Tumblr extends Orbit{
 			
 			if(empty($image_published)){ continue; }
 			if($image_published > $now){ continue; }
-			if($image_published <= $this->tumblr_last_image_time){ continue; }
-			if($image['image_privacy'] != 1){ continue; }
+			if($override !== true){
+				if($image_published <= $this->tumblr_last_image_time){ continue; }
+				if($image['image_privacy'] != 1){ continue; }
+			}
 			
 			$this->storeTask(array($this, 'upload_image'), $image);
 		}
@@ -267,8 +269,9 @@ class Tumblr extends Orbit{
 			
 			if(empty($post_published)){ continue; }
 			if($post_published > $now){ continue; }
-			if($post_published <= $this->tumblr_last_post_time){ continue; }
-			if($post['post_privacy'] != 1){ continue; }
+			if($override !== true){
+				if($post_published <= $this->tumblr_last_post_time){ continue; }
+			}
 			
 			$this->storeTask(array($this, 'upload_post'), $post);
 		}
