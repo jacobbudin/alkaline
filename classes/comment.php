@@ -185,7 +185,7 @@ class Comment extends Alkaline{
 	 * @return void
 	 */
 	public function getSeries($start=null, $asc=true){
-		if(!iscomment($start)){
+		if(!is_numeric($start)){
 			$start = 1;
 		}
 		else{
