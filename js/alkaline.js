@@ -772,7 +772,7 @@ $(document).ready(function(){
 	if(jQuery().tipTip){
 		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
 		$('a.tip').each(function(index) {
-			if($(this).has('.actions')){
+			if($(this).parents('.actions').length){
 				$(this).tipTip({defaultPosition: 'left', delay: 200});
 			}
 			else{
@@ -780,7 +780,7 @@ $(document).ready(function(){
 			}
 		});
 		$('a.tip').live('mouseenter mouseleave', function(){
-			if($(this).has('.actions')){
+			if($(this).parents('.actions').length){
 				$(this).tipTip({defaultPosition: 'left', delay: 200});
 			}
 			else{
