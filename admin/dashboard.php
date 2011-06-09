@@ -72,6 +72,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			$tables = $alkaline->getInfo();
 			foreach($tables as $table){
 				echo '<tr><td class="right">' . number_format($table['count']) . '</td><td><a href="' . BASE . ADMIN . $table['table'] . URL_CAP . '">' . $table['display'] . '</a></td></tr>';
+				
+				if($table['table'] == 'images'){ $image_count = $table['count']; }
+				if($table['table'] == 'posts'){ $post_count = $table['count']; }
 			}
 			?>
 		</table>
@@ -158,7 +161,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			ob_start();
 	
 			if($type == 'comment'){
-				echo '<p><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $items[$i]['comment_id'] . URL_RW . '" class="large tip" title="' . htmlentities($alkaline->fitStringByWord(strip_tags($items[$i]['comment_text']), 150)) . '">';
+				echo '<p><strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $items[$i]['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->makeHTMLSafe($alkaline->fitStringByWord(strip_tags($items[$i]['comment_text']), 150)) . '">';
 				echo $alkaline->fitStringByWord(strip_tags($items[$i]['comment_text']), 50);
 				echo '</a></strong><br /><span class="quiet">';
 				
@@ -182,13 +185,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			}
 			elseif($type == 'image'){
 				echo '<a href="' . BASE . ADMIN . 'image' . URL_ID . $items[$i]['image_id'] . URL_RW . '" class="nu">
-					<img src="' . $items[$i]['image_src_square'] . '" alt="" title="' . htmlentities($items[$i]['image_title']) . '" class="frame tip" />
+					<img src="' . $items[$i]['image_src_square'] . '" alt="" title="' . $alkaline->makeHTMLSafe($items[$i]['image_title']) . '" class="frame tip" />
 				</a>';
 		
 				$timeline[$modified][] = ob_get_contents();
 			}
 			elseif($type == 'post'){
-				echo '<p><strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $items[$i]['post_id'] . URL_RW . '" title="' . htmlentities($alkaline->fitStringByWord(strip_tags($items[$i]['post_text']), 150)) . '" class="tip">' . $items[$i]['post_title'] . '</a></strong></p>';
+				echo '<p><strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $items[$i]['post_id'] . URL_RW . '" title="' . $alkaline->makeHTMLSafe($alkaline->fitStringByWord(strip_tags($items[$i]['post_text']), 150)) . '" class="tip">' . $items[$i]['post_title'] . '</a></strong></p>';
 		
 				$timeline[$modified][] = ob_get_contents();
 			}

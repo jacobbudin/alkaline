@@ -309,7 +309,7 @@ if(empty($post_id)){
 						echo '<option value="unpublish">Unpublish</option>';
 					}
 					echo '<option value="view_images">View images</option></select> <input type="hidden" name="post_id" value="' . $post['post_id'] . '" /><input type="submit" value="Do" /></form>\'></button></div>';
-					echo '<strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . htmlentities($alkaline->fitStringByWord(strip_tags($post['post_text']), 150)) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
+					echo '<strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->makeHTMLSafe($alkaline->fitStringByWord(strip_tags($post['post_text']), 150)) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
 						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';

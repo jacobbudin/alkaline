@@ -771,7 +771,7 @@ $(document).ready(function(){
 	
 	if(jQuery().tipTip){
 		$('button.tip').tipTip({defaultPosition: 'bottom', activation: 'click', keepAlive: 'true', delay: 0});
-		$('a.tip').each(function(index) {
+		$('a.tip').each(function(index){
 			if($(this).parents('.actions').length){
 				$(this).tipTip({defaultPosition: 'left', delay: 200});
 			}

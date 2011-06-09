@@ -375,7 +375,7 @@ if(empty($comment_id)){
 				echo '<option value="go_post">Go to post</option>';
 			}
 			echo '</select> <input type="hidden" name="comment_id" value="' . $comment['comment_id'] . '" /><input type="submit" value="Do" /></form>\'></button></div>';
-			echo '<strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . htmlentities($alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150)) . '">';
+			echo '<strong><a href="' . BASE . ADMIN . 'comments' . URL_ID . $comment['comment_id'] . URL_RW . '" class="large tip" title="' . $alkaline->makeHTMLSafe($alkaline->fitStringByWord(strip_tags($comment['comment_text']), 150)) . '">';
 			echo $alkaline->fitStringByWord(strip_tags($comment['comment_text']), 50);
 			echo '</a></strong><br /><span class="quiet">';
 			
