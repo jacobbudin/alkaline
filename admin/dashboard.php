@@ -219,4 +219,41 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 
+$now = time();
+
+if(($user->returnConf('maint_reports') === true) && ($user->returnConf('maint_reports_time') < ($now - 604800))){
+	$data = http_build_query(
+	    array(
+			'unique' => sha1($_SERVER['HTTP_HOST']),
+			'views' => $stats->views,
+			'visitors' => $stats->visitors,
+			'build' => Alkaline::build,
+			'version' => Alkaline::version,
+			'http_server' => preg_replace('#\/.*#si', '', $_SERVER['SERVER_SOFTWARE']),
+			'http_server_version' => preg_replace('#.*?\/([0-9.]*).*#si', '\\1', $_SERVER['SERVER_SOFTWARE']),
+			'db_server' => $alkaline->db_type,
+			'db_server_version' => $alkaline->db_version,
+			'php_version' => phpversion(),
+			'image_count' => $image_count,
+			'post_count' => $post_count,
+	    )
+	);
+
+	$opts = array(
+		'http' => array(
+			'method' => 'POST',
+			'header' => 'Content-type: application/x-www-form-urlencoded; charset=utf-8',
+			'content' => $data
+		)
+	);
+
+	$context = stream_context_create($opts);
+	$bool = file_get_contents('http://www.alkalineapp.com/boomerang/usage/', false, $context);
+	
+	if($bool == 'true'){
+		$alkaline->setConf('maint_reports_time', $now);
+		$alkaline->saveConf();
+	}
+}
+
 ?>

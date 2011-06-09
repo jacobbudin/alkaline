@@ -268,7 +268,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					</select>
 					format
 				</label><br />
-				Recommended for efficiently storing image libraries, be sure to <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP; ?>">reorganize your image library</a> after changing this setting
+				Recommended for efficiently storing large image libraries, <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP; ?>">reorganize your image library</a> after changing this setting
 			</td>
 		</tr>
 	</table>
@@ -305,18 +305,18 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); if(class_exists('imagick')){ echo 'disabled="disabled"'; } ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); if(!class_exists('imagick')){ echo 'disabled="disabled"'; } ?> value="true" /></td>
 			<td class="description">
 				<label for="thumb_imagick">Use ImageMagick library</label>
-				<?php if(class_exists('imagick')){ echo '(not installed)'; } ?>
+				<?php if(!class_exists('imagick')){ echo '(not installed)'; } ?>
 				<br />
-				Create higher-quality thumbnails at the cost of increased system resources
+				Create superior thumbnails at the cost of increased system resources
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="thumb_compress" name="thumb_compress" <?php echo $alkaline->readConf('thumb_compress'); ?> value="true" /></td>
 			<td class="description">
-				<label for="thumb_compress">Compress thumbnails to reduce file size</label><br />
+				<label for="thumb_compress">Compress thumbnails to reduce file size and conserve bandwidth</label><br />
 				Use
 				<select name="thumb_compress_tol">
 					<option value="95" <?php echo $user->readConf('thumb_compress_tol', '95'); ?>>very low</option>
@@ -601,7 +601,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="maint_reports" name="maint_reports" <?php echo $alkaline->readConf('maint_reports'); ?> value="true" /></td>
 			<td class="description">
 				<label for="maint_reports">Send anonymous system profile and usage data</label><br />
-				Transparently transmits nonidentifiable data to help improve Alkaline
+				Transmits nonidentifiable data to <a href="http://www.alkalineapp.com/">alkalineapp.com</a> help improve Alkaline
 			</td>
 		</tr>
 		<tr>
