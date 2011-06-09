@@ -29,6 +29,7 @@ $cache = new Cache_Lite($options);
 
 if(!$report = $cache->get('diagnostic_report')){
 	$alkaline->addNote('Your diagnostic report could not be submitted. Please try again.', 'error');
+	header('Location: ' . LOCATION . BASE . ADMIN . 'settings' . URL_CAP);
 }
 
 $data = http_build_query(
