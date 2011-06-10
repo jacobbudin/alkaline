@@ -243,11 +243,15 @@ class Canvas extends Alkaline{
 	public function loop($object, $offset=0, $length=null){
 		if(empty($offset)){ $offset = 0; }
 		
-		$class = strtolower(get_class($object));
-		$this->objects[$class] = $object;
-		
 		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
+		
+		if(!empty($_SESSION['alkaline']['preview']['object'])){
+			$this->assignArray($_SESSION['alkaline']['preview']['object']);
+		}
+		
+		$class = strtolower(get_class($object));
+		$this->objects[$class] = $object;
 		
 		if($this->slideshow === true){
 			$this->template = '<ul id="slideshow">' . $this->template . '</ul>';
@@ -853,7 +857,7 @@ class Canvas extends Alkaline{
 			$template = preg_replace('#{if:' . $loop['var'] . '}(.*?){/if:' . $loop['var'] . '}#si', $loop['replacement'], $template, 1);
 		}
 		
-		if($this->returnConf('canvas_remove_unused')){
+		if($this->returnConf('canvas_remove_unused') or !empty($_SESSION['alkaline']['preview']['object'])){
 			$template = preg_replace('#\{.*?}#si', '', $template);
 		}
 		
@@ -1023,6 +1027,7 @@ class Canvas extends Alkaline{
 	public function generate(){
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
+		$this->assign('Powered_by', 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. <!-- ' . LICENSE_HASH . ' -->');
 		$this->assign('Search_Uri', LOCATION . BASE . 'search' . URL_CAP);
 		$this->assign('Results_Uri', LOCATION . BASE . 'results' . URL_CAP);
 		$this->assign('Atom_Uri', LOCATION . BASE . 'atom' . URL_CAP);

@@ -155,6 +155,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <div class="actions">
+	<button id="preview">Preview image</button>
 	<a href="<?php echo BASE . ADMIN . 'tasks/download-image.php?id=' . $image['image_id']; ?>"><button>Download original</button></a>
 	<?php echo $comment_action; ?>
 	<?php echo $launch_action; ?>
@@ -200,7 +201,7 @@ else{
 					<?php
 				}
 				?>
-				<div class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></div>
+				<span class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></span>
 			</p>
 			
 			<p>
@@ -320,7 +321,7 @@ else{
 			</div>
 			<p>
 				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
-				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" class="autosave_delete" />
+				<input type="hidden" id="image_id" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" class="autosave_delete" />
 				and
 				<select name="go">
 					<option value="">return to previous screen</option>

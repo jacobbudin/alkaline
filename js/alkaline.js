@@ -1095,6 +1095,33 @@ $(document).ready(function(){
 		});
 	}
 	
+	// PREVIEWING
+	
+	if((page == 'Post') || (page == 'Page') || (page == 'Image')){
+		$('#preview').click(function(){
+			object = {};
+			$('input').each(function(index) {
+				key = $(this).attr('id');
+				val = $(this).val();
+				object[key] = val;
+			});
+			$('textarea').each(function(index) {
+				key = $(this).attr('id');
+				val = $(this).val();
+				object[key] = val;
+			});
+			$('select').each(function(index) {
+				key = $(this).attr('id');
+				val = $(this).val();
+				object[key] = val;
+			});
+			act = page.toLowerCase();
+			$.post(BASE + ADMIN + 'preview.php', { act: act, object: object }, function(data){
+				window.open(BASE + ADMIN + 'preview.php');
+			});
+		});
+	}
+	
 	// VERSIONS & CITATIONS & TRACKBACKS
 	
 	if((page == 'Post') || (page == 'Page')){

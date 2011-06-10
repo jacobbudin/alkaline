@@ -490,6 +490,7 @@ class Find extends Alkaline{
 	public function published($begin=true, $end=null){
 		// Error checking
 		if(!isset($begin) and empty($end)){ return false; }
+		if(!empty($_SESSION['alkaline']['preview'])){ return; }
 		
 		// Set status
 		if($begin === 'false'){ $published = false; }
@@ -1332,6 +1333,7 @@ class Find extends Alkaline{
 		if(empty($privacy)){ return false; }
 		//  if(intval($privacy)){ $privacy = intval($privacy); }
 		if($this->table != 'images'){ return false; }
+		if(!empty($_SESSION['alkaline']['preview'])){ return; }
 		
 		if(!empty($_SESSION['alkaline']['guest']) and ($auto_guest == true) and ($this->admin != true)){ return; }
 		

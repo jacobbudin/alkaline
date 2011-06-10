@@ -400,6 +400,7 @@ else{
 	
 	<div class="actions">
 		<?php echo $trackback_action; ?>
+		<button id="preview">Preview post</button>
 		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
 		<?php echo $launch_action; ?>
 	</div>

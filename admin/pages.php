@@ -177,7 +177,11 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'pages' . URL_AID .  $page['page_id'] . URL_RW; ?>"><button>View images</button></a> <a href="<?php echo BASE; ?>page<?php echo URL_ID . $page['page_id'] . '-' . @$page['page_title_url'] . URL_RW; ?>"><button>Launch page</button></a></div>
+	<div class="actions">
+		<button id="preview">Preview page</button>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'pages' . URL_AID .  $page['page_id'] . URL_RW; ?>"><button>View images</button></a>
+		<a href="<?php echo BASE; ?>page<?php echo URL_ID . $page['page_id'] . '-' . @$page['page_title_url'] . URL_RW; ?>"><button>Launch page</button></a>
+	</div>
 	
 	<?php
 	
