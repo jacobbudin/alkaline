@@ -45,6 +45,10 @@ class Alkaline{
 	 * @return void
 	 **/
 	public function __construct(){
+		if(ini_get('error_reporting') > 30719){
+			error_reporting(E_ALL);
+		}
+		
 		// Disable magic_quotes
 		if(get_magic_quotes_gpc()){
 			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
@@ -157,10 +161,6 @@ class Alkaline{
 					$this->access($guest['guest_key']);
 				}
 			}
-		}
-		
-		if(ini_get('error_reporting') > 30719){
-			error_reporting(E_ALL);
 		}
 		
 		// Set error handler
@@ -2407,9 +2407,7 @@ class Alkaline{
 				if(empty($fields['trackback_created'])){ $fields['trackback_created'] = $now; }
 				break;
 			case 'users':
-				if(Alkaline::edition != 'multiuser'){
-					return false;
-				}
+				if(Alkaline::edition == 'standard'){ return false; }
 				if(empty($fields['user_created'])){ $fields['user_created'] = $now; }
 				break;
 			default:
