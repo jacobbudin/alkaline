@@ -86,12 +86,14 @@ if(!empty($_POST['act']) and !empty($_POST['object'])){
 }
 
 if(empty($_SESSION['alkaline']['preview']['act'])){
-	exit();
+	header('Location: ' . LOCATION . BASE . ADMIN);
 }
 
 $_GET['id'] = $_SESSION['alkaline']['preview']['id'];
 
 chdir(PATH);
 require_once('./' . $_SESSION['alkaline']['preview']['act'] . '.php');
+
+unset($_SESSION['alkaline']['preview']['act']);
 
 ?>
