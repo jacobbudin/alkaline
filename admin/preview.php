@@ -23,58 +23,62 @@ if(!empty($_POST['act']) and !empty($_POST['object'])){
 	$block = $_SESSION['alkaline']['preview']['act'] . 's';
 	$object[$block] = 1;
 	
-	if(!empty($object['post_markup'])){
-		$post_markup_ext = $object['post_markup'];
-		$object['post_text'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_text_raw'], $object['post_text_raw']);
-		$object['post_title'] = $orbit->hook('markup_title_' . $post_markup_ext, $object['post_title'], $object['post_title']);
-		$object['post_excerpt'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_excerpt_raw'], $object['post_excerpt_raw']);
+	if($block == 'posts'){
+		if(!empty($object['post_markup'])){
+			$post_markup_ext = $object['post_markup'];
+			$object['post_text'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_text_raw'], $object['post_text_raw']);
+			$object['post_title'] = $orbit->hook('markup_title_' . $post_markup_ext, $object['post_title'], $object['post_title']);
+			$object['post_excerpt'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_excerpt_raw'], $object['post_excerpt_raw']);
+		}
+		elseif($alkaline->returnConf('web_markup')){
+			$post_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$object['post_text'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_text_raw'], $object['post_text_raw']);
+			$object['post_title'] = $orbit->hook('markup_title_' . $post_markup_ext, $object['post_title'], $object['post_title']);
+			$object['post_excerpt'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_excerpt_raw'], $object['post_excerpt_raw']);
+		}
+		else{
+			$post_markup_ext = '';
+			$object['post_text'] = $alkaline->nl2br($object['post_text_raw']);
+			$object['post_excerpt'] = $alkaline->nl2br($object['post_excerpt_raw']);
+		}
 	}
-	elseif($alkaline->returnConf('web_markup')){
-		$post_markup_ext = $alkaline->returnConf('web_markup_ext');
-		$object['post_text'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_text_raw'], $object['post_text_raw']);
-		$object['post_title'] = $orbit->hook('markup_title_' . $post_markup_ext, $object['post_title'], $object['post_title']);
-		$object['post_excerpt'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_excerpt_raw'], $object['post_excerpt_raw']);
+	elseif($block == 'images'){
+		if(!empty($object['image_markup'])){
+			$image_markup_ext = $object['image_markup'];
+			$object['image_description'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_description_raw'], $object['image_description_raw']);
+			$object['image_title'] = $orbit->hook('markup_title_' . $image_markup_ext, $object['image_title'], $object['image_title']);
+			$object['image_excerpt'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_excerpt_raw'], $object['image_excerpt_raw']);
+		}
+		elseif($alkaline->returnConf('web_markup')){
+			$image_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$object['image_description'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_description_raw'], $object['image_description_raw']);
+			$object['image_title'] = $orbit->hook('markup_title_' . $image_markup_ext, $object['image_title'], $object['image_title']);
+			$object['image_excerpt'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_excerpt_raw'], $object['image_excerpt_raw']);
+		}
+		else{
+			$image_markup_ext = '';
+			$object['image_description'] = $alkaline->nl2br($object['image_description_raw']);
+			$object['image_excerpt'] = $alkaline->nl2br($object['image_excerpt_raw']);
+		}
 	}
-	else{
-		$post_markup_ext = '';
-		$object['post_text'] = $alkaline->nl2br($object['post_text_raw']);
-		$object['post_excerpt'] = $alkaline->nl2br($object['post_excerpt_raw']);
-	}
-	
-	if(!empty($object['image_markup'])){
-		$image_markup_ext = $object['image_markup'];
-		$object['image_description'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_description_raw'], $object['image_description_raw']);
-		$object['image_title'] = $orbit->hook('markup_title_' . $image_markup_ext, $object['image_title'], $object['image_title']);
-		$object['image_excerpt'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_excerpt_raw'], $object['image_excerpt_raw']);
-	}
-	elseif($alkaline->returnConf('web_markup')){
-		$image_markup_ext = $alkaline->returnConf('web_markup_ext');
-		$object['image_description'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_description_raw'], $object['image_description_raw']);
-		$object['image_title'] = $orbit->hook('markup_title_' . $image_markup_ext, $object['image_title'], $object['image_title']);
-		$object['image_excerpt'] = $orbit->hook('markup_' . $image_markup_ext, $object['image_excerpt_raw'], $object['image_excerpt_raw']);
-	}
-	else{
-		$image_markup_ext = '';
-		$object['image_description'] = $alkaline->nl2br($object['image_description_raw']);
-		$object['image_excerpt'] = $alkaline->nl2br($object['image_excerpt_raw']);
-	}
-	
-	if(!empty($object['page_markup_ext'])){
-		$page_markup_ext = $object['page_markup_ext'];
-		$object['page_text'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_text_raw'], $object['page_text_raw']);
-		$object['page_title'] = $orbit->hook('markup_title_' . $page_markup_ext, $object['page_title'], $object['page_title']);
-		$object['page_excerpt'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_excerpt_raw'], $object['page_excerpt_raw']);
-	}
-	elseif($alkaline->returnConf('web_markup')){
-		$page_markup_ext = $alkaline->returnConf('web_markup_ext');
-		$object['page_text'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_text_raw'], $object['page_text_raw']);
-		$object['page_title'] = $orbit->hook('markup_title_' . $page_markup_ext, $object['page_title'], $object['page_title']);
-		$object['page_excerpt'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_excerpt_raw'], $object['page_excerpt_raw']);
-	}
-	else{
-		$page_markup_ext = '';
-		$object['page_text'] = $alkaline->nl2br($object['page_text_raw']);
-		$object['page_excerpt'] = $alkaline->nl2br($object['page_excerpt_raw']);
+	elseif($block == 'pages'){
+		if(!empty($object['page_markup_ext'])){
+			$page_markup_ext = $object['page_markup_ext'];
+			$object['page_text'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_text_raw'], $object['page_text_raw']);
+			$object['page_title'] = $orbit->hook('markup_title_' . $page_markup_ext, $object['page_title'], $object['page_title']);
+			$object['page_excerpt'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_excerpt_raw'], $object['page_excerpt_raw']);
+		}
+		elseif($alkaline->returnConf('web_markup')){
+			$page_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$object['page_text'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_text_raw'], $object['page_text_raw']);
+			$object['page_title'] = $orbit->hook('markup_title_' . $page_markup_ext, $object['page_title'], $object['page_title']);
+			$object['page_excerpt'] = $orbit->hook('markup_' . $page_markup_ext, $object['page_excerpt_raw'], $object['page_excerpt_raw']);
+		}
+		else{
+			$page_markup_ext = '';
+			$object['page_text'] = $alkaline->nl2br($object['page_text_raw']);
+			$object['page_excerpt'] = $alkaline->nl2br($object['page_excerpt_raw']);
+		}
 	}
 	
 	$id_label = $_POST['act'] . '_id';
