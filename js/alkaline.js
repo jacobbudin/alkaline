@@ -1099,6 +1099,7 @@ $(document).ready(function(){
 	
 	if((page == 'Post') || (page == 'Page') || (page == 'Image')){
 		$('#preview').click(function(){
+			newwin = window.open(null, 'preview', null, true);
 			object = {};
 			$('input').each(function(index) {
 				key = $(this).attr('id');
@@ -1116,8 +1117,8 @@ $(document).ready(function(){
 				object[key] = val;
 			});
 			act = page.toLowerCase();
-			$.post(BASE + ADMIN + 'preview.php', { act: act, object: object }, function(data){
-				window.open(BASE + ADMIN + 'preview.php');
+			$.post(BASE + ADMIN + 'preview.php', { act: act, object: object }, function(){
+				newwin.location = BASE + ADMIN + 'preview.php';
 			});
 		});
 	}

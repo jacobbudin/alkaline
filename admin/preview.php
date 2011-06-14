@@ -23,8 +23,6 @@ if(!empty($_POST['act']) and !empty($_POST['object'])){
 	$block = $_SESSION['alkaline']['preview']['act'] . 's';
 	$object[$block] = 1;
 	
-	var_dump($object);
-	
 	if(!empty($object['post_markup'])){
 		$post_markup_ext = $object['post_markup'];
 		$object['post_text'] = $orbit->hook('markup_' . $post_markup_ext, $object['post_text_raw'], $object['post_text_raw']);
@@ -81,7 +79,7 @@ if(!empty($_POST['act']) and !empty($_POST['object'])){
 	
 	$id_label = $_POST['act'] . '_id';
 	$id = $object[$id_label];
-	echo $id;	
+	
 	$_SESSION['alkaline']['preview']['id'] = $id;
 	$_SESSION['alkaline']['preview']['object'] = $object;
 	exit();
