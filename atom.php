@@ -68,8 +68,6 @@ else{
 			<link rel="enclosure" type="{Image_MIME}" href="{Location}{Image_Src_Medium}" />
 		</entry>
 	{/block:Images}');
-	$image_entries->assign('BASE', BASE);
-	$image_entries->assign('LOCATION', LOCATION);
 	$image_entries->loop($images);
 
 	// Gather posts
@@ -104,8 +102,6 @@ else{
 			</content>
 		</entry>
 	{/block:Posts}');
-	$post_entries->assign('BASE', BASE);
-	$post_entries->assign('LOCATION', LOCATION);
 	$post_entries->loop($posts);
 
 	$updated['image'] = strtotime($images->images[0]['image_published']);
