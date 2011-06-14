@@ -27,9 +27,9 @@ else{
 	$now = date('Y-m-d H:i:s');
 	$image_tags = implode('; ', $images->images[0]['image_tags_array']);
 	
-	$query = $alkaline->prepare('UPDATE images SET image_modified = :image_modified, image_tags = :image_tags, image_tag_count = :image_tag_count WHERE image_id = :image_id;');
+	$query = $alkaline->prepare('UPDATE images SET image_tags = :image_tags, image_tag_count = :image_tag_count WHERE image_id = :image_id;');
 	
-	$query->execute(array(':image_modified' => $now, ':image_tags' => $image_tags, ':image_tag_count' => count($images->images[0]['image_tags_array']), ':image_id' => $images->images[0]['image_id']));
+	$query->execute(array(':image_tags' => $image_tags, ':image_tag_count' => count($images->images[0]['image_tags_array']), ':image_id' => $images->images[0]['image_id']));
 }
 
 ?>
