@@ -1441,6 +1441,10 @@ class Image extends Alkaline{
 					$image_ext = 'png';
 				}
 				
+				if(empty($this->images[$j]['image_directory'])){
+					$this->images[$j]['image_directory'] = '';
+				}
+				
 				$size['size_file'] = parent::correctWinPath(PATH . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $this->images[$j]['image_ext']);
 				
 				$size['size_src'] = BASE . IMAGES . $this->images[$j]['image_directory'] . $size_prepend . $this->images[$j]['image_id'] . $size_append . '.' . $image_ext;
