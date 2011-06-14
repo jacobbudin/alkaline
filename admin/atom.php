@@ -69,8 +69,8 @@ else{
 	{block:Comments}
 		<entry>
 			<title type="text">New comment ({Comment_Author_Name})</title>
-			<link href="{define:LOCATION}{define:BASE}{define:ADMIN}comments{define:URL_ID}{Comment_ID}{define:URL_RW}" />
-			<id>{define:LOCATION}{define:BASE}{define:ADMIN}comments{define:URL_ID}{Comment_ID}{define:URL_RW}</id>
+			<link href="{define:Location}{define:Base}{define:Admin}comments{define:URL_ID}{Comment_ID}{define:URL_RW}" />
+			<id>{define:Location}{define:Base}{define:Admin}comments{define:URL_ID}{Comment_ID}{define:URL_RW}</id>
 			<updated>{Comment_Modified_Format}</updated>
 			<published>{Comment_Created_Format}</published>
 			<content type="xhtml">
@@ -80,8 +80,8 @@ else{
 			</content>
 		</entry>
 	{/block:Comments}');
-	$comment_entries->assign('BASE', BASE);
-	$comment_entries->assign('LOCATION', LOCATION);
+	$comment_entries->assign('Base', BASE);
+	$comment_entries->assign('Location', LOCATION);
 	$comment_entries->loop($comments);
 
 	// Gather trackbacks
@@ -115,8 +115,6 @@ else{
 			</content>
 		</entry>
 	{/block:Trackbacks}');
-	$trackback_entries->assign('BASE', BASE);
-	$trackback_entries->assign('LOCATION', LOCATION);
 	$trackback_entries->loop($trackbacks);
 
 	$updated['comment'] = strtotime($images->images[0]['comment_created']);
@@ -143,7 +141,7 @@ else{
 	
 		<entry>
 			<title type="text">Daily report (<?php echo date('l, F j', $yesterday) ?>)</title>
-			<link href="{define:LOCATION}{define:BASE}{define:ADMIN}statistics{define:URL_CAP}" />
+			<link href="{define:Location}{define:Base}{define:Admin}statistics{define:URL_CAP}" />
 			<id>{define:LOCATION}{define:BASE}{define:ADMIN}statistics{define:URL_CAP}#<?php echo $yesterday; ?></id>
 			<updated><?php echo date('c', $yesterday); ?></updated>
 			<published><?php echo date('c', $yesterday); ?></published>
