@@ -20,8 +20,6 @@ $id = $alkaline->findID(@$_POST['image_id']);
 if(empty($id)){
 	$ids = array();
 	
-	// $alkaline->exec('DELETE FROM items WHERE item_id IS NOT NULL');
-	
 	foreach($alkaline->tables_index as $key => $value){
 		$ids[] = ++$key;
 	}
@@ -51,6 +49,16 @@ else{
 			'item_table_id' => $item_id);
 		$alkaline->addRow($fields, 'items');
 	}
+	
+	$delete_ids = array();
+	
+	foreach($item_table_ids as $item_id){
+		if(in_array($item_id, $ids->ids)){ continue; }
+		$delete_ids[] = $item_id;
+	}
+	
+	$query = $alkaline->prepare('DELETE FROM items WHERE item_table = :item_table AND item_table_id IN (' . implode(', ', $delete_ids) . ')');
+	$query->execute(array(':item_table' => $table));
 }
 
 ?>
