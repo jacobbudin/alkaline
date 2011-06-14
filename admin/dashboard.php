@@ -105,6 +105,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	$comments = new Comment($comment_ids);
 
 	for($i=0; $i < $comments->comment_count; $i++){
+		if(empty($comments->comments[$i]['comment_created'])){ continue; }
 		$timestamps[] = strtotime($comments->comments[$i]['comment_created']);
 		$items[] = $comments->comments[$i];
 		$types[] = 'comment';
@@ -119,6 +120,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	$images->getSizes('square');
 
 	for($i=0; $i < $images->image_count; $i++){
+		if(empty($images->images[$i]['image_modified'])){ continue; }
 		$timestamps[] = strtotime($images->images[$i]['image_modified']);
 		$items[] = $images->images[$i];
 		$types[] = 'image';
@@ -132,6 +134,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	$posts = new Post($post_ids);
 
 	for($i=0; $i < $posts->post_count; $i++){
+		if(empty($posts->posts[$i]['post_modified'])){ continue; }
 		$timestamps[] = strtotime($posts->posts[$i]['post_modified']);
 		$items[] = $posts->posts[$i];
 		$types[] = 'post';
