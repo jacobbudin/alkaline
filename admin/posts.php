@@ -458,7 +458,7 @@ else{
 						<?php
 					}
 					?>
-					<div class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></div>
+					<div class="none get_location_set"><?php if(!empty($_SESSION['alkaline']['location'])){ echo $_SESSION['alkaline']['location']; } ?></div>
 				</p>
 				
 				<p class="slim">

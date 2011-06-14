@@ -201,7 +201,7 @@ else{
 					<?php
 				}
 				?>
-				<span class="none get_location_set"><?php echo @$_SESSION['alkaline']['location']; ?></span>
+				<span class="none get_location_set"><?php if(!empty($_SESSION['alkaline']['location'])){ echo $_SESSION['alkaline']['location']; } ?></span>
 			</p>
 			
 			<p>
