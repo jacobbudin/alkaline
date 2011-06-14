@@ -94,6 +94,6 @@ $_GET['id'] = $_SESSION['alkaline']['preview']['id'];
 chdir(PATH);
 require_once('./' . $_SESSION['alkaline']['preview']['act'] . '.php');
 
-unset($_SESSION['alkaline']['preview']['act']);
+unset($_SESSION['alkaline']['preview']);
 
 ?>
