@@ -17,7 +17,7 @@ $user->perm(true);
 
 $image_ids = new Find('images');
 $image_ids->sort('image_uploaded', 'DESC');
-$image_ids->post(1, 100);
+$image_ids->page(1, 100);
 $image_ids->find();
 
 $images = new Image($image_ids);
