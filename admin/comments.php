@@ -331,7 +331,7 @@ if(empty($comment_id)){
 	// Configuration: comm_enabled
 	if(!$alkaline->returnConf('comm_enabled')){
 		?>
-		<p class="notice">New comments have been disabled. You can enabled comments in your <a href="/~jacobbudin/Alkaline/admin/configuration.php">configuration</a>.</p><br />
+		<p class="notice">New comments have been disabled. You can enabled comments in your <a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">configuration</a>.</p><br />
 		<?php
 	}
 	?>
