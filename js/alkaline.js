@@ -594,7 +594,9 @@ function getCookies(){
 
 $(document).ready(function(){
 	// NAVIGATION
-	$('#navigation ul ul').hide();
+	fold = $('#navigation ul li').height();
+	fold += 7;
+	$('#navigation ul ul').css('position', 'absolute').css('top', fold + 'px').hide();
 	$('#navigation ul li').hover(function() {
 		if($(this).find('a').hasClass('selected')){
 			bgcolor = "#fff";
