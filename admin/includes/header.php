@@ -16,16 +16,8 @@
 	<link rel="stylesheet" href="<?php echo BASE . ADMIN; ?>css/alkaline.css" type="text/css" media="screen, projection" />
 	<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo BASE . JS; ?>jquery/excanvas.min.js"></script><![endif]-->
 	<link rel="shortcut icon" href="<?php echo BASE . ADMIN; ?>images/favicon.ico" />
-	<script src="<?php echo BASE . JS; ?>jquery/jquery-1.6.1.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery-ui-1.8.12.custom.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.json-2.2.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.flot.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.html5_upload.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.ajaxq-0.0.1.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.caret-range-1.0.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.formalize.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>jquery/jquery.tiptip.min.js" type="text/javascript"></script>
-	<script src="<?php echo BASE . JS; ?>alkaline.js?965" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>alkaline.packed.js" type="text/javascript"></script>
+	<script src="<?php echo BASE . JS; ?>alkaline.js" type="text/javascript"></script>
 </head>
 <body id="alkaline">
 	<div id="header_holder">
@@ -34,17 +26,15 @@
 				<?php
 				if(!empty($user) and $user->perm()){
 					?>
-					<div>
+					<div id="userbar_home">
 						<strong>
-							<img src="<?php echo BASE . ADMIN; ?>images/icons/home_top.png" alt="" />
 							<?php $title = $alkaline->returnConf('web_title'); echo (!empty($title) ? $title : ''); ?>
 						</strong> &#0160;
 						<a href="<?php echo BASE; ?>" target="<?php if($user->readPref('home_target')){ echo '_blank'; } ?>">Launch</a>
 					</div>
 					
-					<div>
+					<div id="userbar_user">
 						<strong>
-							<img src="<?php echo BASE . ADMIN; ?>images/icons/user_top.png" alt="" />
 							<?php echo $user->user['user_user']; ?>
 						</strong> &#0160;
 						<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'me' . URL_RW; ?>">My Images</a>,
