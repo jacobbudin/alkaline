@@ -582,9 +582,10 @@ class Alkaline{
 	 * Empty a directory
 	 *
 	 * @param string $dir Full path to directory
+	 * @param bool $recursive Delete subdirectories
 	 * @return void
 	 */
-	public function emptyDirectory($dir=null){
+	public function emptyDirectory($dir=null, $recursive=true){
 		// Error checking
 		if(empty($dir)){
 			return false;
@@ -599,7 +600,7 @@ class Alkaline{
 		while($filename = readdir($handle)){
 			if(!in_array($filename, $ignore)){
 				// Delete directories
-				if(is_dir($dir . '/' . $filename)){
+				if(is_dir($dir . '/' . $filename) and ($recursive !== false)){
 					self::emptyDirectory($dir . $filename . '/');
 					@rmdir($dir . $filename . '/');
 				}
