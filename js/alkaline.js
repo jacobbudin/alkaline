@@ -1,9 +1,9 @@
-/*
-// Alkaline
-// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
-// Do not redistribute this code without written permission from Budin Ltd.
-// http://www.alkalineapp.com/
-*/
+/*!
+ * Alkaline
+ * Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
+ * Do not redistribute this code without written permission from Budin Ltd.
+ * http://www.alkalineapp.com/
+ */
 
 var BASE = $('meta[name="base"]').attr('content');
 var FOLDER_PREFIX = $('meta[name="folder_prefix"]').attr('content');
