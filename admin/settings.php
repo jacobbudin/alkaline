@@ -95,8 +95,6 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				}
 				
 				?>
-				
-				(<?php echo $alkaline->db_version; ?>)
 			</td>
 		</tr>
 		<tr>
