@@ -109,7 +109,7 @@ if(@$_POST['install'] == 'Install'){
 		$config = $alkaline->replaceVar('$db_dsn', $dsn, $config);
 		$config = $alkaline->replaceVar('$db_type', 'sqlite', $config);
 		
-		if($alkaline->checkPerm($path) != '0777'){
+		if(($alkaline->checkPerm($path) != '0777') and (SERVER_TYPE != 'win')){
 			$alkaline->addNote('Your SQLite database is not writable (CHMOD 777).', 'error');
 		}
 	}
@@ -152,8 +152,10 @@ if(@$_POST['install'] == 'Install'){
 
 if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 	// Check to see if can connect
-	if(!$db = new PDO($dsn, $username, $password)){
-		$alkaline->addNote('The database could not be contacted. Check your settings.', 'error');
+	$db = new PDO($dsn, $username, $password);
+	$error = $db->errorInfo();
+	if(!empty($error[0])){
+		$alkaline->addNote('The database could not be contacted. ' . $error[0] . ' Check your settings.', 'error');
 	}
 	else{
 		function appendTableName($query){
@@ -402,7 +404,7 @@ else{
 				<td>
 					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
 					<span class="quiet">
-						Defaults to /<?php echo DB; ?>alkaline.db. Your database file must be writable (CHMOD 777).<br />
+						Defaults to <pre><?php echo DB; ?>alkaline.db</pre>. Your database file must be writable (<pre>CHMOD 777</pre>).<br />
 						For security purposes, this file will be renamed during installation.
 					</span>
 				</td>
