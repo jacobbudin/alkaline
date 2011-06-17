@@ -222,8 +222,11 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 require_once(PATH . ADMIN . 'includes/footer.php');
 
-$now = time();
+// Delete old cache
+$alkaline->emptyDirectory(PATH . CACHE, false, 3600);
 
+// Anonymous usage reports 
+$now = time();
 if(($user->returnConf('maint_reports') === true) && ($user->returnConf('maint_reports_time') < ($now - 604800))){
 	$data = http_build_query(
 	    array(
