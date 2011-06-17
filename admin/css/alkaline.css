@@ -664,6 +664,7 @@ ol.errors li{
 .preload{ visibility: hidden; position: absolute; top: -9999px; left: -9999px; }
 .quiet a{ color: #666; }
 .full { width: 100%; }
+pre { display: inline; }
 textarea.code{ font-family: "Anonymous Pro", "Courier New", Courier, monospace; background-color: #eee; font-size: .9em; }
 textarea.serif{ font-family: Georgia, "Times New Roman", Times, serif; background-color: #eee; }
 textarea.l { font-size: 1.1em; line-height: 1.5em; }
