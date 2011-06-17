@@ -106,7 +106,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
 	
 	if($alkaline->saveConf()){
-		$alkaline->addNote('The configuration has been saved.', 'success');
+		$alkaline->addNote('The configuration has been saved. Changes not taking effect instantly? <a href="' . BASE . ADMIN . 'maintenance' . URL_CAP . '">Delete your cache files.</a>', 'success');
 	}
 	else{
 		$alkaline->addNote('The configuration could not be saved.', 'error');
