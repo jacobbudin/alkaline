@@ -72,7 +72,7 @@ if(!empty($_POST['set_id'])){
 		}
 		else{
 			$set_markup_ext = '';
-			$set_description = $this->nl2br($set_description_raw);
+			$set_description = $alkaline->nl2br($set_description_raw);
 		}
 		
 		$fields = array('set_call' => serialize($_SESSION['alkaline']['search']['images']['call']),
@@ -128,6 +128,7 @@ define('TAB', 'features');
 
 // GET PILES TO VIEW OR PILE TO EDIT
 if(empty($set_id)){
+	unset($_REQUEST);
 	$set_ids = new Find('sets');
 	$set_ids->sort('set_modified', 'DESC');
 	$set_ids->find();

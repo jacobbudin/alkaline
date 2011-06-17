@@ -70,7 +70,7 @@ if(!empty($_POST['right_id'])){
 		}
 		else{
 			$right_markup_ext = '';
-			$right_description = $this->nl2br($right_description_raw);
+			$right_description = $alkaline->nl2br($right_description_raw);
 		}
 		
 		$fields = array('right_title' => $alkaline->makeUnicode($right_title),
