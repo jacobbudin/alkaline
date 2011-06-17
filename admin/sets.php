@@ -418,7 +418,7 @@ else{
 			<span class="switch">&#9656;</span> <a href="#" class="show">Display set&#8217;s images</a> <?php if($set['set_type'] == 'static'){ ?><span class="quiet">(sort images by dragging and dropping)</span><?php } ?>
 		</p>
 
-		<div class="reveal" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
+		<div class="reveal load" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
 			<?php
 		
 			$images = new Image($set['set_images']);
