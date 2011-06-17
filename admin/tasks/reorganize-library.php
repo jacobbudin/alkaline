@@ -63,9 +63,6 @@ else{
 			$src = $size['size_file'];
 			$dest = $alkaline->correctWinPath(PATH . IMAGES . $dir . $size['size_prepend'] . $image['image_id'] . $size['size_append'] . '.' . $image['image_ext']);
 			
-			var_dump($src);
-			var_dump($dest);
-			
 			rename($src, $dest);
 		}
 		
