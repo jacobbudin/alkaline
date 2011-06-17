@@ -583,12 +583,17 @@ class Alkaline{
 	 *
 	 * @param string $dir Full path to directory
 	 * @param bool $recursive Delete subdirectories
+	 * @param int $age Delete contents older than $age seconds old
 	 * @return void
 	 */
-	public function emptyDirectory($dir=null, $recursive=true){
+	public function emptyDirectory($dir=null, $recursive=true, $age=0){
 		// Error checking
 		if(empty($dir)){
 			return false;
+		}
+		
+		if($age != 0){
+			$now = time();
 		}
 		
 		$ignore = array('.', '..');
@@ -606,6 +611,11 @@ class Alkaline{
 				}
 				// Delete files
 				else{
+					if($age != 0){
+						if($now < (filemtime($dir . $filename) + $age)){
+							continue;
+						}
+					}
 					chmod($dir . $filename, 0777);
 					unlink($dir . $filename);
 				}
