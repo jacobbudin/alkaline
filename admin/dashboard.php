@@ -201,19 +201,19 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 			ob_end_clean();
 		}
-	}
+		
+		echo '<table>';
 
-	echo '<table>';
-
-	foreach($timeline as $modified => $items){
-		echo '<tr><td class="right" style="width:15%;"><strong class="quiet">' . ucfirst($modified) . '</strong></td><td>' . "\n";
-		foreach($items as $item){
-			echo $item . "\n";
+		foreach($timeline as $modified => $items){
+			echo '<tr><td class="right" style="width:15%;"><strong class="quiet">' . ucfirst($modified) . '</strong></td><td>' . "\n";
+			foreach($items as $item){
+				echo $item . "\n";
+			}
+			echo '</td></tr>' . "\n";
 		}
-		echo '</td></tr>' . "\n";
-	}
 
-	echo '</table>';
+		echo '</table>';
+	}
 
 	?>
 </div>
