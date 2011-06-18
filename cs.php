@@ -314,12 +314,10 @@ $test = new AlkalineCS();
 					<?php
 				}
 				?>
-			</p>
-
-			<hr />
+			</p><br />
 		
 			<div id="footer" class="span-24 last">
-				<img src="http://www.alkalineapp.com/remote/cs/images/icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
+				Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
 			</div>
 		</div>
 	</div>
