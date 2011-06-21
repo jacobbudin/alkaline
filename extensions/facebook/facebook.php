@@ -13,9 +13,11 @@ class FacebookHandler extends Orbit{
 		$this->facebook_auto = $this->returnPref('facebook_auto');
 		$this->facebook_name = $this->returnPref('facebook_name');
 		$this->facebook_profile_id = $this->returnPref('facebook_profile_id');
+		$this->facebook_transmit = $this->returnPref('facebook_transmit');
 		$this->facebook_album_id = $this->returnPref('facebook_album_id');
 		$this->facebook_access_token = $this->returnPref('facebook_access_token');
 		$this->facebook_format_image = $this->returnPref('facebook_format_image');
+		$this->facebook_format_post = $this->returnPref('facebook_format_post');
 		$this->facebook_last_image_time = $this->returnPref('facebook_last_image_time');
 		
 		require_once('classes/facebook.php');
@@ -34,13 +36,15 @@ class FacebookHandler extends Orbit{
 	}
 	
 	public function orbit_config(){
-		$params = array('access_token' => $this->facebook_access_token);
-		$albums = $this->facebook->api('me/albums', $params);
+		if($this->facebook_active){
+			$params = array('access_token' => $this->facebook_access_token);
+			$albums = $this->facebook->api('me/albums', $params);
 		
-		$albums_list = array();
+			$albums_list = array();
 		
-		foreach($albums['data'] as $album){
-			$albums_list[$album['id']] = $album['name'];
+			foreach($albums['data'] as $album){
+				$albums_list[$album['id']] = $album['name'];
+			}
 		}
 		
 		?>
@@ -48,32 +52,48 @@ class FacebookHandler extends Orbit{
 		<?php
 		if($this->facebook_active){
 			$this->facebook_format_image = $this->makeHTMLSafe($this->facebook_format_image);
+			$this->facebook_format_post = $this->makeHTMLSafe($this->facebook_format_post);
 			?>
 			<table>
 				<tr>
 					<td class="right"><label>Name:</label></td>
-					<td><?php echo $this->facebook_name; ?> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'facebook')); ?>"><button>Unlink from Facebook</button></a></td>
+					<td><a href="http://<?php echo $this->facebook_name; ?>.facebook.com/"><?php echo $this->facebook_name; ?></a> &#0160; <a href="<?php echo $this->locationFull(array('unlink' => 'facebook')); ?>"><button>Unlink from facebook</button></a></td>
 				</tr>
 				<tr>
-					<td class="right"><label for="facebook_album_id">Facebook album:</label></td>
+					<td class="right middle"><label for="facebook_transmit">Transmit:</label></td>
 					<td>
-						<select id="facebook_album_id" name="facebook_album_id">
-							<?php foreach ($albums_list as $id => $name): ?>
-								<option value="<?php echo $id ?>" <?php if($id == $this->facebook_album_id){ echo 'selected="selected"'; } ?>><?php echo $name; ?></option>
-							<?php endforeach ?>
+						<select name="facebook_transmit" id="facebook_transmit">
+							<option value="images_posts" <?php echo $this->readPref('facebook_transmit', 'images_posts'); ?>>Images and posts</option>
+							<option value="images" <?php echo $this->readPref('facebook_transmit', 'images'); ?>>Images only</option>
+							<option value="posts" <?php echo $this->readPref('facebook_transmit', 'posts'); ?>>Posts only</option>
 						</select>
 					</td>
 				</tr>
+				<td class="right"><label for="facebook_album_id">Facebook album:</label></td>
+				<td>
+					<select id="facebook_album_id" name="facebook_album_id">
+						<?php foreach ($albums_list as $id => $name): ?>
+							<option value="<?php echo $id ?>" <?php if($id == $this->facebook_album_id){ echo 'selected="selected"'; } ?>><?php echo $name; ?></option>
+						<?php endforeach ?>
+					</select>
+				</td>
 				<tr>
-					<td class="right"><label for="facebook_format_image">Image caption format:</label></td>
+					<td class="right"><label for="facebook_format_image">Image format:</label></td>
 					<td>
 						<textarea type="text" id="facebook_format_image" name="facebook_format_image" style="width: 30em;" class="code"><?php echo $this->facebook_format_image; ?></textarea><br />
-						<p class="quiet">Your image will automatically be posted, use the text area above to write an optional caption. Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</p>
+						<p class="quiet">Your image will automatically be posted, you can use the text area above to write an optional caption. Use Canvas tags such as <code>{Image_Title}</code> and <code>{Image_URI}</code> above.</p>
 					</td>
 				</tr>
 				<tr>
-					<td class="right"><input type="checkbox" id="tumblr_auto" name="tumblr_auto" value="auto" <?php if($this->tumblr_auto == 'auto'){ echo 'checked="checked"'; } ?> /></td>
-					<td><strong><label for="tumblr_auto">Enable automatic mode.</label></strong> When you publish, your Tumblog will be automatically updated.</td>
+					<td class="right"><label for="facebook_format_post">Post format:</label></td>
+					<td>
+						<textarea type="text" id="facebook_format_post" name="facebook_format_post" style="width: 30em;" class="code"><?php echo $this->facebook_format_post; ?></textarea><br />
+						<p class="quiet">Your title will automatically be posted, you can use the text area above to write an optional body text (or summary). Use Canvas tags such as <code>{Post_Text}</code> and <code>{Post_URI}</code> above.</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="right"><input type="checkbox" id="facebook_auto" name="facebook_auto" value="auto" <?php if($this->facebook_auto == 'auto'){ echo 'checked="checked"'; } ?> /></td>
+					<td><strong><label for="facebook_auto">Enable automatic mode.</label></strong> When you publish, your Tumblog will be automatically updated.</td>
 				</tr>
 			</table>
 			<?php
@@ -213,11 +233,14 @@ class FacebookHandler extends Orbit{
 	public function orbit_config_save(){
 		$now = time();
 		$this->setPref('facebook_last_image_time', $now);
+		$this->setPref('facebook_last_post_time', $now);
 		
 		$this->setPref('facebook_auto', @$_POST['facebook_auto']);
 		
 		$this->setPref('facebook_album_id', @$_POST['facebook_album_id']);
 		$this->setPref('facebook_format_image', @$_POST['facebook_format_image']);
+		$this->setPref('facebook_transmit', @$_POST['facebook_transmit']);
+		$this->setPref('facebook_format_post', @$_POST['facebook_format_post']);
 		
 		$this->savePref();
 	}
@@ -226,98 +249,98 @@ class FacebookHandler extends Orbit{
 		if(($this->facebook_auto != 'auto') && ($override === false)){ return; }
 		if(strpos($this->facebook_transmit, 'image') === false){ return; }
 		if(count($images) < 1){ return; }
-		
+
 		$now = time();
-		
+
 		foreach($images as $image){
 			$image_published = strtotime($image['image_published']);
-			
+
 			if(empty($image_published)){ continue; }
 			if($image_published > $now){ continue; }
 			if($override !== true){
 				if($image_published <= $this->facebook_last_image_time){ continue; }
 				if($image['image_privacy'] != 1){ continue; }
 			}
-			
+
 			$this->storeTask(array($this, 'upload_image'), $image);
 		}
-		
+
 		$this->setPref('facebook_last_image_time', $now);
 		$this->savePref();
 	}
-	
+
 	public function orbit_post($posts, $override=false){
 		if(($this->facebook_auto != 'auto') && ($override === false)){ return; }
 		if(strpos($this->facebook_transmit, 'post') === false){ return; }
 		if(count($posts) < 1){ return; }
-		
+
 		$now = time();
-		
+
 		foreach($posts as $post){
 			$post_published = strtotime($post['post_published']);
-			
+
 			if(empty($post_published)){ continue; }
 			if($post_published > $now){ continue; }
 			if($override !== true){
 				if($post_published <= $this->facebook_last_post_time){ continue; }
 			}
-			
+
 			$this->storeTask(array($this, 'upload_post'), $post);
 		}
-		
+
 		$this->setPref('facebook_last_post_time', $now);
 		$this->savePref();
 	}
-	
+
 	public function upload_image($image){
 		$canvas = new Canvas($this->facebook_format_image);
 		$canvas->assignArray($image);
 		$canvas->generate();
-		
+
 		$description = trim($canvas->template);
-		
+
 		$file = file_get_contents($image['image_file']);
-		
+
 		$params = array('access_token' => $this->facebook_access_token,
 			'source' => '@' . $image['image_file'],
 			'message' => $description);
 		$photos = $this->facebook->api($this->facebook_album_id . '/photos', 'POST', $params);
 	}
-	
+
 	public function upload_post($post){
 		// Format post
 		$canvas = new Canvas($this->facebook_format_post);
 		$canvas->assignArray($post);
 		$canvas->generate();
-		
+
 		// Reformat relative links
 		$canvas->template = str_ireplace('href="/', 'href="' . LOCATION . '/', $canvas->template);
 		$canvas->template = str_ireplace('href=\'/', 'href=\'' . LOCATION . '/', $canvas->template);
-		
+
 		$canvas->template = str_ireplace('src="/', 'src="' . LOCATION . '/', $canvas->template);
 		$canvas->template = str_ireplace('src=\'/', 'src=\'' . LOCATION . '/', $canvas->template);
-		
+
 		$canvas->template = trim($canvas->template);
-		
+
 		// Send to Facebook
 		$params = array('access_token' => $this->facebook_access_token,
 			'subject' => $post['post_title'],
 			'message' => $canvas->template);
 		$photos = $this->facebook->api($this->facebook_album_id . '/notes', 'POST', $params);
 	}
-	
+
 	public function orbit_send_html_image(){
 		echo '<option value="facebook">Facebook</option>';
 	}
-	
+
 	public function orbit_send_html_post(){
 		echo '<option value="facebook">Facebook</option>';
 	}
-	
+
 	public function orbit_send_facebook_image($images){
 		return $this->orbit_image($images, true);
 	}
-	
+
 	public function orbit_send_facebook_post($posts){
 		return $this->orbit_post($posts, true);
 	}
