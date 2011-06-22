@@ -40,7 +40,7 @@ if(!empty($_REQUEST['series'])){
 
 if(empty($_POST['image_id'])){
 	$image_ids = range($_SESSION['alkaline']['maintenance']['series']['min'], $_SESSION['alkaline']['maintenance']['series']['max']);
-	$image_ids = new Find('images', $image_ids);
+	$image_ids = new Find('images', $image_ids, null, null, false);
 	$image_ids->find();
 	echo json_encode($image_ids->ids);
 }
