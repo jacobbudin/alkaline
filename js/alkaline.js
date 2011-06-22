@@ -624,28 +624,22 @@ $(document).ready(function(){
 	// PERMISSIONS
 	if(!empty(PERMISSIONS)){
 		perms = PERMISSIONS.split(', ');
-		$('#navigation').find('li').each(function(){
+		$('#navigation ul').find('li').each(function(){
 			id = $(this).attr('id');
-			if(id == 'tab_dashboard'){ return; }
-			is_perm = perms.some(function(item){ return 'tab_' + item == id; });
-			if(is_perm === false){
-				$(this).hide();
+			prefix = id.slice(0, 4);
+			if(prefix == 'tab_'){
+				if(id == 'tab_dashboard'){ return; }
+				is_perm = perms.some(function(item){ return 'tab_' + item == id; });
+				if(is_perm === false){
+					$(this).hide();
+				}
 			}
-		});
-		$('#navigation ul ul').find('li').each(function(){
-			id = $(this).attr('id');
-			if(id == 'sub_preferences'){ return; }
-			is_perm = perms.some(function(item){ return 'sub_' + item == id; });
-			if(is_perm === false){
-				$(this).hide();
-			}
-		});
-		$('#content').find('h2').each(function(){
-			id = $(this).attr('id');
-			if(id == 'h2_preferences'){ return; }
-			is_perm = perms.some(function(item){ return 'h2_' + item == id; });
-			if(is_perm === false){
-				$(this).hide();
+			else if(prefix == 'sub_'){
+				if(id == 'sub_preferences'){ return; }
+				is_perm = perms.some(function(item){ return 'sub_' + item == id; });
+				if(is_perm === false){
+					$(this).hide();
+				}				
 			}
 		});
 	}
