@@ -40,6 +40,16 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<strong><a href="#rebuild-thumbnails">Rebuild all image thumbnails</a></strong><br />
 					Individual thumbnail sizes can be rebuilt on <a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_CAP; ?>">their respective pages</a>, necessary for fixing corrupt or missing image files (resource intensive)
 				</li>
+				<ul>
+					<li>
+						<strong>Rebuild thumbnail series</strong><br />
+						<form action="<?php echo BASE . ADMIN . 'tasks/rebuild-thumbnail-series.php'; ?>" method="post">
+							From image ID <input type="text" name="min" placeholder="0" style="width: 5em" /> to <input type="text" name="max" placeholder="100" style="width: 5em" />
+							<input type="hidden" name="series" value="true" />
+							<input type="submit" value="Rebuild series" />
+						</form>
+					</li>
+				</ul>
 				<li>
 					<strong><a href="#reorganize-library">Reorganize image library</a></strong><br />
 					Move files, as necessary, according to the current <a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">hierarchical directory mode</a> setting

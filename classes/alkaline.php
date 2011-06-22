@@ -21,7 +21,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 1000;
+	const build = 1245;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
