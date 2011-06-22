@@ -1389,14 +1389,15 @@ class Image extends Alkaline{
 
 		// Create a Cache_Lite object
 		$cache = new Cache_Lite($options);
+		$sizes_request = $sizes;
 		
 		if($sizes = $cache->get('sizes:' . implode(',', $sizes), 'sizes')){
 			$sizes = unserialize($sizes);
 		}
 		else{
 			// Find size's prefix and suffix
-			if(!empty($sizes)){
-				$sizes = array_map('strtolower', $sizes);
+			if(!empty($sizes_request)){
+				$sizes = array_map('strtolower', $sizes_request);
 				$sizes_count = count($sizes);
 			
 				$sizes_new = array();
