@@ -4,8 +4,8 @@
 	<file>facebook</file>
 	<class>FacebookHandler</class>
 	<title>Facebook</title>
-	<build>1</build>
-	<version>1.0</version>
+	<build>2</build>
+	<version>1.0.1</version>
 	<description>Uploads images to Facebook.</description>
 	<creator>
 		<name>Alkaline Labs</name>
