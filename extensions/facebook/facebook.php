@@ -19,6 +19,7 @@ class FacebookHandler extends Orbit{
 		$this->facebook_format_image = $this->returnPref('facebook_format_image');
 		$this->facebook_format_post = $this->returnPref('facebook_format_post');
 		$this->facebook_last_image_time = $this->returnPref('facebook_last_image_time');
+		$this->facebook_last_post_time = $this->returnPref('facebook_last_post_time');
 		
 		require_once('classes/Facebook.php');
 		
