@@ -199,7 +199,7 @@ p.slim{
 .right{ text-align: right; }
 td.right{ text-align: right; vertical-align: middle; }
 
-#page, #results-images, #results-posts, .big { font-size: 1.2em; line-height: 1.6em; }
+#page, .big { font-size: 1.2em; line-height: 1.6em; }
 #results-images, #results-posts { margin-bottom: 1.5em; }
 
 img.ftr{ float: right; margin: 0 0 1.5em 1.5em; }

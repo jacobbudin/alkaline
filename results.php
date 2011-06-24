@@ -13,10 +13,28 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
-if($_REQUEST['type'] == 'posts'){
-	$post_ids = new Find('posts');
-	$post_ids->sort('posts.post_published', 'DESC');
-	$post_ids->published();
+if(empty($_SESSION['alkaline']['search']['table']) or !empty($_REQUEST['type'])){
+	require_once(PATH . 'search.php');
+}
+
+if($_SESSION['alkaline']['search']['table'] == 'images'){
+	$image_ids = new Find('images', $_SESSION['alkaline']['search']['images']['ids']);
+	$image_ids->page();
+	$image_ids->find();
+
+	$images = new Image($image_ids);
+	$images->formatTime();
+	$images->getSizes();
+
+	$count = $image_ids->count;
+	$model = $image_ids;
+	$loop = $images;
+
+	$content = new Canvas;
+	$content->load('results-images');
+}
+elseif($_SESSION['alkaline']['search']['table'] == 'posts'){
+	$post_ids = new Find('posts', $_SESSION['alkaline']['search']['posts']['ids']);
 	$post_ids->page(null, 3);
 	$post_ids->find();
 	
@@ -36,25 +54,6 @@ if($_REQUEST['type'] == 'posts'){
 	
 	$content = new Canvas;
 	$content->load('results-posts');
-}
-else{
-	$image_ids = new Find('images');
-	$image_ids->sort('images.image_published', 'DESC');
-	$image_ids->published();
-	$image_ids->page();
-	$image_ids->privacy('public');
-	$image_ids->find();
-
-	$images = new Image($image_ids);
-	$images->formatTime();
-	$images->getSizes();
-	
-	$count = $image_ids->count;
-	$model = $image_ids;
-	$loop = $images;
-	
-	$content = new Canvas;
-	$content->load('results-images');
 }
 
 $header = new Canvas;

@@ -115,7 +115,7 @@ class Find extends Alkaline{
 		}
 		
 		// Optional starter set
-		if(!empty($ids)){
+		if(isset($ids)){
 			$ids = parent::convertToIntegerArray($ids);
 			$this->sql_conds[] = $this->table . '.' . $this->table_id . ' IN (' . implode(', ', $ids) . ')';
 		}
@@ -157,8 +157,10 @@ class Find extends Alkaline{
 		}
 		
 		if($process_request == true){
-			// Process browser requests
-			$_REQUEST = array_map('strip_tags', $_REQUEST);
+			if(!empty($_REQUEST)){
+				// Process browser requests
+				$_REQUEST = array_map('strip_tags', $_REQUEST);
+			}
 
 			// Smart search
 			if(!empty($_REQUEST['act'])){
@@ -2133,20 +2135,15 @@ class Find extends Alkaline{
 	/**
 	 * Save memory (after executing)
 	 *
-	 * @return bool True if successful
+	 * @return void
 	 */
 	public function saveMemory(){
-		if(count($this->call) < 1){
-			return false;
-		}
-		
 		$table = $this->table;
 		
+		$_SESSION['alkaline']['search']['table'] = $table;
 		$_SESSION['alkaline']['search'][$table]['request'] = $_REQUEST;
 		$_SESSION['alkaline']['search'][$table]['call'] = $this->call;
 		$_SESSION['alkaline']['search'][$table]['ids'] = $this->ids;
-		
-		return true;
 	}
 	
 	/**
