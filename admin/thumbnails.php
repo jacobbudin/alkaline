@@ -224,7 +224,7 @@ else{
 				<td><label for="size_build">Build thumbnails of this size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
-				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /></td>
+				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" /></td>
 				<td><label for="size_delete">Delete this thumbnail size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
