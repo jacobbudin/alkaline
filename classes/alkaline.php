@@ -2172,9 +2172,9 @@ class Alkaline{
 			return false;
 		}
 		
-		if($static_only === true){	
+		if($static_only === true){
 			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type;');
-			$query->execute(array(':set_type', 'static'));
+			$query->execute(array(':set_type' => 'static'));
 		}
 		else{
 			$query = $this->prepare('SELECT set_id, set_title FROM sets;');

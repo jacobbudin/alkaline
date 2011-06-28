@@ -224,7 +224,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<input type="text" class="s image_tag" id="act_tag_name" name="act_tag_name" />
 				<input type="text" class="s image_geo" id="act_geo" name="act_geo" />
 				<input type="text" class="s" id="act_publish" name="act_publish" />
-				<?php echo $alkaline->showSets('act_set_id', true); ?>
+				<?php echo $alkaline->showSets('act_set_id', true, true); ?>
 				<?php echo $alkaline->showRights('act_right_id'); ?>
 				<?php echo $alkaline->showPrivacy('act_privacy_id'); ?>
 				<select id="act_send" name="act_send">
