@@ -312,11 +312,13 @@ class Canvas extends Alkaline{
 				
 				for($i = $offset; $i < $finish; ++$i){
 					$field_label = substr($field, 0, -3);
+					
 					if($i == 0){
 						$first_label = $field_label . '_first';
 						$reel[$i][$first_label] = 1;
 					}
-					elseif($i == ($reel_count -1)){
+					
+					if($i == ($reel_count - 1)){
 						$last_label = $field_label . '_last';
 						$reel[$i][$last_label] = 1;
 					}
@@ -428,13 +430,16 @@ class Canvas extends Alkaline{
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
 					
-					$field_label = substr($field, 0, -3);
+					$sub_field = $this->tables[$loops[$j]['reel']];
+					$sub_field_label = substr($sub_field, 0, -3);
+					
 					if($i == 0){
-						$first_label = $field_label . '_first';
+						$first_label = $sub_field_label . '_first';
 						$reel[$i][$first_label] = 1;
 					}
-					elseif($i == ($reel_count -1)){
-						$last_label = $field_label . '_last';
+					
+					if($i == ($reel_count - 1)){
+						$last_label = $sub_field_label . '_last';
 						$reel[$i][$last_label] = 1;
 					}
 					
