@@ -62,10 +62,10 @@ else{
 			{/if:Image_Description}
 			<content type="xhtml">
 				<div xmlns="http://www.w3.org/1999/xhtml">
-					<a href="{Image_URI}"><img src="{Location}{Image_Src_Medium}" alt="" title="{Image_Title}" /></a>
+					<a href="{Image_URI}"><img src="{define:Location}{Image_Src_Medium}" alt="" title="{Image_Title}" /></a>
 				</div>
 			</content>
-			<link rel="enclosure" type="{Image_MIME}" href="{Location}{Image_Src_Medium}" />
+			<link rel="enclosure" type="{Image_MIME}" href="{define:Location}{Image_Src_Medium}" />
 		</entry>
 	{/block:Images}');
 	$image_entries->loop($images);
