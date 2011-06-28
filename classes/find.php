@@ -128,7 +128,7 @@ class Find extends Alkaline{
 			if($ignore_deleted === false){
 				$show_deleted = true;
 			}
-			if($this->admin == true){
+			elseif($this->admin == true){
 				$user = new User();
 				if(!empty($user) and $user->perm()){
 					if($user->returnPref('recovery_mode') === true){
@@ -136,6 +136,7 @@ class Find extends Alkaline{
 					}
 				}
 			}
+			
 			if($show_deleted === false){
 				$this->null($this->table . '.' . $this->table_prefix . 'deleted');
 			}
