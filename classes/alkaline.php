@@ -1384,7 +1384,7 @@ class Alkaline{
 	/**
 	 * Add comments from $_POST data
 	 *
-	 * @return bool True if successful
+	 * @return int|false Comment ID or false on failure
 	 */
 	public function addComments(){
 		// Configuration: comm_enabled
@@ -1415,6 +1415,10 @@ class Alkaline{
 		
 		$comment_text_raw = $_POST['comment_' . $id .'_text'];
 		
+		if(empty($comment_text_raw)){
+			return false;
+		}
+		
 		$orbit = new Orbit;
 		
 		// Configuration: comm_markup
@@ -1422,8 +1426,7 @@ class Alkaline{
 			$comm_markup_ext = $this->returnConf('comm_markup_ext');
 			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, null);
 		}
-		
-		if(!isset($comment_text)){
+		else{
 			$comm_markup_ext = '';
 			$comment_text = $this->nl2br($comment_text_raw);
 		}
@@ -1462,7 +1465,7 @@ class Alkaline{
 			$this->updateCount('comments', 'posts', 'post_comment_count', $id);
 		}
 		
-		return true;
+		return $comment_id;
 	}
 	
 	// TRACKBACKS
