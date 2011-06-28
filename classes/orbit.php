@@ -305,23 +305,30 @@ class Orbit extends Alkaline{
 	 * @return mixed Default value
 	 */
 	public function hook($hook){
-		// Configuration: maint_disable
-		$safe_hooks = array('config', 'config_load', 'config_save');
-		if(!in_array($hook, $safe_hooks)){
-			if($this->returnConf('maint_disable')){
-				return false;
-			}
-		}
-		
 		// Find arguments
 		$arguments = func_get_args();
 		
 		// Find pass-by-default value
-		$argument_pass_index = count($arguments) - 1;
-		$argument_pass = $arguments[$argument_pass_index];
+		$argument_count = count($arguments);
+		if($argument_count > 1){
+			$argument_pass_index = $argument_count - 1;
+			$argument_pass = $arguments[$argument_pass_index];
+		}
+		else{
+			$argument_pass = false;
+		}
 		
-		// Remove non-arguments
+		// Configuration: maint_disable
+		$safe_hooks = array('config', 'config_load', 'config_save');
+		if(!in_array($hook, $safe_hooks)){
+			if($this->returnConf('maint_disable')){
+				return $argument_pass;
+			}
+		}
+		
+		// Remove hook name
 		$arguments = array_slice($arguments, 1, count($arguments) - 2);
+		// Determine variable type
 		if(isset($arguments[0])){
 			$argument_return_type = $this->getType($arguments[0]);
 		}
@@ -334,7 +341,9 @@ class Orbit extends Alkaline{
 					$orbit = new $extension['extension_class']();
 					$method = 'orbit_' . $hook;
 					if(method_exists($orbit, $method)){
+						// Do method
 						$return = call_user_func_array(array($orbit, $method), $arguments);
+						// If variable type is the same, pass it along to future extensions
 						if(!empty($argument_return_type) and ($this->getType($return) == $argument_return_type)){
 							$arguments = array_merge(array($return), array_splice($arguments, 1));
 						}
