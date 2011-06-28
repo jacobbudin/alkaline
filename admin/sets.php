@@ -41,14 +41,6 @@ if(!empty($_POST['set_id'])){
 		}
 	}
 	else{
-		// Rebuild pile with new data
-		$image_ids = new Find('images');
-		$image_ids->find();
-		$image_ids->saveMemory();
-		
-		$set_images = @implode(', ', $image_ids->ids);
-		$set_image_count = $image_ids->count;
-		
 		$set_title = trim($_POST['set_title']);
 		$set_description_raw = $_POST['set_description_raw'];
 		
@@ -75,6 +67,13 @@ if(!empty($_POST['set_id'])){
 			$set_description = $alkaline->nl2br($set_description_raw);
 		}
 		
+		if($_POST['set_type'] == 'auto'){
+			// Rebuild pile with new data
+			$image_ids = new Find('images');
+			$image_ids->find();
+			$image_ids->saveMemory();
+		}
+		
 		$fields = array('set_call' => serialize($_SESSION['alkaline']['search']['images']['call']),
 			'set_request' => serialize($_SESSION['alkaline']['search']['images']['request']),
 			'set_title' => $alkaline->makeUnicode($set_title),
@@ -82,9 +81,12 @@ if(!empty($_POST['set_id'])){
 			'set_type' => $_POST['set_type'],
 			'set_description_raw' => $alkaline->makeUnicode($set_description_raw),
 			'set_description' => $alkaline->makeUnicode($set_description),
-			'set_markup' => $set_markup_ext,
-			'set_images' => $set_images,
-			'set_image_count' => $set_image_count);
+			'set_markup' => $set_markup_ext);
+		
+		if($_POST['set_type'] == 'auto'){
+			$fields['set_images'] = @implode(', ', $image_ids->ids);
+			$fields['set_image_count'] = $image_ids->count;
+		}
 		
 		if(isset($_POST['set_images'])){
 			$fields['set_images'] = $_POST['set_images'];
