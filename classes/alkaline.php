@@ -1226,7 +1226,7 @@ class Alkaline{
 	}
 	
 	private function makeHTMLSafeHelper($string){
-		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
+		$string = htmlentities($string, ENT_QUOTES, 'UTF-8', false);
 		return $string;
 	}
 	
