@@ -287,6 +287,7 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
+			if($loops[$j]['reel'] != $class . 's'){ continue; }
 			if(!isset($object->$loops[$j]['reel'])){ continue; }
 			
 			$replacement = '';
