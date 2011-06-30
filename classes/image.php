@@ -1391,7 +1391,7 @@ class Image extends Alkaline{
 		$cache = new Cache_Lite($options);
 		$sizes_request = $sizes;
 		
-		if($sizes = $cache->get('sizes:' . implode(',', $sizes), 'sizes')){
+		if($sizes = $cache->get('sizes:' . implode(',', $sizes_request), 'sizes')){
 			$sizes = unserialize($sizes);
 		}
 		else{
