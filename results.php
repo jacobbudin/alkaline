@@ -13,8 +13,9 @@ require_once(PATH . CLASSES . 'alkaline.php');
 $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
-if(empty($_SESSION['alkaline']['search']['table']) or !empty($_REQUEST['type'])){
-	require_once(PATH . 'search.php');
+if(empty($_SESSION['alkaline']['search']['table'])){
+	header('Location: ' . LOCATION . 'search' . URL_CAP);
+	exit();
 }
 
 if($_SESSION['alkaline']['search']['table'] == 'images'){

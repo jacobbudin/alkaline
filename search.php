@@ -10,7 +10,7 @@
 require_once('config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
-if(!empty($_REQUEST['type'])){
+if(isset($_REQUEST['type'])){
 	$type = $_REQUEST['type'];
 	if($type == 'posts'){
 		$ids = new Find('posts');
@@ -18,6 +18,7 @@ if(!empty($_REQUEST['type'])){
 		$ids->published();
 	}
 	else{
+		$type = 'images';
 		$ids = new Find('images');
 		$ids->sort('images.image_published', 'DESC');
 		$ids->published();
@@ -25,6 +26,9 @@ if(!empty($_REQUEST['type'])){
 	}
 	$ids->find();
 	$ids->saveMemory();
+	
+	$_SESSION['alkaline']['search']['table'] = $type;
+	
 	header('Location: ' . LOCATION . BASE . 'results' . URL_CAP);
 	exit();
 }
