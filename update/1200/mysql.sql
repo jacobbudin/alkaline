@@ -1,0 +1,2 @@
+CREATE TABLE `rights` (`right_id` tinyint(3) unsigned NOT NULL auto_increment, `right_title` varchar(255) NOT NULL, `right_uri` varchar(255) default NULL, `right_image` varchar(255) default NULL, `right_description` text, `right_description_raw` text,  `right_created` datetime default NULL, `right_modified` datetime default NULL, `right_image_count` int(10) unsigned default NULL, `right_deleted` datetime DEFAULT NULL, `right_markup` varchar(255) DEFAULT NULL, PRIMARY KEY (`right_id`)) DEFAULT CHARSET=utf8;
+ALTER TABLE `sets` DROP `right_markup`;

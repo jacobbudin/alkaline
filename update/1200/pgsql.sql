@@ -1,0 +1,1 @@
+CREATE TABLE "rights" ("right_id" SERIAL PRIMARY KEY, "right_title" TEXT, "right_uri" TEXT, "right_image" TEXT, "right_description" TEXT, "right_description_raw" TEXT, "right_markup" TEXT, "right_created" TIMESTAMP, "right_modified" TIMESTAMP, "right_image_count" INTEGER, "right_deleted" TIMESTAMP);
