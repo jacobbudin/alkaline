@@ -21,7 +21,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 1269;
+	const build = 1276;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
@@ -45,6 +45,11 @@ class Alkaline{
 	 * @return void
 	 **/
 	public function __construct(){
+		// Set error handlers
+		set_error_handler(array($this, 'addError'), E_ALL);
+		set_exception_handler(array($this, 'addException'));
+		
+		// Set error reporting
 		if(ini_get('error_reporting') > 30719){
 			error_reporting(E_ALL);
 		}
@@ -162,10 +167,6 @@ class Alkaline{
 				}
 			}
 		}
-		
-		// Set error handler
-		set_error_handler(array($this, 'addError'), E_ALL);
-		set_exception_handler(array($this, 'addException'));
 	}
 	
 	/**
@@ -3613,18 +3614,7 @@ class Alkaline{
 	 * @return void
 	 */
 	public static function addException($e){
-		$_SESSION['alkaline']['exception'] = $e;
-		session_write_close();
-		
-		// Get error page
-		ob_start();
-		chdir(PATH . ADMIN);
-		require('error.php');
-		ob_flush();
-	
-		// Quit
-		exit();
-		break;
+		throw new AlkalineException($e);
 	}
 	
 	/**
@@ -3760,6 +3750,62 @@ class Alkaline{
 		$diff     = new Text_Diff('auto', array($lines1, $lines2));
 		$renderer = new Text_Diff_Renderer_inline();
 		return nl2br($renderer->render($diff));
+	}
+}
+
+class AlkalineException extends Exception implements Serializable{
+	public $public_trace;
+	public $public_message;
+	
+	public function __construct($e){
+		parent::__construct($e);
+		
+		$this->public_trace = $this->getTrace();
+		
+		if(is_object($this->public_trace[0]['args'][0])){
+			$this->public_message = $this->public_trace[0]['args'][0]->message;
+		}
+		else{
+			$this->public_message = $this->message;
+		}
+		
+		$_SESSION['alkaline']['exception'] = $this;
+		session_write_close();
+		
+		// Get error page
+		ob_start();
+		chdir(PATH . ADMIN);
+		require('error.php');
+		ob_flush();
+		
+		session_start();
+		unset($_SESSION['alkaline']['exception']);
+	
+		// Quit
+		exit();
+		break;
+	}
+	public function serialize(){
+		return serialize(array($this->validator, $this->arguments, $this->code, $this->message));
+	}
+
+	public function unserialize($serialized){
+		list($this->validator, $this->arguments, $this->code, $this->message) = unserialize($serialized);
+	}
+	
+	public function getPublicMessage(){
+		return $this->public_message;
+	}
+	
+	public function getPublicTrace(){
+		if(is_object($this->public_trace[0]['args'][0])){
+			$trace = $this->public_trace[0]['args'][0]->getTrace();
+		}
+		else{
+			$trace = $this->public_trace;
+		}
+		
+		return $trace;
 	}
 }
 

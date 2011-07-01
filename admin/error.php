@@ -11,22 +11,22 @@ require_once('../config.php');
 
 if(session_id() == ''){ session_start(); }
 
+$e = $_SESSION['alkaline']['exception'];
+
 define('TAB', 'Error');
 define('TITLE', 'Alkaline Error');
 require_once(PATH . ADMIN . 'includes/header.php');
-
-$e = $_SESSION['alkaline']['exception'];
 
 ?>
 
 <h2>Error</h2>
 
-<p><strong><?php echo $e->getMessage(); ?></strong></p>
+<p><strong><?php echo $e->getPublicMessage(); ?></strong></p>
 
 <ol>
 <?php
 
-$trace = $e->getTrace();
+$trace = $e->getPublicTrace();
 
 foreach($trace as $stack){
 	?>
