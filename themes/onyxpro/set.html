@@ -1,0 +1,14 @@
+<div class="span-24 append-bottom last">
+	<div class="span-8 append-1">
+		<h2>{Set_Title}</h2>
+
+		{Set_Description}
+		
+		<p class="quiet">This set includes {Set_Image_Count} photos.</p>
+	</div>
+	<div class="span-15 last">
+		{block:Images}
+			<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="small" /></a>
+		{/block:Images}
+	</div>
+</div>

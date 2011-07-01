@@ -1,0 +1,79 @@
+<div class="span-24 last">
+	<div class="span-15 append-1 image-shadow">
+		{block:Images}
+		<div class="image">
+			<div class="center">
+				<a href="{Image_URI}"><img src="{Image_Src_Admin}" alt="" /></a>
+			</div>
+	
+			{if:Image_Title}
+				<h2>{Image_Title}</h2>
+			{else:Image_Title}
+				<h2>(Untitled)</h2>
+			{/if:Image_Title}
+	
+			{if:Image_Description}
+				{Image_Description|fit500}
+			{/if:Image_Description}
+	
+			<p class="data">
+				{if:Image_Tag_Count}
+					<a href="{Image_URI}#tags" class="tag">{Image_Tag_Count} tags</a>
+				{/if:Image_Tag_Count}
+				{if:Image_Comment_Count}
+					<a href="{Image_URI}#comments" class="comment">{Image_Comment_Count} comments</a>
+				{/if:Image_Comment_Count}
+				{if:Image_Fotomoto_Buy}{Image_Fotomoto_Buy}{/if:Image_Fotomoto_Buy}
+			</p>
+		</div>
+		{/block:Images}
+		
+		<div class="span-15 nav append-bottom last right">
+			<div class="{if:Page_Next}nav_right append-bottom{/if:Page_Next}">
+				&#0160;{if:Page_Next}<a href="{Page_Next_URI}">Older photos</a>{/if:Page_Next}
+			</div>
+		</div>
+	</div>
+	<div class="span-8 sidebar last">
+		<form action="{Search_Uri}">
+			<input type="hidden" name="type" value="images" />
+			<input name="q" type="search" class="search" results="10">
+			<input type="image" src="<?php echo BASE . THEMES; ?>onyxpro/images/search.png" class="search_submit submit" alt="Search" value="Search" />
+		</form><br />
+		
+		<hr />
+		
+		<h3>Directory</h3>
+		<table>
+			{block:Sets}
+				<tr>
+					{block:Images}
+						<td class="icon"><a href="{Set_URI}"><img src="{Image_Src_Small}" height="50" width="50" /></a></td>
+					{/block:Images}
+					<td>
+						<strong><a href="{Set_URI}">{Set_Title}</a></strong><br />
+						<span class="quiet">{Set_Image_Count} photos</span>
+					</td>
+				</tr>
+			{/block:Sets}
+		</table>
+		
+		<hr />
+		
+		<h3>Posts</h3>
+		<ul>
+			{block:Posts}
+			<li>
+				<strong><a href="{Post_URI}">{Post_Title}</a></strong>
+				<span class="quiet">({Post_Published_Format})</span>
+			</li>
+			{/block:Posts}
+		</ul>
+		
+		<hr />
+		
+		<h3>Subscribe</h3>
+		
+		<p>Get the latest updates from my Web site by adding <a href="{define:Base}atom{define:Url_Cap}">my feed</a> to your newsreader.</p>
+	</div>
+</div>

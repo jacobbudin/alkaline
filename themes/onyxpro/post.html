@@ -1,0 +1,41 @@
+{if:Posts}
+	{block:Posts}
+		<div class="span-24 append-bottom post last">
+			<div class="span-4 append-1">
+				<div class="quiet right">
+					<h2>&#0160;</h2>
+					{Post_Published|reltime}<br />
+					<a href="{Post_URI}">Permalink</a>
+				</div>
+			</div>
+			<div class="span-14">
+				<h2>{Post_Title}</h2>
+	
+				<div class="large">{Post_Text}</div>
+				
+				<h3 style="margin-top: 0">Comments</h3>
+				<table id="comments" class="comments">
+					{if:Comments}
+					{block:Comments}
+						<tr>
+							<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<p class="quiet">{if:Comment_Author_Name}&#8212; {Comment_Author_Name}, {/if:Comment_Author_Name}{Comment_Created|reltime}</p></td>
+						</tr>
+					{/block:Comments}
+					{/if:Comments}
+				</table>
+				{if:Post_Comment_Disabled}
+					<p>Comments have been disabled for this post.</p>
+				{else:Post_Comment_Disabled}
+					<div class="comments box">
+						<textarea id="comment_{Post_ID}_text" name="comment_{Post_ID}_text" class="comment_text" placeholder="Your comment"></textarea>
+						<div class="quiet">&#8212; <input type="text" id="comment_{Post_ID}_author_name" name="comment_{Post_ID}_author_name" class="comment_author_name" placeholder="Your name" /> <input type="text" id="comment_{Post_ID}_author_email" name="comment_{Post_ID}_author_email" class="comment_author_email" placeholder="Your email address" /></div>
+						<input type="hidden" name="post_id" value="{Post_ID}" /><input type="image" src="<?php echo BASE . THEMES; ?>onyxpro/images/submit.png" alt="Submit comment" class="comment_submit submit" value="Submit comment" />
+					</div>
+				{/if:Post_Comment_Disabled}
+			</div>
+			<div class="span-5 last">
+				
+			</div>
+		</div>
+	{/block:Posts}
+{/if:Posts}

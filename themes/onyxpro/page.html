@@ -1,0 +1,21 @@
+{if:Pages}
+	{block:Pages}
+		<div class="span-24 append-bottom post last">
+			<div class="span-4 append-1">
+				<div class="quiet right">
+					<h2>&#0160;</h2>
+					{Page_Created|reltime}<br />
+					<a href="{Page_URI}">Permalink</a>
+				</div>
+			</div>
+			<div class="span-14">
+				<h2>{Page_Title}</h2>
+	
+				<div class="large">{Page_Text}</div>
+			</div>
+			<div class="span-5 last">
+				
+			</div>
+		</div>
+	{/block:Pages}
+{/if:Pages}

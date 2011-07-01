@@ -1,0 +1,270 @@
+.container{
+	width: 960px;
+}
+
+.none{
+	display: none;
+}
+
+body{
+	background: #111 url(images/bg.png) repeat-x top center;
+	color: #ddd;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, sans-serif;
+	font-size: .7em;
+	margin: 6em auto;
+}
+
+a, a:link, a:visited{
+	color: #ddd;
+	text-decoration: underline;
+}
+
+a:hover, a:active{
+	color: #ddd;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Droid Sans", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, sans-serif;
+	color: #fff;
+}
+
+h1 a:link, h2 a:link, h3 a:link, h4 a:link, h5 a:link, h6 a:link{
+	text-decoration: none;
+}
+
+h1{
+	font-family: "Raleway", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, sans-serif;
+	font-size: 3.8em;
+}
+
+h2{
+	margin: .5em 0;
+}
+
+h3{
+	margin: 1.5em 0 1em 0;
+	font-size: 1.4em;
+}
+
+h4{
+	margin: .25em 0;
+	font-size: 1em;
+}
+
+hr{
+	background-color: #222;
+	color: #222;
+}
+
+.tags{
+	color: #333;
+}
+
+table.comments input{
+}
+
+table.comments td{
+	vertical-align: top;
+}
+
+textarea.comment_text{
+	width: 100%;
+	height: 5em;
+}
+
+#header{
+	margin: 3em 0;
+}
+
+.image{
+	margin-bottom: 4.5em;
+}
+
+.center{
+	text-align: center;
+}
+
+#navigation{
+	text-align: right;
+}
+
+#navigation a:link{
+	text-decoration: none;
+}
+
+#navigation ul{
+	margin: .5em 0 0 0;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#navigation li{
+	display: inline;
+	margin-left: 2em;
+}
+
+.box{
+	background-color: #222;
+}
+
+.data{
+	height: 16px;
+}
+
+.data a:link, .data a:visited, .data a:hover, .data a:active{
+	display: block;
+	float: left;
+	text-decoration: none;
+	margin-right: 1em;
+	color: #5a7ba1;
+}
+
+.data_right{
+	height: 16px;
+	margin: 1.75em 0;
+}
+
+.data_right a:link, .data_right a:visited, .data_right a:hover, .data_right a:active{
+	display: block;
+	float: right;
+	text-decoration: none;
+	margin-right: 1em;
+	color: #5a7ba1;
+}
+
+.data .tag{
+	background: url(images/tag.png) no-repeat;
+	padding-left: 22px;
+}
+
+.data .comment{
+	background: url(images/comment.png) no-repeat;
+	padding-left: 22px;
+}
+
+.nav a:link, .nav a:visited, .nav a:hover, .nav a:active{
+	text-decoration: none;
+	color: #5aa160;
+}
+
+.nav .nav_right{
+	background: url(images/right.png) top right no-repeat;
+	padding-right: 22px;
+}
+
+.nav .nav_left{
+	background: url(images/left.png) no-repeat;
+	padding-left: 22px;
+}
+
+.data .buy, .data_right .buy{
+	background: url(images/buy.png) no-repeat;
+	padding-left: 22px;
+}
+
+.data a.buy, .data a.buy:link, .data a.buy:visited, .data a.buy:hover, .data a.buy:active, .data_right a.buy, .data_right a.buy:link, .data_right a.buy:visited, .data_right a.buy:hover, .data_right a.buy:active{
+	color: #9b5aa1;
+}
+
+.sidebar table td.icon{
+	width: 60px;
+}
+
+.sidebar table td.icon img{
+	border: 3px solid #222;
+}
+
+.sidebar ul{
+	list-style-type: square;
+}
+
+#copyright a{
+	color: #666;
+}
+
+input.submit:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="file"]){
+position: relative;
+	left: -10px;
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+input.search_submit{
+	position: relative;
+	vertical-align: middle;
+	top: -2px;
+	margin-left: 5px;
+}
+
+input.search{
+	width: 15em;
+}
+
+div.comments.box{
+	background: #222 url(images/tab.png) no-repeat;
+	padding-top: 2.5em;
+	padding-bottom: .5em;
+}
+
+.right{
+	text-align: right;
+}
+
+.large{
+	font-size: 1.2em;
+	line-height: 1.3em;
+}
+
+.post img{
+	border: solid 3px #222;
+	margin-bottom: 1.5em;
+}
+
+.post .comments img{
+	border: none;
+	margin-bottom: 0;
+}
+
+img.small{
+	margin-right: 1.6em;
+}
+
+.column{
+	width: 280px;
+}
+	
+
+/*
+ * Alkaline
+ * Required for normal operation
+ */
+
+.preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
+
+ul#slideshow{
+	list-style-type: none;
+}
+
+img.ui-datepicker-trigger{
+	padding: 0 .5em;
+}
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+li.ui-menu-item{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: .8em;
+}
