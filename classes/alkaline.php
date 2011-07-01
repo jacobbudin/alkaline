@@ -2081,7 +2081,7 @@ class Alkaline{
 			return false;
 		}
 		
-		$query = $this->prepare('SELECT right_id, right_title FROM rights;');
+		$query = $this->prepare('SELECT right_id, right_title FROM rights WHERE right_deleted IS NULL;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		
@@ -2176,11 +2176,11 @@ class Alkaline{
 		}
 		
 		if($static_only === true){
-			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type;');
+			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type AND set_deleted IS NULL;');
 			$query->execute(array(':set_type' => 'static'));
 		}
 		else{
-			$query = $this->prepare('SELECT set_id, set_title FROM sets;');
+			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_deleted IS NULL;');
 			$query->execute();
 		}
 		$sets = $query->fetchAll();
