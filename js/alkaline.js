@@ -1026,7 +1026,7 @@ $(document).ready(function(){
 		var upload_count = 0;
 		var upload_count_text;
 		var no_of_files;
-		$("#upload").html5_upload({
+		var upload_options = {
 			url: BASE + ADMIN + 'upload.php',
 			sendBoundary: window.FormData || $.browser.mozilla,
 			onStart: function(event, total) {
@@ -1063,7 +1063,27 @@ $(document).ready(function(){
 					$("#h2_shoebox").delay(500).slideDown(500);
 				}
 			}
-		});
+		};
+		
+		$("#upload").html5_upload(upload_options);
+		
+		if($.browser.mozilla){
+			$("#upload").parent().each(function(){
+				top = $(this).height();
+				top -= 75;
+				$('#upload').css('padding', '0').css('position', 'relative').css('top', top + 'px').css('left', '50px');
+				$(this).html5_upload(upload_options);
+				$this = $(this);
+				this.addEventListener('dragover', function(event){
+				  	event.preventDefault();
+				}, true);
+				this.addEventListener('drop', function(event){
+				  	event.preventDefault();
+					this.files = event.dataTransfer.files;
+					$(this).change();
+				}, true);
+			});
+		}
 	}
 	
 	// GUESTS

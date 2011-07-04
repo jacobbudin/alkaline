@@ -467,6 +467,10 @@ a button{
 	padding: 0;
 }
 
+#upload{
+	width: 100%; padding: 310px 0 54px 50px;
+}
+
 td.right{
 	width: 30%;
 }
