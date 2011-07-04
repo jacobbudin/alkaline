@@ -64,7 +64,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	</div>
 	<div class="span-6 prepend-top last">
 		<h3>Hello</h3>
-		<p>Welcome back! <?php echo ($user->user['user_last_login']) ? 'You last logged in on:  ' . $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : ''; ?></p>
+		<p><?php echo ($user->user['user_last_login']) ? 'Welcome back! You last logged in on:  ' .  $alkaline->formatTime($user->user['user_last_login'], 'l, F j \a\t g:i a') : 'Welcome to Alkaline. You should begin by <a href="' . BASE . ADMIN . 'preferences' . URL_CAP . '">configuring your preferences</a> and <a href="' . BASE . ADMIN . 'upload' . URL_CAP . '">uploading some content</a>.'; ?></p>
 
 		<h3>Census</h3>
 		<table class="census">
@@ -143,7 +143,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	array_multisort($timestamps, SORT_DESC, $items, $types);
 
 	if(count($items) == 0){
-		echo 'Welcome to Alkaline, starting enjoying your new Web site to populate the timeline.';
+		echo '<p>Welcome to Alkaline, starting enjoying your new Web site to populate the timeline.</p>';
 	}
 	else{
 		$timeline = array();
