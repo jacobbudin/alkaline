@@ -32,18 +32,20 @@ if(!empty($_POST['image_ids'])){
 
 		}
 		else{
+			$image_title = $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']);
 			$image_description_raw = $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-description-raw']);
 			
 			if($alkaline->returnConf('web_markup')){
 				$image_markup_ext = $alkaline->returnConf('web_markup_ext');
-				$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+				$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
+				$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description_raw);
 			}
 			else{
 				$image_markup_ext = '';
 				$image_description = $alkaline->nl2br($image_description_raw);
 			}
 			
-			$fields = array('image_title' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']),
+			$fields = array('image_title' => $image_title,
 				'image_description_raw' => $image_description_raw,
 				'image_description' => $image_description,
 				'image_geo' => $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-geo']),
