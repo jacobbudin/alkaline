@@ -187,7 +187,7 @@ class Thumbnail extends Alkaline{
 	}
 	
 	/**
-	 * Watermark image
+	 * Watermark image after ->save()
 	 *
 	 * @param string $watermark Watermark full path
 	 * @param int $margin Margin (in pixels)
@@ -370,6 +370,20 @@ class Thumbnail extends Alkaline{
 		$pos_y = intval($pos_y);
 		
 		return array($pos_x, $pos_y);
+	}
+	
+	/**
+	 * Copy original image's metadata to thumbnail after ->save()
+	 *
+	 * @return void
+	 */
+	public function metadata(){
+		getimagesize($this->file, $info);
+		
+		if(isset($info['APP13'])){
+			 $content = iptcembed($info['APP13'], $this->path);
+			file_put_contents($this->path, $content);
+		}
 	}
 }
 

@@ -301,12 +301,18 @@ class Image extends Alkaline{
 						return false; break;
 				}
 				
+				// Apply watermark
 				if($this->returnConf('thumb_watermark') and ($size_watermark == 1)){
 					$watermark = parent::correctWinPath(PATH . WATERMARKS . $size_label . '.png');
 					if(!file_exists($watermark)){
 						$watermark = parent::correctWinPath(PATH . WATERMARKS . 'watermark.png');
 					}
 					$thumbnail->watermark($watermark);
+				}
+				
+				// Apply metadata
+				if($this->returnConf('thumb_metadata')){
+					$thumbnail->metadata();
 				}
 				
 				unset($thumbnail);

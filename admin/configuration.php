@@ -63,6 +63,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
 	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
+	$alkaline->setConf('thumb_metadata', @$_POST['thumb_metadata']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
 	
@@ -311,6 +312,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<?php if(!class_exists('imagick')){ echo '(not installed)'; } ?>
 				<br />
 				Create superior thumbnails at the cost of increased system resources
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="thumb_metadata" name="thumb_metadata" <?php echo $alkaline->readConf('thumb_metadata'); ?> value="true" /></td>
+			<td class="description">
+				<label for="thumb_metadata">Retain image metadata</label><br />
+				Copy image metadata from original image and apply it to thumbnails (increases thumbnail file size)
 			</td>
 		</tr>
 		<tr>
