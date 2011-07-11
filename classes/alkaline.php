@@ -518,7 +518,7 @@ class Alkaline{
 				
 				if(!empty($ext)){
 					// Find files with proper extensions
-					if(preg_match('#([a-zA-Z0-9\-\_\.]+\.(' . $ext . '){1,1})#si', $filename)){
+					if(preg_match('#^([^\.]+.*\.(' . $ext . '){1,1})$#si', $filename)){
 						$files[] = $dir . $filename;
 					}
 				}
