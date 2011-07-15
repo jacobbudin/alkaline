@@ -31,10 +31,7 @@ if(!empty($_POST['image_id'])){
 	
 	$images = new Image($image_id);
 	
-	if(!empty($_POST['image_send']) and ($_POST['image_send'] == 'send')){
-		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images->images, null);
-	}
-	elseif(@$_POST['image_delete'] == 'delete'){
+	if(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){
 			$alkaline->addNote('The image has been deleted.', 'success');
 		}
@@ -85,6 +82,11 @@ if(!empty($_POST['image_id'])){
 		
 		$images->updateFields($fields);
 		$images->updateTags(json_decode($_POST['image_tags_input']));
+	}
+	
+	if(!empty($_POST['image_send']) and ($_POST['image_send'] == 'send')){
+		$images = new Image($image_id);
+		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images->images, null);
 	}
 	
 	if(!empty($_REQUEST['go'])){

@@ -44,10 +44,7 @@ if(!empty($_POST['post_id'])){
 	
 	$posts = new Post($post_id);
 	
-	if(!empty($_POST['post_send']) and ($_POST['post_send'] == 'send')){
-		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts->posts, null);
-	}
-	elseif(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
+	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
 		if($posts->delete()){
 			$alkaline->addNote('The post has been deleted.', 'success');
 		}
@@ -136,6 +133,11 @@ if(!empty($_POST['post_id'])){
 		
 		$posts->attachUser($user);
 		$posts->updateFields($fields);
+	}
+	
+	if(!empty($_POST['post_send']) and ($_POST['post_send'] == 'send')){
+		$posts = new Post($post_id);
+		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts->posts, null);
 	}
 	
 	if(!empty($_REQUEST['go'])){
