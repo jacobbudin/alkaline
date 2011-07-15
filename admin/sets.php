@@ -400,10 +400,10 @@ else{
 					<td class="right middle"><label>Sort results by:</label></td>
 					<td>
 						<select name="sort">
+							<option value="published" <?php echo $alkaline->readForm($set_request, 'sort', 'published'); ?>>Date published</option>
 							<option value="taken" <?php echo $alkaline->readForm($set_request, 'sort', 'taken'); ?>>Date taken</option>
 							<option value="updated" <?php echo $alkaline->readForm($set_request, 'sort', 'updated'); ?>>Date last updated</option>
-							<option value="published" <?php echo $alkaline->readForm($set_request, 'sort', 'published'); ?>>Date published</option>
-							<option value="uploaded" selected="selected" <?php echo $alkaline->readForm($set_request, 'sort', 'uploaded'); ?>>Date uploaded</option>
+							<option value="uploaded" <?php echo $alkaline->readForm($set_request, 'sort', 'uploaded'); ?>>Date uploaded</option>
 							<option value="title" <?php echo $alkaline->readForm($set_request, 'sort', 'title'); ?>>Title</option>
 							<option value="views" <?php echo $alkaline->readForm($set_request, 'sort', 'views'); ?>>Views</option>
 						</select>
@@ -423,7 +423,7 @@ else{
 		<div class="reveal load" <?php if($set['set_type'] == 'static'){ ?>id="set_image_sort"<?php } ?>>
 			<?php
 		
-			$images = new Image($set['set_images']);
+			$images = new Image($image_ids);
 			$images->getSizes('square');
 		
 			foreach($images->images as $image){
