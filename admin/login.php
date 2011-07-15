@@ -73,7 +73,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_user">Username:</label>
 				</td>
 				<td>
-					<input type="text" name="login_user" id="login_user" class="s" />
+					<input type="text" name="login_user" id="login_user" autocomplete="off" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -81,7 +81,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_pass">Password:</label>
 				</td>
 				<td>
-					<input type="password" name="login_pass" id="login_pass" class="s" />
+					<input type="password" name="login_pass" id="login_pass" autocomplete="off" class="s" />
 				</td>
 			</tr>
 			<tr>
