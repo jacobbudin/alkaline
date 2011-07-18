@@ -18,6 +18,9 @@ $user->perm(true);
 if(empty($_POST['image_file'])){
 	$image_files = $alkaline->seekDirectory(PATH . SHOEBOX);
 	$image_files = array_reverse($image_files);
+	if($alkaline->returnConf('shoe_max')){
+		$image_files = array_splice($image_files, 0, $alkaline->returnConf('shoe_max_count'));
+	}
 	$image_files = array_map('base64_encode', $image_files);
 	echo json_encode($image_files);
 }
@@ -26,6 +29,7 @@ else{
 	$image->attachUser($user);
 	$image->import(base64_decode($_POST['image_file']));
 	$image->getSizes('admin');
+	$image->updateRelated();
 	$tags = $image->getTags(true);
 	$image = $image->images[0];
 	$tag_names = array();

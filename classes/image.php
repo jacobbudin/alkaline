@@ -1551,6 +1551,7 @@ class Image extends Alkaline{
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
+		unset($query);
 		
 		if($show_hidden_tags === true){
 			$this->tags = $tags;
@@ -1901,33 +1902,35 @@ class Image extends Alkaline{
 		
 		// Check to see if recently updated
 		for($i=0; $i < $this->image_count; $i++){ 
-			$image_related_hash = md5($this->images[$i]['image_tags']);
+			$image_related_hash = substr(md5($this->images[$i]['image_tags']), 0, 16);
 			if($image_related_hash != $this->images[$i]['image_related_hash']){
 				if(!empty($this->images[$i]['image_tags_array'])){
 					$image_related = array();
-				
+					
 					$related_image_ids = new Find('images');
 					$related_image_ids->anyTags($this->images[$i]['image_tags_array']);
 					$related_image_ids->page(1, $limit);
 					$related_image_ids->find();
-				
+					
 					$key = array_search($this->images[$i]['image_id'], $related_image_ids->ids);
 				
 					if($key !== false){
 						unset($related_image_ids->ids[$key]);
 					}
-				
+					
 					$ids = array_merge($related_image_ids->ids);
-				
+					unset($related_image_ids);
+					
 					$related_images = new Image($ids);
 					$related_images->getTags();
-				
+					
 					foreach($related_images->images as $image){
 						$image_related[$image['image_id']] = count(array_intersect($this->images[$i]['image_tags_array'], $image['image_tags_array']));
 					}
-				
+					unset($related_images);
+					
 					arsort($image_related);
-				
+					
 					$image_related = implode(', ', array_keys($image_related));
 				}
 				else{

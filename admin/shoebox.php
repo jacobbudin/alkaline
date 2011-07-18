@@ -29,7 +29,6 @@ if(!empty($_POST['image_ids'])){
 			if($image->delete()){
 				$alkaline->addNote('Your image has been deleted.', 'success');
 			}
-
 		}
 		else{
 			$image_title = $alkaline->makeUnicode(@$_POST['image-' . $image_id . '-title']);

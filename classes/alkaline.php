@@ -53,7 +53,7 @@ class Alkaline{
 		if(ini_get('error_reporting') > 30719){
 			error_reporting(E_ALL);
 		}
-		
+				
 		// Disable magic_quotes
 		if(get_magic_quotes_gpc()){
 			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
@@ -89,7 +89,9 @@ class Alkaline{
 			
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
-			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'config.json')), true);
+			if($contents = file_get_contents($this->correctWinPath(PATH . 'config.json'))){
+				$_SESSION['alkaline']['config'] = json_decode($contents, true);
+			}	
 			
 			if(empty($_SESSION['alkaline']['config'])){
 				$_SESSION['alkaline']['config'] = array();
@@ -404,7 +406,12 @@ class Alkaline{
 	 * @return void
 	 */
 	public function addNote($message, $type=null){
-		$_SESSION['alkaline']['notifications'][] = array('type' => $type, 'message' => $message);
+		$message = strval($message);
+		$type = strval($type);
+		
+		if(!empty($message)){
+			$_SESSION['alkaline']['notifications'][] = array('message' => $message, 'type' => $type);
+		}
 	}
 	
 	/**

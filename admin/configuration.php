@@ -50,6 +50,14 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
+	$alkaline->setConf('shoe_max', @$_POST['shoe_max']);
+	if(intval($_POST['shoe_max_count'])){
+		$alkaline->setConf('shoe_max_count', @$_POST['shoe_max_count']);
+	}
+	else{
+		$alkaline->setConf('shoe_max_count', 20);
+	}
+	
 	$alkaline->setConf('image_hdm', @$_POST['image_hdm']);
 	$alkaline->setConf('image_hdm_format', @$_POST['image_hdm_format']);
 	$alkaline->setConf('web_markup', @$_POST['web_markup']);
@@ -251,6 +259,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="shoe_geo" name="shoe_geo" <?php echo $alkaline->readConf('shoe_geo'); ?> value="true" /></td>
 			<td class="description">
 				<label for="shoe_geo">Import geolocation data</label> (as available)
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="shoe_max" name="shoe_max" <?php echo $alkaline->readConf('shoe_max'); ?> value="true" /></td>
+			<td class="description">
+				<label for="shoe_max">Limit the number of images processed</label><br />
+				Process up to <input type="text" id="shoe_max_count" name="shoe_max_count" class="xs" /> images on every load
 			</td>
 		</tr>
 	</table>
