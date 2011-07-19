@@ -44,6 +44,11 @@ if(!empty($_FILES)){
 	exit();
 }
 
+if(isset($_GET['success']) and ($_GET['success'] == 1)){
+	header('Location: ' . LOCATION . BASE . ADMIN . 'shoebox' . URL_CAP);
+	exit();
+}
+
 $orbit->hook('shoebox');
 
 define('TAB', 'upload');
@@ -51,7 +56,7 @@ define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 // cliqcliq Quickpic support
-if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
+if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT']) and !isset($_GET['success'])){
 	?>
 	<script type="text/javascript">
 		launchQuickpic('<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>');
@@ -77,10 +82,13 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 		<h3>Status</h3>
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
+		<h3>File size limit</h3>
+		<p><?php echo str_replace(array('K', 'M', 'G'), array('KB', 'MB', 'GB'), ini_get('post_max_size')); ?> <span class="quiet">(<a href="http://www.alkalineapp.com/guide/faq/#file-size-limit-uploads">Why?</a>)</span></p>
+		
 		<h3>Instructions</h3>
-		<p>Drag images from a folder on your computer or from most applications including Aperture, Bridge, iPhoto, and Lightroom into the grey retaining area. You can also drag text files to create new posts.</p>
+		<p>Drag images from a folder on your computer or directly from most applications into the grey retaining area. You can also drag and drop text files to create new posts.</p>
 	
-		<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
+		<p>You can also browse your computer and select the files you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
 	
 		<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">shoebox</a> to process your files.</p>
 	</div>

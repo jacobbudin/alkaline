@@ -454,7 +454,7 @@ window.launchQuickpic = function(context){
 	}, 1000);
 	
 	var getParams = ['action=' + BASE + ADMIN + 'upload.php',
-		'continue=' + BASE + ADMIN + 'shoebox.php',
+		'continue=' + BASE + ADMIN + 'upload.php',
 		'contact=0',
 		'images=1+',
 		'flickr=0',

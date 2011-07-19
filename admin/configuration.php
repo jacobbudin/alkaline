@@ -265,7 +265,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="shoe_max" name="shoe_max" <?php echo $alkaline->readConf('shoe_max'); ?> value="true" /></td>
 			<td class="description">
 				<label for="shoe_max">Limit the number of images processed</label><br />
-				Process up to <input type="text" id="shoe_max_count" name="shoe_max_count" class="xs" /> images on every load
+				Process up to <input type="text" id="shoe_max_count" name="shoe_max_count" value="<?php echo $alkaline->returnConf('shoe_max_count'); ?>" class="xs" /> images on every load
 			</td>
 		</tr>
 	</table>
