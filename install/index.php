@@ -17,22 +17,22 @@ $_POST = array_map('strip_tags', $_POST);
 // Diagnostic checks
 
 if($alkaline->checkPerm(PATH . DB) != '0777'){
-	$alkaline->addNote('Database (db/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Database (db/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . IMAGES) != '0777'){
-	$alkaline->addNote('Images (images/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Images (images/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Shoebox (shoebox/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . CACHE) != '0777'){
-	$alkaline->addNote('Cache (cache/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Cache (cache/) folder may not be writable.', 'notice');
 }
 if(($alkaline->checkPerm(PATH . 'config.json') != '0777') and (SERVER_TYPE != 'win')){
-	$alkaline->addNote('Configuration (config.json) file is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Configuration (config.json) file may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . 'config.php') == '0777'){
-	$alkaline->addNote('Configuration (config.php) file should not be writable (CHMOD 644).', 'error');
+	$alkaline->addNote('Configuration (config.php) file should not be writable.', 'notice');
 }
 
 // Configuration setup
@@ -150,7 +150,7 @@ if(@$_POST['install'] == 'Install'){
 
 // Database setup
 
-if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes('error') == 0)){
 	// Check to see if can connect
 	$db = new PDO($dsn, $username, $password);
 	$error = $db->errorInfo();
@@ -227,7 +227,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 define('TAB', 'Installation');
 define('TITLE', 'Alkaline Installation');
 
-if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes('error') == 0)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 	
 	?>
