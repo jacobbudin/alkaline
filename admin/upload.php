@@ -83,7 +83,19 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT']) and !isset($_GET['
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
 		<h3>File size limit</h3>
-		<p><?php echo str_replace(array('K', 'M', 'G'), array('KB', 'MB', 'GB'), ini_get('post_max_size')); ?> <span class="quiet">(<a href="http://www.alkalineapp.com/guide/faq/#file-size-limit-uploads">Why?</a>)</span></p>
+		<p>
+			<?php
+			
+			$sizes = array('post_max_size', 'upload_max_filesize', 'memory_limit');
+			$sizes = array_map('ini_get', $sizes);
+			$sizes = array_map(array($alkaline, 'convertToBytes'), $sizes);
+			sort($sizes);
+			
+			echo str_replace(array('000000000', '000000', '000000'), array('GB', 'MB', 'KB'), $sizes[0]);
+			
+			?>
+			<span class="quiet">(<a href="http://www.alkalineapp.com/guide/faq/#file-size-limit-uploads">Why?</a>)</span>
+		</p>
 		
 		<h3>Instructions</h3>
 		<p>Drag images from a folder on your computer or directly from most applications into the grey retaining area. You can also drag and drop text files to create new posts.</p>

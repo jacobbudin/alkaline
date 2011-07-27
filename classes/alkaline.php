@@ -729,6 +729,28 @@ class Alkaline{
 	}
 	
 	/**
+	 * Convert a PHP configuration string to bytes
+	 *
+	 * @param mixed $input 
+	 * @return array
+	 */
+	public function convertToBytes(&$input){
+		if(is_string($input)){
+			if(stripos($input, 'K') !== false){
+				$input = intval($input) * 1000;
+			}
+			elseif(stripos($input, 'M') !== false){
+				$input = intval($input) * 1000000;
+			}
+			elseif(stripos($input, 'G') !== false){
+				$input = intval($input) * 1000000000;
+			}
+		}
+		
+		return intval($input);
+	}
+	
+	/**
 	 * Change filename extension
 	 *
 	 * @param string $file Filename
