@@ -21,7 +21,7 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 1289;
+	const build = 1292;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
@@ -3122,7 +3122,7 @@ class Alkaline{
 		}
 		else{
 			$uri = @preg_replace('#[?&]{1,1}with=[^&]*(&)?#si', '\\1', $uri);
-			$uri = @preg_replace('#[\?\&]?page\=[0-9]#si', '', $uri);
+			$uri = @preg_replace('#[\?\&]?page\=[0-9]+#si', '', $uri);
 			$uri = @preg_replace('#\/page[0-9]+(/)?#si', '', $uri);
 
 			if(strpos($uri, '?')){
