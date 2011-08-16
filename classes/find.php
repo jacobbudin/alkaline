@@ -937,7 +937,9 @@ class Find extends Alkaline{
 			
 			if(!empty($ids->ids)){
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids->ids) . ')';
-				$this->order = $this->convertToIntegerArray($set_images);
+				foreach($ids->sql_sorts as $sql){
+					$this->sql_sorts[] = $sql;
+				}
 			}
 			else{
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (NULL)';
