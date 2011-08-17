@@ -282,59 +282,84 @@ class Set extends Alkaline{
 	 * @param int $limit Images per set
 	 * @param string $column Table column
 	 * @param string $sort Sort order (ASC or DESC)
+	 * @param bool $legacy_mode Requires more RAM but fewer database queries
 	 * @return Image
 	 */
-	public function getImages($limit=0, $column=null, $sort='ASC'){
-		$ids_cumulative = array();
-		$set_image_ids = array();
+	public function getImages($limit=0, $column=null, $sort='ASC', $legacy_mode=false){
+		if($legacy_mode == false){
+			$new_images = array();
 		
-		foreach($this->sets as $set){
-			if(!empty($set['set_images'])){
-				$ids = explode(',', $set['set_images']);
-				$ids = array_map('intval', $ids);
-				foreach($ids as $id){
-					$set_image_ids[$id][] = intval($set['set_id']);
-					$ids_cumulative[] = $id;
-				}
-			}
-		}
-		
-		$image_ids = new Find('images', $ids_cumulative);
-		$image_ids->sort($column, $sort);
-		$image_ids->find();
-		
-		$images = new Image($image_ids);
-		
-		$new_images = array();
-		$set_image_counts = array();
-		
-		for($i=0; $i < $images->image_count; $i++){
-			$image_sets = $set_image_ids[$images->images[$i]['image_id']];
-			foreach($this->set_ids as $set_id){
-				if(in_array($set_id, $image_sets)){
-					if(array_key_exists($set_id, $set_image_counts)){
-						$set_image_counts[$set_id]++;
-					}
-					else{
-						$set_image_counts[$set_id] = 1;
-					}
-					
-					if(($set_image_counts[$set_id] > $limit) and ($limit > 0)){
-						continue;
-					}
-					$new_image = $images->images[$i];
-					$new_image['set_id'] = $set_id;
+			foreach($this->sets as $set){
+				$image_ids = new Find('images', $set['set_images']);
+				$image_ids->sort($column, $sort);
+				$image_ids->page(1, $limit);
+				$image_ids->set($set['set_id']);
+				$image_ids->find();
+
+				$images = new Image($image_ids);
+				foreach($images->images as $image){
+					$new_image = $image;
+					$new_image['set_id'] = $set['set_id'];
 					$new_images[] = $new_image;
 				}
+		
+				$images->images = $new_images;
+				$images->image_count = count($new_images);
+		
+				$this->images = $images;
 			}
 		}
+		else{
+			$ids_cumulative = array();
+			$set_image_ids = array();
 		
-		$new_image_count = count($new_images);
+			foreach($this->sets as $set){
+				if(!empty($set['set_images'])){
+					$ids = explode(',', $set['set_images']);
+					$ids = array_map('intval', $ids);
+					foreach($ids as $id){
+						$set_image_ids[$id][] = intval($set['set_id']);
+						$ids_cumulative[] = $id;
+					}
+				}
+			}
 		
-		$images->images = $new_images;
-		$images->image_count = $new_image_count;
+			$image_ids = new Find('images', $ids_cumulative);
+			$image_ids->sort($column, $sort);
+			$image_ids->find();
 		
-		$this->images = $images;
+			$images = new Image($image_ids);
+		
+			$new_images = array();
+			$set_image_counts = array();
+		
+			for($i=0; $i < $images->image_count; $i++){
+				$image_sets = $set_image_ids[$images->images[$i]['image_id']];
+				foreach($this->set_ids as $set_id){
+					if(in_array($set_id, $image_sets)){
+						if(array_key_exists($set_id, $set_image_counts)){
+							$set_image_counts[$set_id]++;
+						}
+						else{
+							$set_image_counts[$set_id] = 1;
+						}
+					
+						if(($set_image_counts[$set_id] > $limit) and ($limit > 0)){
+							continue;
+						}
+						$new_image = $images->images[$i];
+						$new_image['set_id'] = $set_id;
+						$new_images[] = $new_image;
+					}
+				}
+			}
+		
+			$images->images = $new_images;
+			$images->image_count = count($new_images);
+		
+		
+			$this->images = $images;
+		}
 		
 		return $this->images;
 	}
