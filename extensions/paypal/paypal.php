@@ -22,8 +22,10 @@ class PayPal extends Orbit{
 		if(!empty($this->pp_email)){
 			foreach($images as &$image){
 				if(!empty($this->pp_tag)){
-					if(!in_array($this->pp_tag, $image['image_tags_array'])){
-						continue;
+					if(!empty($image['image_tags_array'])){
+						if(!in_array($this->pp_tag, $image['image_tags_array'])){
+							continue;
+						}
 					}
 				}
 				$paypal = '<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="item_name" value="Image #' . $image['image_id'];
