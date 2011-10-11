@@ -80,8 +80,6 @@ if(empty($tag_id)){
 	<p class="center tags filter">
 		<?php
 	
-		$tags_html = array();
-	
 		foreach($tags as $tag){
 			echo '<span class="tag"><a href="' . BASE . ADMIN . 'tags' . URL_ID . $tag['id'] . URL_RW . '" style="font-size: ' . $tag['size'] . 'em;">' . $tag['name'] . '</a>&#0160;<span class="small quiet">(<a href="' . BASE . ADMIN . 'search' . URL_ACT . 'tags' . URL_AID . $tag['id'] . URL_RW . '">' . $tag['count'] . '</a>)</span></span> ';
 		}

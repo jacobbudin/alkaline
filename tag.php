@@ -29,7 +29,7 @@ $image_ids->find();
 
 $images = new Image($image_ids);
 $images->formatTime();
-$images->getSizes('medium');
+$images->getSizes();
 $images->getColorkey(670, 10);
 $images->getTags();
 $images->getRights();
