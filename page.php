@@ -14,14 +14,14 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('page');
 
 $id = $alkaline->findID($_GET['id']);
-if(!$id){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
+if(!$id){ $alkaline->addError('No page was found.', 'Try searching for the page you were seeking.', null, null, 404); }
 
 $pages = new Page($id);
 $pages->formatTime();
 $pages->updateViews();
 $page = $pages->pages[0];
 
-if(!$page){ $alkaline->addError('No page was found.', 'Try searching for the images you were seeking.', null, null, 404); }
+if(!$page){ $alkaline->addError('No page was found.', 'Try searching for the page you were seeking.', null, null, 404); }
 
 $header = new Canvas;
 $header->load('header');

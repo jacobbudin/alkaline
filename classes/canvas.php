@@ -91,7 +91,14 @@ class Canvas extends Alkaline{
 			$this->addError(E_USER_ERROR, 'No default theme selected');
 		}
 		
-		$this->template .= file_get_contents(parent::correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT)) . "\n";
+		$path = $this->correctWinPath(PATH . THEMES . $theme_folder . '/' . $filename . TEMP_EXT);
+		
+		if(is_file($path)){
+			$this->template .= file_get_contents($path) . "\n";
+		}
+		else{
+			$this->addError(E_USER_ERROR, 'Cannot locate theme file');
+		}
 	}
 	
 	/**
@@ -144,7 +151,7 @@ class Canvas extends Alkaline{
 		
 		if(is_array($array)){
 			foreach($array as $key => $value){
-				if(isset($value)){
+				if(isset($value) and !is_array($value) and !is_object($value)){
 					// Set variable, scrub to remove conditionals
 					$this->template = str_ireplace('{' . $key . '}', $value, $this->template);
 					$this->template = self::scrub($key, $this->template);
@@ -178,7 +185,7 @@ class Canvas extends Alkaline{
 	 * @param string $title
 	 * @return bool True if successful
 	 */
-	public function setTitle($title){
+	public function setTitle($title=null){
 		$source = $this->returnConf('web_title');
 		
 		if(empty($title)){
@@ -236,11 +243,15 @@ class Canvas extends Alkaline{
 	public function loop($object, $offset=0, $length=null){
 		if(empty($offset)){ $offset = 0; }
 		
-		$class = strtolower(get_class($object));
-		$this->objects[$class] = $object;
-		
 		$table_regex = implode('|', array_keys($this->tables));
 		$table_regex = strtoupper($table_regex);
+		
+		if(!empty($_SESSION['alkaline']['preview']['object'])){
+			$this->assignArray($_SESSION['alkaline']['preview']['object']);
+		}
+		
+		$class = strtolower(get_class($object));
+		$this->objects[$class] = $object;
 		
 		if($this->slideshow === true){
 			$this->template = '<ul id="slideshow">' . $this->template . '</ul>';
@@ -276,6 +287,7 @@ class Canvas extends Alkaline{
 		$loop_count = count($loops);
 		
 		for($j = 0; $j < $loop_count; ++$j){
+			if($loops[$j]['reel'] != $class . 's'){ continue; }
 			if(!isset($object->$loops[$j]['reel'])){ continue; }
 			
 			$replacement = '';
@@ -301,11 +313,13 @@ class Canvas extends Alkaline{
 				
 				for($i = $offset; $i < $finish; ++$i){
 					$field_label = substr($field, 0, -3);
+					
 					if($i == 0){
 						$first_label = $field_label . '_first';
 						$reel[$i][$first_label] = 1;
 					}
-					elseif($i == ($reel_count -1)){
+					
+					if($i == ($reel_count - 1)){
 						$last_label = $field_label . '_last';
 						$reel[$i][$last_label] = 1;
 					}
@@ -417,13 +431,16 @@ class Canvas extends Alkaline{
 				for($i = 0; $i < $reel_count; ++$i){
 					$loop_template = '';
 					
-					$field_label = substr($field, 0, -3);
+					$sub_field = $this->tables[$loops[$j]['reel']];
+					$sub_field_label = substr($sub_field, 0, -3);
+					
 					if($i == 0){
-						$first_label = $field_label . '_first';
+						$first_label = $sub_field_label . '_first';
 						$reel[$i][$first_label] = 1;
 					}
-					elseif($i == ($reel_count -1)){
-						$last_label = $field_label . '_last';
+					
+					if($i == ($reel_count - 1)){
+						$last_label = $sub_field_label . '_last';
 						$reel[$i][$last_label] = 1;
 					}
 					
@@ -600,6 +617,7 @@ class Canvas extends Alkaline{
 				if(property_exists($object, $reel)){
 					$field = $this->tables[$reel];
 					$ids = array();
+					if(!is_array($object->$reel)){ continue; }
 					foreach($object->$reel as $item){
 						$ids[] = $item[$field];
 					}
@@ -705,6 +723,19 @@ class Canvas extends Alkaline{
 	 */
 	public function urlize(){
 		return Alkaline::makeURL($this->value);
+	}
+	
+	
+	/**
+	 * Show first paragraph
+	 *
+	 * @return string
+	 */
+	public function excerpt(){
+		$position = stripos($this->value, "\n\n");
+		$this->value = substr($this->value, 0, $position);
+		
+		return $this->value;
 	}
 	
 	/**
@@ -833,7 +864,7 @@ class Canvas extends Alkaline{
 			$template = preg_replace('#{if:' . $loop['var'] . '}(.*?){/if:' . $loop['var'] . '}#si', $loop['replacement'], $template, 1);
 		}
 		
-		if($this->returnConf('canvas_remove_unused')){
+		if($this->returnConf('canvas_remove_unused') or !empty($_SESSION['alkaline']['preview']['object'])){
 			$template = preg_replace('#\{.*?}#si', '', $template);
 		}
 		
@@ -1003,6 +1034,7 @@ class Canvas extends Alkaline{
 	public function generate(){
 		// Add copyright information
 		$this->assign('Copyright', parent::copyright);
+		$this->assign('Powered_by', 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. <!-- ' . LICENSE_HASH . ' -->');
 		$this->assign('Search_Uri', LOCATION . BASE . 'search' . URL_CAP);
 		$this->assign('Results_Uri', LOCATION . BASE . 'results' . URL_CAP);
 		$this->assign('Atom_Uri', LOCATION . BASE . 'atom' . URL_CAP);

@@ -41,7 +41,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Preferences</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/preferences.png" alt="" /> Preferences</h1>
 
 <form id="preferences" action="" method="post">
 	<h3>General</h3>
@@ -87,7 +87,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 		</tr>
 		
 	</table>
-	
+	<!-- 
 	<h3>Dashboard</h3>
 	
 	<table>
@@ -106,6 +106,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 	</table>
+	-->
 	
 	<h3>Shoebox</h3>
 	

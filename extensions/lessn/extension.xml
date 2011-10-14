@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>4a957a6c398fcd7dac7fe4d2d2f3a1c64ba5c7a3</uid>
+	<file>lessn</file>
+	<class>Lessn</class>
+	<title>Lessn</title>
+	<build>1</build>
+	<version>1.0</version>
+	<description>Creates short links with Lessn.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>

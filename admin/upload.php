@@ -12,6 +12,7 @@ require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
 $user = new User;
+$orbit = new Orbit;
 
 // cliqcliq Quickpic support
 if(isset($_REQUEST['context']) and ($_REQUEST['context'] == sha1(PATH . BASE . DB_DSN . DB_TYPE))){
@@ -43,12 +44,19 @@ if(!empty($_FILES)){
 	exit();
 }
 
-define('TAB', 'library');
+if(isset($_GET['success']) and ($_GET['success'] == 1)){
+	header('Location: ' . LOCATION . BASE . ADMIN . 'shoebox' . URL_CAP);
+	exit();
+}
+
+$orbit->hook('shoebox');
+
+define('TAB', 'upload');
 define('TITLE', 'Alkaline Upload');
 require_once(PATH . ADMIN . 'includes/header.php');
 
 // cliqcliq Quickpic support
-if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
+if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT']) and !isset($_GET['success'])){
 	?>
 	<script type="text/javascript">
 		launchQuickpic('<?php echo sha1(PATH . BASE . DB_DSN . DB_TYPE); ?>');
@@ -58,39 +66,43 @@ if(preg_match('#iphone|ipad#si', $_SERVER['HTTP_USER_AGENT'])){
 
 ?>
 
+<div class="actions"><a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>"><button>Go to shoebox</button></a></div>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/upload.png" alt="" /> Upload</h1>
+
 <div class="span-24 last">
-	<div class="span-5 colborderr">
-		<h2 id="h2_shoebox"><a href="<?php echo BASE . ADMIN; ?>shoebox<?php echo URL_CAP; ?>"><img src="<?php echo BASE . ADMIN; ?>images/icons/shoebox.png" alt="" /> Shoebox</a></h2>
-		
-		<div id="progress">
-		</div>
-		
-		<hr />
-		
+	<div class="span-18 append-1">
+		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
+			<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
+			<div style="height: 380px; margin-bottom: 1.5em;">
+				<input type="file" multiple="multiple" id="upload" />
+			</div>
+		</form>
+	</div>
+	<div class="span-5 append-top last">
 		<h3>Status</h3>
 		<p>You have uploaded <span id="upload_count_text">0 files</span>.</p>
 		
-		<?php if(stripos($_SERVER['HTTP_USER_AGENT'], 'webkit')){ ?>		
-			<h3>Instructions</h3>
-			<p>Drag images from a folder on your computer or from most applications including Aperture, Bridge, iPhoto, and Lightroom into the grey retaining area.</p>
+		<h3>File size limit</h3>
+		<p>
+			<?php
+			
+			$sizes = array('post_max_size', 'upload_max_filesize', 'memory_limit');
+			$sizes = array_map('ini_get', $sizes);
+			$sizes = array_map(array($alkaline, 'convertToBytes'), $sizes);
+			sort($sizes);
+			
+			echo str_replace(array('000000000', '000000', '000000'), array('GB', 'MB', 'KB'), $sizes[0]);
+			
+			?>
+			<span class="quiet">(<a href="http://www.alkalineapp.com/guide/faq/#file-size-limit-uploads">Why?</a>)</span>
+		</p>
 		
-			<p>If you prefer, you can also browse your files and select the ones you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
-		
-			<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">Shoebox</a> to process your images.</p>
-		<?php } ?>
-	</div>
-	<div class="span-18 colborderl last">
-		<h1>Upload</h1>
-		<form enctype="multipart/form-data" action="" method="post" style="padding-top: 1em;">
-			<?php if(preg_match('#webkit#si', $_SERVER['HTTP_USER_AGENT'])){ ?>
-				<img src="<?php echo BASE . ADMIN; ?>images/upload_box.png" alt="" style="position: absolute; z-index: -25;" />
-				<div style="height: 380px; margin-bottom: 1.5em;">
-					<input type="file" multiple="multiple" id="upload" style="width: 100%; padding: 310px 0 54px 50px;" />
-				</div>
-			<?php } else{ ?>
-				<input type="file" multiple="multiple" id="upload" />
-			<?php } ?>
-		</form>
+		<h3>Instructions</h3>
+		<p>Drag images from a folder on your computer or directly from most applications into the grey retaining area. You can also drag and drop text files to create new posts.</p>
+	
+		<p>You can also browse your computer and select the files you wish to upload by clicking the &#8220;Choose File&#8221; button.</p>
+	
+		<p>Once you&#8217;ve finished uploading, go to your <a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">shoebox</a> to process your files.</p>
 	</div>
 </div>
 

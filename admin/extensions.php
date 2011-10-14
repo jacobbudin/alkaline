@@ -112,6 +112,8 @@ $extensions_installed = array();
 $extensions_updated = array();
 
 foreach($seek_extensions as &$extension_folder){
+	if(strpos($alkaline->getFilename($extension_folder), '.') === 0){ continue; }
+	
 	$extension_folder = $alkaline->getFilename($extension_folder);
 	if(!in_array($extension_folder, $extension_folders)){
 		$data = file_get_contents(PATH . EXTENSIONS . $extension_folder . '/extension.xml');
@@ -247,7 +249,7 @@ if(empty($extension_id)){
 
 	?>
 
-	<h1>Extensions (<?php echo @$extensions_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extensions (<?php echo @$extensions_count; ?>)</h1>
 	
 	<p>Extensions add new functionality to your Alkaline installation. You can browse and download additional extensions at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 	
@@ -265,8 +267,8 @@ if(empty($extension_id)){
 		<?php
 	
 		foreach($extensions as $extension){
-			echo '<tr>';
-			echo '<td><strong><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
+			echo '<tr class="ro">';
+			echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'extensions' . URL_ID . $extension['extension_id'] . URL_RW . '">' . $extension['extension_title'] . '</a></strong>';
 			if(!empty($extension['extension_creator_name'])){
 				echo ' \ ';
 				if(!empty($extension['extension_creator_uri'])){
@@ -276,14 +278,9 @@ if(empty($extension_id)){
 					echo $extension['extension_creator_name'];
 				}
 			}
-			echo '<br />' . $extension['extension_description'] . '</td>';
+			echo '<br /><span class="quiet">' . $extension['extension_description'] . '</span></td>';
 			echo '<td class="center">';
-			if($extension['extension_status'] == 1){
-				echo 'Enabled';
-			}
-			else{
-				echo 'Disabled';
-			}
+			echo (($extension['extension_status'] == 1) ? 'Enabled' : 'Disabled');
 			echo '</td>';
 			echo '<td class="center">' . $extension['extension_version'] . '</td>';
 			if(!empty($extension['extension_build_latest'])){
@@ -321,7 +318,7 @@ else{
 	
 		?>
 	
-		<h1>Extension: <?php echo $extension['extension_title']; ?></h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> Extension: <?php echo $extension['extension_title']; ?></h1>
 	
 		<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 			<div>
@@ -354,7 +351,7 @@ else{
 		
 		?>
 		
-		<h1><?php echo $extension['extension_title']; ?></h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/extensions.png" alt="" /> <?php echo $extension['extension_title']; ?></h1>
 		
 		<form id="extension" action="<?php echo BASE . ADMIN; ?>extensions<?php echo URL_CAP; ?>" method="post">
 			<table>

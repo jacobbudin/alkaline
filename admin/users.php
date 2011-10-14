@@ -87,6 +87,8 @@ define('TAB', 'settings');
 if(empty($user_db_id)){
 	// Update image counts
 	$alkaline->updateCounts('images', 'users', 'user_image_count');
+	$alkaline->updateCounts('posts', 'users', 'user_post_count');
+	$alkaline->updateCounts('comments', 'users', 'user_comment_count');
 	
 	$user_dbs = $alkaline->getTable('users');
 	$user_db_count = @count($user_dbs);
@@ -96,13 +98,13 @@ if(empty($user_db_id)){
 	
 	if(Alkaline::edition == 'multiuser'){
 		?>
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>">Add user</a></div>
+		<div class="actions"><a href="<?php echo BASE . ADMIN . 'users' . URL_ACT . 'add' . URL_RW; ?>"><button>Add user</button></a></div>
 		<?php
 	}
 	
 	?>
 
-	<h1>Users (<?php echo $user_db_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/users.png" alt="" /> Users (<?php echo $user_db_count; ?>)</h1>
 	
 	<p>Users can add images to your Alkaline library and modify the your Alkaline installation.</p>
 	
@@ -114,17 +116,23 @@ if(empty($user_db_id)){
 		<tr>
 			<th>Username</th>
 			<th>Name</th>
-			<th class="center">Images</th>
+			<th>Email</th>
+			<th class="center" style="width:10%">Images</th>
+			<th class="center" style="width:10%">Posts</th>
+			<th class="center" style="width:10%">Comments</th>
 			<th>Last login</th>
 		</tr>
 		<?php
 	
 		foreach($user_dbs as $user_db){
-			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
+			echo '<tr class="ro">';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'users' . URL_ID . $user_db['user_id'] . URL_RW . '">' . $user_db['user_user'] . '</a></strong></td>';
 				echo '<td>' . $user_db['user_name'] . '</td>';
+				echo '<td><a href="mailto:' . $user_db['user_email'] . '">' . $user_db['user_email'] . '</a></td>';
 				echo '<td class="center"><a href="' . BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_image_count']) . '</a></td>';
-				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>(Never)</em>') . '</td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'posts' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_post_count']) . '</a></td>';
+				echo '<td class="center"><a href="' . BASE . ADMIN . 'comments' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW . '">' . number_format($user_db['user_comment_count']) . '</a></td>';
+				echo '<td>' . $alkaline->formatTime($user_db['user_last_login'], null, '<em>Never</em>') . '</td>';
 			echo '</tr>';
 		}
 	
@@ -160,15 +168,18 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>">View images (<?php echo $user_image_count; ?>)</a></div>
+	<div class="actions">
+		<a href="mailto:<?php echo $user_db['user_email']; ?>"><button>Email user</button></a>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'users' . URL_AID . $user_db['user_id'] . URL_RW; ?>"><button>View images (<?php echo $user_image_count; ?>)</button></a>
+	</div>
 	
 	<?php
 	
 	if(empty($user_db['user_name'])){
-		echo '<h1>New User</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/users.png" alt="" /> New User</h1>';
 	}
 	else{
-		echo '<h1>User: ' . $user_db['user_name'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/users.png" alt="" /> User: ' . $user_db['user_name'] . '</h1>';
 	}
 	
 	?>
@@ -184,7 +195,7 @@ else{
 				<td><input type="text" id="user_user" name="user_user" value="<?php echo $user_db['user_user']; ?>" class="s notempty" /></td>
 			</tr>
 			<tr>
-				<td class="right pad"><label for="user_pass">Password:</label></td>
+				<td class="right middle"><label for="user_pass">Password:</label></td>
 				<td>
 					<input type="password" id="user_pass" name="user_pass" value="<?php if(!empty($user_db['user_user'])){ echo '********'; } ?>" class="s notempty" />
 				</td>
@@ -192,6 +203,10 @@ else{
 			<tr>
 				<td class="right middle"><label for="user_email">Email:</label></td>
 				<td><input type="text" id="user_email" name="user_email" value="<?php echo $user_db['user_email']; ?>" class="m" /></td>
+			</tr>
+			<tr>
+				<td class="right middle"><label for="user_uri">Web site:</label></td>
+				<td><input type="text" id="user_uri" name="user_uri" placeholder="http://www.johnsmith.com/" value="<?php echo $user_db['user_uri']; ?>" class="m" /></td>
 			</tr>
 			<?php
 			if(($user_db['user_id'] != 1) and ($user_db['user_id'] != $user->user['user_id'])){

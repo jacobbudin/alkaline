@@ -14,6 +14,8 @@
  */
 
 class Find extends Alkaline{
+	public $admin;
+	public $cache;
 	public $ids;
 	public $ids_after;
 	public $ids_before;
@@ -21,9 +23,11 @@ class Find extends Alkaline{
 	public $count_result = 0;
 	public $offset_length;
 	public $order;
+	public $finds;
 	public $first;
 	public $first_reverse;
 	public $last;
+	public $last_modified;
 	public $last_reverse;
 	public $page;
 	public $page_begin;
@@ -41,6 +45,7 @@ class Find extends Alkaline{
 	public $table_prefix;
 	public $tags;
 	public $with;
+	public $query;
 	
 	private $call;
 	
@@ -66,10 +71,11 @@ class Find extends Alkaline{
 	 *
 	 * @param string Table to perform search
 	 * @param string|array|int $ids Limit results to select IDs in table
-	 * @param string $auto_guest Set guest access restrictions
-	 * @param string $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
+	 * @param bool $auto_guest Set guest access restrictions
+	 * @param bool $process_request Automatically employ the $_REQUEST array to issue methods (for searches)
+	 * @param bool $ignore_deleted Ignore "deleted" table rows (except in recovery mode)
 	 */
-	public function __construct($table=null, $ids=null, $auto_guest=true, $process_request=true){
+	public function __construct($table=null, $ids=null, $auto_guest=true, $process_request=true, $ignore_deleted=true){
 		parent::__construct();
 		
 		// Error handling
@@ -102,16 +108,49 @@ class Find extends Alkaline{
 		$this->sql_order_by = '';
 		$this->sql_where = '';
 		
+		// Cache these tables
+		if(in_array($this->table, $this->tables_cache)){
+			$this->sql .= ', ' . $this->table . '.' . $this->table_prefix . 'modified AS last_modified';
+			$this->cache = true;
+		}
+		
 		// Optional starter set
-		if(!empty($ids)){
+		if(isset($ids)){
 			$ids = parent::convertToIntegerArray($ids);
 			$this->sql_conds[] = $this->table . '.' . $this->table_id . ' IN (' . implode(', ', $ids) . ')';
 		}
 		
+		// Don't show deleted items
+		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
+		if(in_array($this->table, $with_deleted_columns)){
+			$show_deleted = false;
+			
+			if($ignore_deleted === false){
+				$show_deleted = true;
+			}
+			elseif($this->admin == true){
+				$user = new User();
+				if(!empty($user) and $user->perm()){
+					if($user->returnPref('recovery_mode') === true){
+						$show_deleted = true;
+					}
+				}
+			}
+			
+			if($show_deleted === false){
+				$this->null($this->table . '.' . $this->table_prefix . 'deleted');
+			}
+		}
+		
 		if(($auto_guest == true) and ($this->table == 'images')){
 			// Guest access
-			if(isset($_SESSION['alkaline']['guest']) and (strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) !== 0)){
-				$this->privacy(2);
+			if(isset($_SESSION['alkaline']['guest']) and ($this->admin != true)){
+				if($_SESSION['alkaline']['guest']['guest_inclusive']){
+					$this->privacy(2, true, false);
+				}
+				else{
+					$this->privacy(2, false, false);
+				}
 				if(!empty($_SESSION['alkaline']['guest']['guest_sets'])){
 					$this->sets(intval($_SESSION['alkaline']['guest']['guest_sets']));
 				}
@@ -119,8 +158,10 @@ class Find extends Alkaline{
 		}
 		
 		if($process_request == true){
-			// Process browser requests
-			$_REQUEST = array_map('strip_tags', $_REQUEST);
+			if(!empty($_REQUEST)){
+				// Process browser requests
+				$_REQUEST = array_map('strip_tags', $_REQUEST);
+			}
 
 			// Smart search
 			if(!empty($_REQUEST['act'])){
@@ -128,13 +169,18 @@ class Find extends Alkaline{
 			}
 
 			// Title and description
-			if(!empty($_REQUEST['q'])){
+			if(!empty($_REQUEST['q'])){ 
 				$this->_search($_REQUEST['q']);
 			}
 
 			// Tags
 			if(!empty($_REQUEST['tags'])){
 				$this->_tags($_REQUEST['tags']);
+			}
+			
+			// Category
+			if(!empty($_REQUEST['category'])){
+				$this->_category($_REQUEST['category']);
 			}
 
 			// Rights set
@@ -277,8 +323,13 @@ class Find extends Alkaline{
 			}
 			
 			// Status
-			if(!empty($_REQUEST['status'])){
+			if(isset($_REQUEST['status'])){
 				$this->_status($_REQUEST['status']);
+			}
+			
+			// Response
+			if(isset($_REQUEST['response'])){
+				$this->_response($_REQUEST['response']);
 			}
 			
 			// Image association
@@ -442,6 +493,7 @@ class Find extends Alkaline{
 	public function published($begin=true, $end=null){
 		// Error checking
 		if(!isset($begin) and empty($end)){ return false; }
+		if(!empty($_SESSION['alkaline']['preview'])){ return; }
 		
 		// Set status
 		if($begin === 'false'){ $published = false; }
@@ -514,18 +566,22 @@ class Find extends Alkaline{
 		
 		// Set begin date
 		if(!empty($begin)){
-			if(is_int($begin)){ $begin = strval($begin); }
-			if(strlen($begin) == 4){ $begin .= '-01-01'; }
-			$begin = date('Y-m-d', strtotime($begin));
+			if(!is_int($begin)){
+				if(strlen($begin) == 4){ $begin .= '-01-01'; }
+				$begin = strtotime($begin);
+			}
+			$begin = date('Y-m-d H:i:s', $begin);
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'created >= :post_created_begin';
 			$this->sql_params[':post_created_begin'] = $begin . ' 00:00:00';
 		}
 		
 		// Set end date
 		if(!empty($end)){
-			if(is_int($end)){ $end = strval($end); }
-			if(strlen($end) == 4){ $end .= '-01-01'; }
-			$end = date('Y-m-d', strtotime($end));
+			if(!is_int($end)){
+				if(strlen($end) == 4){ $end .= '-01-01'; }
+				$end = strtotime($end);
+			}
+			$end = date('Y-m-d H:i:s', $end);
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'created <= :post_created_end';
 			$this->sql_params[':post_created_end'] = $end . ' 23:59:59"';
 		}
@@ -642,51 +698,81 @@ class Find extends Alkaline{
 	 * @param string $count Minimum number of tags to find
 	 * @return bool True if successful
 	 */
-	protected function anyTags($tags=null, $count=1){
+	public function anyTags($tags=null, $count=1){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
 		parent::convertToArray($tags);
 		
-		// Find tags in database
-		if(intval($tags[0])){
-			parent::convertToIntegerArray($tags);
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
-			$query->execute();
+		if(($this->table == 'images') and empty($fields)){
+			// Find tags in database
+			if(intval($tags[0])){
+				parent::convertToIntegerArray($tags);
+				$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
+				$query->execute();
+			}
+			else{
+				$sql_params = array();
+				$tag_count = count($tags);
+			
+				// Grab tag IDs
+				for($j=0; $j<$tag_count; ++$j){
+					$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
+				}
+			
+				$sql_param_keys = array_keys($sql_params);
+			
+				$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
+				$query->execute($sql_params);
+			}
+		
+			$this->tags = $query->fetchAll();
+		
+			$tag_ids = array();	
+			foreach($this->tags as $tag){
+				$tag_ids[] = $tag['tag_id'];
+			}
+		
+			// Join tables
+			$this->sql_join_on[] = $this->table . '.' . $this->table_prefix . 'id = links.image_id';
+			$this->sql_join_tables[] = 'links';
+			$this->sql_join_type = 'INNER JOIN';
+		
+			$this->sql_having_fields[] = 'COUNT(*) >= ' . intval($count);
+		
+			// Set tags to find
+			$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
+		
+			return true;
 		}
-		else{
+		elseif(($this->table == 'posts') and empty($fields)){
 			$sql_params = array();
 			$tag_count = count($tags);
-			
+		
 			// Grab tag IDs
 			for($j=0; $j<$tag_count; ++$j){
 				$sql_params[':tag' . $j] = '%' . strtolower($tags[$j]) . '%';
 			}
-			
+		
 			$sql_param_keys = array_keys($sql_params);
-			
-			$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE LOWER(tags.tag_name) LIKE ' . implode(' OR LOWER(tags.tag_name) LIKE ', $sql_param_keys) . ';');
+		
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE LOWER(posts.post_tags) LIKE ' . implode(' OR LOWER(posts.post_tags) LIKE ', $sql_param_keys) . ';');
 			$query->execute($sql_params);
+			$posts = $query->fetchAll();
+			
+			$ids = array();
+			
+			foreach($posts as $post){
+				$ids[] = $post['post_id'];
+			}
+			
+			if(count($ids) > 0){
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+			}
+			else{
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+			}
 		}
-		
-		$this->tags = $query->fetchAll();
-		
-		$tag_ids = array();	
-		foreach($this->tags as $tag){
-			$tag_ids[] = $tag['tag_id'];
-		}
-		
-		// Join tables
-		$this->sql_join_on[] = $this->table . '.' . $this->table_prefix . 'id = links.image_id';
-		$this->sql_join_tables[] = 'links';
-		$this->sql_join_type = 'INNER JOIN';
-		
-		$this->sql_having_fields[] = 'COUNT(*) >= ' . intval($count);
-		
-		// Set tags to find
-		$this->sql_conds[] = '(links.tag_id = ' . implode(' OR links.tag_id = ', $tag_ids) . ')';
-		
-		return true;
 	}
 	
 	/**
@@ -695,7 +781,7 @@ class Find extends Alkaline{
 	 * @param string|int|array $tags Tags to search for
 	 * @return bool True if successful
 	 */
-	protected function allTags($tags=null){
+	public function allTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -760,7 +846,7 @@ class Find extends Alkaline{
 	 * @param string|int|array $tags Tags to search for
 	 * @return bool True if successful
 	 */
-	protected function notTags($tags=null){
+	public function notTags($tags=null){
 		// Error checking
 		if(empty($tags)){ return false; }
 		
@@ -851,6 +937,9 @@ class Find extends Alkaline{
 			
 			if(!empty($ids->ids)){
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids->ids) . ')';
+				foreach($ids->sql_sorts as $sql){
+					$this->sql_sorts[] = $sql;
+				}
 			}
 			else{
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (NULL)';
@@ -867,6 +956,40 @@ class Find extends Alkaline{
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (NULL)';
 			}
 		}
+	}
+	
+	/**
+	 * Find by whether response or not
+	 *
+	 * @param bool $response Is a response
+	 * @return bool True if successful
+	 */
+	public function response($response=true){
+		$response = $this->convertToBool($response);
+		
+		if($response === true){
+			$this->notnull($this->table . '.' . $this->table_prefix . 'response');
+			return true;
+		}
+		elseif($response === false){
+			$this->null($this->table . '.' . $this->table_prefix . 'response');
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Find by title URL
+	 *
+	 * @param bool $title Title
+	 * @return bool True if successful
+	 */
+	public function title($title){
+		$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'title_url = :title_url';
+		$this->sql_params[':title_url'] = $title;
+		
+		return true;
 	}
 	
 	// MEMORY
@@ -954,6 +1077,29 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by categories
+	 *
+	 * @param string|array $categories Categories
+	 * @return bool True if successful
+	 */
+	public function category($categories=null){
+		// Error checking
+		if(empty($categories)){ return false; }
+		
+		$categories = parent::convertToArray($categories);
+		
+		$categories_sql = array();
+		
+		foreach($categories as $category){
+			$categories_sql[] = $this->table . '.' . $this->table_prefix . 'category = ' . $category;
+		}
+		
+		$this->sql_conds[] = '(' . implode(' OR ', $categories_sql) . ')';
+		
+		return true;
+	}
+	
+	/**
 	 * Find by search
 	 * Images: image title, image description, image geography, and image tags
 	 * Posts: post title, post text
@@ -967,27 +1113,83 @@ class Find extends Alkaline{
 		// Error checking
 		if(empty($search)){ return false; }
 		
+		$this->query = $search;
+		
+		if($this->returnConf('sphinx_enabled')){
+			if($table = array_search($this->table, $this->tables_index)){
+				if(class_exists('SphinxClient', false)){
+					$sphinx = new SphinxClient;
+					$sphinx->setSortMode(SPH_SORT_RELEVANCE);
+					if($this->returnConf('sphinx_server')){
+						if($this->returnConf('sphinx_port')){
+							$s->setServer($this->returnConf('sphinx_server'), $this->returnConf('sphinx_port'));
+						}
+						else{
+							$s->setServer($this->returnConf('sphinx_server'));
+						}
+					}
+					if($this->returnConf('sphinx_max_exec')){
+						$s->setMaxQueryTime($this->returnConf('sphinx_max_exec'));
+					}
+					$response = $sphinx->query($search);
+					
+					if(empty($response['matches'])){
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+						return true;
+					}
+
+					$results = $response['matches'];
+					
+					$ids = array();
+					$table_results = array();
+
+					foreach($results as $result){
+						if($result['attrs']['table'] == $table){
+							$ids[] = $result['attrs']['table_id'];
+						}
+						if(isset($table_results[$result['attrs']['table']])){
+							++$table_results[$result['attrs']['table']];
+						}
+						else{
+							$table_results[$result['attrs']['table']] = 1;
+						}
+					}
+					
+					foreach($table_results as $table => $count){
+						$table = $this->tables_index[$table];
+						$this->finds[] = array('find_table' => $table,
+											'find_count' => $count);
+					}
+					
+					if(count($ids) > 0){
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IN (' . implode(', ', $ids) . ')';
+						$this->order = $this->convertToIntegerArray($ids);
+					}
+					else{
+						$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'id IS NULL';
+					}
+
+					return true;
+				}
+			}
+		}
+		
 		// Prepare input
 		$search_lower = strtolower($search);
-		$search_lower = preg_replace('#\s#', '%', $search_lower);
+		$search_lower = preg_replace('#[^a-z0-9]#si', '%', $search_lower);
+		
+		$search_lower_tags = explode('%', $search_lower);
+		sort($search_lower_tags);
+		$search_lower_tags = '%' . implode('%', $search_lower_tags) . '%';
+		
 		$search_lower = '%' . $search_lower . '%';
 		
 		$ids = array();
 		
 		if(($this->table == 'images') and empty($fields)){
 			// Search title, description
-			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title_lower OR LOWER(images.image_description) LIKE :image_description_lower OR LOWER(images.image_geo) LIKE :image_geo_lower)');
-			$query->execute(array(':image_title_lower' => $search_lower, ':image_description_lower' => $search_lower, ':image_geo_lower' => $search_lower));
-			$images = $query->fetchAll();
-		
-			foreach($images as $image){
-				$ids[] = $image[$this->table_prefix . 'id'];
-			}
-		
-			// Search tags
-			$query = $this->prepare('SELECT images.image_id FROM images, links, tags WHERE images.image_id = links.image_id AND links.tag_id = tags.tag_id AND (LOWER(tags.tag_name) LIKE :tag_name_lower);');
-			$query->execute(array(':tag_name_lower' => $search_lower));
-		
+			$query = $this->prepare('SELECT images.image_id FROM images WHERE (LOWER(images.image_title) LIKE :image_title OR LOWER(images.image_description_raw) LIKE :image_description_raw OR LOWER(images.image_geo) LIKE :image_geo OR LOWER(images.image_tags) LIKE :image_tags)');
+			$query->execute(array(':image_title' => $search_lower, ':image_description_raw' => $search_lower, ':image_geo' => $search_lower, ':image_tags' => $search_lower_tags));
 			$images = $query->fetchAll();
 		
 			foreach($images as $image){
@@ -995,8 +1197,8 @@ class Find extends Alkaline{
 			}
 		}
 		elseif(($this->table == 'posts') and empty($fields)){
-			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text) LIKE :post_text) OR (LOWER(post_title) LIKE :post_title);');
-			$query->execute(array(':post_text' => $search_lower, ':post_title' => $search_lower));
+			$query = $this->prepare('SELECT posts.post_id FROM posts WHERE (LOWER(post_text_raw) LIKE :post_text_raw) OR (LOWER(post_title) LIKE :post_title) OR (LOWER(post_category) LIKE :post_category);');
+			$query->execute(array(':post_text_raw' => $search_lower, ':post_title' => $search_lower, ':post_category' => $search_lower));
 			$posts = $query->fetchAll();
 
 			foreach($posts as $post){
@@ -1129,41 +1331,35 @@ class Find extends Alkaline{
 	 *
 	 * @param int|string|array $privacy Privacy ID or string
 	 * @param string $all Also include all images of lower privacy levels
+	 * @param bool $auto_guest Automatically handle guest privacy
 	 * @return bool True if successful
 	 */
-	public function privacy($privacy=null, $all=false){
+	public function privacy($privacy=null, $all=true, $auto_guest=true){
 		// Error checking
 		if(empty($privacy)){ return false; }
-		if(intval($privacy)){ $privacy = intval($privacy); }
-	
-		// Guest, admin checking
-		$user = new User;
+		//  if(intval($privacy)){ $privacy = intval($privacy); }
+		if($this->table != 'images'){ return false; }
+		if(!empty($_SESSION['alkaline']['preview'])){ return; }
 		
-		if(!empty($_SESSION['alkaline']['guest'])){
-			$privacy = 2;
-			$all = false;
-		}
+		if(!empty($_SESSION['alkaline']['guest']) and ($auto_guest == true) and ($this->admin != true)){ return; }
 		
 		// Convert strings
 		if(is_string($privacy)){
 			$privacy = strtolower($privacy);
 			$levels = array('public' => 1, 'protected' => 2, 'private' => 3);
+			$levels2 = array('1' => 1, '2' => 2, '3' => 3);
 			if(array_key_exists($privacy, $levels)){
 				$privacy = $levels[$privacy];
+			}
+			elseif(array_key_exists($privacy, $levels2)){
+				$privacy = $levels2[$privacy];
 			}
 			else{
 				return false;
 			}
-			
-			// Set fields to search
-			if($all == true){
-				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy <= ' . $privacy;
-			}
-			else{
-				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy = ' . $privacy;
-			}
 		}
-		elseif(is_integer($privacy)){
+		
+		if(is_integer($privacy)){
 			// Set fields to search
 			if($all == true){
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy <= ' . $privacy;
@@ -1171,7 +1367,6 @@ class Find extends Alkaline{
 			else{
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'privacy = ' . $privacy;
 			}
-			
 		}
 		elseif(is_array($privacy)){
 			parent::convertToIntegerArray($privacy);
@@ -1408,7 +1603,7 @@ class Find extends Alkaline{
 		
 		// Convert strings
 		if(is_string($status)){
-			$levels = array('spam' => -1, 'unpublished' => 0, 'published' => 1);
+			$levels = array('spam' => -1, '-1' => -1, 'unpublished' => 0, '0' => 0, 'published' => 1, '1' => 1);
 			if(array_key_exists($status, $levels)){
 				$status = $levels[$status];
 			}
@@ -1424,7 +1619,7 @@ class Find extends Alkaline{
 			
 		}
 		elseif(is_array($status)){
-			parent::convertToIntegerArray($privacy);
+			parent::convertToIntegerArray($status);
 			
 			// Set fields to search
 			$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'status IN (' . implode(', ', $status) . ')';
@@ -1508,6 +1703,15 @@ class Find extends Alkaline{
 			case 'unpublished':
 				$this->_published(false);
 				break;
+			case 'live':
+				$this->_status(1);
+				break;
+			case 'spam':
+				$this->_status(-1);
+				break;
+			case 'pending':
+				$this->_status(0);
+				break;
 			case 'displayed':
 				$this->_published(true);
 				$this->_privacy('public');
@@ -1516,10 +1720,13 @@ class Find extends Alkaline{
 				$this->_sort($this->table_prefix . 'modified', 'DESC');
 				break;
 			case 'nonpublic':
-				$this->_privacy(array(2, 3));
+				$this->_special('nonpublic');
 				break;
 			case 'untitled':
 				$this->_special('untitled');
+				break;
+			case 'uncategorized':
+				$this->_special('uncategorized');
 				break;
 			case 'views':
 				$this->_sort($this->table_prefix . 'views', 'DESC');
@@ -1559,7 +1766,7 @@ class Find extends Alkaline{
 	/**
 	 * Special searches
 	 *
-	 * @param string $kind Unpublished, untitled
+	 * @param string $kind Unpublished, untitled, uncategorized
 	 * @return void
 	 */
 	protected function special($kind){
@@ -1580,6 +1787,11 @@ class Find extends Alkaline{
 			case 'untitled':
 				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'title IS NULL';
 				break;
+			case 'uncategorized':
+				$this->sql_conds[] = $this->table . '.' . $this->table_prefix . 'category IS NULL';
+				break;
+			case 'nonpublic':
+				$this->privacy(array(2, 3));
 			default:
 				return false;
 				break;
@@ -1661,7 +1873,7 @@ class Find extends Alkaline{
 	 * @param string $radius Search radius (in miles)
 	 * @return bool True if successful
 	 */
-	public function location($geo, $radius){
+	public function location($geo='', $radius=50){
 		$place = new Geo($geo);
 		
 		if(!($radius = floatval($radius))){ return false; }
@@ -1722,6 +1934,22 @@ class Find extends Alkaline{
 	}
 	
 	/**
+	 * Find by table fields null
+	 *
+	 * @param string $field Table field
+	 * @return bool True if successful
+	 */
+	public function null($field){
+		if(empty($field)){ return false; }
+		
+		$field = $this->sanitize($field);
+		
+		$this->sql_conds[] = $field . ' IS NULL';
+		
+		return true;
+	}
+	
+	/**
 	 * Execute Find class to determine class variables
 	 *
 	 * @return array Result IDs
@@ -1743,17 +1971,9 @@ class Find extends Alkaline{
 			}
 		}
 		elseif(empty($this->order)){
-			if($this->table == 'images'){
-				$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'uploaded DESC';
-				if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-					$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'uploaded';
-				}
-			}
-			else{
-				$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'created DESC';
-				if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
-					$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'created';
-				}
+			$this->sql_order_by = ' ORDER BY ' . $this->table . '.' .$this->table_prefix . 'id DESC';
+			if(($this->db_type == 'pgsql') or ($this->db_type == 'mssql')){
+				$this->sql_group_by .= ', ' . $this->table . '.' .$this->table_prefix . 'id';
 			}
 		}
 		
@@ -1825,6 +2045,12 @@ class Find extends Alkaline{
 		$this->ids = array();
 		foreach($images as $image){
 			$this->ids[] = intval($image[$this->table_prefix . 'id']);
+			if($this->cache === true){
+				$last_modified = strtotime($image['last_modified']);
+				if($last_modified > $this->last_modified){
+					$this->last_modified = $last_modified;
+				}
+			}
 		}
 		
 		if(!empty($this->order)){
@@ -1913,20 +2139,15 @@ class Find extends Alkaline{
 	/**
 	 * Save memory (after executing)
 	 *
-	 * @return bool True if successful
+	 * @return void
 	 */
 	public function saveMemory(){
-		if(count($this->call) < 1){
-			return false;
-		}
-		
 		$table = $this->table;
 		
+		$_SESSION['alkaline']['search']['table'] = $table;
 		$_SESSION['alkaline']['search'][$table]['request'] = $_REQUEST;
 		$_SESSION['alkaline']['search'][$table]['call'] = $this->call;
 		$_SESSION['alkaline']['search'][$table]['ids'] = $this->ids;
-		
-		return true;
 	}
 	
 	/**
@@ -1949,7 +2170,7 @@ class Find extends Alkaline{
 	 *
 	 * @return void
 	 */
-	public function clearMemory(){
+	public static function clearMemory(){
 		unset($_SESSION['alkaline']['search']);
 	}
 }

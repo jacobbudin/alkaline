@@ -16,7 +16,7 @@ $user = new User;
 $user->perm(true);
 
 if(empty($_POST['image_id'])){
-	$image_ids = new Find('images');
+	$image_ids = new Find('images', null, null, null, false);
 	$image_ids->find();
 	echo json_encode($image_ids->ids);
 }

@@ -56,8 +56,10 @@ class AkismetHandler extends Orbit{
 	}
 	
 	public function orbit_config_save(){
-		$this->setPref('akismet_api_key', $_POST['akismet_api_key']);
-		$this->savePref();
+		if(isset($_POST['akismet_api_key'])){
+			$this->setPref('akismet_api_key', $_POST['akismet_api_key']);
+			$this->savePref();
+		}
 	}
 }
 

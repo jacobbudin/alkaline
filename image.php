@@ -22,7 +22,7 @@ $image_ids->published();
 $image_ids->privacy('public');
 $image_ids->find();
 
-if(empty($image_ids)){ $alkaline->addError('No image was found.', 'Try searching for the image you were seeking.', null, null, 404); }
+if(!$image_ids->ids){ $alkaline->addError('No image was found.', 'Try searching for the image you were seeking.', null, null, 404); }
 
 $images = new Image($image_ids);
 $images->updateViews();

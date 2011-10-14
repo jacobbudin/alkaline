@@ -21,6 +21,7 @@ $format = strtolower(strip_tags(strval($_REQUEST['format'])));
 // Get image
 $images = new Image($image_id);
 $title = $images->images[0]['image_title'];
+if(empty($title)){ $title = 'Image ' . $images->images[0]['image_id']; }
 $rgb_colors = unserialize($images->images[0]['image_colors']);
 
 // Convert RGB image colors to HEX values
@@ -38,7 +39,7 @@ $i = 1;
 foreach($rgb_colors as $rgb => $percent){
 	$rgb = explode(',', $rgb);
 	$hex = rgb2hex($rgb[0], $rgb[1], $rgb[2]);
-	$hex_colors[] = array($hex, 'Color #' . $i++);
+	$hex_colors[] = array($hex, 'Color ' . $i++);
 }
 
 // Convert to format
@@ -140,24 +141,20 @@ if($format == 'ase'){
 		mb_internal_encoding($internal_encoding); 
 
 		return $return; 
-	} 
-
-	/* 
-	Colors from the Palettes: 
-		Vintage Modern		  http://www.colourlovers.com/palette/110225/Vintage_Modern 
-		Thought Provoking	  http://www.colourlovers.com/palette/694737/Thought_Provoking 
-
-	Licensed under Creative Commons: http://creativecommons.org/licenses/by-nc-sa/3.0/ 
-*/
+	}
 
 	$palettes = array ( 
 		array ( 
 			'title'		=> $title, 
 			'colors'	=> $hex_colors
 		), 
-	); 
+	);
+	
+	// var_dump($palettes);
 
 	$palette = mkASE($palettes);
+	
+	// var_dump($palette); exit();
 	
 	$encoding = 'binary';
 	$mime = 'application/octet-stream';
@@ -167,6 +164,20 @@ elseif($format == 'css'){
 	$i = 1;
 	foreach($hex_colors as $color){
 		$palette .= '.color' . $i++ . ' { background-color: #' . $color[0] . '; }' . "\n";
+	}
+	
+	$encoding = 'ascii';
+	$mime = 'text/x-c';
+}
+elseif($format == 'gpl'){
+	$palette = 'GIMP Palette' . "\n";
+	$palette .= 'Name: ' . $title . "\n";
+	$palette .= 'Columns: 4' . "\n";
+	$palette .= '#';
+	$i = 1;
+	foreach($rgb_colors as $rgb => $percent){
+		$rgb = explode(',', $rgb);
+		$palette .= "\n" . $rgb[0] . ' ' . $rgb[1] .' ' . $rgb[2] . ' Color ' . $i++;
 	}
 	
 	$encoding = 'ascii';

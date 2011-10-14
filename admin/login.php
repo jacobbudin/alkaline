@@ -16,6 +16,7 @@ $user = new User;
 if(!empty($_POST['login_user'])){ $username = strip_tags($_POST['login_user']); }
 if(!empty($_POST['login_pass'])){ $password = strip_tags($_POST['login_pass']); }
 if(!empty($_POST['login_remember'])){ $remember = strip_tags($_POST['login_remember']); }
+else{ $remember = null; }
 
 if(!empty($remember) and ($remember == 1)){ $remember = true; }
 
@@ -72,7 +73,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_user">Username:</label>
 				</td>
 				<td>
-					<input type="text" name="login_user" id="login_user" class="s" />
+					<input type="text" name="login_user" id="login_user" autocomplete="off" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -80,7 +81,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<label for="login_pass">Password:</label>
 				</td>
 				<td>
-					<input type="password" name="login_pass" id="login_pass" class="s" />
+					<input type="password" name="login_pass" id="login_pass" autocomplete="off" class="s" />
 				</td>
 			</tr>
 			<tr>
@@ -94,7 +95,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<tr>
 				<td></td>
 				<td>
-					<input type="hidden" name="destination" value="<?php echo $_SESSION['alkaline']['destination']; ?>" />
+					<input type="hidden" name="destination" value="<?php if(isset($_SESSION['alkaline']['destination'])){ echo $_SESSION['alkaline']['destination']; } ?>" />
 					<input type="submit" value="Login" />
 				</td>
 			</tr>

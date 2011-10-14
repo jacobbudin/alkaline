@@ -146,7 +146,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<h1>Statistics</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/stats.png" alt="" /> Statistics</h1>
 
 <div class="span-24 last">
 	<div class="span-15 append-1">

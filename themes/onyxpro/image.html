@@ -1,0 +1,61 @@
+{if:Images}
+	{block:Images}
+		{Image_Colorkey}
+		
+		<div class="center"><img src="{Image_Src_Large}" alt="" /></div>
+		
+		<div class="span-24 last">
+			<div class="span-13 append-1">
+				{if:Image_Title}
+					<h2>{Image_Title}</h2>
+				{else:Image_Title}
+					<h2>(Untitled)</h2>
+				{/if:Image_Title}
+
+				{if:Image_Description}
+					{Image_Description}
+				{/if:Image_Description}
+				
+				{if:Tags}
+					<p class="tags">
+					{block:Tags}
+						<span class="tag"><a href="{Tag_URI}">{Tag_Name}</a></span>{if:Tag_Last}{else:Tag_Last} &#0149;{/if:Tag_Last}
+					{/block:Tags}
+					</p>
+				{/if:Tags}
+				
+				<p class="quiet">This photo was published on {Image_Published_Format}</p>
+			</div>
+		
+			<div class="span-10 last">
+				<div class="data_right">
+					{if:Image_Fotomoto_Buy}{Image_Fotomoto_Buy}{else:Image_Fotomoto_Buy}&#0160;{/if:Image_Fotomoto_Buy}
+				</div>
+				
+				<h3 style="margin-top: 0">Comments</h3>
+				<table class="comments">
+					{if:Comments}
+					{block:Comments}
+						<tr>
+							<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<p class="quiet">{if:Comment_Author_Name}&#8212; {Comment_Author_Name}, {/if:Comment_Author_Name}{Comment_Created|reltime}</p></td>
+						</tr>
+					{/block:Comments}
+					{/if:Comments}
+				</table>
+				{if:Image_Comment_Disabled}
+					<p>Comments have been disabled for this image.</p>
+				{else:Image_Comment_Disabled}
+					<div class="comments box">
+						<textarea id="comment_{Image_ID}_text" name="comment_{Image_ID}_text" class="comment_text" placeholder="Your comment"></textarea>
+						<div class="quiet">&#8212; <input type="text" id="comment_{Image_ID}_author_name" name="comment_{Image_ID}_author_name" class="comment_author_name" placeholder="Your name" /> <input type="text" id="comment_{Image_ID}_author_email" name="comment_{Image_ID}_author_email" class="comment_author_email" placeholder="Your email address" /></div>
+						<input type="hidden" name="image_id" value="{Image_ID}" /><input type="image" src="<?php echo BASE . THEMES; ?>onyxpro/images/submit.png" alt="Submit comment" class="comment_submit submit" value="Submit comment" />
+					</div>
+				{/if:Image_Comment_Disabled}
+			</div>
+		</div>
+	{/block:Images}
+{else:Images}
+	<p>No images.</p>
+	
+	<hr />
+{/if:Images}

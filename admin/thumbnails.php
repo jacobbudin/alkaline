@@ -100,9 +100,9 @@ if(empty($size_id)){
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN; ?>thumbnails<?php echo URL_ACT; ?>build<?php echo URL_RW; ?>">Build thumbnail</a></div>
+	<div class="actions"><a href="<?php echo BASE . ADMIN . 'thumbnails' . URL_ACT; ?>build<?php echo URL_RW; ?>"><button>Build thumbnail</button></a></div>
 
-	<h1>Thumbnails (<?php echo $size_count; ?>)</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/thumbnails.png" alt="" /> Thumbnails (<?php echo $size_count; ?>)</h1>
 	
 	<p>Thumbnails are resized versions of each image in your library.</p>
 	
@@ -120,8 +120,8 @@ if(empty($size_id)){
 		<?php
 	
 		foreach($sizes as $size){
-			echo '<tr>';
-				echo '<td><strong><a href="' . BASE . ADMIN . 'thumbnails' . URL_ID . $size['size_id'] . URL_RW . '">' . $size['size_title'] . '</a></strong></td>';
+			echo '<tr class="ro">';
+				echo '<td><strong class="large"><a href="' . BASE . ADMIN . 'thumbnails' . URL_ID . $size['size_id'] . URL_RW . '">' . $size['size_title'] . '</a></strong></td>';
 				echo '<td class="center">' . $size['size_width'] . ' &#0215; ' . $size['size_height'] . '</td>';
 				echo '<td class="center">' . ucwords($size['size_type']) . '</td>';
 				echo '<td class="center">{Image_Src_' . ucwords($size['size_label']) . '}</td>';
@@ -150,10 +150,15 @@ else{
 		define('TITLE', 'Alkaline Thumbnail: &#8220;' . ucwords($size['size_title'])  . '&#8221;');
 	}
 	require_once(PATH . ADMIN . 'includes/header.php');
-
-	?>
 	
-	<h1>Thumbnail</h1>
+	if(empty($size['size_title'])){
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/thumbnails.png" alt="" /> New Thumbnail</h1>';
+	}
+	else{
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/thumbnails.png" alt="" /> Thumbnail: ' . $size['size_title'] . '</h1>';
+	}
+	
+	?>
 	
 	<p>All fields are required except append to and prepend to filename&#8212;use one or both.</p>
 	
@@ -176,10 +181,22 @@ else{
 			<tr>
 				<td class="right"><label>Type:</label></td>
 				<td>
-					<input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> /> <label for="size_type_scale">Scale image</label><br />
-					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Scales to the restricting dimension&#8212;standard thumbnails<br />
-					<input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> /> <label for="size_type_fill">Fill canvas</label><br />
-					&#0160;&#0160;&#0160;&#0160;&#0160;&#0160; Fills the thumbnail, crops excess&#8212;good for arranging in grids
+					<table>
+						<tr>
+							<td style="width: 10px;"><input type="radio" name="size_type" value="scale" id="size_type_scale" <?php if(($size['size_type'] == 'scale') or (empty($size['size_type']))){ echo 'checked="checked" '; } ?> /></td>
+							<td>
+								<label for="size_type_scale">Scale image</label><br />
+								Scales to the restricting dimension&#8212;standard thumbnails
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 10px;"><input type="radio" name="size_type" value="fill" id="size_type_fill" <?php if($size['size_type'] == 'fill'){ echo 'checked="checked" '; } ?> /></td>
+							<td>
+								<label for="size_type_fill">Fill canvas</label><br />
+								Fills the thumbnail, crops excess&#8212;good for arranging in grids
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -207,7 +224,7 @@ else{
 				<td><label for="size_build">Build thumbnails of this size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>
-				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" <?php if(@$size_lock === true){ echo 'disabled="disabled"'; } ?> /></td>
+				<td class="right"><input type="checkbox" id="size_delete" name="size_delete" value="delete" /></td>
 				<td><label for="size_delete">Delete this thumbnail size.</label> This action cannot be undone.</td>
 			</tr>
 			<tr>

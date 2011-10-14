@@ -43,7 +43,7 @@ class User extends Alkaline{
 	 */
 	public function __destruct(){
 		// Store user to session data
-		if(self::perm() == true){
+		if(isset($this->user)){
 			$_SESSION['alkaline']['user'] = $this->user;
 		}
 		
@@ -74,7 +74,7 @@ class User extends Alkaline{
 	 * @param bool $remember 
 	 * @return bool True if successful
 	 */
-	public function auth($username, $password, $remember=false){
+	public function auth($username='', $password='', $remember=false){
 		// Error checking
 		if(empty($username) or empty($password)){
 			return false;
@@ -100,7 +100,7 @@ class User extends Alkaline{
 	 * @param bool $remember 
 	 * @return bool True if successful
 	 */
-	protected function authByCookie($user_id, $user_key, $remember=true){
+	protected function authByCookie($user_id=0, $user_key='', $remember=true){
 		// Error checking
 		if(empty($user_id) or empty($user_key)){ return false ; }
 		
@@ -143,8 +143,8 @@ class User extends Alkaline{
 		if($remember == true){
 			$key = $this->user['user_id'] . $this->user['user_user'] . $this->user['user_pass'] . DB_DSN . time();
 			$key = sha1($key . SALT);
-			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, '/');
-			setcookie('key', $key, time()+USER_REMEMBER, '/');
+			setcookie('uid', $this->user['user_id'], time()+USER_REMEMBER, BASE);
+			setcookie('key', $key, time()+USER_REMEMBER, BASE);
 		}
 		
 		// Destroy sensitive information from object
@@ -154,6 +154,9 @@ class User extends Alkaline{
 		// Create arrays
 		$this->user['user_permissions'] = unserialize($this->user['user_permissions']);
 		$this->user['user_preferences'] = unserialize($this->user['user_preferences']);
+		
+		// Save in session
+		$_SESSION['alkaline']['user'] = $this->user;
 		
 		// Update database
 		$fields = array('user_last_login' => date('Y-m-d H:i:s'), 'user_key' => $key);
@@ -168,15 +171,19 @@ class User extends Alkaline{
 	public function deauth(){
 		unset($this->user);
 		
+		$now = time();
+		
+		setcookie('uid', '', $now-42000, BASE);
+		setcookie('key', '', $now-42000, BASE);
+		
 		// Destroy session
 		$_SESSION = array();
-		if(isset($_COOKIE[session_name()])){
-			setcookie(session_name(), '', time()-42000, '/');
-		}
-		session_destroy();
 		
-		setcookie('uid', '', time()-3600, '/');
-		setcookie('key', '', time()-3600, '/');
+		if(isset($_COOKIE[session_name()])){
+			setcookie(session_name(), '', $now-42000, BASE);
+		}
+		
+		session_destroy();
 		session_start();
 	}
 	
@@ -195,7 +202,7 @@ class User extends Alkaline{
 				$_SESSION['alkaline']['destination'] = $this->location();
 				session_write_close();
 				
-				header('Location: ' . LOCATION . BASE . ADMIN . 'login/');
+				header('Location: ' . LOCATION . BASE . ADMIN . 'login' . URL_CAP);
 				exit();
 			}
 			else{
@@ -233,7 +240,7 @@ class User extends Alkaline{
 	 * @param string $unset 
 	 * @return void
 	 */
-	public function setPref($name, $unset=''){
+	public function setPref($name='', $unset=''){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::setForm($this->user['user_preferences'], $name, $unset);
@@ -246,7 +253,7 @@ class User extends Alkaline{
 	 * @param string $check 
 	 * @return void
 	 */
-	public function readPref($name, $check=true){
+	public function readPref($name='', $check=true){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::readForm($this->user['user_preferences'], $name, $check);
@@ -259,7 +266,7 @@ class User extends Alkaline{
 	 * @param string $default 
 	 * @return void
 	 */
-	public function returnPref($name, $default=null){
+	public function returnPref($name='', $default=null){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::returnForm($this->user['user_preferences'], $name, $default);
@@ -286,7 +293,7 @@ class User extends Alkaline{
 	 * @param bool $overwrite 
 	 * @return void
 	 */
-	public function updateFields($fields, $overwrite=true){
+	public function updateFields($fields=array(), $overwrite=true){
 		if(!$this->perm(true)){ return false; }
 		
 		// Verify each key has changed; if not, unset the key
@@ -315,7 +322,7 @@ class User extends Alkaline{
 	 * @param string $message 
 	 * @return void
 	 */
-	public function email($subject, $message){
+	public function email($subject='', $message=''){
 		if(!$this->perm(true)){ return false; }
 		
 		return parent::email($this->user['user_email'], $subject, $message);

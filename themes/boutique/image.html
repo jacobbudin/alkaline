@@ -1,0 +1,128 @@
+{if:Images}
+	{block:Images}
+
+		{Image_Colorkey}
+		
+		<div class="center"><img src="{Image_Src_Large}" alt="" /></div>
+		
+		<h4>{Image_Published_Format}</h4>
+	
+		<div class="span-24 last">
+			<div class="span-3">
+				{if:Image_Previous_URI}
+					<em><a href="{Image_Previous_URI}" class="previous_image">&#8592; Previous image</a></em>
+				{/if:Image_Previous_URI}
+				&#0160;
+			</div>
+			<div class="span-18">
+				{if:Image_Title}
+					<h3>{Image_Title}</h3>
+				{else:Image_Title}
+					<h3>(Untitled)</h3>
+				{/if:Image_Title}
+			</div>
+			<div class="span-3 last right">
+				&#0160;
+				{if:Image_Next_URI}
+					<em><a href="{Image_Next_URI}" class="next_image">Next image &#8594;</a></em>
+				{/if:Image_Next_URI}
+			</div>
+		</div>
+		
+		<div class="span-24 last">
+		<div class="span-15 append-1 large">
+			{if:Image_Description}
+				{Image_Description}
+			{/if:Image_Description}
+		
+			{if:Tags}
+				<p>
+				{block:Tags}
+					<span class="tag"><a href="{Tag_URI}">#{Tag_Name}</a></span>
+				{/block:Tags}
+				</p>
+			{/if:Tags}
+			
+			{if:Comments}
+				<table>
+				{block:Comments}
+					<tr>
+						<td style="width: 40px;">{Comment_Author_Avatar}</td><td>{Comment_Text}<p class="quiet">{if:Comment_Author_Name}&#8212; {Comment_Author_Name}, {/if:Comment_Author_Name}{Comment_Created|reltime}</p></td>
+					</tr>
+				{/block:Comments}
+				</table>
+			{else:Comments}
+				{if:Image_Comment_Disabled}
+				{else:Image_Comment_Disabled}
+					<p><em>There are no published comments. Won&#8217;t you be the first?</em></p>
+				{/if:Image_Comment_Disabled}
+			{/if:Comments}
+			{if:Image_Comment_Disabled}
+				&#0160;
+			{else:Image_Comment_Disabled}
+				<hr />
+				<table class="comments">
+					<tr>
+						<td class="right">Author:</td>
+						<td>{Image_Comment_Author_Name}</td>
+					</tr>
+					<tr>
+						<td class="right">Email:</td>
+						<td>{Image_Comment_Author_Email}</td>
+					</tr>
+					<tr>
+						<td class="right">URL:</td>
+						<td>{Image_Comment_Author_Uri}</td>
+					</tr>
+					<tr>
+						<td class="right">Comment:</td>
+						<td>{Image_Comment_Text}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>{Image_Comment_Submit}</td>
+					</tr>
+				</table>
+			{/if:Image_Comment_Disabled}
+		</div>
+		<div class="span-8 last">
+			<h5>Sets ({count:Sets})</h5>
+			{if:Sets}
+			<ul>
+			{block:Sets}
+				<li><a href="{Set_URI}">{Set_Title}</a></li>
+			{/block:Sets}
+			</ul>
+			{else:Sets}
+				<p class="quiet"><em>This image is not featured in any sets.</em></p>
+			{/if:Sets}
+			
+			<h5>Pages ({count:Pages})</h5>
+			{if:Pages}
+			<ul>
+			{block:Pages}
+				<li><a href="{Set_URI}">{Set_Title}</a></li>
+			{/block:Pages}
+			</ul>
+			{else:Pages}
+				<p class="quiet"><em>This image is not featured on any pages.</em></p>
+			{/if:Pages}
+			
+			<h5>Addendum</h5>
+			<ul>
+				{if:image_exif_file_filename}
+					<li>Filename: {image_exif_file_filename}</li>
+				{/if:image_exif_file_filename}
+				{if:image_exif_computed_width}
+					<li>Width: {image_exif_computed_width}px</li>
+				{/if:image_exif_computed_width}
+				{if:image_exif_computed_height}
+					<li>Height: {image_exif_computed_height}px</li>
+				{/if:image_exif_computed_height}
+			</ul>
+		</div>
+		</div>
+	{/block:Images}
+{else:Images}
+	<p class="big">No images.</p>
+{/if:Images}

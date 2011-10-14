@@ -187,7 +187,7 @@ class Thumbnail extends Alkaline{
 	}
 	
 	/**
-	 * Watermark image
+	 * Watermark image after ->save()
 	 *
 	 * @param string $watermark Watermark full path
 	 * @param int $margin Margin (in pixels)
@@ -370,6 +370,70 @@ class Thumbnail extends Alkaline{
 		$pos_y = intval($pos_y);
 		
 		return array($pos_x, $pos_y);
+	}
+	
+	/**
+	 * Copy original image's metadata to thumbnail after ->save()
+	 *
+	 * @return void
+	 */
+	public function metadata(){
+		getimagesize($this->file, $info);
+		
+		if(isset($info['APP13'])){
+			$iptc = iptcparse($info["APP13"]);
+			
+			$utf8seq = chr(0x1b) . chr(0x25) . chr(0x47);
+			$length = strlen($utf8seq);
+			$data = chr(0x1C) . chr(1) . chr('090') . chr($length >> 8) . chr($length & 0xFF) . $utf8seq;
+
+			foreach($iptc as $tag => $string){
+				if(is_array($string)){
+					$string = $string[0];
+				}
+				if(empty($string)){
+					continue;
+				}
+				$class = substr($tag, 0, 1);
+			    $tag = substr($tag, 2);
+			    $data .= $this->iptc_make_tag($class, $tag, $string);
+			}
+
+			$img = imagecreatefromjpeg($this->path);
+		    imagejpeg($img, $this->path, 100); 
+		    imagedestroy($img);
+
+			$content = iptcembed($data, $this->path);
+			@unlink($this->path);
+			file_put_contents($this->path, $content);
+		}
+	}
+	
+	/**
+	 * Helper function for metadata()
+	 *
+	 * @param string $rec 
+	 * @param string $data 
+	 * @param string $value 
+	 * @return string
+	 */
+	public function iptc_make_tag($rec, $data, $value){
+	    $length = strlen($value);
+	    $retval = chr(0x1C) . chr($rec) . chr($data);
+
+	    if($length < 0x8000){
+	        $retval .= chr($length >> 8) .  chr($length & 0xFF);
+	    }
+	    else{
+	        $retval .= chr(0x80) . 
+	                   chr(0x04) . 
+	                   chr(($length >> 24) & 0xFF) . 
+	                   chr(($length >> 16) & 0xFF) . 
+	                   chr(($length >> 8) & 0xFF) . 
+	                   chr($length & 0xFF);
+	    }
+
+	    return $retval . $value;
 	}
 }
 

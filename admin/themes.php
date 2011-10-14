@@ -149,9 +149,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
 
-<div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>">Change theme</a></div>
+<div class="actions"><a href="<?php echo BASE . ADMIN . 'configuration' . URL_CAP; ?>"><button>Change theme</button></a></div>
 
-<h1>Themes (<?php echo $theme_count; ?>)</h1>
+<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/themes.png" alt="" /> Themes (<?php echo $theme_count; ?>)</h1>
 
 <p>Themes change the look and feel of your Alkaline library. You can browse and download additional themes at the <a href="http://www.alkalineapp.com/users/">Alkaline Lounge</a>.</p>
 
@@ -169,8 +169,8 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	<?php
 
 	foreach($themes as $theme){
-		echo '<tr>';
-		echo '<td><strong>' . $theme['theme_title'] . '</strong>';
+		echo '<tr class="ro">';
+		echo '<td><strong class="large">' . $theme['theme_title'] . '</strong>';
 		
 		if(!empty($theme['theme_creator_name'])){
 			echo ' \ ';

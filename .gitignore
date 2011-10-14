@@ -7,6 +7,12 @@
 test.php
 cache/*
 
+license.php
+config.php
+log.txt
+config.json
+cache/*
+
 # the following patterns will be ignored for revision control purposes
 
 # temporary backups
@@ -59,6 +65,3 @@ thumbs.db
 *.csr
 *.cert
 *.crt
-license.php
-config.php
-config.json

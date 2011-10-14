@@ -9,11 +9,9 @@ class Markdown extends Orbit{
 		parent::__destruct();
 	}
 	
-	public function orbit_markup_markdown($page_text_raw){
+	public function orbit_markup_markdown($page_text){
 		require_once('functions/markdown.php');
 		require_once('functions/smartypants.php');
-		
-		$page_text = $page_text_raw;
 		
 		// Markdown
 		$parser = new Markdown_Parser;
@@ -24,6 +22,16 @@ class Markdown extends Orbit{
 		$page_text = $parser->transform($page_text);
 		
 		return $page_text;
+	}
+	
+	public function orbit_markup_title_markdown($page_title){
+		require_once('functions/smartypants.php');
+		
+		// SmartyPants
+		$parser = new Markdown_SmartyPants;
+		$page_title = $parser->transform($page_title);
+		
+		return $page_title;
 	}
 	
 	public function orbit_config(){

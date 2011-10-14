@@ -21,15 +21,20 @@ function __autoload($class){
 }
 
 class Alkaline{
-	const build = 982;
+	const build = 1294;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
 	const edition = 'standard';
 	const product = 'Alkaline';
-	const version = '1.0.3';
+	const version = '1.1.2';
 	
+	public $admin;
+		
 	public $db_type;
 	public $db_version;
+	
 	public $tables;
+	public $tables_cache;
+	public $tables_index;
 	
 	protected $db;
 	protected $notifications;
@@ -40,6 +45,15 @@ class Alkaline{
 	 * @return void
 	 **/
 	public function __construct(){
+		// Set error handlers
+		set_error_handler(array($this, 'addError'), E_ALL);
+		set_exception_handler(array($this, 'addException'));
+		
+		// Set error reporting
+		if(ini_get('error_reporting') > 30719){
+			error_reporting(E_ALL);
+		}
+				
 		// Disable magic_quotes
 		if(get_magic_quotes_gpc()){
 			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
@@ -58,15 +72,6 @@ class Alkaline{
 			unset($process);
 		}
 		
-		// Send browser headers
-		if(!headers_sent()){
-			header('Cache-Control: no-cache, must-revalidate', false);
-			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
-		}
-		
-		// Set error handler
-		set_error_handler(array($this, 'addError'), E_ALL);
-		
 		// Determine class
 		$class = get_class($this);
 		
@@ -76,9 +81,17 @@ class Alkaline{
 		// Debug info
 		$chief_classes = array('Alkaline', 'XMLRPC');
 		if(in_array(get_class($this), $chief_classes)){
+			// Send browser headers
+			if(!headers_sent()){
+				header('Cache-Control: no-cache, must-revalidate', false);
+				header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', false);
+			}
+			
 			$_SESSION['alkaline']['debug']['start_time'] = microtime(true);
 			$_SESSION['alkaline']['debug']['queries'] = 0;
-			$_SESSION['alkaline']['config'] = json_decode(@file_get_contents($this->correctWinPath(PATH . 'config.json')), true);
+			if($contents = file_get_contents($this->correctWinPath(PATH . 'config.json'))){
+				$_SESSION['alkaline']['config'] = json_decode($contents, true);
+			}	
 			
 			if(empty($_SESSION['alkaline']['config'])){
 				$_SESSION['alkaline']['config'] = array();
@@ -93,7 +106,14 @@ class Alkaline{
 		}
 		
 		// Write tables
-		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'comments' => 'comment_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id');
+		$this->tables = array('images' => 'image_id', 'tags' => 'tag_id', 'sets' => 'set_id', 'pages' => 'page_id', 'rights' => 'right_id', 'exifs' => 'exif_id', 'extensions' => 'extension_id', 'themes' => 'theme_id', 'sizes' => 'size_id', 'users' => 'user_id', 'guests' => 'guest_id', 'posts' => 'post_id', 'comments' => 'comment_id', 'versions' => 'version_id', 'citations' => 'citation_id', 'items' => 'item_id', 'trackbacks' => 'trackback_id');
+		$this->tables_cache = array('comments', 'extensions', 'images', 'pages', 'posts', 'rights', 'sets', 'sizes');
+		$this->tables_index = array('comments', 'images', 'pages', 'posts', 'rights', 'sets', 'tags');
+		
+		// Check if in Dashboard
+		if(strpos($_SERVER['SCRIPT_FILENAME'], PATH . ADMIN) === 0){
+			$this->admin = true;
+		}
 		
 		// Set back link
 		if(!empty($_SERVER['HTTP_REFERER']) and ($_SERVER['HTTP_REFERER'] != LOCATION . $_SERVER['REQUEST_URI'])){
@@ -103,46 +123,51 @@ class Alkaline{
 		// Initiate database connection, if necessary
 		$no_db_classes = array('Canvas');
 		
-		try{
-			if(!in_array($class, $no_db_classes)){
-				if(defined('DB_TYPE') and defined('DB_DSN')){
-					// Determine database type
-					$this->db_type = DB_TYPE;
+		if(!in_array($class, $no_db_classes)){
+			if(defined('DB_TYPE') and defined('DB_DSN')){
+				// Determine database type
+				$this->db_type = DB_TYPE;
+		
+				if($this->db_type == 'mssql'){
+					// $this->db = new PDO(DB_DSN);
+				}
+				elseif($this->db_type == 'mysql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+				}
+				elseif($this->db_type == 'pgsql'){
+					$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
+					$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+				}
+				elseif($this->db_type == 'sqlite'){
+					$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
 			
-					if($this->db_type == 'mssql'){
-						// $this->db = new PDO(DB_DSN);
-					}
-					elseif($this->db_type == 'mysql'){
-						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS, array(PDO::ATTR_PERSISTENT => true, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
-					}
-					elseif($this->db_type == 'pgsql'){
-						$this->db = new PDO(DB_DSN, DB_USER, DB_PASS);
-						$this->db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-					}
-					elseif($this->db_type == 'sqlite'){
-						$this->db = new PDO(DB_DSN, null, null, array(PDO::ATTR_PERSISTENT => false, PDO::FETCH_ASSOC => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT));
+					$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
+					$this->db->sqliteCreateFunction('COS', 'cos', 1);
+					$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
+					$this->db->sqliteCreateFunction('SIN', 'sin', 1);
+				}
 				
-						$this->db->sqliteCreateFunction('ACOS', 'acos', 1);
-						$this->db->sqliteCreateFunction('COS', 'cos', 1);
-						$this->db->sqliteCreateFunction('RADIANS', 'deg2rad', 1);
-						$this->db->sqliteCreateFunction('SIN', 'sin', 1);
-					}
-				
-					if(is_object($this->db)){
-						$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
-					}
+				if(is_object($this->db)){
+					$this->db_version = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
 				}
 			}
-		}
-		catch(PDOException $e){
-			$message = $e->getMessage();
-			$message = 'Database: ' . $message;
-			$this->addError(E_USER_ERROR, $message, null, null, 500);
 		}
 		
 		// Delete saved Orbit extension session references
 		if($class == 'Alkaline'){
 			unset($_SESSION['alkaline']['extensions']);
+			
+			// Log-in guests via cookie
+			if(!empty($_COOKIE['guest_key']) and !empty($_COOKIE['guest_id']) and empty($_SESSION['alkaline']['guest'])){
+				$query = $this->prepare('SELECT * FROM guests WHERE guest_id = :guest_id LIMIT 0, 1;');
+				$query->execute(array(':guest_id' => $_COOKIE['guest_id']));
+				$guests = $query->fetchAll();
+				$guest = $guests[0];
+				
+				if($_COOKIE['guest_key'] == sha1(PATH . BASE . DB_DSN . DB_TYPE . $guest['guest_key'])){
+					$this->access($guest['guest_key']);
+				}
+			}
 		}
 	}
 	
@@ -205,6 +230,7 @@ class Alkaline{
 			$query = preg_replace('#(FROM|JOIN)\s+([\sa-z0-9_\-,]*)\s*(WHERE|GROUP|HAVING|ORDER)?#se', "'\\1 '.Alkaline::appendTablePrefix('\\2').' \\3'", $query);
 			$query = preg_replace('#([a-z]+[a-z0-9-\_]*)\.#si', TABLE_PREFIX . '\\1.', $query);
 			$query = preg_replace('#(INSERT INTO|UPDATE)\s+(\w+)#si', '\\1 ' . TABLE_PREFIX . '\\2', $query);
+			$query = preg_replace('#TABLE ([[:punct:]]*)(\w+)#s', 'TABLE \\1' . TABLE_PREFIX . '\\2', $query);
 		}
 		
 		if($this->db_type == 'mssql'){
@@ -343,17 +369,28 @@ class Alkaline{
 		unset($_SESSION['alkaline']['guest']);
 		
 		// Error checking
-		if(empty($key)){ return false; }
+		if(empty($key)){
+			setcookie('guest_id', false, time()+$seconds, '/');
+			setcookie('guest_key', false, time()+$seconds, '/');
+			return false; 
+		}
 		
 		$key = strip_tags($key);
 		
-		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key LIMIT 0, 1;');
+		$query = $this->prepare('SELECT * FROM guests WHERE guest_key = :guest_key;');
 		$query->execute(array(':guest_key' => $key));
 		$guests = $query->fetchAll();
 		$guest = $guests[0];
 		
 		if(!$guest){
 			$this->addError('Guest not found.', 'You are not authorized for this material.', null, null, 401);
+		}
+		
+		if($this->returnConf('guest_remember')){
+			$seconds = $this->returnConf('guest_remember_time');
+			$key = sha1(PATH . BASE . DB_DSN . DB_TYPE . $guest['guest_key']);
+			setcookie('guest_id', $guest['guest_id'], time()+$seconds, '/');
+			setcookie('guest_key', $key, time()+$seconds, '/');
 		}
 		
 		$_SESSION['alkaline']['guest'] = $guest;
@@ -369,7 +406,12 @@ class Alkaline{
 	 * @return void
 	 */
 	public function addNote($message, $type=null){
-		$_SESSION['alkaline']['notifications'][] = array('type' => $type, 'message' => $message);
+		$message = strval($message);
+		$type = strval($type);
+		
+		if(!empty($message)){
+			$_SESSION['alkaline']['notifications'][] = array('message' => $message, 'type' => $type);
+		}
 	}
 	
 	/**
@@ -483,7 +525,7 @@ class Alkaline{
 				
 				if(!empty($ext)){
 					// Find files with proper extensions
-					if(preg_match('#([a-zA-Z0-9\-\_]+\.(' . $ext . '){1,1})#si', $filename)){
+					if(preg_match('#^([^\.]+.*\.(' . $ext . '){1,1})$#si', $filename)){
 						$files[] = $dir . $filename;
 					}
 				}
@@ -548,12 +590,18 @@ class Alkaline{
 	 * Empty a directory
 	 *
 	 * @param string $dir Full path to directory
+	 * @param bool $recursive Delete subdirectories
+	 * @param int $age Delete contents older than $age seconds old
 	 * @return void
 	 */
-	public function emptyDirectory($dir=null){
+	public function emptyDirectory($dir=null, $recursive=true, $age=0){
 		// Error checking
 		if(empty($dir)){
 			return false;
+		}
+		
+		if($age != 0){
+			$now = time();
 		}
 		
 		$ignore = array('.', '..');
@@ -565,12 +613,17 @@ class Alkaline{
 		while($filename = readdir($handle)){
 			if(!in_array($filename, $ignore)){
 				// Delete directories
-				if(is_dir($dir . '/' . $filename)){
+				if(is_dir($dir . '/' . $filename) and ($recursive !== false)){
 					self::emptyDirectory($dir . $filename . '/');
 					@rmdir($dir . $filename . '/');
 				}
 				// Delete files
 				else{
+					if($age != 0){
+						if($now < (filemtime($dir . $filename) + $age)){
+							continue;
+						}
+					}
 					chmod($dir . $filename, 0777);
 					unlink($dir . $filename);
 				}
@@ -605,6 +658,29 @@ class Alkaline{
 	}
 	
 	// TYPE CONVERSION
+	
+	/**
+	 * Convert a possible string to boolean
+	 *
+	 * @param mixed $input
+	 * @param mixed $default Return if unknown
+	 * @return boolean
+	 */
+	public function convertToBool(&$input, $default=''){
+		if(is_bool($input)){
+			return $input;
+		}
+		elseif(is_string($input)){
+			if($input == 'true'){
+				return true;
+			}
+			elseif($input == 'false'){
+				return false;
+			}
+		}
+		
+		return $default;
+	}
 	
 	/**
 	 * Convert a possible string or integer into an array
@@ -653,6 +729,28 @@ class Alkaline{
 	}
 	
 	/**
+	 * Convert a PHP configuration string to bytes
+	 *
+	 * @param mixed $input 
+	 * @return array
+	 */
+	public function convertToBytes(&$input){
+		if(is_string($input)){
+			if(stripos($input, 'K') !== false){
+				$input = intval($input) * 1000;
+			}
+			elseif(stripos($input, 'M') !== false){
+				$input = intval($input) * 1000000;
+			}
+			elseif(stripos($input, 'G') !== false){
+				$input = intval($input) * 1000000000;
+			}
+		}
+		
+		return intval($input);
+	}
+	
+	/**
 	 * Change filename extension
 	 *
 	 * @param string $file Filename
@@ -660,7 +758,7 @@ class Alkaline{
 	 * @return string Changed filename
 	 */
 	public function changeExt($file, $ext){
-		$file = preg_replace('#\.([a-z0-9]*)$#si', '.' . $ext, $file);
+		$file = preg_replace('#\.([a-z0-9]*?)$#si', '.' . $ext, $file);
 		return $file;
 	}
 	
@@ -674,7 +772,7 @@ class Alkaline{
 	 * @param string $empty If null or empty input time, return this string
 	 * @return string|false Time or error
 	 */
-	public function formatTime($time, $format=null, $empty=false){
+	public function formatTime($time=null, $format=null, $empty=false){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
 			return $empty;
@@ -701,9 +799,10 @@ class Alkaline{
 	 * @param string $time Time
 	 * @param string $format Format (as in date();)
 	 * @param string $empty If null or empty input time, return this string
+	 * @param int $round Digits of rounding (as in round();)
 	 * @return string|false Time or error
 	 */
-	public function formatRelTime($time, $format=null, $empty=false){
+	public function formatRelTime($time, $format=null, $empty=false, $round=null){
 		// Error checking
 		if(empty($time) or ($time == '0000-00-00 00:00:00')){
 			return $empty;
@@ -712,11 +811,21 @@ class Alkaline{
 			$format = DATE_FORMAT;
 		}
 		
-		$time = str_ireplace(' at ', ' ', $time);
-		$time = str_ireplace(' on ', ' ', $time);
+		if(!is_integer($time)){
+			$time = str_ireplace(' at ', ' ', $time);
+			$time = str_ireplace(' on ', ' ', $time);
 		
-		$time = strtotime($time);
-		$seconds = time() - $time;
+			$time = strtotime($time);
+		}
+		
+		$now = time();
+		$seconds = $now - $time;
+		$day = $now - strtotime(date('Y-m-d', $time));
+		$month = $now - strtotime(date('Y-m', $time));
+		
+		if(is_integer($round)){
+			$seconds = round($seconds, $round);
+		}
 		
 		if(empty($seconds)){
 			$span = 'just now';
@@ -737,12 +846,12 @@ class Alkaline{
 					else{ $span = $hours . ' hours ago'; }
 					break;
 				case($seconds < 2419200):
-					$days = intval($seconds / 86400);
+					$days = floor($day / 86400);
 					if($days < 2){ $span = 'yesterday'; }
 					else{ $span = $days . ' days ago'; }
 					break;
 				case($seconds < 29030400):
-					$months = intval($seconds / 2419200);
+					$months = floor($month / 2419200);
 					if($months < 2){ $span = 'a month ago'; }
 					else{ $span = $months . ' months ago'; }
 					break;
@@ -944,7 +1053,7 @@ class Alkaline{
         $ret = '';
 
         // add a minus sign
-        if (substr($num, 0, 1) == '-') {
+        if(substr($num, 0, 1) == '-'){
             $ret = $_sep . $_minus;
             $num = substr($num, 1);
         }
@@ -953,19 +1062,18 @@ class Alkaline{
         $num = trim($num);
         $num = preg_replace('/^0+/', '', $num);
 
-        if (strlen($num) > 3) {
+        if(strlen($num) > 3){
             $maxp = strlen($num)-1;
             $curp = $maxp;
-            for ($p = $maxp; $p > 0; --$p) { // power
-
+            for($p = $maxp; $p > 0; --$p){ // power
                 // check for highest power
-                if (isset($_exponent[$p])) {
+                if(isset($_exponent[$p])){
                     // send substr from $curp to $p
                     $snum = substr($num, $maxp - $curp, $curp - $p + 1);
                     $snum = preg_replace('/^0+/', '', $snum);
-                    if ($snum !== '') {
+                    if($snum !== ''){
                         $cursuffix = $_exponent[$power][count($_exponent[$power])-1];
-                        if ($powsuffix != '') {
+                        if($powsuffix != ''){
                             $cursuffix .= $_sep . $powsuffix;
                         }
 
@@ -976,16 +1084,17 @@ class Alkaline{
                 }
             }
             $num = substr($num, $maxp - $curp, $curp - $p + 1);
-            if ($num == 0) {
+            if($num == 0){
                 return $ret;
             }
-        } elseif ($num == 0 || $num == '') {
+        }
+		elseif($num == 0 || $num == ''){
             return $_sep . $_digits[0];
         }
 
         $h = $t = $d = 0;
 
-        switch(strlen($num)) {
+        switch(strlen($num)){
         case 3:
             $h = (int)substr($num, -3, 1);
 
@@ -1001,19 +1110,19 @@ class Alkaline{
             break;
         }
 
-        if ($h) {
+        if($h){
             $ret .= $_sep . $_digits[$h] . $_sep . 'hundred';
 
             // in English only - add ' and' for [1-9]01..[1-9]99
             // (also for 1001..1099, 10001..10099 but it is harder)
             // for now it is switched off, maybe some language purists
             // can force me to enable it, or to remove it completely
-            // if (($t + $d) > 0)
+            // if(($t + $d) > 0)
             //   $ret .= $_sep . 'and';
         }
 
         // ten, twenty etc.
-        switch ($t) {
+        switch ($t){
         case 9:
         case 7:
         case 6:
@@ -1041,7 +1150,7 @@ class Alkaline{
             break;
 
         case 1:
-            switch ($d) {
+            switch($d){
             case 0:
                 $ret .= $_sep . 'ten';
                 break;
@@ -1076,28 +1185,29 @@ class Alkaline{
             break;
         }
 
-        if ($t != 1 && $d > 0) { // add digits only in <0>,<1,9> and <21,inf>
+        if($t != 1 && $d > 0){ // add digits only in <0>,<1,9> and <21,inf>
             // add minus sign between [2-9] and digit
-            if ($t > 1) {
+            if($t > 1){
                 $ret .= '-' . $_digits[$d];
-            } else {
+            }
+			else{
                 $ret .= $_sep . $_digits[$d];
             }
         }
 
-        if ($power > 0) {
-            if (isset($_exponent[$power])) {
+        if($power > 0){
+            if(isset($_exponent[$power])){
                 $lev = $_exponent[$power];
             }
 
-            if (!isset($lev) || !is_array($lev)) {
+            if(!isset($lev) || !is_array($lev)){
                 return null;
             }
 
             $ret .= $_sep . $lev[0];
         }
 
-        if ($powsuffix != '') {
+        if($powsuffix != ''){
             $ret .= $_sep . $powsuffix;
         }
 
@@ -1146,8 +1256,7 @@ class Alkaline{
 	}
 	
 	private function makeHTMLSafeHelper($string){
-		$string = preg_replace('#\'#s', '&#0039;', $string);	
-		$string = preg_replace('#\"#s', '&#0034;', $string);
+		$string = htmlentities($string, ENT_QUOTES, 'UTF-8', false);
 		return $string;
 	}
 	
@@ -1175,6 +1284,34 @@ class Alkaline{
 		$string = preg_replace('#\&\#0034\;#s', '"', $string);
 		return $string;
 	}
+	
+	/**
+	 * Make a string unique, and filename safe
+	 *
+	 * @param string $str 
+	 * @return string
+	 */
+	public function makeFilenameSafe($str){
+		$data = base64_encode($str);
+	    $data = str_replace(array('+','/','='),array('-','_',''), $data);
+	    return $data;
+	}
+	
+	/**
+	 * Reverse unique string
+	 *
+	 * @param string $str 
+	 * @return string
+	 */
+	public function reverseFilenameSafe($str) {
+	    $data = str_replace(array('-','_'),array('+','/'), $str);
+	    $mod4 = strlen($data) % 4;
+	    if ($mod4) {
+	        $data .= substr('====', $mod4);
+	    }
+	    return base64_decode($data);
+	}
+	
 	
 	/**
 	 * Strip tags from string or array
@@ -1277,7 +1414,7 @@ class Alkaline{
 	/**
 	 * Add comments from $_POST data
 	 *
-	 * @return bool True if successful
+	 * @return int|false Comment ID or false on failure
 	 */
 	public function addComments(){
 		// Configuration: comm_enabled
@@ -1306,7 +1443,11 @@ class Alkaline{
 			$comment_status = 1;
 		}
 		
-		$comment_text_raw = $this->makeUnicode(strip_tags($_POST['comment_' . $id .'_text']));
+		$comment_text_raw = $_POST['comment_' . $id .'_text'];
+		
+		if(empty($comment_text_raw)){
+			return false;
+		}
 		
 		$orbit = new Orbit;
 		
@@ -1315,8 +1456,7 @@ class Alkaline{
 			$comm_markup_ext = $this->returnConf('comm_markup_ext');
 			$comment_text = $orbit->hook('markup_' . $comm_markup_ext, $comment_text_raw, null);
 		}
-		
-		if(!isset($comment_text)){
+		else{
 			$comm_markup_ext = '';
 			$comment_text = $this->nl2br($comment_text_raw);
 		}
@@ -1330,8 +1470,8 @@ class Alkaline{
 		
 		$fields = array($id_type => $id,
 			'comment_status' => $comment_status,
-			'comment_text' => $comment_text,
-			'comment_text_raw' => $comment_text_raw,
+			'comment_text' => $this->makeUnicode($comment_text),
+			'comment_text_raw' => $this->makeUnicode($comment_text_raw),
 			'comment_markup' => $comm_markup_ext,
 			'comment_author_name' => strip_tags($_POST['comment_' . $id .'_author_name']),
 			'comment_author_uri' => strip_tags($_POST['comment_' . $id .'_author_uri']),
@@ -1355,7 +1495,156 @@ class Alkaline{
 			$this->updateCount('comments', 'posts', 'post_comment_count', $id);
 		}
 		
-		return true;
+		return $comment_id;
+	}
+	
+	// TRACKBACKS
+	
+	/**
+	 * Add trackbacks from $_REQUEST data
+	 *
+	 * @return string XML response
+	 */
+	public function addTrackbacks(){
+		// Configuration: trackback_enabled
+		if(!$this->returnConf('trackback_enabled')){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Trackbacks on this Web site are disabled.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if(isset($_REQUEST['id'])){ $id = $this->findID(strip_tags($_REQUEST['id'])); }
+		if(isset($_REQUEST['title'])){ $title = strip_tags($_REQUEST['title']); }
+		if(isset($_REQUEST['excerpt'])){ $excerpt = strip_tags($_REQUEST['excerpt']); }
+		if(isset($_REQUEST['url'])){ $uri = strip_tags($_REQUEST['url']); }
+		if(isset($_REQUEST['blog_name'])){ $blog_name = strip_tags($_REQUEST['blog_name']); }
+		
+		if(empty($uri)){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>No URL sent.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if(empty($id)){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>No post ID sent.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		// Get favicon
+		$domain = $this->siftDomain($uri);
+		
+		$ico_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.ico';
+		$png_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		
+		if(!file_exists($png_file)){
+			if(!file_exists(PATH . CACHE . 'favicons/')){
+				@mkdir(PATH . CACHE . 'favicons/', 0777, true);
+			}
+			
+			ini_set('default_socket_timeout', 1);
+			$favicon = @file_get_contents('http://www.google.com/s2/u/0/favicons?domain=' . $domain);
+			ini_restore('default_socket_timeout');
+			
+			$favicon = imagecreatefromstring($favicon);
+			imagealphablending($favicon, false);
+			imagesavealpha($favicon, true);
+			imagepng($favicon, $png_file);
+			imagedestroy($favicon);
+		}
+		
+		// Check if duplicate
+		$query = $this->prepare('SELECT * FROM trackbacks WHERE post_id = :post_id AND trackback_uri = :trackback_uri;');
+		
+		if(!$query->execute(array(':post_id' => $id, ':trackback_uri' => $uri))){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Internal server error.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		$trackbacks = $query->fetchAll();
+		
+		if(count($trackbacks) > 0){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Duplicate submission.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		// Store to database
+		$fields = array('post_id' => $id,
+			'trackback_title' => $this->makeUnicode($title),
+			'trackback_uri' => $uri,
+			'trackback_excerpt' => $this->makeUnicode($excerpt),
+			'trackback_blog_name' => $this->makeUnicode($blog_name),
+			'trackback_ip' => $_SERVER['REMOTE_ADDR']);
+		
+		if(!$trackback_id = $this->addRow($fields, 'trackbacks')){
+			$xml = '<?xml version="1.0" encoding="utf-8"?>';
+			$xml .= '<response>';
+			$xml .= '<error>1</error>';
+			$xml .= '<message>Internal server error.</message>';
+			$xml .= '</response>';
+			return $xml;
+		}
+		
+		if($this->returnConf('trackback_email')){
+			$this->email(0, 'New trackback', 'A new trackback has been submitted:' . "\r\n\n" . $uri . "\r\n\n" . LOCATION . BASE . ADMIN . 'posts' . URL_ID . $id . URL_RW);
+		}
+		
+		$this->updateCount('trackbacks', 'posts', 'post_trackback_count', $id);
+		
+		// If no errors
+		$xml = '<?xml version="1.0" encoding="utf-8"?>';
+		$xml .= '<response>';
+		$xml .= '<error>0</error>';
+		$xml .= '</response>';
+		
+		return $xml;
+	}
+	
+	// VERSIONS
+	
+	/**
+	 * Revert to title and text of a previous version
+	 *
+	 * @param int $version_id 
+	 * @return bool True if successful
+	 */
+	public function revertVersion($version_id){
+		if(empty($version_id)){ return false; }
+		if(!$version_id = intval($version_id)){ return false; }
+		
+		$version = $this->getRow('versions', $version_id);
+		
+		if(empty($version)){ return false; }
+		
+		if(!empty($version['post_id'])){
+			$post = new Post($version['post_id']);
+			$fields = array('post_title' => $version['version_title'],
+				'post_text_raw' => $version['version_text_raw']);
+			return $post->updateFields($fields, null, false);
+		}
+		elseif(!empty($version['page_id'])){
+			$page = new Page($version['page_id']);
+			$fields = array('page_title' => $version['version_title'],
+				'page_text_raw' => $version['version_text_raw']);
+			return $page->updateFields($fields, null, false);
+		}
 	}
 	
 	// TABLE COUNTING
@@ -1379,7 +1668,7 @@ class Alkaline{
 		$result_id_field = $this->tables[$result_table];
 		
 		// Get count
-		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
+		$query = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id AND ' . substr($count_id_field, 0, -2) . 'deleted IS NULL;');
 		
 		if(!$query->execute(array(':result_id' => $result_id))){
 			return false;
@@ -1416,7 +1705,7 @@ class Alkaline{
 		$results = $this->getTable($result_table);
 		
 		// Get count
-		$select = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id;');
+		$select = $this->prepare('SELECT COUNT(' . $count_id_field . ') AS count FROM ' . $count_table . ' WHERE ' . $result_id_field  . ' = :result_id AND ' . substr($count_id_field, 0, -2) . 'deleted IS NULL;');
 		
 		// Update row
 		$update = $this->prepare('UPDATE ' . $result_table . ' SET ' . $result_field . ' = :count WHERE ' . $result_id_field . ' = :result_id;');
@@ -1458,6 +1747,12 @@ class Alkaline{
 		unset($tables['themes']);
 		unset($tables['sizes']);
 		unset($tables['rights']);
+		unset($tables['versions']);
+		unset($tables['citations']);
+		unset($tables['items']);
+		unset($tables['trackbacks']);
+		
+		if(Alkaline::edition == 'standard'){ unset($tables['users']); }
 		
 		// Run helper function
 		foreach($tables as $table => $selector){
@@ -1484,8 +1779,8 @@ class Alkaline{
 	public function getBadges(){
 		$badges = array();
 		
-		// New
-		$badges['library'] = $this->countDirectory(PATH . SHOEBOX);
+		$badges['images'] = $this->countDirectory(PATH . SHOEBOX);
+		$badges['posts'] = $this->countDirectory(PATH . SHOEBOX, 'txt|mdown|md|markdown|textile');
 
 		$comment_ids = new Find('comments');
 		$comment_ids->status(0);
@@ -1504,10 +1799,10 @@ class Alkaline{
 	 */
 	public function getTags($show_hidden_tags=false){
 		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_name;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_name;');
 		}
 		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id ORDER BY tags.tag_id ASC;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_id ASC;');
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
@@ -1556,6 +1851,157 @@ class Alkaline{
 	}
 	
 	/**
+	 * Load a citation
+	 *
+	 * @param string $uri URI of citation
+	 * @param string $field Field for ID entry
+	 * @param int $field_id ID to enter
+	 * @return array Associative array of newly created citation row
+	 */
+	public function loadCitation($uri, $field, $field_id){
+		if((strpos($uri, 'http://') !== 0) and (strpos($uri, 'https://') !== 0)){ return false; }
+		
+		// Check if exists
+		$sql = 'SELECT * FROM citations WHERE citation_uri_requested = :citation_uri_requested';
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':citation_uri_requested' => $uri));
+		$citations = $query->fetchAll();
+		
+		foreach($citations as $citation){
+			if($citation[$field] == $field_id){ return $citation; }
+		}
+		
+		$domain = $this->siftDomain($uri);
+		
+		$ico_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.ico';
+		$png_file = PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		
+		if(count($citations) == 0){
+			ini_set('default_socket_timeout', 1);
+			$html = @file_get_contents($uri, null, null, 0, 7500);
+			ini_restore('default_socket_timeout');
+			
+			if($html == false){ return false; }
+			if(!preg_match('#Content-Type:\s*text/html#si', implode(' ', $http_response_header))){ return false; }
+			
+			if(!file_exists($png_file)){
+				if(!file_exists(PATH . CACHE . 'favicons/')){
+					@mkdir(PATH . CACHE . 'favicons/', 0777, true);
+				}
+				
+				ini_set('default_socket_timeout', 1);
+				$favicon = @file_get_contents('http://www.google.com/s2/u/0/favicons?domain=' . $domain);
+				ini_restore('default_socket_timeout');
+				
+				$favicon = imagecreatefromstring($favicon);
+				imagealphablending($favicon, false);
+				imagesavealpha($favicon, true);
+				imagepng($favicon, $png_file);
+				imagedestroy($favicon);
+				
+				/*
+			
+				preg_match('#<link[^>]*rel="shortcut icon"[^>]*href="([^>]*)"[^>]*>#si', $html, $match);
+				preg_match('#<link[^>]*href="([^>]*)"[^>]*rel="shortcut icon"[^>]*>#si', $html, $match2);
+				
+				if(isset($match[1])){
+					$favicon_uri = $match[1];
+				}
+				elseif(isset($match2[1])){
+					$favicon_uri = $match2[1];
+				}
+				else{
+					$favicon_uri = 'http://' . $domain . '/favicon.ico';
+				}
+			
+				if($favicon_uri[0] == '/'){
+					$favicon_uri = 'http://' . $domain . $favicon_uri;
+				}
+			
+				@copy($favicon_uri, $ico_file);
+			
+				if(file_exists($ico_file)){
+					$thumbnail = new Thumbnail($ico_file);
+					$thumbnail->resize(16, 16);
+					$thumbnail->save($png_file);
+					
+					//require_once(PATH . CLASSES . 'ico/ico.php');
+					//
+					// $ico = new Ico($ico_file);
+					// $favicon = $ico->GetIcon(0);
+					// if($favicon != false){
+					// 	imagepng($favicon, $png_file);
+					// 	imagedestroy($favicon);
+					// }
+					// @unlink($ico_file);
+				}
+				*/
+			}
+		
+			preg_match_all('#<meta.*?>#', $html, $metas);
+		
+			$html5_meta = array();
+		
+			foreach($metas[0] as $meta){
+				if(preg_match('#property="og:(.*?)"#si', $meta, $property)){
+					preg_match('#content="(.*?)"#si', $meta, $content);
+					$html5_meta[$property[1]] = $content[1];
+				}
+			}
+		
+			$save_fields = array('url', 'description', 'title', 'site_name');
+			$fields = array('citation_uri_requested' => $uri,
+				$field => $field_id);
+		
+			foreach($html5_meta as $property => $content){
+				if(in_array($property, $save_fields)){
+					if($property == 'url'){ $property = 'uri'; }
+					$field = 'citation_' . $property;
+					$fields[$field] = $this->makeUnicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
+				}
+			}
+			
+			if(empty($fields['citation_title'])){
+				preg_match('#<title>(.*?)</title>#si', $html, $match);
+				$fields['citation_title'] = $match[1];
+			}
+			
+			if(empty($fields['citation_description'])){
+				preg_match('#<meta[^>]*name="description"[^>]*content="([^>]*)"[^>]*>#si', $html, $match);
+				if(empty($match[1])){
+					preg_match('#<meta[^>]*content="([^>]*)"[^>]*name="description"[^>]*>#si', $html, $match);
+				}
+				
+				if(!empty($match[1])){
+					$fields['citation_description'] = $match[1];
+				}
+			}
+		}
+		else{
+			$fields = $citations[0];
+			unset($fields['citation_id']);
+			$fields[$field] = $field_id;
+			
+			if(file_exists(PATH . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png')){
+				$favicon_found = true;
+			}
+		}
+		
+		$fields['citation_id'] = $this->addRow($fields, 'citations');
+		
+		if(empty($fields['citation_site_name'])){
+			$fields['citation_site_name'] = $domain;
+		}
+		
+		if(file_exists($png_file)){
+			$fields['citation_favicon_uri'] = LOCATION . BASE . CACHE . 'favicons/' . $this->makeFilenameSafe($domain) . '.png';
+		}
+		
+		return $fields;
+	}
+	
+	/**
 	 * List tags by search, for suggestions
 	 *
 	 * @param string $hint Search string
@@ -1564,7 +2010,7 @@ class Alkaline{
 	public function hintTag($hint){
 		$hint_lower = strtolower($hint);
 		
-		$sql = 'SELECT DISTINCT(tags.tag_name) FROM tags WHERE LOWER(tags.tag_name LIKE :hint_lower) ORDER BY tags.tag_name ASC';
+		$sql = 'SELECT DISTINCT(tags.tag_name) FROM tags WHERE LOWER(tags.tag_name) LIKE :hint_lower ORDER BY tags.tag_name ASC';
 		
 		$query = $this->prepare($sql);
 		$query->execute(array(':hint_lower' => $hint_lower . '%'));
@@ -1577,6 +2023,64 @@ class Alkaline{
 		}
 		
 		return $tags_list;
+	}
+	
+	/**
+	 * List page category by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
+	public function hintPostCategory($hint){
+		$hint_lower = strtolower($hint);
+		
+		if(!empty($hint)){
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts WHERE LOWER(posts.post_category) LIKE :hint_lower ORDER BY posts.post_category ASC';
+		}
+		else{
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts ORDER BY posts.post_category ASC';
+		}
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
+		$posts = $query->fetchAll();
+		
+		$categories_list = array();
+		
+		foreach($posts as $post){
+			$categories_list[] = $post['post_category'];
+		}
+		
+		return $categories_list;
+	}
+	
+	/**
+	 * List category by search, for suggestions
+	 *
+	 * @param string $hint Search string
+	 * @return array
+	 */
+	public function hintPageCategory($hint){
+		$hint_lower = strtolower($hint);
+		
+		if(!empty($hint)){
+			$sql = 'SELECT DISTINCT(pages.page_category) FROM pages WHERE LOWER(pages.page_category) LIKE :hint_lower ORDER BY pages.page_category ASC';
+		}
+		else{
+			$sql = 'SELECT DISTINCT(posts.post_category) FROM posts ORDER BY posts.post_category ASC';
+		}
+		
+		$query = $this->prepare($sql);
+		$query->execute(array(':hint_lower' => $hint_lower . '%'));
+		$pages = $query->fetchAll();
+		
+		$categories_list = array();
+		
+		foreach($pages as $page){
+			$categories_list[] = $page['page_category'];
+		}
+		
+		return $categories_list;
 	}
 	
 	
@@ -1607,7 +2111,7 @@ class Alkaline{
 			return false;
 		}
 		
-		$query = $this->prepare('SELECT right_id, right_title FROM rights;');
+		$query = $this->prepare('SELECT right_id, right_title FROM rights WHERE right_deleted IS NULL;');
 		$query->execute();
 		$rights = $query->fetchAll();
 		
@@ -1701,12 +2205,12 @@ class Alkaline{
 			return false;
 		}
 		
-		if($static_only === true){	
-			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type;');
-			$query->execute(array(':set_type', 'static'));
+		if($static_only === true){
+			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_type = :set_type AND set_deleted IS NULL;');
+			$query->execute(array(':set_type' => 'static'));
 		}
 		else{
-			$query = $this->prepare('SELECT set_id, set_title FROM sets;');
+			$query = $this->prepare('SELECT set_id, set_title FROM sets WHERE set_deleted IS NULL;');
 			$query->execute();
 		}
 		$sets = $query->fetchAll();
@@ -1761,7 +2265,7 @@ class Alkaline{
 	 * Get HTML <select> of all EXIF names
 	 *
 	 * @param string $name Name and ID of <select>
-	 * @param integer $theme_id Default or selected exif_name
+	 * @param integer $exif_name Default or selected exif_name
 	 * @return string
 	 */
 	public function showEXIFNames($name, $exif_name=null){
@@ -1842,7 +2346,7 @@ class Alkaline{
 			$ids = self::convertToIntegerArray($ids);
 			$field = $this->tables[$table];
 			
-			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = ' . implode(' OR ' . $field . ' = ', $ids) . $order_by_sql . $limit_sql . ';');
+			$query = $this->prepare('SELECT * FROM ' . $table . ' WHERE (' . $field . ' IN (' . implode(', ', $ids) . '))' . $order_by_sql . $limit_sql . ';');
 		}
 		
 		$query->execute($sql_params);
@@ -1851,6 +2355,20 @@ class Alkaline{
 		// Delete extra users on standard licenses
 		if(($table == 'users') and (count($contents) > 1)){
 			$this->deleteDisallowedUsers();
+		}
+		
+		$contents_ordered = array();
+		
+		if(!empty($ids)){
+			// Ensure posts array correlates to post_ids array
+			foreach($ids as $id){
+				foreach($contents as $content){
+					if($id == $content[$field]){
+						$contents_ordered[] = $content;
+					}
+				}
+			}
+			$contents = $contents_ordered;
 		}
 		
 		return $contents;
@@ -1891,43 +2409,50 @@ class Alkaline{
 		}
 		
 		$table = $this->sanitize($table);
+		$now = date('Y-m-d H:i:s');
 		
 		// Add default fields
 		switch($table){
 			case 'comments':
-				$fields['comment_created'] = date('Y-m-d H:i:s');
+				if(empty($fields['comment_created'])){ $fields['comment_created'] = $now; }
+				if(empty($fields['comment_modified'])){ $fields['comment_modified'] = $now; }
 				break;
 			case 'guests':
-				$fields['guest_views'] = 0;
-				$fields['guest_created'] = date('Y-m-d H:i:s');
+				if(empty($fields['guest_views'])){ $fields['guest_views'] = 0; }
+				if(empty($fields['guest_created'])){ $fields['guest_created'] = $now; }
 				break;
 			case 'rights':
-				$fields['right_created'] = date('Y-m-d H:i:s');
-				$fields['right_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['right_created'])){ $fields['right_created'] = $now; }
+				if(empty($fields['right_modified'])){ $fields['right_modified'] = $now; }
 				break;
 			case 'pages':
-				$fields['page_views'] = 0;
-				$fields['page_created'] = date('Y-m-d H:i:s');
-				$fields['page_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['page_views'])){ $fields['page_views'] = 0; }
+				if(empty($fields['page_created'])){ $fields['page_created'] = $now; }
+				if(empty($fields['page_modified'])){ $fields['page_modified'] = $now; }
 				break;
 			case 'posts':
-				$fields['post_views'] = 0;
-				$fields['post_created'] = date('Y-m-d H:i:s');
-				$fields['post_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['post_views'])){ $fields['post_views'] = 0; }
+				if(empty($fields['post_created'])){ $fields['post_created'] = $now; }
+				if(empty($fields['post_modified'])){ $fields['post_modified'] = $now; }
+				break;
+			case 'citations':
+				if(empty($fields['citation_created'])){ $fields['citation_created'] = $now; }
+				if(empty($fields['citation_modified'])){ $fields['citation_modified'] = $now; }
 				break;
 			case 'sets':
-				$fields['set_views'] = 0;
-				$fields['set_created'] = date('Y-m-d H:i:s');
-				$fields['set_modified'] = date('Y-m-d H:i:s');
+				if(empty($fields['set_views'])){ $fields['set_views'] = 0; }
+				if(empty($fields['set_created'])){ $fields['set_created'] = $now; }
+				if(empty($fields['set_modified'])){ $fields['set_modified'] = $now; }
 				break;
 			case 'sizes':
 				if(!isset($fields['size_title'])){ $fields['size_title'] = ''; }
 				break;
+			case 'trackbacks':
+				if(empty($fields['trackback_created'])){ $fields['trackback_created'] = $now; }
+				break;
 			case 'users':
-				if(Alkaline::edition != 'multiuser'){
-					return false;
-				}
-				$fields['user_created'] = date('Y-m-d H:i:s');
+				if(Alkaline::edition == 'standard'){ return false; }
+				if(empty($fields['user_created'])){ $fields['user_created'] = $now; }
 				break;
 			default:
 				break;
@@ -1984,24 +2509,30 @@ class Alkaline{
 		
 		$ids = self::convertToIntegerArray($ids);
 		$field = $this->tables[$table];
+		$now = date('Y-m-d H:i:s');
 		
 		// Add default fields
 		if($default === true){
 			switch($table){
 				case 'images':
-					$fields['image_modified'] = date('Y-m-d H:i:s');
+					$fields['image_modified'] = $now;
+					break;
+				case 'comments':
+					$fields['comment_modified'] = $now;
 					break;
 				case 'rights':
-					$fields['right_modified'] = date('Y-m-d H:i:s');
+					$fields['right_modified'] = $now;
 					break;
+				case 'citations':
+					$fields['citation_modified'] = $now;
 				case 'sets':
-					$fields['set_modified'] = date('Y-m-d H:i:s');
+					$fields['set_modified'] = $now;
 					break;
 				case 'pages':
-					$fields['page_modified'] = date('Y-m-d H:i:s');
+					$fields['page_modified'] = $now;
 					break;
 				case 'posts':
-					$fields['post_modified'] = date('Y-m-d H:i:s');
+					$fields['post_modified'] = $now;
 					break;
 			}
 		}
@@ -2090,7 +2621,27 @@ class Alkaline{
 		$field = $this->tables[$table];
 		if(empty($field)){ return false; }
 		
-		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . ';');
+		$sql = '';
+		
+		// Don't show deleted items
+		$with_deleted_columns = array('images', 'posts', 'comments', 'sets', 'pages', 'rights');
+		if(in_array($table, $with_deleted_columns)){
+			$show_deleted = false;
+			if($this->admin === true){
+				$user = new User();
+				if(!empty($user) and $user->perm()){
+					if($user->returnPref('recovery_mode') === true){
+						$show_deleted = true;
+					}
+				}
+			}
+			
+			if($show_deleted === false){
+				$sql = ' WHERE ' . $table . '.' . substr($field, 0, -2) . 'deleted IS NULL';
+			}
+		}
+		
+		$query = $this->prepare('SELECT COUNT(' . $table . '.' . $field . ') AS count FROM ' . $table . $sql . ';');
 		$query->execute();
 		$count = $query->fetch();
 		
@@ -2145,6 +2696,11 @@ class Alkaline{
 		$query = $this->prepare('INSERT INTO stats (stat_session, stat_date, stat_duration, stat_referrer, stat_page, stat_page_type, stat_local) VALUES (:stat_session, :stat_date, :stat_duration, :stat_referrer, :stat_page, :stat_page_type, :stat_local);');
 		
 		$query->execute(array(':stat_session' => session_id(), ':stat_date' => date('Y-m-d H:i:s'), ':stat_duration' => $duration, ':stat_referrer' => $referrer, ':stat_page' => $page, ':stat_page_type' => $page_type, ':stat_local' => $local));
+		
+		if(isset($_SESSION['alkaline']['guest'])){
+			$_SESSION['alkaline']['guest']['guest_views']++;
+			$this->exec('UPDATE guests SET guest_views = ' . $_SESSION['alkaline']['guest']['guest_views'] . ' WHERE guest_id = ' . $_SESSION['alkaline']['guest']['guest_id'] . ';');
+		}
 	}
 	
 	// FORM HANDLING
@@ -2185,7 +2741,12 @@ class Alkaline{
 	 */
 	public function readForm($array=null, $name, $check=true){
 		if(is_array($array)){
-			@$value = $array[$name];
+			if(isset($array[$name])){
+				$value = $array[$name];
+			}
+			else{
+				$value = null;
+			}
 		}
 		else{
 			$value = $name;
@@ -2317,6 +2878,34 @@ class Alkaline{
 		$image_ids = array_unique($image_ids);
 		
 		return $image_ids;
+	}
+	
+	/**
+	 * Find meta references from an HTML string
+	 *
+	 * @param string $html Input HTML string
+	 * @return array Associate array of data (site_name, title, url)
+	 */
+	public function findMetaRef($html){
+		$array = array();
+		
+		preg_match_all('#<meta.*?>#', $html, $metas);
+		foreach($metas[0] as $meta){
+			if(stripos($meta, 'property="og:site_name"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['site_name'] = $match[1];
+			}
+			elseif(stripos($meta, 'property="og:title"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['title'] = $match[1];
+			}
+			elseif(stripos($meta, 'property="og:url"') !== false){
+				preg_match('#content="(.*?)"#si', $meta, $match);
+				$array['url'] = $match[1];
+			}
+		}
+		
+		return $array;
 	}
 	
 	/**
@@ -2533,7 +3122,7 @@ class Alkaline{
 		}
 		else{
 			$uri = @preg_replace('#[?&]{1,1}with=[^&]*(&)?#si', '\\1', $uri);
-			$uri = @preg_replace('#[\?\&]?page\=[0-9]#si', '', $uri);
+			$uri = @preg_replace('#[\?\&]?page\=[0-9]+#si', '', $uri);
 			$uri = @preg_replace('#\/page[0-9]+(/)?#si', '', $uri);
 
 			if(strpos($uri, '?')){
@@ -2657,9 +3246,10 @@ class Alkaline{
 	/**
 	 * Current page for redirects (removes all GET variables except page)
 	 *
+	 * @param array $get Append to URL (GET variables as associative array)
 	 * @return string
 	 */
-	public function location(){
+	public function location($get=null){
 		$location = LOCATION;
 		$location .= preg_replace('#\?.*$#si', '', $_SERVER['REQUEST_URI']);
 		
@@ -2667,6 +3257,12 @@ class Alkaline{
 		preg_match('#page=[0-9]+#si', $_SERVER['REQUEST_URI'], $matches);
 		if(!empty($matches[0])){
 			$location .= '?' . $matches[0];
+			if(!empty($params)){
+				$location .= '&' . http_build_query($get);
+			}
+		}
+		elseif(!empty($params)){
+			$location .= '?' . http_build_query($get);
 		}
 		
 		return $location;
@@ -2715,6 +3311,7 @@ class Alkaline{
 	 * @return void
 	 */
 	public function callback($url=null){
+		unset($_SESSION['alkaline']['go']);
 		if(!empty($_SESSION['alkaline']['callback'])){
 			header('Location: ' . $_SESSION['alkaline']['callback']);
 		}
@@ -2744,6 +3341,17 @@ class Alkaline{
 		}
 	}
 	
+	/**
+	 * Sift through a URI (http://www.whatever.com/this/) for just the domain (www.whatever.com)
+	 * 
+	 * @param string $uri
+	 * @return string
+	 */
+	public function siftDomain($uri){
+		$domain = preg_replace('#https?://([^/]*).*#si', '$1', $uri);
+		return $domain;
+	}
+	
 	// MAIL
 	
 	/**
@@ -2754,7 +3362,7 @@ class Alkaline{
 	 * @param string $message 
 	 * @return True if successful
 	 */
-	public function email($to=0, $subject, $message){
+	public function email($to=0, $subject=null, $message=null){
 		if(empty($subject) or empty($message)){ return false; }
 		
 		if($to == 0){
@@ -2786,17 +3394,25 @@ class Alkaline{
 	/**
 	 * Set errors
 	 *
-	 * @param int|string $severity Severity (PHP error constant) or title (user-generated)
+	 * @param int|string|Exception $severity Severity (PHP error constant), title (user-generated), or exception (OO-code generated)
 	 * @param string $message 
 	 * @param string $filename
 	 * @param int $line_number
 	 * @param int|string|array $http_headers Index array of HTTP headers to send (if an item is an integer, send as status code)
 	 * @return void
 	 */
-	public function addError($severity, $message, $filename=null, $line_number=null, $http_headers=null){
+	public static function addError($severity, $message=null, $filename=null, $line_number=null, $http_headers=null){
 		if(!(error_reporting() & $severity)){
 			// This error code is not included in error_reporting
 			// return;
+		}
+		
+		// Is exception?
+		if(is_object($severity)){
+			$message = $severity->getMessage();
+			$filename = $severity->getFile();
+			$line_number = $severity->getLine();
+			$severity = E_USER_ERROR;
 		}
 		
 		if(is_string($severity)){
@@ -3006,18 +3622,12 @@ class Alkaline{
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
 			case E_USER_ERROR:
-				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'error', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
-				session_write_close();
-				
-				// Get error page
-				ob_start();
-				chdir(PATH . ADMIN);
-				require('error.php');
-				ob_flush();
-				
-				// Quit
-				exit();
-				break;
+				try{
+					throw new ErrorException($message, 0, E_USER_ERROR, $filename, $line_number);
+				}
+				catch(ErrorException $e){
+					self::addException($e);
+				}
 			default:
 				$_SESSION['alkaline']['errors'][] = array('constant' => $severity, 'severity' => 'warning', 'message' => $message, 'filename' => $filename, 'line_number' => $line_number);
 				break;
@@ -3027,11 +3637,21 @@ class Alkaline{
 	}
 	
 	/**
+	 * Add Exception
+	 *
+	 * @param Exception $e 
+	 * @return void
+	 */
+	public static function addException($e){
+		throw new AlkalineException($e);
+	}
+	
+	/**
 	 * Display errors
 	 *
 	 * @return void|string HTML-formatted notifications 
 	 */
-	public function returnErrors(){
+	public static function returnErrors(){
 		if(!isset($_SESSION['alkaline']['errors'])){ return; }
 		
 		$count = @count($_SESSION['alkaline']['errors']);
@@ -3078,7 +3698,7 @@ class Alkaline{
 		// Dispose of messages
 		unset($_SESSION['alkaline']['errors']);
 		
-		return '<span>(<a href="#" class="show">' . implode(' ,', $overview) . '</a>)</span><div class="reveal"><ol class="errors">' . implode("\n", $list) . '</ol></div>';
+		return '<span>(<a href="#" class="show">' . implode(', ', $overview) . '</a>)</span><div class="reveal"><ol class="errors">' . implode("\n", $list) . '</ol></div>';
 	}
 	
 	/**
@@ -3099,7 +3719,7 @@ class Alkaline{
 	 * @return void
 	 */
 	public function report($message, $number=null){
-		if(@$_SESSION['alkaline']['warning'] == $message){ return false; }
+		if(isset($_SESSION['alkaline']['warning']) and ($_SESSION['alkaline']['warning'] == $message)){ return false; }
 		
 		$_SESSION['alkaline']['warning'] = $message;
 		
@@ -3140,6 +3760,81 @@ class Alkaline{
 		$this->addError(E_USER_ERROR, 'Alkaline Multiuser is required for multiuser functionality');
 		
 		return true;
+	}
+	
+	/**
+	 * Compare two strings
+	 *
+	 * @param string $string1 
+	 * @param string $string2 
+	 * @return string
+	 */
+	public function compare($string1, $string2){
+		require_once(PATH . CLASSES . 'text_diff/Diff.php');
+		require_once(PATH . CLASSES . 'text_diff/Diff/Renderer/inline.php');
+		
+		$lines1 = explode("\n", $string1);
+		$lines2 = explode("\n", $string2);
+		
+		$diff     = new Text_Diff('auto', array($lines1, $lines2));
+		$renderer = new Text_Diff_Renderer_inline();
+		return nl2br($renderer->render($diff));
+	}
+}
+
+class AlkalineException extends Exception implements Serializable{
+	public $public_trace;
+	public $public_message;
+	
+	public function __construct($e){
+		parent::__construct($e);
+		
+		$this->public_trace = $this->getTrace();
+		
+		if(is_object($this->public_trace[0]['args'][0])){
+			$this->public_message = $this->public_trace[0]['args'][0]->message;
+		}
+		else{
+			$this->public_message = $this->message;
+		}
+		
+		$_SESSION['alkaline']['exception'] = $this;
+		session_write_close();
+		
+		// Get error page
+		ob_start();
+		chdir(PATH . ADMIN);
+		require('error.php');
+		ob_flush();
+		
+		session_start();
+		unset($_SESSION['alkaline']['exception']);
+	
+		// Quit
+		exit();
+		break;
+	}
+	public function serialize(){
+		return serialize(array($this->validator, $this->arguments, $this->code, $this->message));
+	}
+
+	public function unserialize($serialized){
+		list($this->validator, $this->arguments, $this->code, $this->message) = unserialize($serialized);
+	}
+	
+	public function getPublicMessage(){
+		return $this->public_message;
+	}
+	
+	public function getPublicTrace(){
+		if(is_object($this->public_trace[0]['args'][0])){
+			$trace = $this->public_trace[0]['args'][0]->getTrace();
+		}
+		else{
+			$trace = $this->public_trace;
+		}
+		
+		return $trace;
 	}
 }
 

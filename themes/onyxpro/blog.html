@@ -1,0 +1,47 @@
+
+{if:Posts}
+	{block:Posts}
+		<div class="span-24 append-bottom last">
+			<div class="span-4 append-1">
+				<div class="quiet right">
+					<h2>&#0160;</h2>
+					{Post_Published|reltime}<br />
+					<a href="{Post_URI}">Permalink</a>
+				</div>
+			</div>
+			<div class="span-14 post">
+				<h2><a href="{Post_URI}">{Post_Title}</a></h2>
+	
+				<div class="large">{Post_Text}</div>
+				
+				<p class="data">
+					<a href="{Post_URI}#comments" class="comment">{if:Post_Comment_Count}{Post_Comment_Count}{else:Post_Comment_Count}0{/if:Post_Comment_Count} comments</a>
+				</p>
+			</div>
+			<div class="span-5 last">
+				
+			</div>
+		</div>
+	{/block:Posts}
+{/if:Posts}
+
+{if:Posts}
+<div class="span-24 prepend-top append-bottom nav last">
+	<div class="span-5 append-bottom">
+		&#0160;
+	</div>
+	<div class="span-7">
+		<div class="{if:Page_Previous}nav_left{/if:Page_Previous}">
+			{if:Page_Previous}<a href="{Page_Previous_URI}">Newer posts</a>{/if:Page_Previous}&#0160;
+		</div>
+	</div>
+	<div class="span-7 right">
+		<div class="{if:Page_Next}nav_right{/if:Page_Next}">
+			&#0160;{if:Page_Next}<a href="{Page_Next_URI}">Older posts</a>{/if:Page_Next}
+		</div>
+	</div>
+	<div class="span-5 last">
+		
+	</div>
+</div>
+{/if:Posts}

@@ -50,12 +50,20 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('shoe_exif', @$_POST['shoe_exif']);
 	$alkaline->setConf('shoe_iptc', @$_POST['shoe_iptc']);
 	$alkaline->setConf('shoe_geo', @$_POST['shoe_geo']);
-	$alkaline->setConf('image_markup', @$_POST['image_markup']);
-	if(@$_POST['image_markup'] == ''){ $_POST['image_markup_ext'] = ''; }
+	$alkaline->setConf('shoe_max', @$_POST['shoe_max']);
+	if(intval($_POST['shoe_max_count'])){
+		$alkaline->setConf('shoe_max_count', @$_POST['shoe_max_count']);
+	}
+	else{
+		$alkaline->setConf('shoe_max_count', 20);
+	}
 	
-	$alkaline->setConf('image_markup_ext', @$_POST['image_markup_ext']);
-	$alkaline->setConf('post_markup', @$_POST['post_markup']);
-	if(@$_POST['post_markup'] == ''){ $_POST['post_markup_ext'] = ''; }
+	$alkaline->setConf('image_hdm', @$_POST['image_hdm']);
+	$alkaline->setConf('image_hdm_format', @$_POST['image_hdm_format']);
+	$alkaline->setConf('web_markup', @$_POST['web_markup']);
+	if(@$_POST['web_markup'] == ''){ $_POST['web_markup_ext'] = ''; }
+	
+	$alkaline->setConf('web_markup_ext', @$_POST['web_markup_ext']);
 	
 	$alkaline->setConf('post_markup_ext', @$_POST['post_markup_ext']);
 	$alkaline->setConf('post_div_wrap', @$_POST['post_div_wrap']);
@@ -63,6 +71,7 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('bulk_delete', @$_POST['bulk_delete']);
 	
 	$alkaline->setConf('thumb_imagick', @$_POST['thumb_imagick']);
+	$alkaline->setConf('thumb_metadata', @$_POST['thumb_metadata']);
 	$alkaline->setConf('thumb_compress', @$_POST['thumb_compress']);
 	if(@$_POST['thumb_compress'] == ''){ $_POST['thumb_compress_tol'] = 100; }
 	
@@ -82,18 +91,31 @@ if(!empty($_POST['configuration_save'])){
 	$alkaline->setConf('comm_markup_ext', @$_POST['comm_markup_ext']);
 	$alkaline->setConf('comm_allow_html', @$_POST['comm_allow_html']);
 	$alkaline->setConf('comm_allow_html_tags', @$_POST['comm_allow_html_tags']);
+	
+	$alkaline->setConf('trackback_enabled', @$_POST['trackback_enabled']);
+	$alkaline->setConf('trackback_email', @$_POST['trackback_email']);
+	
+	$alkaline->setConf('guest_remember', @$_POST['guest_remember']);
+	$alkaline->setConf('guest_remember_time', @$_POST['guest_remember_time']);
+	
 	$alkaline->setConf('rights_default', @$_POST['rights_default']);
 	$alkaline->setConf('rights_default_id', @$_POST['rights_default_id']);
 	$alkaline->setConf('stat_enabled', @$_POST['stat_enabled']);
 	$alkaline->setConf('stat_ignore_user', @$_POST['stat_ignore_user']);
 	$alkaline->setConf('canvas_remove_unused', @$_POST['canvas_remove_unused']);
+	$alkaline->setConf('syndication_cache_time', @$_POST['syndication_cache_time']);
 	$alkaline->setConf('syndication_summary_only', @$_POST['syndication_summary_only']);
+	$alkaline->setConf('sphinx_enabled', @$_POST['sphinx_enabled']);
+	$alkaline->setConf('sphinx_server', @$_POST['sphinx_server']);
+	$alkaline->setConf('sphinx_port', @$_POST['sphinx_port']);
+	$alkaline->setConf('sphinx_index', @$_POST['sphinx_index']);
+	$alkaline->setConf('sphinx_max_exec', @$_POST['sphinx_max_exec']);
 	$alkaline->setConf('maint_reports', @$_POST['maint_reports']);
 	$alkaline->setConf('maint_debug', @$_POST['maint_debug']);
 	$alkaline->setConf('maint_disable', @$_POST['maint_disable']);
 	
 	if($alkaline->saveConf()){
-		$alkaline->addNote('The configuration has been saved.', 'success');
+		$alkaline->addNote('The configuration has been saved. Changes not taking effect instantly? <a href="' . BASE . ADMIN . 'maintenance' . URL_CAP . '">Delete your cache files.</a>', 'success');
 	}
 	else{
 		$alkaline->addNote('The configuration could not be saved.', 'error');
@@ -110,7 +132,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 ?>
 
 <form action="" id="configuration" method="post">
-	<h1>Configuration</h1>
+	<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/configuration.png" alt="" /> Configuration</h1>
 	
 	<h3>General</h3>
 	
@@ -133,7 +155,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="web_description">Description:</label></td>
+			<td class="right"><label for="web_description">Description:</label></td>
 			<td><textarea id="web_description" name="web_description" style="height: 70px; line-height: 1.5em;"><?php echo $alkaline->returnConf('web_description'); ?></textarea></td>
 		</tr>
 		<tr>
@@ -144,13 +166,13 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="theme_id">Theme:</label></td>
+			<td class="right middle"><label for="theme_id">Theme:</label></td>
 			<td>
 				<?php echo $alkaline->showThemes('theme_id', $alkaline->returnConf('theme_id')); ?>
 			</td>
 		</tr>
 		<tr>
-			<td class="right pad"><label for="web_timezone">Time zone:</label></td>
+			<td class="right middle"><label for="web_timezone">Time zone:</label></td>
 			<td>
 				<?php
 
@@ -206,7 +228,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				?>
 			</td>
 		</tr>
-	</table>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr class="markup">
+			<td class="input right middle"><input type="checkbox" id="web_markup" name="web_markup" <?php echo $alkaline->readConf('web_markup'); ?> value="true" /></td>
+			<td>
+				<label for="web_markup">Markup future content (except visitor comments) using <select name="web_markup_ext" title="<?php echo $alkaline->returnConf('web_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
+			</td>
+		</tr>
+	</table><br />
 	
 	<h3>Shoebox</h3>
 	
@@ -229,16 +261,30 @@ require_once(PATH . ADMIN . 'includes/header.php');
 				<label for="shoe_geo">Import geolocation data</label> (as available)
 			</td>
 		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="shoe_max" name="shoe_max" <?php echo $alkaline->readConf('shoe_max'); ?> value="true" /></td>
+			<td class="description">
+				<label for="shoe_max">Limit the number of images processed</label><br />
+				Process up to <input type="text" id="shoe_max_count" name="shoe_max_count" value="<?php echo $alkaline->returnConf('shoe_max_count'); ?>" class="xs" /> images on every load
+			</td>
+		</tr>
 	</table>
 	
 	<h3>Images</h3>
 	
 	<table>
-		<tr class="markup">
-			<td class="input pad"><input type="checkbox" id="image_markup" name="image_markup" <?php echo $alkaline->readConf('image_markup'); ?> value="true" /></td>
-			<td>
-				<label for="image_markup">Markup new image descriptions using <select name="image_markup_ext" title="<?php echo $alkaline->returnConf('image_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your images, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-image-markup' ?>">reset your image markup</a>
+		<tr>
+			<td class="input"><input type="checkbox" id="image_hdm" name="image_hdm" <?php echo $alkaline->readConf('image_hdm'); ?> value="true" /></td>
+			<td class="description">
+				<label for="image_hdm">
+					Enable hierarchical directory mode using
+					<select name="image_hdm_format">
+						<option value="yyyy/mm/dd" <?php echo $user->readConf('image_hdm_format', 'yyyy/mm/dd'); ?>>date uploaded-based (YYYY/MM/DD)</option>
+						<option value="1000" <?php echo $user->readConf('image_hdm_format', '1000'); ?>>ID-based (1000, 2000, 3000)</option>
+					</select>
+					format
+				</label><br />
+				Recommended for efficiently storing large image libraries, <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP; ?>">reorganize your image library</a> after changing this setting
 			</td>
 		</tr>
 	</table>
@@ -247,16 +293,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="input"><input type="checkbox" id="post_size_id" name="post_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="post_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('post_size_id', $alkaline->returnConf('post_size_id')); ?> when adding images by point-and-click</label>
-			</td>
-		</tr>
-		<tr class="markup">
-			<td class="input pad"><input type="checkbox" id="post_markup" name="post_markup" <?php echo $alkaline->readConf('post_markup'); ?> value="true" /></td>
-			<td>
-				<label for="post_markup">Markup new posts using <select name="post_markup_ext" title="<?php echo $alkaline->returnConf('post_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your posts, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-post-markup' ?>">reset your post markup</a>
 			</td>
 		</tr>
 		<tr>
@@ -282,16 +321,25 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="thumb_imagick" name="thumb_imagick" <?php echo $alkaline->readConf('thumb_imagick'); if(!class_exists('imagick')){ echo 'disabled="disabled"'; } ?> value="true" /></td>
 			<td class="description">
-				<label for="thumb_imagick">Use ImageMagick library</label> (if installed)<br />
-				Create higher-quality thumbnails at the cost of increased system resources
+				<label for="thumb_imagick">Use ImageMagick library</label>
+				<?php if(!class_exists('imagick')){ echo '(not installed)'; } ?>
+				<br />
+				Create superior thumbnails at the cost of increased system resources
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="thumb_metadata" name="thumb_metadata" <?php echo $alkaline->readConf('thumb_metadata'); ?> value="true" /></td>
+			<td class="description">
+				<label for="thumb_metadata">Retain image metadata</label><br />
+				Copy image metadata from original image and apply it to thumbnails (increases thumbnail file size)
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="thumb_compress" name="thumb_compress" <?php echo $alkaline->readConf('thumb_compress'); ?> value="true" /></td>
 			<td class="description">
-				<label for="thumb_compress">Compress thumbnails to reduce file size</label><br />
+				<label for="thumb_compress">Compress thumbnails to reduce file size and conserve bandwidth</label><br />
 				Use
 				<select name="thumb_compress_tol">
 					<option value="95" <?php echo $user->readConf('thumb_compress_tol', '95'); ?>>very low</option>
@@ -347,7 +395,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
+			<td class="input middle"><input type="checkbox" id="page_size_id" name="page_size_id" disabled="disabled" checked="checked" /></td>
 			<td class="description">
 				<label for="page_size_id">Use the thumbnail size <?php echo $alkaline->showSizes('page_size_id', $alkaline->returnConf('page_size_id')); ?> when adding images by point-and-click</label>
 			</td>
@@ -383,17 +431,50 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			</td>
 		</tr>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="comm_markup" name="comm_markup" <?php echo $alkaline->readConf('comm_markup'); ?> value="true" /></td>
 			<td>
-				<label for="comm_markup">Markup new comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label><br />
-				To use this setting for all your comments, save your configuration and then <a href="<?php echo BASE . ADMIN . 'maintenance' . URL_CAP . '#reset-comment-markup' ?>">reset your comment markup</a>
+				<label for="comm_markup">Markup visitor comments using <select name="comm_markup_ext" title="<?php echo $alkaline->returnConf('comm_markup_ext'); ?>"><?php $orbit->hook('markup_html'); ?></select></label>
 			</td>
 		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="comm_allow_html" name="comm_allow_html" <?php echo $alkaline->readConf('comm_allow_html'); ?> value="true" /></td>
 			<td>
-				<label for="comm_allow_html">Allow select HTML in comments</label><br />
-				Allow only the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="xs" />
+				<label for="comm_allow_html">Allow only select HTML in comments</label><br />
+				Permit the following HTML tags (for example, &#0060;a&#0062;&#0060;em&#0062;&#0060;strong&#0062;): <input type="text" id="comm_allow_html_tags" name="comm_allow_html_tags" value="<?php echo $alkaline->returnConf('comm_allow_html_tags'); ?>" class="s" />
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="comm_close" name="comm_close" <?php echo $alkaline->readConf('comm_close'); ?> value="true" /></td>
+			<td class="description">
+				<label for="comm_close">Automatically close items to new comments
+					<select name="comm_close_time">
+						<option value="86400" <?php echo $user->readConf('comm_close_time', '86400'); ?>>24 hours</option>
+						<option value="259200" <?php echo $user->readConf('comm_close_time', '259200'); ?>>three days</option>
+						<option value="604800" <?php echo $user->readConf('comm_close_time', '604800'); ?>>one week</option>
+						<option value="2592000" <?php echo $user->readConf('comm_close_time', '2592000'); ?>>one month</option>
+						<option value="7776000" <?php echo $user->readConf('comm_close_time', '7776000'); ?>>three months</option>
+						<option value="31536000" <?php echo $user->readConf('comm_close_time', '31536000'); ?>>one year</option>
+					</select>
+				after the item&#8217;s publication date</label>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Trackbacks</h3>
+	
+	<p>Trackbacks allow you to monitor discussion of your posts on other Web sites.</p>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="trackback_enabled" name="trackback_enabled" <?php echo $alkaline->readConf('trackback_enabled'); ?> value="true" /></td>
+			<td class="description">
+				<label for="trackback_enabled">Enable trackbacks</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="input"><input type="checkbox" id="trackback_email" name="trackback_email" <?php echo $alkaline->readConf('trackback_email'); ?> value="true" /></td>
+			<td class="description">
+				<label for="trackback_email">Email new trackbacks to administrator</label>
 			</td>
 		</tr>
 	</table>
@@ -402,9 +483,28 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<table>
 		<tr>
-			<td class="input pad"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
+			<td class="input"><input type="checkbox" id="rights_default" name="rights_default" <?php echo $alkaline->readConf('rights_default'); ?> value="true" /></td>
 			<td class="description">
 				<label for="rights_default">Attach the rights set <?php echo $alkaline->showRights('rights_default_id', $alkaline->returnConf('rights_default_id')); ?> to new images</label>
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Guests</h3>
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="guest_remember" name="guest_remember" <?php echo $alkaline->readConf('guest_remember'); ?> value="true" /></td>
+			<td class="description">
+				<label for="guest_remember">Remember guests for
+					<select name="guest_remember_time">
+						<option value="86400" <?php echo $user->readConf('guest_remember_time', '86400'); ?>>24 hours</option>
+						<option value="259200" <?php echo $user->readConf('guest_remember_time', '259200'); ?>>three days</option>
+						<option value="604800" <?php echo $user->readConf('guest_remember_time', '604800'); ?>>one week</option>
+						<option value="2592000" <?php echo $user->readConf('guest_remember_time', '2592000'); ?>>one month</option>
+						<option value="7776000" <?php echo $user->readConf('guest_remember_time', '7776000'); ?>>three months</option>
+						<option value="31536000" <?php echo $user->readConf('guest_remember_time', '31536000'); ?>>one year</option>
+					</select>
+				after their session ends</label>
 			</td>
 		</tr>
 	</table>
@@ -440,11 +540,79 @@ require_once(PATH . ADMIN . 'includes/header.php');
 	
 	<h3>Syndication</h3>
 	
+	<p><a href="http://atomenabled.org/">Atom</a> XML feeds allow your site&#8217;s visitors to keep track of updates on your site.</p>
+	
 	<table>
+		<tr>
+			<td class="input"><input type="checkbox" checked="checked" disabled="disabled" /></td>
+			<td class="description">
+				<label>Cache the newsfeed for
+					<select id="syndication_cache_time" name="syndication_cache_time">
+						<option value="15" <?php echo $user->readConf('syndication_cache_time', '15'); ?>>15 seconds</option>
+						<option value="30" <?php echo $user->readConf('syndication_cache_time', '30'); ?>>30 seconds</option>
+						<option value="60" <?php echo $user->readConf('syndication_cache_time', '60'); ?>>1 minute</option>
+						<option value="120" <?php echo $user->readConf('syndication_cache_time', '120'); ?>>2 minutes</option>
+						<option value="300" <?php echo $user->readConf('syndication_cache_time', '300'); ?>>5 minutes</option>
+					</select>
+				</label><br />
+				Caching the newsfeed longer improves performance at the expense of being out of date
+			</td>
+		</tr>
 		<tr>
 			<td class="input"><input type="checkbox" id="syndication_summary_only" name="syndication_summary_only" <?php echo $alkaline->readConf('syndication_summary_only'); ?> value="true" /></td>
 			<td class="description">
-				<label for="syndication_summary_only">Only include post summaries</label> (require click-through to read full post)
+				<label for="syndication_summary_only">Only include post summaries</label><br />
+				Requires visitors to click through to read full posts
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Sphinx</h3>
+	
+	<p><a href="http://sphinxsearch.com/">Sphinx</a> is an enterprise-grade search server. It must be manually installed and configured.</p>
+	
+	<table>
+		<tr>
+			<td class="input"><input type="checkbox" id="sphinx_enabled" name="sphinx_enabled" <?php echo $alkaline->readConf('sphinx_enabled'); ?> <?php if(!class_exists('SphinxClient', false)){ echo 'disabled="disabled"'; } ?> value="true" /></td>
+			<td class="description">
+				<label for="sphinx_enabled">Use Sphinx to process search queries</label>
+				<?php if(class_exists('SphinxClient', false)){ ?>
+					(if installed and configured)
+				<?php } else{ ?>
+					(not installed)
+				<?php } ?>
+				
+				<p class="slim"><span class="switch">&#9656;</span> <a href="#" class="show">Show advanced options</a></p>
+
+				<div class="reveal">
+					<table>
+						<tr>
+							<td class="right middle"><label for="sphinx_server">Server:</label></td>
+							<td><input type="text" id="sphinx_server" name="sphinx_server" class="s" placeholder="localhost" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_port">Port:</label></td>
+							<td><input type="text" id="sphinx_port" name="sphinx_port" class="xs" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_index">Index(es):</label></td>
+							<td><input type="text" id="sphinx_index" name="sphinx_index" class="s" /> <span class="quiet">(optional)</span></td>
+						</tr>
+						<tr>
+							<td class="right middle"><label for="sphinx_max_exec">Maximum execution time:</label></td>
+							<td>
+								<select id="sphinx_max_exec" name="sphinx_max_exec">
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', ''); ?>>None</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '1'); ?>>1 second</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '3'); ?>>3 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '5'); ?>>5 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '10'); ?>>10 seconds</option>
+									<option value="" <?php echo $user->readConf('sphinx_max_exec', '30'); ?>>30 seconds</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -456,7 +624,7 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<td class="input"><input type="checkbox" id="maint_reports" name="maint_reports" <?php echo $alkaline->readConf('maint_reports'); ?> value="true" /></td>
 			<td class="description">
 				<label for="maint_reports">Send anonymous system profile and usage data</label><br />
-				Transparently transmits nonidentifiable data to help improve Alkaline
+				Transmits nonidentifiable data to <a href="http://www.alkalineapp.com/">alkalineapp.com</a> help improve Alkaline
 			</td>
 		</tr>
 		<tr>

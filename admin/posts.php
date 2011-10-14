@@ -45,7 +45,28 @@ if(!empty($_POST['post_id'])){
 	$posts = new Post($post_id);
 	
 	if(!empty($_POST['post_delete']) and ($_POST['post_delete'] == 'delete')){
-		$alkaline->deleteRow('posts', $post_id);
+		if($posts->delete()){
+			$alkaline->addNote('The post has been deleted.', 'success');
+		}
+	}
+	elseif(!empty($_POST['post_recover']) and ($_POST['post_recover'] == 'recover')){
+		if($posts->recover()){
+			$alkaline->addNote('The post has been recovered.', 'success');
+		}
+	}
+	elseif(!empty($_POST['post_quick'])){
+		if($_POST['post_quick'] == 'view_images'){
+			header('Location: ' . BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $posts->posts[0]['post_id'] . URL_RW);
+			exit();
+		}
+		elseif($_POST['post_quick'] == 'publish'){
+			$fields = array('post_published' => 'now');
+			$posts->updateFields($fields);
+		}
+		elseif($_POST['post_quick'] == 'unpublish'){
+			$fields = array('post_published' => '');
+			$posts->updateFields($fields);
+		}
 	}
 	else{
 		$post_title = trim($_POST['post_title']);
@@ -60,22 +81,30 @@ if(!empty($_POST['post_id'])){
 		$post_text_raw = $_POST['post_text_raw'];
 		$post_text = $post_text_raw;
 		
+		$post_excerpt_raw = $_POST['post_excerpt_raw'];
+		$post_excerpt = $post_excerpt_raw;
+		
 		// Configuration: post_markup
 		if(!empty($_POST['post_markup'])){
 			$post_markup_ext = $_POST['post_markup'];
-			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text_raw);
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
+			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
-		elseif($alkaline->returnConf('post_markup')){
-			$post_markup_ext = $alkaline->returnConf('post_markup_ext');
-			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text);
+		elseif($alkaline->returnConf('web_markup')){
+			$post_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$post_text = $orbit->hook('markup_' . $post_markup_ext, $post_text_raw, $post_text_raw);
+			$post_title = $orbit->hook('markup_title_' . $post_markup_ext, $post_title, $post_title);
+			$post_excerpt = $orbit->hook('markup_' . $post_markup_ext, $post_excerpt_raw, $post_excerpt);
 		}
 		else{
 			$post_markup_ext = '';
 			$post_text = $alkaline->nl2br($post_text_raw);
+			$post_excerpt = $alkaline->nl2br($post_excerpt_raw);
 		}
 		
 		// Comment disabling
-		if(@$_POST['post_comment_disabled'] == 'disabled'){
+		if(isset($_POST['post_comment_disabled']) and ($_POST['post_comment_disabled'] == 'disabled')){
 			$post_comment_disabled = 1;
 		}
 		else{
@@ -88,18 +117,62 @@ if(!empty($_POST['post_id'])){
 		
 		$fields = array('post_title' => $alkaline->makeUnicode($post_title),
 			'post_title_url' => $post_title_url,
+			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_text_raw' => $alkaline->makeUnicode($post_text_raw),
+			'post_excerpt' => $alkaline->makeUnicode($post_excerpt),
+			'post_excerpt_raw' => $alkaline->makeUnicode($post_excerpt_raw),
+			'post_geo' => @$_POST['post_geo'],
+			'post_source' => $alkaline->makeUnicode($_POST['post_source']),
 			'post_markup' => $post_markup_ext,
 			'post_images' => $post_images,
-			'post_text' => $alkaline->makeUnicode($post_text),
 			'post_published' => @$_POST['post_published'],
+			'post_category' => $alkaline->makeUnicode(@$_POST['post_category']),
 			'post_comment_disabled' => $post_comment_disabled,
-			'post_words' => $post_words);
+			'post_words' => $post_words,
+			'right_id' => @$_POST['right_id']);
 		
+		$posts->attachUser($user);
 		$posts->updateFields($fields);
 	}
 	
-	unset($post_id);
+	if(!empty($_POST['post_send']) and ($_POST['post_send'] == 'send')){
+		$posts = new Post($post_id);
+		$orbit->hook('send_' . $_POST['post_send_service'] . '_post', $posts->posts, null);
+	}
+	
+	if(!empty($_REQUEST['go'])){
+		$post_ids = new Find('posts');
+		$post_ids->memory();
+		$post_ids->with($post_id);
+		$post_ids->offset(1);
+		$post_ids->page(null, 1);
+		$post_ids->find();
+		
+		if($_REQUEST['go'] == 'next'){
+			$_SESSION['alkaline']['go'] = 'next';
+			if(!empty($post_ids->ids_after[0])){
+				$post_id = $post_ids->ids_after[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($post_id);
+			}
+		}
+		else{
+			$_SESSION['alkaline']['go'] = 'previous';
+			if(!empty($post_ids->ids_before[0])){
+	 			$post_id = $post_ids->ids_before[0];
+			}
+			else{
+				unset($_SESSION['alkaline']['go']);
+				unset($post_id);
+			}
+		}
+	}
+	else{
+		unset($_SESSION['alkaline']['go']);
+		unset($post_id);
+	}
 }
 else{
 	$alkaline->deleteEmptyRow('posts', array('post_title', 'post_text_raw'));
@@ -116,6 +189,7 @@ if(!empty($post_act) and ($post_act == 'add')){
 // GET POSTS TO VIEW OR PAGE TO EDIT
 if(empty($post_id)){
 	$post_ids = new Find('posts');
+	$post_ids->sort('post_modified', 'DESC');
 	$post_ids->page(null, 50);
 	if(isset($post_act) and ($post_act == 'results')){ $post_ids->memory(); }
 	$post_ids->find();
@@ -129,62 +203,86 @@ if(empty($post_id)){
 	?>
 
 	<div class="span-24 last">
-		<div class="actions"><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>">Add post</a></div>
+		<div class="actions">
+			<a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'add' . URL_RW; ?>"><button>Write post</button></a>
+			<a href="<?php echo BASE . ADMIN . 'upload' . URL_CAP; ?>"><button>Upload post</button></a>
+			<?php if($badges['posts'] > 0){ ?>
+			<a href="<?php echo BASE . ADMIN . 'shoebox' . URL_CAP; ?>">
+				<button>Process posts (<?php echo $badges['posts']; ?>)</button>
+			</a>
+			<?php } ?>
+		</div>
 	
-		<h1>Posts (<?php echo number_format($posts->post_count); ?>)</h1>
+		<h1><img src="<?php echo BASE . ADMIN; ?>images/icons/posts.png" alt="" /> Posts (<?php echo number_format($posts->post_count); ?>)</h1>
 	
-		<form action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_ACT; ?>search<?php echo URL_RW; ?>" method="post">
+		<form action="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'search' . URL_RW; ?>" method="post">
 			<p style="margin-bottom: 0;">
 				<input type="search" name="q" style="width: 30em; margin-left: 0;" results="10" /> <input type="submit" value="Search" />
 			</p>
 
 			<p>
-				<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options</a>
+				<span class="switch">&#9656;</span> <a href="#" class="show" style="line-height: 2.5em;">Show options and presets</a>
 			</p>
 		
-			<div class="reveal">
-				<table>
-					<tr>
-						<td class="right middle"><label for="published">Publication status:</label></td>
-						<td class="quiet">
-							<select id="published" name="published">
-								<option value="">All</option>
-								<option value="published">Published</option>
-								<option value="unpublished">Unpublished</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date created:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date" name="created_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="created_end" style="width: 10em;" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Date modified:</label></td>
-						<td class="quiet">
-							between <input type="text" class="date" name="modified_begin" style="width: 10em;" />
-							and <input type="text" class="date" name="modified_end" style="width: 10em;" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right middle"><label>Sort results by:</label></td>
-						<td>
-							<select name="sort">
-								<option value="created" selected="selected">Date created</option>
-								<option value="modified">Date modified</option>
-								<option value="published">Date published</option>
-								<option value="title">Title</option>
-								<option value="views">Views</option>
-							</select>
-							<select name="sort_direction">
-								<option value="DESC">Descending</option>
-								<option value="ASC">Ascending</option>
-							</select>
-						</td>
-					</tr>
-				</table>
+			<div class="reveal span-24 last">
+				<div class="span-15 append-1">
+					<table>
+						<tr>
+							<td class="right middle"><label for="published">Publication status:</label></td>
+							<td class="quiet">
+								<select id="published" name="published">
+									<option value="">All</option>
+									<option value="published">Published</option>
+									<option value="unpublished">Unpublished</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Date created:</label></td>
+							<td class="quiet">
+								between <input type="text" class="date" name="created_begin" style="width: 10em;" />
+								and <input type="text" class="date" name="created_end" style="width: 10em;" />
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Date modified:</label></td>
+							<td class="quiet">
+								between <input type="text" class="date" name="modified_begin" style="width: 10em;" />
+								and <input type="text" class="date" name="modified_end" style="width: 10em;" />
+							</td>
+						</tr>
+						<tr>
+							<td class="right middle"><label>Sort results by:</label></td>
+							<td>
+								<select name="sort">
+									<option value="created" selected="selected">Date created</option>
+									<option value="modified">Date modified</option>
+									<option value="published">Date published</option>
+									<option value="title">Title</option>
+									<option value="views">Views</option>
+								</select>
+								<select name="sort_direction">
+									<option value="DESC">Descending</option>
+									<option value="ASC">Ascending</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="span-8 last">
+					<h3>Presets</h3>
+					
+					<ul>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'displayed' . URL_RW; ?>">Displayed posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'updated' . URL_RW; ?>">Recently updated posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'views' . URL_RW; ?>">Most viewed posts</a></li>
+					</ul>
+					
+					<ul>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'unpublished' . URL_RW; ?>">Unpublished posts</a></li>
+						<li><a href="<?php echo BASE . ADMIN . 'posts' . URL_ACT . 'uncategorized' . URL_RW; ?>">Uncategorized posts</a></li>
+					</ul>
+				</div>
 			</div>
 		</form>
 	
@@ -197,14 +295,28 @@ if(empty($post_id)){
 				<th>Last modified</th>
 			</tr>
 			<?php
+			
+			$now = time();
 
 			foreach($posts->posts as $post){
-				echo '<tr>';
-					echo '<td><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '"><strong>' . $post['post_title'] . '</strong></a><br /><a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu">' . $post['post_title_url'] . '</td>';
+				echo '<tr class="ro">';
+					echo '<td class="status';
+					echo ((empty($post['post_published']) or (strtotime($post['post_published']) > $now)) ? '0' : '1');
+					echo '">';
+					echo '<div class="actions"><button class="tip" title=\'<form action="" method="post"><select name="post_quick">';
+					if(empty($post['post_published']) and (strtotime($post['post_published']) <= $now)){
+						echo '<option value="publish">Publish</option>';
+					}
+					else{
+						echo '<option value="unpublish">Unpublish</option>';
+					}
+					echo '<option value="view_images">View images</option></select> <input type="hidden" name="post_id" value="' . $post['post_id'] . '" /><input type="submit" value="Do" /></form>\'></button></div>';
+					echo '<strong class="large"><a href="' . BASE . ADMIN . 'posts' . URL_ID . $post['post_id'] . URL_RW . '" title="' . $alkaline->makeHTMLSafe($alkaline->fitStringByWord(strip_tags($post['post_text']), 150)) . '" class="tip">' . $post['post_title'] . '</a></strong><br />
+						<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . '-' . $post['post_title_url'] . URL_RW . '" class="nu quiet">' . $post['post_title_url'] . '</td>';
 					echo '<td class="center">' . number_format($post['post_views']) . '</td>';
 					echo '<td class="center">' . number_format($post['post_words']) . '</td>';
 					echo '<td>' . $alkaline->formatTime($post['post_created']) . '</td>';
-					echo '<td>' . $alkaline->formatRelTime($post['post_modified']) . '</td>';
+					echo '<td>' . ucfirst($alkaline->formatRelTime($post['post_modified'])) . '</td>';
 				echo '</tr>';
 			}
 
@@ -244,6 +356,10 @@ if(empty($post_id)){
 }
 else{
 	$posts = new Post($post_id);
+	$posts->getVersions();
+	$posts->getRelated();
+	$posts->getTrackbacks();
+	$posts->getCitations();
 	$posts->formatTime();
 	
 	$post = $posts->posts[0];
@@ -251,12 +367,20 @@ else{
 	
 	$now = time();
 	$launch_action = '';
+	$trackback_action = '';
 	
 	if(!empty($post['post_published'])){
 		$published = strtotime($post['post_published']);
 		if($published <= $now){
-			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '">Launch post</a>';
+			$launch_action = '<a href="' . BASE . 'post' . URL_ID . $post['post_id'] . URL_RW . '"><button>Launch post</button></a>';
 		}
+	}
+	
+	if(!empty($post['post_source']) and empty($post['post_trackback_sent'])){
+		$trackback_action = '<a href="' . BASE . ADMIN . 'tasks/send-trackback.php?id=' . $post['post_id'] . '" class="tip" title="Send a trackback to alert the author of the source content to your post."><button>Send trackback</button></a>';
+	}
+	elseif(!empty($post['post_source'])){
+		$trackback_action = '<button disabled="disabled">Send trackback</button>';
 	}
 	
 	if(!empty($post_act) and ($post_act == 'add')){
@@ -276,97 +400,304 @@ else{
 
 	?>
 	
-	<div class="actions"><a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>" class="button">View images</a> <?php echo $launch_action; ?></div>
+	<div class="actions">
+		<?php echo $trackback_action; ?>
+		<button id="preview">Preview post</button>
+		<a href="<?php echo BASE . ADMIN . 'search' . URL_ACT . 'posts' . URL_AID .  $post['post_id'] . URL_RW; ?>"><button>View images</button></a>
+		<?php echo $launch_action; ?>
+	</div>
 	
 	<?php
 	
 	if(empty($post['post_title'])){
-		echo '<h1>New Post</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/posts.png" alt="" /> New Post</h1>';
 	}
 	else{
-		echo '<h1>Post: ' . $post['post_title'] . '</h1>';
+		echo '<h1><img src="' . BASE . ADMIN . 'images/icons/posts.png" alt="" /> Post: ' . $post['post_title'] . '</h1>';
 	}
 	
 	?>
 
-	<form id="post" action="<?php echo BASE . ADMIN; ?>posts<?php echo URL_CAP; ?>" method="post">
-		<table>
-			<tr>
-				<td class="right middle"><label for="post_title">Title:</label></td>
-				<td><input type="text" id="post_title" name="post_title" value="<?php echo @$post['post_title']; ?>" class="title notempty" /></td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="post_title_url">Custom URL:</label></td>
-				<td class="quiet">
-					<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" style="width: 300px;" /> <span class="quiet">(optional)</span><br />
-					<span class="quiet"><?php echo LOCATION . BASE . 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
-				</td>
-			</tr>
-			<tr>
-				<td class="right pad"><label for="post_text_raw">Text:</label></td>
-				<td><textarea id="post_text_raw" name="post_text_raw" style="height: 300px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea></td>
-			</tr>
-			<tr>
-				<td class="right middle"><label for="post_published">Publish date:</label></td>
-				<td class="quiet">
-					<input type="text" id="post_published" name="post_published" value="<?php echo @$post['post_published_format']; ?>" class="m" />
-				</td>
-			</tr>
-			<tr>
-				<td class="right"><label>Images:</label></td>
-				<td>
+	<form id="post" action="<?php echo BASE . ADMIN . 'posts' . URL_CAP; ?>" method="post">
+		<div class="span-24 last">
+			<div class="span-15 append-1">
+				<input type="text" id="post_title" name="post_title" placeholder="Title" <?php if(empty($post['post_title'])){ echo 'autofocus="autofocus"'; }; ?> value="<?php echo @$post['post_title']; ?>" class="title notempty" />
+				<textarea id="post_text_raw" name="post_text_raw" placeholder="Text" style="height: 400px;"  class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_text_raw']; ?></textarea>
+				
+				<p class="info_bar">
+					
+				</p>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show post&#8217;s excerpt</a>
+				</p>
+				<div class="reveal">
+					<textarea id="post_excerpt_raw" name="post_excerpt_raw" style="height: 150px;" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo @$post['post_excerpt_raw']; ?></textarea>
+				</div>
+				
+			</div>
+			<div class="span-8 last">
+				<p>
+					<label for="post_published">Publish date:</label><br />
+					<input type="text" id="post_published" name="post_published" placeholder="Draft" value="<?php echo @$post['post_published_format']; ?>" />
+				</p>
+				
+				<p>
+					<label for="post_category">Category:</label><br />
+					<input type="text" id="post_category" name="post_category" class="post_category" value="<?php echo @$post['post_category']; ?>" />
+				</p>
+				
+				<p>
+					<label for="post_geo">Location:</label><br />
+					<input type="text" id="post_geo" name="post_geo" class="image_geo get_location_result l" value="<?php echo $post['post_geo']; ?>" />&#0160;
+					<a href="#get_location" class="get_location"><img src="<?php echo BASE . ADMIN; ?>images/icons/location.png" alt="" style="vertical-align: middle;" /></a>
+					<?php
+
+					if(!empty($post['post_geo_lat'])){
+						?>
+						<br />
+						<img src="<?php echo BASE . ADMIN; ?>images/icons/geo.png" alt="" /> <?php echo round($post['post_geo_lat'], 5); ?>, <?php echo round($post['post_geo_long'], 5); ?>
+						<?php
+					}
+					?>
+					<div class="none get_location_set"><?php if(!empty($_SESSION['alkaline']['location'])){ echo $_SESSION['alkaline']['location']; } ?></div>
+				</p>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show additional fields</a></span>
+				</p>
+				
+				<div class="reveal">
 					<p>
-						<span class="switch">&#9656;</span> <a href="#" class="show">Show recent</a> <span class="quiet">(click to add images at cursor position)</span>
+						<label for="post_source">Source:</label><br />
+						<input type="text" id="post_source" name="post_source" placeholder="http://www.example.com/" class="post_source xl" value="<?php echo @$post['post_source']; ?>" />
 					</p>
-					<div class="reveal image_click">
+				
+				
+					<p>
+						<label for="post_title_url">Custom URL:</label><br />
+						<input type="text" id="post_title_url" name="post_title_url" value="<?php echo @$post['post_title_url']; ?>" class="l" /><br />
+							<span class="quiet"><?php echo 'post' . URL_ID . $post['post_id']; ?>-<span id="post_title_url_link"></span></span>
+					</p>
+					
+					<p>
+						<label for="right_id">Rights set:</label><br />
+						<?php echo $alkaline->showRights('right_id', $post['right_id']); ?>
+					</p>
+				</div>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show citations</a> <span class="quiet">(<span id="citation_count"><?php echo count($posts->citations); ?></span>)</span>
+				</p>
+				
+				<div class="reveal">
+					<table id="citations">
 						<?php
 						
-						$image_ids = new Find('images');
-						$image_ids->sort('image_uploaded', 'DESC');
-						$image_ids->post(1, 100);
-						$image_ids->find();
-						
-						$images = new Image($image_ids);
-						$images->getSizes('square');
-						
-						if($alkaline->returnConf('post_size_label')){
-							$label = 'image_src_' . $alkaline->returnConf('post_size_label');
+						foreach($posts->citations as $citation){
+							echo '<tr><td style="width:16px;">';
+							if(!empty($citation['citation_favicon_uri'])){
+								echo '<img src="' . $citation['citation_favicon_uri'] . '" height="16" width="16" alt="" />';
+							}
+							echo '</td><td>';
+							echo '<a href="';
+							if(!empty($citation['citation_uri'])){
+								echo $citation['citation_uri'];
+							}
+							else{
+								echo $citation['citation_uri_requested'];
+							}
+							echo '" title="';
+							if(!empty($citation['citation_description'])){
+								echo $citation['citation_description'];
+							}
+							echo '" class="tip" target="_new">&#8220;' . $citation['citation_title'] . '&#8221;</a>';
+							if(!empty($citation['citation_site_name'])){
+								echo ' <span class="quiet">(' . $citation['citation_site_name'] . ')</span>';
+							}
+							else{
+								echo ' <span class="quiet">(' . $alkaline->siftDomain($citation['citation_uri_requested']) . ')</span>';
+							}
+							echo '</td></tr>';
 						}
-						else{
-							$label = 'image_src_admin';
-						}
 						
-						if($alkaline->returnConf('post_div_wrap')){
-							echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
-						}
-						
-						foreach($images->images as $image){
-							$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
-							echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
-							echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
-						}
-					
 						?>
-					</div>
-				</td>
-			</tr>
-			<?php if($alkaline->returnConf('comm_enabled')){ ?>
-			<tr>
-				<td class="right center"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
-				<td>
-					<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
-				</td>
-			</tr>
-			<?php } ?>
-			<tr>
-				<td class="right center"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
-				<td><label for="post_delete">Delete this post.</label> This action cannot be undone.</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" /><input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a></td>
-			</tr>
-		</table>
+					</table>
+				</div>
+				
+				<p class="slim">
+					<span class="switch">&#9656;</span> <a href="#" class="show">Show trackbacks</a> <span class="quiet">(<span id="citation_count"><?php echo count($posts->trackbacks); ?></span>)</span>
+				</p>
+				
+				<div class="reveal">
+					<table id="trackbacks">
+						<?php
+						
+						foreach($posts->trackbacks as $trackback){
+							echo '<tr><td style="width:16px;">';
+							if(!empty($trackback['trackback_favicon_uri'])){
+								echo '<img src="' . $trackback['trackback_favicon_uri'] . '" height="16" width="16" alt="" id="trackback-' . $trackback['trackback_id'] . '" />';
+							}
+							echo '</td><td>';
+							echo '<a href="' . $trackback['trackback_uri'] . '" title="';
+							if(!empty($trackback['trackback_excerpt'])){
+								echo $trackback['trackback_excerpt'];
+							}
+							echo '" class="tip" target="_new">&#8220;' . $trackback['trackback_title'] . '&#8221;</a>';
+							if(!empty($trackback['trackback_blog_name'])){
+								echo ' <span class="quiet">(' . $trackback['trackback_blog_name'] . ')</span>';
+							}
+							else{
+								echo ' <span class="quiet">(' . $alkaline->siftDomain($trackback['trackback_uri']) . ')</span>';
+							}
+							echo '</td></tr>';
+						}
+						
+						?>
+					</table>
+				</div>
+				
+				<p>
+					<span class="switch">&#9656;</span> <a href="#" class="show">Display related posts</a> <span class="quiet">(<?php echo $posts->related->post_count; ?>)</span>
+				</p>
+				<div class="reveal">
+					<ul>
+					<?php
+
+					foreach($posts->related->posts as $related_post){
+						echo '<li><a href="' . BASE . ADMIN . 'posts' . URL_ID . $related_post['post_id'] . URL_RW . '" title="' . $alkaline->fitStringByWord(strip_tags($related_post['post_text']), 150) . '" class="tip">' . $related_post['post_title'] . '</a> <span class="quiet">(' . $alkaline->formatTime($related_post['post_created'], 'j M Y') . ')</span></li>';
+					}
+
+					?>
+					</ul>
+				</div>
+							
+				<hr />
+				
+				<table>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_send" name="post_send" value="send" /></td>
+						<td>
+							<label for="post_send">
+								Send to
+								<select id="post_send_service" name="post_send_service">
+									<?php $orbit->hook('send_html_post'); ?>
+								</select>
+							</label>.
+						</td>
+					</tr>
+					<?php if($alkaline->returnConf('comm_enabled')){ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_comment_disabled" name="post_comment_disabled" value="disabled" <?php if($post['post_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
+						<td>
+							<strong><label for="post_comment_disabled">Disable comments on this post.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
+					<?php if(empty($post['post_deleted'])){ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_delete" name="post_delete" value="delete" /></td>
+						<td><label for="post_delete">Delete this post.</label></td>
+					</tr>
+					<?php } else{ ?>
+					<tr>
+						<td class="right" style="width: 5%"><input type="checkbox" id="post_recover" name="post_recover" value="recover" /></td>
+						<td>
+							<strong><label for="post_recover">Recover this post.</label></strong>
+						</td>
+					</tr>
+					<?php } ?>
+				</table>
+			</div>
+		</div>
+		
+		<?php if(count($posts->versions) > 0){ ?>
+		<p class="slim">
+			<span class="switch">&#9656;</span> <a href="#" class="show">Compare to previous version</a>
+		</p>
+		<div class="reveal">
+			<p>
+				<label for="version_id">Show differences from:</label>
+				<select id="version_id">
+				<?php
+				
+				$i = 0;
+				
+				foreach($posts->versions as $version){
+					$i++;
+					$similarity = $version['version_similarity'];
+					
+					if($similarity > 95){ $similarity = 'minor change'; }
+					elseif($similarity > 65){ $similarity = 'moderate change'; }
+					else{ $similarity = 'major change'; }
+					
+					echo '<option value="' . $version['version_id'] . '"';
+					if($i == 2){ echo ' selected="selected"'; }
+					echo '>' . ucfirst($alkaline->formatRelTime($version['version_created'])) . ' (#' . $version['version_id'] . ', ' . $similarity . ')</option>';
+				}
+				
+				?>
+				</select>
+				<button id="compare">Compare</button>
+			</p>
+			<p id="comparison">
+				
+			</p>
+		</div>
+		<?php } ?>
+		
+		<p>
+			<span class="switch">&#9656;</span> <a href="#" class="show">Display recent images</a> <span class="quiet">(click to add at cursor position)</span>
+		</p>
+		<div id="recent_images" class="reveal image_click">
+			<div class="search_bar">
+				<input type="search" class="recent_image_search" name="q" placeholder="Search" results="10" />
+				<input type="submit" value="Load" />
+			</div>
+			<div class="load">
+				<?php
+	
+				$image_ids = new Find('images');
+				$image_ids->sort('image_uploaded', 'DESC');
+				$image_ids->post(1, 100);
+				$image_ids->find();
+	
+				$images = new Image($image_ids);
+				$images->getSizes();
+	
+				if($alkaline->returnConf('post_size_label')){
+					$label = 'image_src_' . $alkaline->returnConf('post_size_label');
+				}
+				else{
+					$label = 'image_src_admin';
+				}
+	
+				if($alkaline->returnConf('post_div_wrap')){
+					echo '<div class="none wrap_class">' . $alkaline->returnConf('post_div_wrap_class') . '</div>';
+				}
+	
+				foreach($images->images as $image){
+					$image['image_title'] = $alkaline->makeHTMLSafe($image['image_title']);
+					echo '<a href="' . $image[$label] . '"><img src="' . $image['image_src_square'] .'" alt="' . $image['image_title']  . '" class="frame" id="image-' . $image['image_id'] . '" /></a>';
+					echo '<div class="none uri_rel image-' . $image['image_id'] . '">' . $image['image_uri_rel'] . '</div>';
+				}
+
+				?>
+			</div><br />
+		</div>
+		<p>
+			<input type="hidden" id="post_id" name="post_id" value="<?php echo $post['post_id']; ?>" />
+			<input type="hidden" id="post_markup" name="post_markup" value="<?php echo $post['post_markup']; ?>" />
+			<input type="hidden" id="post_citations" name="post_citations" value="<?php foreach($posts->citations as $citation){ echo $citation['citation_uri_requested']; } ?>" />
+			
+			<input type="submit" value="Save changes" class="autosave_delete" />
+			and
+			<select name="go">
+				<option value="">return to previous screen</option>
+				<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next post</option>
+				<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous post</option>
+			</select>
+			or <a href="<?php echo $alkaline->back(); ?>" class="autosave_delete">cancel</a></p>
 	</form>
 
 	<?php

@@ -7,45 +7,8 @@
 // http://www.alkalineapp.com/
 */
 
-if($_SERVER['SCRIPT_FILENAME'][0] == '/'){
-	define('SERVER_TYPE', '');
-	$path = explode('/', __FILE__);
-	$path = array_splice($path, 0, -2);
-	$path = implode('/', $path);
-	define('PATH', $path . '/');
-}
-else{
-	define('SERVER_TYPE', 'win');
-	$path = explode('\\', __FILE__);
-	$path_new = array_splice($path, 1, -2);
-	$path_new = implode('\\', $path_new);
-	define('PATH', $path[0] . '\\' . $path_new . '\\');
-}
 
-preg_match_all('#(?:/)?(.*)/(?:.*)install#si', $_SERVER['SCRIPT_NAME'], $matches);
-if(!empty($matches[1][0])){
-	$dir = $matches[1][0] . '/';
-}
-else{
-	$dir = '';
-}
-
-define('BASE', '/' . $dir);
-define('FOLDER_PREFIX', '');
-
-define('ADMIN', FOLDER_PREFIX . 'admin/');
-define('CACHE', FOLDER_PREFIX . 'cache/');
-define('CLASSES', FOLDER_PREFIX . 'classes/');
-define('DB', FOLDER_PREFIX . 'db/');
-define('EXTENSIONS', FOLDER_PREFIX . 'extensions/');
-define('FUNCTIONS', FOLDER_PREFIX . 'functions/');
-define('INCLUDES', FOLDER_PREFIX . 'includes/');
-define('JS', FOLDER_PREFIX . 'js/');
-define('IMAGES', FOLDER_PREFIX . 'images/');
-define('INSTALL', FOLDER_PREFIX . 'install/');
-define('SHOEBOX', FOLDER_PREFIX . 'shoebox/');
-define('THEMES', FOLDER_PREFIX . 'themes/');
-
+require_once('../config.php');
 require_once(PATH . CLASSES . 'alkaline.php');
 
 $alkaline = new Alkaline;
@@ -55,22 +18,22 @@ $_POST = array_map('strip_tags', $_POST);
 // Diagnostic checks
 
 if($alkaline->checkPerm(PATH . DB) != '0777'){
-	$alkaline->addNote('Database (db/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Database (db/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . IMAGES) != '0777'){
-	$alkaline->addNote('Images (images/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Images (images/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . SHOEBOX) != '0777'){
-	$alkaline->addNote('Shoebox (shoebox/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Shoebox (shoebox/) folder may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . CACHE) != '0777'){
-	$alkaline->addNote('Cache (cache/) folder is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Cache (cache/) folder may not be writable.', 'notice');
 }
 if(($alkaline->checkPerm(PATH . 'config.json') != '0777') and (SERVER_TYPE != 'win')){
-	$alkaline->addNote('Configuration (config.json) file is not writable (CHMOD 777).', 'error');
+	$alkaline->addNote('Configuration (config.json) file may not be writable.', 'notice');
 }
 if($alkaline->checkPerm(PATH . 'config.php') == '0777'){
-	$alkaline->addNote('Configuration (config.php) file should not be writable (CHMOD 644).', 'error');
+	$alkaline->addNote('Configuration (config.php) file should not be writable.', 'notice');
 }
 
 // Configuration setup
@@ -147,7 +110,7 @@ if(@$_POST['install'] == 'Install'){
 		$config = $alkaline->replaceVar('$db_dsn', $dsn, $config);
 		$config = $alkaline->replaceVar('$db_type', 'sqlite', $config);
 		
-		if($alkaline->checkPerm($path) != '0777'){
+		if(($alkaline->checkPerm($path) != '0777') and (SERVER_TYPE != 'win')){
 			$alkaline->addNote('Your SQLite database is not writable (CHMOD 777).', 'error');
 		}
 	}
@@ -188,10 +151,12 @@ if(@$_POST['install'] == 'Install'){
 
 // Database setup
 
-if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes('error') == 0)){
 	// Check to see if can connect
-	if(!$db = new PDO($dsn, $username, $password)){
-		$alkaline->addNote('The database could not be contacted. Check your settings.', 'error');
+	$db = new PDO($dsn, $username, $password);
+	$error = $db->errorInfo();
+	if(!empty($error[0])){
+		$alkaline->addNote('The database could not be contacted. ' . $error[0] . ' Check your settings.', 'error');
 	}
 	else{
 		function appendTableName($query){
@@ -239,7 +204,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 		// Add admin thumbnails
 		
 		$query = $db->prepare('INSERT INTO ' . $_POST['install_db_prefix'] . 'sizes (size_title, size_label, size_height, size_width, size_type, size_append) VALUES (?, ?, ?, ?, ?, ?);');
-		$query->execute(array('Dashboard (L)', 'admin',  600, 600, 'scale', '_admin'));
+		$query->execute(array('Dashboard (L)', 'admin',  590, 590, 'scale', '_admin'));
 		$query->execute(array('Dashboard (S)', 'square', 80, 80, 'fill', '_sq'));
 		$query->execute(array('Large', 'large', 950, 950, 'scale', '_l'));
 		$query->execute(array('Medium', 'medium', 270, 270, 'scale', '_m'));
@@ -263,7 +228,7 @@ if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
 define('TAB', 'Installation');
 define('TITLE', 'Alkaline Installation');
 
-if((@$_POST['install'] == 'Install') and ($alkaline->countNotes() == 0)){
+if((@$_POST['install'] == 'Install') and ($alkaline->countNotes('error') == 0)){
 	require_once(PATH . ADMIN . 'includes/header.php');
 	
 	?>
@@ -440,7 +405,7 @@ else{
 				<td>
 					<input type="text" name="install_db_file" id="install_db_file" value="<?php echo @$_POST['install_db_file'] ?>" class="m" /> <span class="quiet">(optional)</span><br />
 					<span class="quiet">
-						Defaults to /<?php echo DB; ?>alkaline.db. Your database file must be writable (CHMOD 777).<br />
+						Defaults to <pre><?php echo DB; ?>alkaline.db</pre>. Your database file must be writable (<pre>CHMOD 777</pre>).<br />
 						For security purposes, this file will be renamed during installation.
 					</span>
 				</td>

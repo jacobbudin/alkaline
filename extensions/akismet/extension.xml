@@ -4,8 +4,8 @@
 	<file>akismet</file>
 	<class>AkismetHandler</class>
 	<title>Akismet</title>
-	<build>2</build>
-	<version>1.0.1</version>
+	<build>3</build>
+	<version>1.0.2</version>
 	<description>Filters comments through Akismet spam protection.</description>
 	<creator>
 		<name>Alkaline Labs</name>

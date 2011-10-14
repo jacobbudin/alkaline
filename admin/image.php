@@ -33,20 +33,30 @@ if(!empty($_POST['image_id'])){
 	
 	if(@$_POST['image_delete'] == 'delete'){
 		if($images->delete()){
-			$alkaline->addNote('Your image has been deleted.', 'success');
+			$alkaline->addNote('The image has been deleted.', 'success');
+		}
+	}
+	elseif(@$_POST['image_recover'] == 'recover'){
+		if($images->recover()){
+			$alkaline->addNote('The image has been recovered.', 'success');
 		}
 	}
 	else{
+		$image_title = trim($_POST['image_title']);
+		
 		$image_description_raw = @$_POST['image_description_raw'];
+		$image_description = $image_description_raw;
 		
 		// Configuration: image_markup
 		if(!empty($_POST['image_markup'])){
 			$image_markup_ext = $_POST['image_markup'];
-			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
+			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description_raw);
 		}
-		elseif($alkaline->returnConf('image_markup')){
-			$image_markup_ext = $alkaline->returnConf('image_markup_ext');
-			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description);
+		elseif($alkaline->returnConf('web_markup')){
+			$image_markup_ext = $alkaline->returnConf('web_markup_ext');
+			$image_title = $orbit->hook('markup_title_' . $image_markup_ext, $image_title, $image_title);
+			$image_description = $orbit->hook('markup_' . $image_markup_ext, $image_description_raw, $image_description_raw);
 		}
 		else{
 			$image_markup_ext = '';
@@ -60,7 +70,7 @@ if(!empty($_POST['image_id'])){
 			$image_comment_disabled = 0;
 		}
 		
-		$fields = array('image_title' => @$_POST['image_title'],
+		$fields = array('image_title' => $image_title,
 			'image_description' => $image_description,
 			'image_description_raw' => $image_description_raw,
 			'image_markup' => $image_markup_ext,
@@ -74,12 +84,38 @@ if(!empty($_POST['image_id'])){
 		$images->updateTags(json_decode($_POST['image_tags_input']));
 	}
 	
-	$alkaline->callback();
+	if(!empty($_POST['image_send']) and ($_POST['image_send'] == 'send')){
+		$images = new Image($image_id);
+		$orbit->hook('send_' . $_POST['image_send_service'] . '_image', $images->images, null);
+	}
+	
+	if(!empty($_REQUEST['go'])){
+		$image_ids = new Find('images');
+		$image_ids->memory();
+		$image_ids->with($image_id);
+		$image_ids->offset(1);
+		$image_ids->page(null, 1);
+		$image_ids->find();
+		if($_REQUEST['go'] == 'next'){
+			$_SESSION['alkaline']['go'] = 'next';
+			header('Location: ' . LOCATION . BASE . ADMIN . 'images' . URL_ID . $image_ids->ids_after[0] . URL_CAP);
+		}
+		else{
+			$_SESSION['alkaline']['go'] = 'previous';
+			header('Location: ' . LOCATION . BASE . ADMIN . 'images' . URL_ID . $image_ids->ids_before[0] . URL_CAP);
+		}
+		exit();
+	}
+	else{
+		$alkaline->callback();
+	}
 }
 
 $images = new Image($image_id);
 $sizes = $images->getSizes();
 $images->getTags(true);
+$images->getRelated();
+$images->related->getSizes('square');
 $images->getColorkey(300, 40);
 $comments = $images->getComments();
 $exifs = $images->getEXIF();
@@ -91,7 +127,7 @@ if(!$image = @$images->images[0]){
 
 $comment_count = count($comments);
 if($comment_count > 0){
-	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '">View ' . $alkaline->returnCount($comment_count, 'comments') . ' (' . $comment_count . ')</a>';
+	$comment_action = '<a href="' . BASE . ADMIN . 'comments' . URL_CAP . '?image=' . $image['image_id'] . '"><button>View ' . $alkaline->returnCount($comment_count, 'comment') . ' (' . $comment_count . ')</button></a>';
 }
 else{
 	$comment_action = '';
@@ -100,7 +136,7 @@ else{
 $now = time();
 $published = strtotime($image['image_published']);
 if($published <= $now){
-	$launch_action = '<a href="' . BASE . 'image' . URL_ID . $image['image_id'] . URL_RW . '">Launch image</a>';
+	$launch_action = '<a href="' . BASE . 'image' . URL_ID . $image['image_id'] . URL_RW . '"><button>Launch image</button></a>';
 }
 else{
 	$launch_action = '';
@@ -119,22 +155,32 @@ else{
 require_once(PATH . ADMIN . 'includes/header.php');
 
 ?>
+
+<div class="actions">
+	<button id="preview">Preview image</button>
+	<a href="<?php echo BASE . ADMIN . 'tasks/download-image.php?id=' . $image['image_id']; ?>"><button>Download original</button></a>
+	<?php echo $comment_action; ?>
+	<?php echo $launch_action; ?>
+</div>
+
+<?php
+
+if(empty($image['image_title'])){
+	echo '<h1><img src="' . BASE . ADMIN . 'images/icons/images.png" alt="" /> Image</h1>';
+}
+else{
+	echo '<h1><img src="' . BASE . ADMIN . 'images/icons/images.png" alt="" /> Image: ' . $image['image_title'] . '</h1>';
+}
+
+?>
 <div class="span-24 last">
 	<form action="" method="post">
 		<div class="span-15 append-1">
 			<img src="<?php echo $image['image_src_admin']; ?>" alt="" />
-			<p>
-				<input type="text" id="image_title" name="image_title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
-				<textarea id="image_description_raw" name="image_description_raw" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
-				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
-				<input type="hidden" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" /> or <a href="<?php echo $alkaline->back(); ?>">cancel</a>
-			</p>
+			<input type="text" id="image_title" name="image_title" placeholder="Title" value="<?php echo $image['image_title']; ?>" class="title bottom-border" />
+			<textarea id="image_description_raw" name="image_description_raw" placeholder="Description" class="<?php if($user->returnPref('text_code')){ echo $user->returnPref('text_code_class'); } ?>"><?php echo $image['image_description_raw']; ?></textarea>
 		</div>
 		<div class="span-8 last">
-			<p class="actions">
-				<?php echo $comment_action; ?>
-				<?php echo $launch_action; ?>
-			</p>
 			<div class="image_tag_container">
 				<label for="image_tag">Tags:</label><br />
 				<input type="text" id="image_tag" name="image_tag" class="image_tag" style="width: 40%;" /> <input type="submit" id="image_tag_add" class="image_tag_add" value="Add" /><br />
@@ -145,8 +191,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<br />
 			
 			<p>
-				<label for="">Location:</label><br />
-				<input type="text" id="image_geo" name="image_geo" class="image_geo" value="<?php echo $image['image_geo']; ?>" />
+				<label for="image_geo">Location:</label><br />
+				<input type="text" id="image_geo" name="image_geo" class="image_geo get_location_result l" value="<?php echo $image['image_geo']; ?>" />&#0160;
+				<a href="#get_location" class="get_location"><img src="<?php echo BASE . ADMIN; ?>images/icons/location.png" alt="" style="vertical-align: middle;" /></a>
 				<?php
 				
 				if(!empty($image['image_geo_lat'])){
@@ -156,20 +203,21 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					<?php
 				}
 				?>
+				<span class="none get_location_set"><?php if(!empty($_SESSION['alkaline']['location'])){ echo $_SESSION['alkaline']['location']; } ?></span>
 			</p>
 			
 			<p>
-				<label for="">Publish date:</label><br />
-				<input type="text" id="image_published" name="image_published" value="<?php echo $alkaline->formatTime($image['image_published']); ?>" />
+				<label for="image_published">Publish date:</label><br />
+				<input type="text" id="image_published" name="image_published" placeholder="Unpublished" value="<?php echo $alkaline->formatTime($image['image_published']); ?>" />
 			</p>
 			
 			<p>
-				<label for="">Privacy level:</label><br />
+				<label for="image_privacy">Privacy level:</label><br />
 				<?php echo $alkaline->showPrivacy('image_privacy', $image['image_privacy']); ?>
 			</p>
 			
 			<p>
-				<label for="">Rights set:</label><br />
+				<label for="right_id">Rights set:</label><br />
 				<?php echo $alkaline->showRights('right_id', $image['right_id']); ?>
 			</p>
 			
@@ -179,7 +227,9 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<div class="reveal">
 				<?php echo $image_colorkey; ?>
 				
-				<p>Export: <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=css'; ?>" title="Cascading Style Sheets">CSS</a></p>
+				<ul>
+					<li>Export: <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=ase'; ?>" title="Adobe Swatch Exchange">ASE</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=css'; ?>" title="Cascading Style Sheets">CSS</a>, <a href="<?php echo BASE . ADMIN . 'tasks/export-palette.php?image_id=' . $image['image_id'] . '&format=gpl'; ?>" title="GIMP Palette">GPL</a></li>
+				</ul>
 			</div>
 			<?php } ?>
 			
@@ -202,14 +252,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			
 			if(count($exifs) > 0){
 				echo '<p><span class="switch">&#9656;</span> <a href="#" class="show">Show EXIF data</a></p>';
-				echo '<div class="reveal"><table>' . "\n";
+				echo '<div class="reveal"><ul>' . "\n";
 				foreach($exifs as $exif){
 					$value = @unserialize(stripslashes($exif['exif_value']));
 					if(!is_array($value)){
-						echo '<tr><td class="right">' . $exif['exif_name'] . ':</td><td>' . $value . '</td></tr>' . "\n";
+						echo '<li><strong>' . ucwords(strtolower($exif['exif_key'])) . '_' . $exif['exif_name'] . ':</strong><br />' . $value . '</li>' . "\n";
 					}
 				}
-				echo '</table></div>';
+				echo '</ul></div>';
 			}
 			
 			?>
@@ -217,6 +267,17 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<hr />
 			
 			<table>
+				<tr>
+					<td class="right" style="width: 5%"><input type="checkbox" id="image_send" name="image_send" value="send" /></td>
+					<td>
+						<label for="image_send">
+							Send to
+							<select id="image_send_service" name="image_send_service">
+								<?php $orbit->hook('send_html_image'); ?>
+							</select>.
+						</label>
+					</td>
+				</tr>
 				<?php if($alkaline->returnConf('comm_enabled')){ ?>
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="image_comment_disabled" name="image_comment_disabled" value="disabled" <?php if($image['image_comment_disabled'] == 1){ echo 'checked="checked"'; } ?> /></td>
@@ -225,14 +286,52 @@ require_once(PATH . ADMIN . 'includes/header.php');
 					</td>
 				</tr>
 				<?php } ?>
+				<?php if(empty($image['image_deleted'])){ ?>
 				<tr>
 					<td class="right" style="width: 5%"><input type="checkbox" id="image_delete" name="image_delete" value="delete" /></td>
 					<td>
-						<strong><label for="image_delete">Delete this image.</label></strong><br />
-						This action cannot be undone.
+						<strong><label for="image_delete">Delete this image.</label></strong>
 					</td>
 				</tr>
+				<?php } else{ ?>
+				<tr>
+					<td class="right" style="width: 5%"><input type="checkbox" id="image_recover" name="image_recover" value="recover" /></td>
+					<td>
+						<strong><label for="image_recover">Recover this image.</label></strong>
+					</td>
+				</tr>
+				<?php } ?>
 			</table>
+		</div>
+		
+		<div class="span-24 last">
+			<p>
+				<span class="switch">&#9656;</span> <a href="#" class="show">Display related images</a> <span class="quiet">(<?php echo $images->related->image_count; ?>)</span>
+			</p>
+			<div class="reveal">
+				<?php
+				
+				foreach($images->related->images as $related_image){
+					?>
+					<a href="<?php echo BASE . ADMIN . 'image' . URL_ID . $related_image['image_id'] . URL_RW; ?>" class="nu">
+						<img src="<?php echo $related_image['image_src_square']; ?>" alt="" title="<?php echo $related_image['image_title']; ?>" class="frame tip" />
+					</a>
+					<?php
+				}
+
+				?><br /><br />
+			</div>
+			<p>
+				<input type="hidden" id="image_markup" name="image_markup" value="<?php echo $image['image_markup']; ?>" />
+				<input type="hidden" id="image_id" name="image_id" value="<?php echo $image['image_id']; ?>" /><input type="submit" value="Save changes" class="autosave_delete" />
+				and
+				<select name="go">
+					<option value="">return to previous screen</option>
+					<option value="next" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'next'); ?>>go to next image</option>
+					<option value="previous" <?php echo $alkaline->readForm($_SESSION['alkaline'], 'go', 'previous'); ?>>go to previous image</option>
+				</select>
+				or <a href="<?php echo $alkaline->back(); ?>" class="autosave_delete">cancel</a>
+			</p>
 		</div>
 	</form>
 </div>

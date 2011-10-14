@@ -1,0 +1,363 @@
+.container{
+	width: 960px;
+}
+
+.none{
+	display: none;
+}
+
+body{
+	background-color: #fff;
+	font-family: "Vollkorn", "Times New Roman", Times, serif;
+	margin: 0 auto 3em 0;
+}
+
+a{
+	color: #a6000c;
+}
+
+a:hover{
+	color: #a6000c;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 { color: #222; }
+
+table td{
+	vertical-align: top;
+}
+
+h1{
+	font-family: "Bentham", Georgia, serif;
+	font-weight: 500;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+}
+
+h2{
+	font-size: 2em;
+	font-weight: 500;
+	color: #444;
+	margin: .5em 0;
+}
+
+h3{
+	font-size: 2.4em;
+	font-weight: normal;
+	color: #222;
+	margin: 0 0 1.5em 0;
+	text-align: center;
+	font-style: italic;
+}
+
+h4{
+	font-size: 1em;
+	font-weight: normal;
+	color: #999;
+	margin: 3em 0 .5em 0;
+	text-align: center;
+}
+
+h5{
+	font-size: 1.2em;
+	font-weight: normal;
+	margin-bottom: .5em;
+}
+
+h6{
+	font-size: 1.2em;
+	font-weight: normal;
+	line-height: 2em;
+	font-style: italic;
+}
+
+label { font-weight: normal; }
+
+#header_bg{
+	padding: 6em 0 4em 0;
+	margin-bottom: 2em;
+	background-color: #222;
+}
+
+#header_bg h1{
+	color: #fff;
+}
+
+#navigation ul.top{
+	float: right;
+}
+
+#navigation ul{
+	margin: 0;
+	padding: 0;
+	color: #555;
+	font-size: 1.1em;
+	list-style: none;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+#navigation ul ul{
+	position: absolute;
+	text-align: center;
+}
+
+#navigation ul li{
+	display: inline;
+	padding-left: 1.2em;
+}
+
+#navigation ul li a{
+	color: #888;
+	text-decoration: none;
+}
+
+#navigation ul li a:hover{
+	color: #ccc;
+	text-decoration: none;
+}
+
+
+#directory ul{
+	display: inline;
+	padding: 0;
+}
+
+#directory li{
+	display: inline;
+	margin-left: 1em;
+}
+
+#title h1 a, #title p.quiet a{
+	color: inherit;
+	text-decoration: inherit;
+}
+
+#navigation{
+	text-align: right;
+	margin-top: 1em;
+}
+
+#navigation input[type="search"]{
+	width: 20em;
+}
+
+#footer{
+	text-align: center;
+}
+
+.image{
+	
+}
+
+.medium{
+	float: left;
+	width: 270px;
+	margin-right: 70px;
+}
+
+.medium_last{
+	clear: right;
+	margin: 0;
+}
+
+.small{
+	margin: 0 1px;
+	padding: 0;
+}
+
+.colorkey{
+	margin: 0 0 .5em 0;
+}
+
+a#next{
+	display: block;
+	position: absolute;
+	margin: 0;
+	width: 160px;
+	left: 440px;
+	text-align: right;
+}
+
+a#prev{
+	display: block;
+	position: absolute;
+	margin: 0;
+	width: 160px;
+}
+
+.image, .image_comments{
+	display: block;
+	margin: 1em 0;
+}
+
+.large{ line-height: 1.6em; }
+
+.large p{ text-indent: 3em; }
+
+img.large{
+}
+
+img.frame{
+	border: 1px solid;
+	border-color: #ddd;
+	background-color: #eee;
+	padding: 4px;
+	margin-bottom: 0;
+}
+
+div.ribbon_outer{
+	background: #a6000c url(images/tick_l.png) center left no-repeat;
+}
+
+hr{
+	background: transparent url(images/div.png) top center no-repeat;
+	margin: 1.5em 0;
+	color: transparent;
+	height: 17px;
+	width: 950px;
+}
+
+p.ribbon{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: .9em;
+	font-weight: 600;
+	padding: .4em 2em;
+	background: transparent url(images/tick_r.png) center right no-repeat;
+	color: #fff;
+	text-align: right;
+	text-transform: uppercase;
+}
+
+p.ribbon a{
+	color: #fff;
+	text-decoration: none;
+}
+
+p.description{
+	color: #555;
+	font-family: "Arvo", Georgia, serif;
+	font-size: 1.3em;
+}
+
+
+#blog img, #post img, #page img, #results-posts img{
+	margin-bottom: 1.5em;
+	-webkit-box-shadow: 0 0 10px #ddd;
+	-moz-box-shadow: 0 0 10px #ddd;
+}
+
+.tags{
+	margin-bottom: 1.5em;
+}
+
+.tag{
+	margin-right: .7em;
+}
+
+.tag a{
+	color: #666;
+}
+
+.tag_count a, .comment_count a{
+	color: #666;
+	text-decoration: none;
+}
+
+p.slim{
+	margin-bottom: .3em;
+}
+
+.datetime{
+	color: #999;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.right{ text-align: right; }
+td.right{ text-align: right; vertical-align: middle; }
+
+#page, .big { font-size: 1.2em; line-height: 1.6em; }
+#results-images, #results-posts { margin-bottom: 1.5em; }
+
+img.ftr{ float: right; margin: 0 0 1.5em 1.5em; }
+img.ftl{ float: left; margin: 0 1.5em 1.5em 0; }
+
+.right_set{
+	color: #aaa;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+#copyright{
+	margin-top: 2em;
+}
+
+#copyright a{
+	color: #777;
+}
+
+#gallery{
+	display: block;
+	position: relative;
+	text-align: center;
+}
+
+.center{
+	text-align: center;
+}
+
+table.comments td.right{
+	text-align: right;
+	font-weight: bold;
+	padding-top: 1em;
+}
+
+input[type=text]{
+	padding: .25em;
+	font-size: 1.1em;
+	width: 15em;
+}
+
+input.comment_author_uri{
+	width: 25em;
+}
+
+textarea.comment_text{
+	width: 40em;
+	height: 10em;
+}
+
+
+/*
+ * Alkaline
+ * Required for normal operation
+ */
+
+.breadcrumb{ display: none; }
+.preload{ display: hidden; position: absolute; top: -9999px; left: -9999px; }
+
+ul#slideshow{
+	list-style-type: none;
+}
+
+img.ui-datepicker-trigger{
+	padding: 0 .5em;
+}
+
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+li.ui-menu-item{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: .8em;
+}

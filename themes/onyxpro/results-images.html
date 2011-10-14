@@ -1,0 +1,37 @@
+<div class="span-24 append-bottom last">
+	<div class="span-8 append-1">
+		<h2>Results</h2>
+		
+		Didn&#8217;t find what you were looking for? Try a different search.
+		
+		<form action="{Search_Uri}">
+			<input type="hidden" name="type" value="images" />
+			<input name="q" type="search" class="search" results="10">
+			<input type="image" src="<?php echo BASE . THEMES; ?>onyxpro/images/search.png" class="search_submit submit" alt="Search" value="Search" />
+		</form>
+		
+		<p class="quiet">This search includes {Results_Count} photos.</p>
+	</div>
+	<div class="span-15 last">
+		{if:Images}
+			{block:Images}
+				<a href="{Image_URI}"><img src="{Image_Src_Small}" alt="" class="small" /></a>
+			{/block:Images}
+			
+			<div class="span-15 nav prepend-top append-bottom last">
+				<div class="span-7 append-1">
+					<div class="{if:Page_Previous}nav_left append-bottom{/if:Page_Previous}">
+						&#0160;{if:Page_Previous}<a href="{Page_Previous_URI}">Newer photos</a>{/if:Page_Previous}
+					</div>					
+				</div>
+				<div class="span-7 right last">
+					<div class="{if:Page_Next}nav_right append-bottom{/if:Page_Next}">
+						&#0160;{if:Page_Next}<a href="{Page_Next_URI}">Older photos</a>{/if:Page_Next}
+					</div>
+				</div>
+			</div>
+		{else:Images}
+			<p>No images were found.</p>
+		{/if:Images}
+	</div>
+</div>

@@ -19,6 +19,7 @@ class Orbit extends Alkaline{
 	
 	public $class;
 	public $file;
+	public $folder;
 	public $hooks;
 	public $preferences;
 	public $title;
@@ -182,15 +183,6 @@ class Orbit extends Alkaline{
 	}
 	
 	/**
-	 * Current page for redirects
-	 *
-	 * @return void
-	 */
-	public function location(){
-		return parent::location();
-	}
-	
-	/**
 	 * Reset preferences
 	 *
 	 * @return PDOStatement
@@ -201,29 +193,142 @@ class Orbit extends Alkaline{
 	}
 	
 	/**
+	 * Store task for consecutive execution
+	 *
+	 * @param callback $callback 
+	 * @return void
+	 */
+	public function storeTask($callback){
+		if(is_array($callback)){
+			list($class, $method) = $callback;
+			if(is_object($class)){
+				$class = get_class($class);
+				$callback = array($class, $method);
+			}
+		}
+		else{
+			return false;
+		}
+		
+		// Find arguments
+		$arguments = func_get_args();
+		$arguments = array_slice($arguments, 1);
+		
+		if(!isset($_SESSION['alkaline']['tasks'])){
+			$_SESSION['alkaline']['tasks'] = 1;
+		}
+		
+		++$_SESSION['alkaline']['tasks'];
+		
+		if(!file_exists(PATH . CACHE . 'tasks/')){
+			@mkdir(PATH . CACHE . 'tasks/', 0777, true);
+		}
+		
+		$contents = array($callback, $arguments);
+		
+		file_put_contents(PATH . CACHE . 'tasks/' . md5(DB_DSN . PATH . $_SESSION['alkaline']['tasks']), serialize($contents));
+	}
+	
+	/**
+	 * Execute stored task
+	 *
+	 * @param int $id Task ID
+	 * @return bool True if successful
+	 */
+	public function executeTask($id){
+		$path = PATH . CACHE . 'tasks/' . md5(DB_DSN . PATH . $id);
+		if(file_exists($path)){
+			$contents = file_get_contents($path, false);
+			@unlink($path);
+		}
+		else{
+			$contents = false;
+		}
+		
+		if($contents === false){
+			if($id == $_SESSION['alkaline']['tasks']){
+				unset($_SESSION['alkaline']['tasks']);
+			}
+			return false;
+		}
+		
+		list($callback, $arguments) = unserialize($contents);
+		list($class, $method) = $callback;
+		
+		if(!empty($this->extensions)){
+			foreach($this->extensions as $extension){
+				if($extension['extension_class'] == $class){
+					require_once($extension['extension_file']);
+					if(method_exists($class, $method)){
+						$orbit = new $class();
+						$return = call_user_func_array(array($orbit, $method), $arguments);
+					}
+				}
+			}
+		}
+		
+		if($return === false){
+			file_put_contents($path, $contents);
+			return false;
+		}
+		
+		if($id == $_SESSION['alkaline']['tasks']){
+			unset($_SESSION['alkaline']['tasks']);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Prompt JavaScript initiation of tasks
+	 *
+	 * @return void
+	 */
+	public static function promptTasks(){
+		$tasks = array();
+		
+		if(empty($_SESSION['alkaline']['tasks'])){ return; }
+		
+		$count = $_SESSION['alkaline']['tasks'];
+		
+		for($i=1; $i <= $count; $i++){
+			$tasks[] = $i;
+		}
+		
+		return '<div id="alkaline_tasks" class="none">' . json_encode($tasks) . '</div>';
+	}
+	
+	/**
 	 * Execute Orbit hook
 	 *
 	 * @param string $hook Hook name
 	 * @return mixed Default value
 	 */
 	public function hook($hook){
-		// Configuration: maint_disable
-		$safe_hooks = array('config', 'config_load', 'config_save');
-		if(!in_array($hook, $safe_hooks)){
-			if($this->returnConf('maint_disable')){
-				return false;
-			}
-		}
-		
 		// Find arguments
 		$arguments = func_get_args();
 		
 		// Find pass-by-default value
-		$argument_pass_index = count($arguments) - 1;
-		$argument_pass = $arguments[$argument_pass_index];
+		$argument_count = count($arguments);
+		if($argument_count > 1){
+			$argument_pass_index = $argument_count - 1;
+			$argument_pass = $arguments[$argument_pass_index];
+		}
+		else{
+			$argument_pass = false;
+		}
 		
-		// Remove non-arguments
+		// Configuration: maint_disable
+		$safe_hooks = array('config', 'config_load', 'config_save');
+		if(!in_array($hook, $safe_hooks)){
+			if($this->returnConf('maint_disable')){
+				return $argument_pass;
+			}
+		}
+		
+		// Remove hook name
 		$arguments = array_slice($arguments, 1, count($arguments) - 2);
+		// Determine variable type
 		if(isset($arguments[0])){
 			$argument_return_type = $this->getType($arguments[0]);
 		}
@@ -236,7 +341,9 @@ class Orbit extends Alkaline{
 					$orbit = new $extension['extension_class']();
 					$method = 'orbit_' . $hook;
 					if(method_exists($orbit, $method)){
+						// Do method
 						$return = call_user_func_array(array($orbit, $method), $arguments);
+						// If variable type is the same, pass it along to future extensions
 						if(!empty($argument_return_type) and ($this->getType($return) == $argument_return_type)){
 							$arguments = array_merge(array($return), array_splice($arguments, 1));
 						}

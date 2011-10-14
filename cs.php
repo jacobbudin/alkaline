@@ -8,13 +8,12 @@
 */
 
 class AlkalineCS{
-	const build = 2;
+	const build = 3;
 	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
-	const version = 'Beta 1';
+	const version = '1.1';
 	
 	public $compatible;
 	
-	public $ic_version;
 	public $php_version;
 	public $php_extensions;
 	public $phpinfo;
@@ -23,10 +22,6 @@ class AlkalineCS{
 	function __construct(){
 		$this->compatible = true;
 		$this->php_version = phpversion();
-		if(function_exists('ioncube_loader_version')){
-			$this->ic_version = ioncube_loader_version();
-			$this->ic_version = intval(preg_replace('#^([0-9]+)\..*#si', '\\1', $this->ic_version));
-		}
 		$this->php_extensions = get_loaded_extensions();
 		ob_start();
 		phpinfo();
@@ -193,6 +188,7 @@ $test = new AlkalineCS();
 			<h2>Required</h2>
 			
 			<table>
+				<!--
 				<tr>
 					<?php $result = $test->isNet(); echo $test->boolToIMG($result); ?>
 					<td>
@@ -201,19 +197,12 @@ $test = new AlkalineCS();
 					</td>
 					<?php echo $test->boolToHTML($result, '<strong>Connected</strong><br />(via ' . $_SERVER['SERVER_NAME'] . ')', '<strong>Disconnected</strong>'); ?>
 				</tr>
+				-->
 				<tr>
 					<?php $result = $test->isExt('gd'); echo $test->boolToIMG($result); ?>
 					<td>
 						<strong>GD image library</strong><br />
 						<span class="quiet">GD allows Alkaline to create and manipulate raster image files (GIF, JPG, and PNG).</span>
-					</td>
-					<?php echo $test->boolToHTML($result); ?>
-				</tr>
-				<tr>
-					<?php $result = ($test->isExt('ionCube Loader') and !empty($test->ic_version) and ($test->ic_version >= 4)); echo $test->boolToIMG($result); ?>
-					<td>
-						<strong>ionCube Loader 4</strong><br />
-						<span class="quiet">ionCube Loader is used to verify the authenticity of Alkaline.</span>
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>
@@ -229,7 +218,7 @@ $test = new AlkalineCS();
 					<?php $result = $test->isExt('json'); echo $test->boolToIMG($result); ?>
 					<td>
 						<strong>PHP JSON support</strong><br />
-						<span class="quiet">PHP JSON allows Alkaline to provide real-time functionality.</span>
+						<span class="quiet">PHP JSON allows Alkaline to provide real-time interactivity.</span>
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>
@@ -296,13 +285,21 @@ $test = new AlkalineCS();
 					</td>
 					<?php echo $test->boolToHTML($result); ?>
 				</tr>
+				<tr>
+					<?php $result = $test->isExt('sphinx', false); echo $test->boolToIMG($result); ?>
+					<td>
+						<strong>Sphinx server</strong><br />
+						<span class="quiet">Sphinx allows Alkaline to conduct ultra-fast, relevancy-based searches.</span>
+					</td>
+					<?php echo $test->boolToHTML($result); ?>
+				</tr>
 			</table>
 			
 			<?php echo $test->noteRAM(); ?>
 			
 			<p class="center large">
 				<?php
-				if(($test->compatible == true) and !empty($test->ic_version) and ($test->ic_version >= 4)){
+				if($test->compatible == true){
 					?>
 					<img src="http://www.alkalineapp.com/remote/cs/images/success.png" alt="" /><br />
 					<strong>Good news, you can install Alkaline here!</strong><br />
@@ -317,12 +314,10 @@ $test = new AlkalineCS();
 					<?php
 				}
 				?>
-			</p>
-
-			<hr />
+			</p><br />
 		
 			<div id="footer" class="span-24 last">
-				<img src="http://www.alkalineapp.com/remote/cs/images/icon.png" alt="" /> Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
+				Powered by <a href="http://www.alkalineapp.com/compatibility/">Alkaline</a>. Copyright &#0169; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.
 			</div>
 		</div>
 	</div>

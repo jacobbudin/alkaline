@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extension.xsd" xmlns:p="http://www.alkalineapp.com/extensions">
+	<uid>e1536fa9594f8a2be5c52445d6a2fa3f0a864514</uid>
+	<file>500px</file>
+	<class>Five</class>
+	<title>500px</title>
+	<build>1</build>
+	<version>1</version>
+	<description>Uploads to 500px.</description>
+	<creator>
+		<name>Alkaline Labs</name>
+		<uri>http://www.alkalinelabs.com/</uri>
+	</creator>
+</extension>
