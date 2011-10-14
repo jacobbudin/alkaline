@@ -115,7 +115,7 @@ ul{
 	list-style-type: square;
 }
 
-td{
+td.top{
 	vertical-align: top;
 }
 

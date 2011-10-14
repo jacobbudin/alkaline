@@ -72,14 +72,14 @@ require_once(PATH . ADMIN . 'includes/header.php');
 			<div class="span-15 append-1">
 				<table>
 					<tr>
-						<td class="right pad"><label for="tags">Tags:</label></td>
+						<td class="right top pad"><label for="tags">Tags:</label></td>
 						<td class="quiet">
 							<input type="text" id="tags" name="tags" class="l" /><br />
 							<em>Tip: Use the uppercase boolean operators AND, OR, and NOT.</em>
 						</td>
 					</tr>
 					<tr>
-						<td class="right pad"><label for="tags">EXIF metadata:</label></td>
+						<td class="right middle"><label for="tags">EXIF metadata:</label></td>
 						<td>
 							<?php echo $alkaline->showEXIFNames('exif_name'); ?>
 							<input type="text" id="exif_value" name="exif_value" class="s" /><br />
