@@ -1797,12 +1797,18 @@ class Alkaline{
 	 * @param bool $show_hidden_tags Include hidden tags
 	 * @return array Associative array of tags
 	 */
-	public function getTags($show_hidden_tags=false){
+	public function getTags($show_hidden_tags=false, $published_only=false){
+		$sql = '';
+		
+		if($published === true){
+			$sql = 'AND images.image_published <= "' . date('Y-m-d H:i:s') . '"';
+		}
+	
 		if($this->returnConf('tag_alpha')){
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_name;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ' . $sql . ' ORDER BY tags.tag_name;');
 		}
 		else{
-			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ORDER BY tags.tag_id ASC;');
+			$query = $this->prepare('SELECT tags.tag_name, tags.tag_id, images.image_id FROM tags, links, images WHERE tags.tag_id = links.tag_id AND links.image_id = images.image_id AND images.image_deleted IS NULL ' . $sql . ' ORDER BY tags.tag_id ASC;');
 		}
 		$query->execute();
 		$tags = $query->fetchAll();
