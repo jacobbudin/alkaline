@@ -14,7 +14,7 @@ $alkaline = new Alkaline;
 $alkaline->recordStat('home');
 
 if(empty($_SESSION['alkaline']['search']['table'])){
-	header('Location: ' . LOCATION . 'search' . URL_CAP);
+	header('Location: ' . LOCATION . BASE . 'search' . URL_CAP);
 	exit();
 }
 
