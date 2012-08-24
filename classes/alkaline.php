@@ -2,14 +2,13 @@
 
 /*
 // Alkaline
-// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
-// Do not redistribute this code without written permission from Budin Ltd.
+// Copyright (c) 2010-2012 by Budin Ltd. Some rights reserved.
 // http://www.alkalineapp.com/
 */
 
 /**
  * @author Budin Ltd. <contact@budinltd.com>
- * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @copyright Copyright (c) 2010-2012, Budin Ltd.
  * @version 1.0
  */
 
@@ -22,10 +21,10 @@ function __autoload($class){
 
 class Alkaline{
 	const build = 1294;
-	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2011 by <a href="http://www.budinltd.com/">Budin Ltd.</a> All rights reserved.';
-	const edition = 'standard';
+	const copyright = 'Powered by <a href="http://www.alkalineapp.com/">Alkaline</a>. Copyright &copy; 2010-2012 by <a href="http://www.budinltd.com/">Budin Ltd.</a> Some rights reserved.';
+	const edition = 'multiuser';
 	const product = 'Alkaline';
-	const version = '1.1.2';
+	const version = '1.1.2.2';
 	
 	public $admin;
 		

@@ -2,14 +2,13 @@
 
 /*
 // Alkaline
-// Copyright (c) 2010-2011 by Budin Ltd. All rights reserved.
-// Do not redistribute this code without written permission from Budin Ltd.
+// Copyright (c) 2010-2012 by Budin Ltd. Some rights reserved.
 // http://www.alkalineapp.com/
 */
 
 /**
  * @author Budin Ltd. <contact@budinltd.com>
- * @copyright Copyright (c) 2010-2011, Budin Ltd.
+ * @copyright Copyright (c) 2010-2012, Budin Ltd.
  * @version 1.0
  */
 
