@@ -1797,11 +1797,15 @@ class Alkaline{
 	 * @param bool $show_hidden_tags Include hidden tags
 	 * @return array Associative array of tags
 	 */
-	public function getTags($show_hidden_tags=false, $published_only=false){
+	public function getTags($show_hidden_tags=false, $published_only=false, $public_only=false){
 		$sql = '';
 		
-		if($published === true){
-			$sql = 'AND images.image_published <= "' . date('Y-m-d H:i:s') . '"';
+		if($published_only === true){
+			$sql .= ' AND images.image_published <= "' . date('Y-m-d H:i:s') . '"';
+		}
+		
+		if($public_only === true){
+			$sql .= ' AND images.image_privacy = 1';
 		}
 	
 		if($this->returnConf('tag_alpha')){
@@ -1985,7 +1989,13 @@ class Alkaline{
 			}
 		}
 		else{
-			$fields = $citations[0];
+			$fields = array();
+			
+			foreach($citations[0] as $key => $value){
+				if(is_int($key)){ continue; }
+				$fields[$key] = $value;
+			}
+			
 			unset($fields['citation_id']);
 			$fields[$field] = $field_id;
 			
