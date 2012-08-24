@@ -706,7 +706,7 @@ class Find extends Alkaline{
 		
 		if(($this->table == 'images') and empty($fields)){
 			// Find tags in database
-			if(intval($tags[0])){
+			if(is_numeric($tags[0])){
 				parent::convertToIntegerArray($tags);
 				$query = $this->prepare('SELECT tags.tag_id FROM tags WHERE tags.tag_id = ' . implode(' OR tags.tag_id = ', $tags) . ';');
 				$query->execute();
