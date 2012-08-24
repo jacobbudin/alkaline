@@ -951,7 +951,8 @@ $(document).ready(function(){
 		$(this).autocomplete({
 			source: BASE + ADMIN + 'tasks/hint-tag.php',
 			delay: 200,
-			minLength: 2
+			minLength: 2,
+			select: function(event, ui) { $(this).parent().submit(); }
 		});
 	});
 	
