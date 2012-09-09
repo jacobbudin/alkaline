@@ -1,8 +1,3 @@
-*.png
-*.jpg
-*.gif
-*.psd
-*.ico
 .*
 test.php
 cache/*
@@ -10,6 +5,8 @@ cache/*
 license.php
 log.txt
 cache/*
+images/*
+shoebox/*
 
 # the following patterns will be ignored for revision control purposes
 
@@ -36,9 +33,6 @@ thumbs.db
 # logs
 *.log
 *_log
-
-
-# images
 
 *.db
 # databases
