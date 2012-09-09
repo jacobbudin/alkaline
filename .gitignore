@@ -8,9 +8,7 @@ test.php
 cache/*
 
 license.php
-config.php
 log.txt
-config.json
 cache/*
 
 # the following patterns will be ignored for revision control purposes
@@ -41,9 +39,6 @@ thumbs.db
 
 
 # images
-*.png
-*.gif
-*.jpg
 
 *.db
 # databases
