@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: Backup</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='how_to_backup_alkaline'>How to Backup Alkaline</h3>
+
+<p>You&#8217;ll need access to both your Web and database data to perform a complete backup of Alkaline.</p>
+
+<ol>
+<li>Download your Web directory.</li>
+
+<li>Download your database contents.</li>
+</ol>
+
+<h5 id='download_your_web_directory'>Download your Web directory</h5>
+
+<p>Using an FTP, SFTP, WebDAV or other client, download your entire Alkaline installation. For quicker backups, the essential files are <code>config.php</code>, <code>config.json</code>, <code>/extensions</code>, <code>/includes</code>, and <code>/themes</code>. Optionally, you may or may not want to backup <code>/images</code> (likely the largest directory) depending on whether you have copies of your images elsewhere.</p>
+<div class='note'>
+	<strong>Tip</strong>
+	<p>If you have root access, compress your directory into an archive, and then download that archive. The download will be much faster.</p>
+
+	<p class='nm'><code>tar -c <em>your_directory</em> --exclude "images" > <em>your_archive</em>.tar</code></p>
+</div>
+<h5 id='download_your_database_contents'>Download your database contents</h5>
+
+<p>First, determine which database type you&#8217;re using by choosing <strong>Settings</strong>. Then follow the directions below for your database type.</p>
+
+<h6 id='mysql'>MySQL</h6>
+
+<p>Go to your Web host&#8217;s control panel and look for an automated method to perform backups. You can also use <a href='http://www.phpmyadmin.net/'>phpMyAdmin</a>, which is commonly offered, to download your database.</p>
+
+<h6 id='postgresql'>PostgreSQL</h6>
+
+<p>Go to your Web host&#8217;s control panel and look for an automated method to perform backups. You can also use <a href='http://pgadmin.org/'>pgAdmin</a>, which is commonly offered, to download your database.</p>
+
+<h6 id='sqlite'>SQLite</h6>
+
+<p>Download the file <code>/db/alkaline_??????.db</code>. That&#8217;s it.</p>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>

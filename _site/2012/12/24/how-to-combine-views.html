@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: How to Combine Image and Post Views</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='combine_image_and_post_views'>Combine Image and Post Views</h3>
+
+<p>If you want to combine images and posts in a streamlined view, such as &#8220;My 10 Most Recent Updates&#8221; with links to the items, you can combine the views in the presentation layer.</p>
+
+<h6 id='1_retrieve_images_and_posts'>1. Retrieve images and posts.</h6>
+
+<p>First, let&#8217;s grab the last ten updates of both images and posts.</p>
+
+<pre><code>$image_ids = new Find(&#39;images&#39;);
+$image_ids-&gt;page(1, 10);
+$image_ids-&gt;published();
+$image_ids-&gt;privacy(&#39;public&#39;);
+$image_ids-&gt;sort(&#39;image_published&#39;, &#39;DESC&#39;);
+$image_ids-&gt;find();
+
+$images = new Image($image_ids);
+// Optionally perform methods here such as formatTime()
+
+$post_ids = new Find(&#39;posts&#39;);
+$post_ids-&gt;page(1, 10);
+$post_ids-&gt;published();
+$post_ids-&gt;sort(&#39;post_published&#39;, &#39;DESC&#39;);
+$post_ids-&gt;find();
+
+$posts = new Post($post_ids);
+// Optionally perform methods here such as formatTime()</code></pre>
+
+<h6 id='2_design_a_combined_view_block'>2. Design a combined view block.</h6>
+
+<p>Here&#8217;s a simple Canvas template (<code>recent_updates.html</code>) with our two kinds:</p>
+
+<pre><code>{block:Images}
+	&lt;a href=&quot;{Image_URI}&quot;&gt;{Image_Title}&lt;/a&gt;
+{/block:Images}
+
+{block:Posts}
+	&lt;a href=&quot;{Post_URI}&quot;&gt;{Post_Title}&lt;/a&gt;
+{/block:Posts}</code></pre>
+
+<h6 id='3_display_the_results'>3. Display the results.</h6>
+
+<p>Display the Canvas block in the order of data published. Here&#8217;s a working PHP snippet for this example:</p>
+
+<pre><code>$count = 10; // Show 10 items total
+$i = 0;
+$p = 0;
+
+$index_original = new Canvas;
+$index_original-&gt;load(&#39;recent_updates&#39;); // recent_updates.html in our theme directory is our Canvas combined view block
+
+// We&#39;ll initiate a loop that will count
+for($n=0; $n &lt; $count; $n++){
+	$index = clone $index_original;
+	if(strtotime($images-&gt;images[$i][&#39;image_published&#39;]) &gt; strtotime($posts-&gt;posts[$p][&#39;post_published&#39;])){
+		$index-&gt;loop($images, $i, 1);
+		$index-&gt;display();
+		$i++;
+	}
+	else{
+		$index-&gt;loop($posts, $p, 1);
+		$index-&gt;display();
+		$p++;
+	}
+}</code></pre>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>

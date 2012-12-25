@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: How to Change Pagination of Images and Posts</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='change_pagination_of_images_and_posts'>Change Pagination of Images and Posts</h3>
+
+<p>Alkaline lets you paginate images and posts however you choose, regardless of the theme you&#8217;re using. Let&#8217;s take a look at the <code>page()</code> method of the <code>Find</code> classes, the method works the same for both images and posts.</p>
+
+<p>Let&#8217;s open <code>index.php</code>, you should see a line like this:</p>
+
+<pre><code>$image_ids-&gt;page(null, 12, 1);</code></pre>
+
+<p>This tells the <code>Find</code> object to automatically determine the page (<code>null</code>), display 12 images per page (<code>12</code>), and to display 1 image on the first page (<code>1</code>). You can change these values and save/upload the file to observe the changes to your Web site. Here are a few examples:</p>
+
+<h5 id='images'>Images</h5>
+
+<p>Auto-determine the page number with 25 images on every page:</p>
+
+<pre><code>$image_ids-&gt;page(null, 25);</code></pre>
+
+<p>Show page one with all the images (here, <code>0</code> is infinity):</p>
+
+<pre><code>$image_ids-&gt;page(1, 0);</code></pre>
+
+<h5 id='posts'>Posts</h5>
+
+<p>Auto-determine the page number, show 25 posts on the first page, and 10 on each subsequent page:</p>
+
+<pre><code>$post_ids-&gt;page(null, 25);</code></pre>
+
+<p>Force to show the second page (maybe as a widget of &#8220;recent posts on the next page&#8221; on your home page) with 10 posts:</p>
+
+<pre><code>$post_ids-&gt;page(2, 10);</code></pre>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>

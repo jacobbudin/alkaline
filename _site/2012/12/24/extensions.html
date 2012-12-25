@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: Extensions</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='extensions_and_the_orbit_engine'>Extensions and the Orbit Engine</h3>
+
+<p>Alkaline offers a powerful extension engine that allows Web developers to add new functionality to Alkaline as well as share their creations with other Alkaline users. Even if you don&#8217;t know how to program, Alkaline users can easily add new features by installing extensions.</p>
+
+<h5 id='installing_extensions'>Installing Extensions</h5>
+
+<p>You can download additional extensions at the <a href='/users/'>Alkaline Lounge</a>. You can install most themes by dragging an extension&#8217;s folder to your <code>/extensions/</code> folder, choosing <strong>Configuration &gt; Extensions</strong>, and clicking Install Extensions. Check with the documentation that came with your extension if any further configuration is required; some extensions will not work if left unconfigured.</p>
+
+<h5 id='developing_an_extension'>Developing An Extension</h5>
+
+<p><em>Warning: Experience with PHP and SQL is required to develop your own extension. You will only be able to create an extension as complex as your mastery of these programming languages.</em></p>
+
+<h6 id='naming_rubric'>Naming Rubric</h6>
+<table><thead><tr><th>Type</th><th>Naming</th><th>Examples</th></tr></thead><tbody><tr><td style='text-align: left;'>Class</td><td style='text-align: left;'>CamelCase</td><td style='text-align: left;'><code>Alkaline</code>, <code>AlkalineHelper</code></td>
+</tr><tr><td style='text-align: left;'>Methods, Functions</td><td style='text-align: left;'>lowerCamelCase</td><td style='text-align: left;'><code>import()</code>, <code>addTags()</code></td>
+</tr><tr><td style='text-align: left;'>Variables</td><td style='text-align: left;'>lowercase underscored</td><td style='text-align: left;'><code>$photo</code>, <code>$photo_height</code></td>
+</tr></tbody></table>
+<h6 id='hook_reference'>Hook Reference</h6>
+
+<p>Hooks are specific places in Alkaline in which extension code is executed. Additional hooks can be embedded within themes themselves (see <a href='/guide/themes/'>Themes and the Canvas Engine</a>).</p>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>

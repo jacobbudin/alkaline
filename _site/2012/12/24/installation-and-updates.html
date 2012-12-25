@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: Installation and Updates</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='installation_and_updates'>Installation and Updates</h3>
+
+<h5 id='installation'>Installation</h5>
+
+<p>Experienced individuals, such as Web developers, should be able to install Alkaline in 5-10 minutes. Novices should allocate as much as an hour.</p>
+
+<ol>
+<li>
+<p><a href='/users/'>Log in</a> to your Alkaline Lounge account. - If you don&#8217;t have one, <a href='/users/login/'>create an account</a> using the same email address you used to purchase Alkaline.</p>
+</li>
+
+<li>
+<p>Download Alkaline from the <a href='/users/licenses/'>licenses page</a> in the users lounge.</p>
+</li>
+
+<li>
+<p>Unpack the .zip archive by double-clicking on it.</p>
+</li>
+
+<li>
+<p>Use an FTP application to move the contents of the folder <code>/alkaline/</code> from your computer to your Web site.</p>
+
+<ul>
+<li>Set the permissions on the folders: <code>/cache/</code>, <code>/db/</code>, <code>/images/</code>, and <code>/shoebox/</code> to 777 (read, write, and execute), also set the same permissions to the file <code>config.json</code></li>
+
+<li>Delete the <code>/update/</code> folder</li>
+</ul>
+</li>
+
+<li>
+<p>Once your done uploading the files, using your Web browser, visit the <code>/install/</code> directory of your Web site where you installed Alkaline.</p>
+</li>
+</ol>
+
+<p><strong>Having issues?</strong> Try our <a href='/guide/troubleshooting/'>troubleshooting</a> guide.</p>
+
+<p>From here, Alkaline will ask you to supply information to complete the installation. Afterwards, you may want:</p>
+
+<ul>
+<li><strong>To enable vector support,</strong> choose Dashboard &gt; Configuration and enable ImageMagick.</li>
+
+<li><strong>To enable smart URLs,</strong> <a href='/guide/howto/enable-url-rewriting/'>read our quick how-to guide</a>.</li>
+
+<li><strong>To load the internal geo database,</strong> choose Dashboard &gt; Maintenance and click &#8220;Rebuild geographic library&#8221;.</li>
+</ul>
+
+<p>You should delete the <code>/install/</code> folder once you&#8217;re happy with your new Alkaline installation.</p>
+
+<h6 id='choosing_the_database_type'>Choosing the database type</h6>
+
+<p>Alkaline supports <a href='http://www.mysql.com/'>MySQL</a>, <a href='http://www.postgresql.org/'>PostgreSQL</a>, and <a href='http://www.sqlite.org/'>SQLite</a>, but you should only use the database types that were indicated satisfactory in the compatibility suite. (For instance, having access to a PostgreSQL database does not mean you have the PDO driver necessary for Alkaline to utilize it.) When it&#8217;s available, we recommend choosing MySQL.</p>
+
+<h6 id='a_quick_note_on_security'>A quick note on security</h6>
+
+<p>Your Web server may allow for more restrictive file and folder permissions than those indicated above. Alkaline only checks for (and warns of) incorrect permissions during installation. If you so desire and your Web server allows, you may make these permissions more restrictive once installed.</p>
+
+<p>If you&#8217;re using SQLite, you should ensure wherever you located your database file (<code>alkaline.db</code>) that it cannot be accessed or downloaded from the outside world. You should move this file to at least one level below the public HTTP directory.</p>
+
+<h5 id='updates'>Updates</h5>
+
+<p>The method of installing updates varies from update to update. Most of the time, it simply requires replacing files. Be careful not to overwrite your installation&#8217;s themes and extensions, or your <code>config.php</code> or <code>config.json</code> files unless specifically directed to do so. Refer to the update&#8217;s documentation for instructions.</p>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>

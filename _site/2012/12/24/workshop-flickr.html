@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Alkaline: Workshop: Flickr</title>
+
+	<link href="atom.xml" type="application/atom+xml" title="" />
+	<link href="rss.xml" type="application/rss+xml" rel="alternate" title="" />
+	
+	<script src="//use.edgefonts.net/source-sans-pro:n4,i4,n7.js"></script>
+	<script src="//use.edgefonts.net/inconsolata:n5,n7.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+	<!--[if lt IE9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<div class="sidebar">
+		<header>
+			<a href="/"><img src="/images/alkaline.png" alt="Alkaline" /></a>
+		</header>
+	</div>
+	<div class="content">
+		<div class="main">
+			<h3 id='flickr'>Flickr</h3>
+
+<p>This workshop looks at <a href='http://www.flickr.com'>Flickr</a>&#8211;a large photo-based social network by Yahoo!.</p>
+<div class='note'>
+	<strong>New here?</strong><br />
+	Read the <a href='/guide/workshop/notes/'>"Workshop Notes"</a> for important information before beginning any workshop.
+</div>
+<h6 id='setbyset_navigation'>Set-by-Set Navigation</h6>
+
+<p>Set-by-set navigation allows your Web site&#8217;s visitors to quickly navigate complex image library, by traversing between sets to view specific groups of your images.</p>
+
+<p><img alt='Set list' src='/guide/workshop/flickr/set-list.jpg' /></p>
+
+<p>First, we need to figure out which sets the image is a member of:</p>
+
+<pre><code>$images = new Image($image_ids);
+$images-&gt;getSets();
+
+$content = new Canvas;
+$content-&gt;load(...); // Your template
+$content-&gt;loop($images);
+$content-&gt;display();</code></pre>
+
+<p>We can then use the follow example template list all the sets:</p>
+
+<pre><code>{block:Images}
+	{Image_Title} is a member of the following sets:
+	{block:Sets}
+		{Set_Title}
+	{/block:Sets}
+{block:Images}</code></pre>
+
+<p>Next, let&#8217;s find where the image is located within the entire public library.</p>
+
+<pre><code>$image_ids = new Find(&#39;images&#39;);
+$image_ids-&gt;published();
+$image_ids-&gt;page(null, 1);
+// $id is the ID value of the image on primary display
+$image_ids-&gt;with($id);
+$image_ids-&gt;privacy(&#39;public&#39;);
+$image_ids-&gt;sort(&#39;image_published&#39;, &#39;DESC&#39;);
+$image_ids-&gt;find();
+
+$max = count($image_ids-&gt;ids_before) - 2;
+
+// Let&#39;s supply the Image class with the image IDs of
+// the two before, the one on display, and the two after
+$buffer_images = new Image(array($image_ids-&gt;ids_before[$max],
+	$image_ids-&gt;ids_before[++$max],
+	$id,
+	$image_ids-&gt;ids_after[0],
+	$image_ids-&gt;ids_after[1]));
+$buffer_images-&gt;getSizes();
+
+$content = new Canvas;
+$content-&gt;load(...); // Your template
+$content-&gt;loop($buffer_images);
+$content-&gt;display();</code></pre>
+
+<p>We create a new template with another <code>{block:Images}</code> to display these:</p>
+
+<pre><code>{block:Images}
+	&lt;img src=&quot;{Image_Src_Small}&quot; alt=&quot;&quot; /&gt;
+{/block:Images}</code></pre>
+
+<p>Lastly, we can repeat the above code for individual sets by simply adding Find&#8217;s sets() method:</p>
+
+<pre><code>$image_ids-&gt;sets($set_id);</code></pre>
+
+<p>For performance reasons, you should load these set-by-set navigation snippets on demand and not on page load, just as Flickr does.</p>
+		</div>
+
+		<footer>
+			Copyright &#0169; 2010-2012 <a href="http://www.budinltd.com/">Budin Ltd.</a> Distributed under the MIT License.
+		</footer>
+	</div>
+</body>
+</html>
