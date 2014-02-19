@@ -9,7 +9,7 @@ This workshop looks at [daringfireball.net](http://www.daringfireball.net)--a pr
 
 <div class="note">
 	<strong>New here?</strong><br />
-	Read the <a href="/guide/workshop/notes/">"Workshop Notes"</a> for important information before beginning any workshop.
+	Read the <a href="./guide/workshop/notes/">"Workshop Notes"</a> for important information before beginning any workshop.
 </div>
 
 ###### Markdown Those Quotes
@@ -103,7 +103,7 @@ Even if you change the title of this page (say from "Projects" to "My Projects")
 
 Now we can add the link on our home page or to the `header.html` template or anywhere:
 
-	<a href="/projects/" title="My projects including Project X and Y">Projects</a>
+	<a href="./projects/" title="My projects including Project X and Y">Projects</a>
 
 
 ###### Permanent Links

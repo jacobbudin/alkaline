@@ -11,9 +11,9 @@ To change multiple images simultaneously, choose **Editor**. You can select mult
 
 Remember, all fields are optional and can be edited later.
 
-<a href="/images/features/screen3_l.jpg" class="zoom screen_box">
-	<img src="/images/zoom.png" alt="" class="zoom_icon" />
-	<img src="/images/features/screen3.jpg" alt="" width="140" height="105" class="screen_s" />
+<a href="./images/features/screen3_l.jpg" class="zoom screen_box">
+	<img src="./images/zoom.png" alt="" class="zoom_icon" />
+	<img src="./images/features/screen3.jpg" alt="" width="140" height="105" class="screen_s" />
 </a>
 
 ###### Title

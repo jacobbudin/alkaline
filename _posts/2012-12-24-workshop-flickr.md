@@ -9,7 +9,7 @@ This workshop looks at [Flickr](http://www.flickr.com)--a large photo-based soci
 
 <div class="note">
 	<strong>New here?</strong><br />
-	Read the <a href="/guide/workshop/notes/">"Workshop Notes"</a> for important information before beginning any workshop.
+	Read the <a href="./guide/workshop/notes/">"Workshop Notes"</a> for important information before beginning any workshop.
 </div>
 
 ###### Set-by-Set Navigation

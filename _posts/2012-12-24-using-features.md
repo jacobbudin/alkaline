@@ -7,9 +7,9 @@ title: Using Features
 
 There are many features to enhance your image library. View all the features by choosing **Editor**.
 
-<a href="/images/features/screen1_l.jpg" class="zoom screen_box">
-	<img src="/images/zoom.png" alt="" class="zoom_icon" />
-	<img src="/images/features/screen1.jpg" alt="" width="140" height="105" class="screen_s" />
+<a href="./images/features/screen1_l.jpg" class="zoom screen_box">
+	<img src="./images/zoom.png" alt="" class="zoom_icon" />
+	<img src="./images/features/screen1.jpg" alt="" width="140" height="105" class="screen_s" />
 </a>
 
 ##### Tags
@@ -35,9 +35,9 @@ Static sets never change without a user manually adding or removing a photo. Aut
 
 Comments are user-contributed notes to your photo. They may be positive, negative, constructive, or otherwise. Some may be spam. You can label and remove comments as necessary. To control spam, use the Alkaline Labs' [Akismet]() extension.
 
-<a href="/images/features/screen5_l.jpg" class="zoom screen_box">
-	<img src="/images/zoom.png" alt="" class="zoom_icon" />
-	<img src="/images/features/screen5.jpg" alt="" width="140" height="105" class="screen_s" />
+<a href="./images/features/screen5_l.jpg" class="zoom screen_box">
+	<img src="./images/zoom.png" alt="" class="zoom_icon" />
+	<img src="./images/features/screen5.jpg" alt="" width="140" height="105" class="screen_s" />
 </a>
 
 ##### Pages

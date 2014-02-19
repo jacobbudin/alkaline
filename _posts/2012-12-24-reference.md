@@ -27,4 +27,4 @@ The Alkaline Reference is an auto-generated listing of all classes and methods o
 
 ###### Documentation
 
-Proceed to the <a href="/docs">documentation</a>.
+Proceed to the <a href="./docs">documentation</a>.
