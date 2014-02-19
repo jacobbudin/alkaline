@@ -20,11 +20,11 @@ title: Troubleshooting
 ###### I receive an error "Cannot use object of type Alkaline as array".
 
 - You have a non-standard PHP configuration. You need to turn off `register_globals` in your PHP configuration (PHP.ini). You can do this multiple ways. If you&#8217;re using the Apache HTTP Web server (as most do), you can add a `.htaccess` file with the following data to your base directory:
-
-	<pre><code><IfModule mod_php5.c>
-		php_flag register_globals Off
-	</IfModule></code></pre>
-
+		
+		<IfModule mod_php5.c>
+			php_flag register_globals Off
+		</IfModule>
+	
 ###### I can't modify the permissions on folders or files.
 
 - Some servers, such as those running suPHP, only need permissions set to `644` for files and `755` for folders. If you're unsure, contact your Web hosting provider.
